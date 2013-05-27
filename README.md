@@ -1,1 +1,1 @@
-# Quack - A nutty game creation framework powered by a Squirrel
+# Quack - A nutty 2D game creation framework

@@ -13,8 +13,27 @@ const QK_CT_FILL			= 3;		// Unlikely what anyone wants, but Viewport scaled to f
 
 // ENGINES //
 const QK_ENGINE_NONE 		= 0;		// Normal linear script (manual gameloop and frameskipping) //
-const QK_ENGINE_STEPDRAW	= 1;		// Init, Step, Draw gameloop with frameskipping //
+const QK_ENGINE_STEPDRAW	= 1;		// Step and Draw gameloop with frameskipping //
 //const QK_ENGINE_PLATFORMER	= 2;	// Platformer game engine with messaging //
+
+// RUNNERS (Not devices, unless it's a one-shot) //
+const QK_RUNNER_NULL		= 0;
+const QK_RUNNER_SDL			= 1;		// Windows, Linux, Mac
+const QK_RUNNER_MARMALADE	= 2;		// iOS, Android, Blackberry
+const QK_RUNNER_HTML5		= 3;		// Chrome, Firefox, IE11
+const QK_RUNNER_WINRT		= 4;		// Windows 8, Windows RT, Windows Phone 8, Xbox One
+
+const QK_RUNNER_3DS			= 16;
+const QK_RUNNER_WII_U		= 17;
+const QK_RUNNER_PS3			= 18;
+const QK_RUNNER_PS_VITA		= 19;
+const QK_RUNNER_PS4			= 20;
+// - -------------------------------------------------------------------------------------------------------------- - //
+
+// - -------------------------------------------------------------------------------------------------------------- - //
+function qkGetRunner() {
+	return QK_RUNNER_NULL; // TODO //
+}
 // - -------------------------------------------------------------------------------------------------------------- - //
 
 // - -------------------------------------------------------------------------------------------------------------- - //
