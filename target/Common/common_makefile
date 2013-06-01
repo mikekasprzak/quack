@@ -1,0 +1,135 @@
+# - ------------------------------------------------------------------------ - #
+include Target/Common/common_tools
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+BINARY_NAME			:=	$(PROJECT_FILE)
+TARGET_DIR			:=	output/$(TARGET_NAME)
+TARGET				:=	$(TARGET_DIR)/$(BINARY_NAME)$(BINARY_SUFFIX)
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+# Compiler and Linker Flags (NOTE: Optimizations are in common_tools) #
+CFLAGS				+=	-fno-strict-aliasing
+# - ------------------------------------------------------------------------ - #
+CPPFLAGS			+=	--std=gnu++0x -fno-rtti -fno-strict-aliasing	\
+						-Wshadow -Wlogical-op \
+						-Wmissing-braces -Wmissing-include-dirs \
+						-Wall -Wno-unknown-pragmas -Wno-unused-parameter \
+						-Wextra -Wno-ignored-qualifiers \
+#						-Winline -Wundef -Wcast-qual -Wconversion -Wpadded \
+#						-Wdouble-promotion -Wfloat-equal \
+# - ------------------------------------------------------------------------ - #
+LDFLAGS				+=	
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+SRC_FILTER			:=	$(addsuffix /%,$(SRC_FOLDERS))
+# - ------------------------------------------------------------------------ - #
+ifdef WINDIR
+ALL_CODE_FILES		:=	$(shell $(TreeCache) obj/$(TARGET_NAME)/.treecache src .cpp .c .hpp .h)
+else
+ALL_CODE_FILES		:=	$(shell $(TreeTool) src .cpp .c .hpp .h)
+endif # WINDIR #
+
+CODE_FILES			:=	$(filter %.cpp %.c,$(filter $(SRC_FILTER),$(ALL_CODE_FILES)))
+H_FILES				:=	$(filter %.hpp %.h,$(filter $(SRC_FILTER),$(ALL_CODE_FILES)))
+
+INCLUDES			:=	$(addprefix -I,$(SRC_FOLDERS) $(INCLUDE_FOLDERS))
+DEFINES				:=	$(addprefix -D,$(DEFINES))
+# - ------------------------------------------------------------------------ - #
+.O_FILES			:=	$(addprefix obj/$(TARGET_NAME)/,$(addsuffix .o,$(filter-out $(IGNORE_LIST),$(CODE_FILES))))
+.O_FOLDERS			:=	$(sort $(dir $(.O_FILES)))
+FOLDER_STUBS		:=	$(addsuffix _stub,$(.O_FOLDERS))
+# - ------------------------------------------------------------------------ - #
+TARGET_STUBS		:=	obj/$(TARGET_NAME)/output_stub
+TARGET_STUBS_CHECK	:=	$(shell Tools/FileExists.sh $(TARGET_STUBS))
+# - ------------------------------------------------------------------------ - #
+#OTHER_FILES			+=	$(shell $(TreeTool) $(FILES_FOLDER) %)
+#OTHER_FILES_DEP		+=	$(subst $(FILES_FOLDER)/,output/$(TARGET_NAME)/,$(OTHER_FILES))
+# - ------------------------------------------------------------------------ - #
+#output/$(TARGET_NAME)/%: $(FILES_FOLDER)/%
+#	cp $< $@
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+$(TARGET): $(TARGET_STUBS) $(FOLDER_STUBS) $(H_FILES) $(.O_FILES) $(OTHER_FILES_DEP) startcache
+ifneq ($(strip $(COPY_FILES)),)
+	cp -t $(TARGET_DIR) $(COPY_FILES)
+endif
+	$(GXX) $(DEFINES) $(LDFLAGS) $(OTHER_O_FILES) $(.O_FILES) -o $@ $(LIBRARIES)
+# - ------------------------------------------------------------------------ - #
+#	./Tools/version.sh>obj/$(TARGET_NAME)/BuildVersion.cpp
+# obj/$(TARGET_NAME)/BuildVersion.cpp
+
+
+# - ------------------------------------------------------------------------ - #
+ifndef NON_STANDARD_RUN
+run: $(TARGET)
+	$(RUN_PREFIX) ./$(TARGET) -DIR ./ -SAVE $(TARGET_DIR)/ $(RUN_SUFFIX)
+debug: $(TARGET)
+	gdb --args $(RUN_PREFIX) ./$(TARGET) -DIR ./ -SAVE $(TARGET_DIR)/ $(RUN_SUFFIX)
+endif # NON_STANDARD_RUN #
+# - ------------------------------------------------------------------------ - #
+clean:
+	-rm $(.O_FILES) $(.O_FILES:.o=.o.d) $(TARGET_DIR)/* obj/$(TARGET_NAME)/.ocache
+# - ------------------------------------------------------------------------ - #
+cleanmain:
+	-rm $(filter %Main.cpp.o,$(.O_FILES) $(.O_FILES:.o=.o.d)) $(TARGET_DIR)/*
+# - ------------------------------------------------------------------------ - #
+cleandeps:
+	-rm $(.O_FILES:.o=.o.d)
+# - ------------------------------------------------------------------------ - #
+makedirs:
+	-mkdir -p $(.O_FOLDERS)
+# - ------------------------------------------------------------------------ - #
+deps: $(.O_FILES:.o=.o.d)
+	@echo Dependencies rebuilt.
+# - ------------------------------------------------------------------------ - #
+cache:
+	@echo Updating Depend Cache...
+	@cat $(.O_FILES:.o=.o.d)>obj/$(TARGET_NAME)/.ocache
+	@echo Depend Cache Updated
+# - ------------------------------------------------------------------------ - #
+startcache:
+	$(MAKE) --quiet --no-print-directory cache NO_DEPEND=true &
+# - ------------------------------------------------------------------------ - #
+.PHONY: run clean cleanmain cleandeps deps makedirs cache startcache
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+obj/$(TARGET_NAME)/%.c.o: %.c
+	$(GCC) $(DEFINES) $(INCLUDES) $(CFLAGS) -MMD -MF $@.d -c $< -o $@
+# - ------------------------------------------------------------------------ - #
+obj/$(TARGET_NAME)/%.cpp.o: %.cpp
+	$(GXX) $(DEFINES) $(INCLUDES) $(CPPFLAGS) -MMD -MF $@.d -c $< -o $@
+# - ------------------------------------------------------------------------ - #
+# The below 2 cause a conflict with the -include at the bottom. #
+# - ------------------------------------------------------------------------ - #
+#obj/$(TARGET_NAME)/%.c.o.d: %.c
+#	$(GCC) $(DEFINES) $(INCLUDES) $(CFLAGS) -MMD -MF $@ -E $< -o $@.pp
+# - ------------------------------------------------------------------------ - #
+#obj/$(TARGET_NAME)/%.cpp.o.d: %.cpp
+#	$(GXX) $(DEFINES) $(INCLUDES) $(CPPFLAGS) -MMD -MF $@ -E $< -o $@.pp
+# - ------------------------------------------------------------------------ - #
+obj/%/_stub:
+	mkdir -p obj/$*
+	@touch $@
+# - ------------------------------------------------------------------------ - #
+# Yes, this creates the output folder, but notes the creation under obj #
+obj/$(TARGET_NAME)/output_stub:
+	mkdir -p output/$(TARGET_NAME) obj/$(TARGET_NAME)
+	@touch $@	
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+ifeq ($(TARGET_STUBS_CHECK),$(TARGET_STUBS))
+ifndef NO_DEPEND
+#-include $(.O_FILES:.o=.o.d)
+-include obj/$(TARGET_NAME)/.ocache
+endif # NO_DEPEND #
+endif # TARGET_STUBS does not exist #
+# - ------------------------------------------------------------------------ - #
+	

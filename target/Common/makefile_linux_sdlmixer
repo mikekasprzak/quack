@@ -1,0 +1,47 @@
+# - ------------------------------------------------------------------------ - #
+# NOTE: Only reference files here suitable for PLATFORM scope (no game) #
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	src/Main/SDL \
+
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	
+# - ------------------------------------------------------------------------ - #
+# Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
+IGNORE_LIST			+=	
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_SDL USES_SDL_2 USES_SDLMIXER \
+						USES_UNIX NO_TWEAKVALUE \
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	$(shell sdl2-config --libs) \
+						-lSDL2_mixer
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	/usr/local/lib/libSDL2-2.0.so.0 \
+						/usr/local/lib/libSDL2_mixer-1.2.so.0 \
+#						/usr/local/lib/libvorbis-*.so \
+#						/usr/local/lib/libvorbisfile-*.so \
+#						/usr/local/lib/libogg-*.so \
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+CFLAGS				+=	$(shell sdl2-config --cflags)
+CPPFLAGS			+=	$(shell sdl2-config --cflags)
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+ifdef REQUIRES_OPENGL2
+include Target/SDL/common_opengl2_linux
+else
+include Target/SDL/common_opengl_linux
+endif
+# - ------------------------------------------------------------------------ - #
+include Target/SDL/linux_common
+# - ------------------------------------------------------------------------ - #
+# Finally, include the standard makefile body #
+include Target/SDL/common_makefile
+# - ------------------------------------------------------------------------ - #
