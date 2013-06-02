@@ -388,7 +388,12 @@ int main( int argc, char* argv[] ) {
 					int Memory = System::GetMemoryUsage();
 					MemDrop++;
 					if ( (MemDrop & 255) == 255 ) {
-						Log( "Mem[%s]: %i [%ik -- %iM] -- %s", (Memory != OldMemory) ? "*" : " ", Memory, Memory / 1024, Memory / 1024 / 1000, System::GetClockShortString() );
+						char MemoryState[] = " ";
+						if ( Memory > OldMemory )
+							MemoryState[0] = '+';
+						else if ( Memory < OldMemory )
+							MemoryState[0] = '-';
+						Log( "Mem[%s]: %i [%ik -- %iM] -- %s", MemoryState, Memory, Memory / 1024, Memory / 1024 / 1000, System::GetClockShortString() );
 						OldMemory = Memory;
 					}
 				}
