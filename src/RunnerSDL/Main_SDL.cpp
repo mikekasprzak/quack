@@ -10,7 +10,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Input/Input.h>
 // - ------------------------------------------------------------------------------------------ - //
-//#include "App.h"
+#include <App.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <Main/Main_Product.h>
 #include <Main/Main_HgVersion.h>
@@ -34,12 +34,6 @@ void SkipTime() {
 
 // - ------------------------------------------------------------------------------------------ - //
 #include <System/Path.h>
-
-//extern char AppBaseDir[];
-//char AppBaseDir[2048];
-//
-//extern char AppSaveDir[];
-//char AppSaveDir[2048] = "";
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: Rename this. ArgInit? SystemInit? Only non arg is the PID
 void ArgInit( int argc, char* argv[] ) {
@@ -333,7 +327,7 @@ int main( int argc, char* argv[] ) {
 	// **** //
 
 	{
-//		cApp* App = new cApp();
+		cApp* App = new cApp();
 		SDL_SetEventFilter( EventHandler, 0 );
 		
 		Log( "Mem: %i", System::GetMemoryUsage() );
@@ -354,15 +348,15 @@ int main( int argc, char* argv[] ) {
 				FramesOfWork = 1;
 			}
 			
-//			if ( __EscKey ) {
-//				delete App;
-//				App = new cApp();
-//			}
+			if ( __EscKey ) {
+				delete App;
+				App = new cApp();
+			}
 
 			for ( int Frame = 0; Frame < (FramesOfWork); Frame++ ) {
 				Input::Poll();
 				SDL_PumpEvents();
-//				App->Step();
+				App->Step();
 
 				AddFrame( &WorkTime );
 			}
@@ -374,7 +368,7 @@ int main( int argc, char* argv[] ) {
 					if ( Screen::Native[idx].pWindow ) {
 						Screen::Native[idx].MakeCurrent(); // Memory Leak //
 						
-//						App->Draw( Screen::Native[idx] );
+						App->Draw( Screen::Native[idx] );
 						
 						Screen::Native[idx].Swap(); // Memory Leak //
 					}

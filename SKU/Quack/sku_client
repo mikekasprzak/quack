@@ -2,7 +2,8 @@
 # NOTE: Only reference files here suitable for GAME scope (no platform) #
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
-SRC_FOLDERS			+=	src/Common \
+SRC_FOLDERS			+=	src/Quack \
+						src/Common \
 						src/RunnerSDL \
 						src/GEL2 \
 						src/GEL/Debug \
