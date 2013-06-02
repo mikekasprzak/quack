@@ -386,7 +386,7 @@ int main( int argc, char* argv[] ) {
 					static int MemDrop = 0;
 					MemDrop++;
 					if ( (MemDrop & 255) == 255 )
-						Log( "Mem: %i (%i) -- %s", System::GetMemoryUsage(), System::GetMemoryUsage() / 1024, System::GetClockShortString() );
+						Log( "Mem: %i [%ik -- %iM] -- %s", System::GetMemoryUsage(), System::GetMemoryUsage() / 1024, System::GetMemoryUsage() / 1024 / 1000, System::GetClockShortString() );
 				}
 			}
 
