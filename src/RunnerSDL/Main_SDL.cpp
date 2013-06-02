@@ -384,9 +384,13 @@ int main( int argc, char* argv[] ) {
 				// ** WEIRD ** //			
 				{
 					static int MemDrop = 0;
+					static int OldMemory = 0;
+					int Memory = System::GetMemoryUsage();
 					MemDrop++;
-					if ( (MemDrop & 255) == 255 )
-						Log( "Mem: %i [%ik -- %iM] -- %s", System::GetMemoryUsage(), System::GetMemoryUsage() / 1024, System::GetMemoryUsage() / 1024 / 1000, System::GetClockShortString() );
+					if ( (MemDrop & 255) == 255 ) {
+						Log( "Mem[%s]: %i [%ik -- %iM] -- %s", (Memory != OldMemory) ? "*" : " ", Memory, Memory / 1024, Memory / 1024 / 1000, System::GetClockShortString() );
+						OldMemory = Memory;
+					}
 				}
 			}
 
