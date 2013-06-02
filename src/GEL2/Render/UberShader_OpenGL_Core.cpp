@@ -89,14 +89,14 @@ inline cUberShader_Shader BuildShader( const char* Defines, const char* ShaderSo
 	ProgramCode += Defines;
 	ProgramCode += ShaderSource;
 	Program.Vertex = GLSLCompile( ProgramCode.c_str(), GL_VERTEX_SHADER );
-	VLog( "* Vertex Shader Compiled (%i)", Program.Vertex );
+	VVLog( "* Vertex Shader Compiled (%i)", Program.Vertex );
 	
 	ProgramCode = VersionString;
 	ProgramCode += DefineSymbol( "FRAGMENT_SHADER" );
 	ProgramCode += Defines;
 	ProgramCode += ShaderSource;
 	Program.Fragment = GLSLCompile( ProgramCode.c_str(), GL_FRAGMENT_SHADER );
-	VLog( "* Fragment Shader Compiled (%i)", Program.Fragment );
+	VVLog( "* Fragment Shader Compiled (%i)", Program.Fragment );
 	
 #ifdef USES_GEOMETRY_SHADERS
 	ProgramCode = VersionString;
@@ -104,7 +104,7 @@ inline cUberShader_Shader BuildShader( const char* Defines, const char* ShaderSo
 	ProgramCode += Defines;
 	ProgramCode += ShaderSource;
 	Program.Geometry = GLSLCompile( ProgramCode.c_str(), GL_GEOMETRY_SHADER );
-	VLog( "* Geometry Shader Compiled (%i)", Program.Geometry );
+	VVLog( "* Geometry Shader Compiled (%i)", Program.Geometry );
 #endif // USES_GEOMETRY_SHADERS //
 
 #ifdef USES_TESSELLATION_SHADERS
@@ -113,7 +113,7 @@ inline cUberShader_Shader BuildShader( const char* Defines, const char* ShaderSo
 	ProgramCode += Defines;
 	ProgramCode += ShaderSource;
 	Program.Tessellation = GLSLCompile( ProgramCode.c_str(), GL_TESSELLATION_SHADER );
-	VLog( "* Tessellation Shader Compiled (%i)", Program.Tessellation );
+	VVLog( "* Tessellation Shader Compiled (%i)", Program.Tessellation );
 #endif // USES_TESSELLATION_SHADERS //
 	
 	Program.Program = glCreateProgram();
@@ -129,17 +129,18 @@ inline cUberShader_Shader BuildShader( const char* Defines, const char* ShaderSo
 	if ( UseTessellationShader )
 		glAttachShader( Program.Program, Program.Tessellation );
 #endif // USES_TESSELLATION_SHADERS //
-	VLog( "* Shaders Bound to Program (%i)", Program.Program );
+	VVLog( "* Shaders Bound to Program (%i)", Program.Program );
 	
 	return Program;
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void LinkShader( const cUberShader_Shader& Program ) {
-	VLog( "* Linking..." );
+	VVLog( "* Linking..." );
 	
 	glLinkProgram( Program.Program );
 	glUseProgram( Program.Program );
-	VLog( "* Program Linked. Done." );
+	
+	VVLog( "* Program Linked. Done." );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribute ) {
@@ -156,7 +157,7 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 			Index = -Index;
 		}
 				
-		VLog( "* * Attribute: %i %s%s", 
+		VVVLog( "* * Attribute: %i %s%s", 
 			Index, 
 			Name,
 			(OrigIndex != Index) ? " -- Disabled (-1)" : ""
@@ -271,7 +272,7 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 			}
 			
 			
-			VLog( "* * * Info: %s (Type: %i) x%i -- %i bytes", 
+			VVVLog( "* * * Info: %s (Type: %i) x%i -- %i bytes", 
 				Type, 
 				Attr->Type,
 				Attr->Count,
@@ -307,12 +308,12 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 				}
 			}
 			
-			VLog( "* * %i Stride: %i  Flags: %i", idx, Program.Attrib[idx].Stride, Program.Attrib[idx].Flags );
+			VVVLog( "* * %i Stride: %i  Flags: %i", idx, Program.Attrib[idx].Stride, Program.Attrib[idx].Flags );
 		}
 	}
 
 	// Log the Total Size //
-	VLog( "* Total Attribute Size: %i bytes (Data per vertex)", Program.GetTotalAttribSize() );
+	VVLog( "* Total Attribute Size: %i bytes (Data per vertex)", Program.GetTotalAttribSize() );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms ) {
@@ -330,7 +331,7 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 		const char* Name = cJSON_GetObjectItem( Uniform, "Name" )->valuestring;
 		GLint Location = glGetUniformLocation( Program.Program, Name );
 
-		VLog( "* * Uniform: %i %s [0x%x]", 
+		VVVLog( "* * Uniform: %i %s [0x%x]", 
 			Index, 
 			Name,
 			Location
@@ -438,7 +439,7 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 				
 			}
 
-			VLog( "* * * Info: %s (Type: %i) x%i -- %i bytes", 
+			VVVLog( "* * * Info: %s (Type: %i) x%i -- %i bytes", 
 				Type, 
 				Uni->Type,
 				Uni->Count,
@@ -462,12 +463,12 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 				Program.Uniform[idx].Offset = Step;
 			}
 			
-			VLog( "* * %i Offset: %i", idx, Program.Uniform[idx].Offset );
+			VVVLog( "* * %i Offset: %i", idx, Program.Uniform[idx].Offset );
 		}
 	}
 	
 	// Log the Total Size //
-	VLog( "* Total Uniforms Size: %i bytes (Globals/Constant Data)", Program.GetTotalUniformSize() );
+	VVLog( "* Total Uniforms Size: %i bytes (Globals/Constant Data)", Program.GetTotalUniformSize() );
 	
 	// TODO: Allocate Space //
 	Program.UniformData = new_DataBlock( Program.GetTotalUniformSize() );
@@ -494,11 +495,11 @@ cUberShader::cUberShader( const char* JSONData, const size_t JSONSize, const cha
 void cUberShader::ProcessShader( const char* InFile ) {
 //	ShaderLookup.clear();
 
-	Log( "+ Loading UberShader Permutations File..." );
-	Log( "* File: %s", InFile );
+	VLog( "+ Loading UberShader Permutations File..." );
+	VLog( "* File: %s", InFile );
 	DataBlock* File = new_read_nullterminate_DataBlock( InFile );
 	
-	VLog( "* Parsing JSON Data (%i bytes)...", File->Size );
+	VVLog( "* Parsing JSON Data (%i bytes)...", File->Size );
 	
 	cJSON* root = cJSON_Parse( File->Data );
 
@@ -512,41 +513,41 @@ void cUberShader::ProcessShader( const char* InFile ) {
 		VLog( "* File: %s", ShaderFile->valuestring );
 		
 		std::string ShaderSourceFile = std::string(String::DirectorySlash( InFile )) + ShaderFile->valuestring;
-		VLog( "* FilePath: %s", ShaderSourceFile.c_str() );
+		VVLog( "* FilePath: %s", ShaderSourceFile.c_str() );
 
 		DataBlock* ShaderSource = new_read_nullterminate_DataBlock( ShaderSourceFile.c_str() );
 		
 		if ( ShaderSource ) {
-			VLog( "* Shader Source Loaded (%i bytes).", ShaderSource->Size );
+			VVLog( "* Shader Source Loaded (%i bytes).", ShaderSource->Size );
 			
 			ProcessShader( root, ShaderSource->Data );
 
 			delete_DataBlock( ShaderSource );
-			VLog( "* Done with Shader Sources" );
+			VVLog( "* Done with Shader Sources" );
 		}
 		else {
 			Log( "! UberShader: Error loading Shader Sources!" );
 		}
 		
 		cJSON_Delete( root );
-		VLog( "* Done JSON Data" );
+		VVLog( "* Done JSON Data" );
 	}
 	
 	// Clear Shader Usage //
 	glUseProgram( 0 );
 
 	delete_DataBlock( File );
-	Log( "- Done with UberShader Permutations File." );	
+	VLog( "- Done with UberShader Permutations File." );	
 }
 // - ------------------------------------------------------------------------------------------ - //
 void cUberShader::ProcessShader( const char* JSONFile, const char* GLSLFile ) {
 //	ShaderLookup.clear();
 
-	Log( "+ Loading UberShader Permutations File..." );
-	Log( "* File: %s", JSONFile );
+	VLog( "+ Loading UberShader Permutations File..." );
+	VLog( "* File: %s", JSONFile );
 	DataBlock* File = new_read_nullterminate_DataBlock( JSONFile );
 	
-	VLog( "* Parsing JSON Data (%i bytes)...", File->Size );
+	VVLog( "* Parsing JSON Data (%i bytes)...", File->Size );
 	
 	cJSON* root = cJSON_Parse( File->Data );
 
@@ -560,33 +561,33 @@ void cUberShader::ProcessShader( const char* JSONFile, const char* GLSLFile ) {
 		DataBlock* ShaderSource = new_read_nullterminate_DataBlock( GLSLFile );
 		
 		if ( ShaderSource ) {
-			VLog( "* Shader Source Loaded (%i bytes).", ShaderSource->Size );
+			VVLog( "* Shader Source Loaded (%i bytes).", ShaderSource->Size );
 			
 			ProcessShader( root, ShaderSource->Data );
 
 			delete_DataBlock( ShaderSource );
-			VLog( "* Done with Shader Sources" );
+			VVLog( "* Done with Shader Sources" );
 		}
 		else {
 			Log( "! UberShader: Error loading Shader Sources!" );
 		}
 		
 		cJSON_Delete( root );
-		VLog( "* Done JSON Data" );
+		VVLog( "* Done JSON Data" );
 	}
 	
 	// Clear Shader Usage //
 	glUseProgram( 0 );
 
 	delete_DataBlock( File );
-	Log( "- Done with UberShader Permutations File." );	
+	VLog( "- Done with UberShader Permutations File." );	
 }
 // - ------------------------------------------------------------------------------------------ - //
 void cUberShader::ProcessShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize ) {
 //	ShaderLookup.clear();
 
-	Log( "+ Loading UberShader Permutations File (Embedded)..." );	
-	VLog( "* Parsing JSON Data (%i bytes)...", JSONSize );
+	VLog( "+ Loading UberShader Permutations File (Embedded)..." );	
+	VVLog( "* Parsing JSON Data (%i bytes)...", JSONSize );
 	
 	cJSON* root = cJSON_Parse( JSONData );
 
@@ -594,10 +595,10 @@ void cUberShader::ProcessShader( const char* JSONData, const size_t JSONSize, co
 		Log( "! UberShader: Error parsing JSON data!" );
 	}
 	else {
-		VLog( "* Loadinng Shader Sources (Embedded)..." );
+		VVLog( "* Loadinng Shader Sources (Embedded)..." );
 		
 		if ( GLSLData ) {
-			VLog( "* Shader Source Loaded (%i bytes).", GLSLSize );
+			VVLog( "* Shader Source Loaded (%i bytes).", GLSLSize );
 			
 			ProcessShader( root, GLSLData );
 		}
@@ -606,23 +607,23 @@ void cUberShader::ProcessShader( const char* JSONData, const size_t JSONSize, co
 		}
 		
 		cJSON_Delete( root );
-		VLog( "* Done JSON Data" );
+		VVLog( "* Done JSON Data" );
 	}
 	
 	// Clear Shader Usage //
 	glUseProgram( 0 );
 
-	Log( "- Done with UberShader Permutations File." );	
+	VLog( "- Done with UberShader Permutations File." );	
 }
 // - ------------------------------------------------------------------------------------------ - //
 void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 	cJSON* ShaderList = cJSON_GetObjectItem( root, "Shaders" );
 	
-	VLog( "* %s", ShaderList->string );
+	VVVLog( "* %s", ShaderList->string );
 	
 	cJSON* ShaderObj = ShaderList->child;
 	while ( ShaderObj != 0 ) {
-		VLog( "+ Begin Program \"%s\"", ShaderObj->string );
+		VVLog( "+ Begin Program \"%s\"", ShaderObj->string );
 		
 		std::string DefineList;
 		
@@ -630,7 +631,7 @@ void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 		if ( Define ) {
 			cJSON* Obj = Define->child;
 			while ( Obj != 0 ) {
-				VLog("* * #DEFINE %s", Obj->valuestring );
+				VVVLog("* * #DEFINE %s", Obj->valuestring );
 				
 				DefineList += DefineSymbol( Obj->valuestring );
 				
@@ -669,9 +670,9 @@ void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 		// Assign Attributes //
 		cJSON* Attribute = cJSON_GetObjectItem( ShaderObj, "Attribute" );
 		if ( Attribute ) {
-			VLog( "+ Binding Attributes to Program..." );
+			VVLog( "+ Binding Attributes to Program..." );
 			_AssignShaderAttributes( Program, Attribute );
-			VLog( "- Attributes bound to Program." );
+			VVLog( "- Attributes bound to Program." );
 		}
 		else {
 			Log( "! UberShader: Error, \"Attribute\" section not found in %s!", ShaderObj->string );
@@ -683,9 +684,9 @@ void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 		// Lookup Uniforms //
 		cJSON* Uniforms = cJSON_GetObjectItem( ShaderObj, "Uniform" );
 		if ( Uniforms ) {
-			VLog( "+ Collecting List of Uniforms..." );
+			VVLog( "+ Collecting List of Uniforms..." );
 			_AssignShaderUniforms( Program, Uniforms );
-			VLog( "- Uniform List Collected." );
+			VVLog( "- Uniform List Collected." );
 		}
 		else {
 			Log( "! UberShader: Error, \"Uniform\" section not found in %s!", ShaderObj->string );
@@ -695,7 +696,7 @@ void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 		ShaderLookup[ ShaderObj->string ] = Shader.size();
 		Shader.push_back( Program );
 		
-		VLog( "- Program \"%s\" Finished.", ShaderObj->string );
+		VVLog( "- Program \"%s\" Finished.", ShaderObj->string );
 		
 		// Next Shader //
 		ShaderObj = ShaderObj->next;
@@ -756,18 +757,18 @@ void cUberShader::Bind( const ShaderHandle Index ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 ShaderHandle cUberShader::Find( const char* ShaderName ) {
-	Log( "+ Searching for Shader \"%s\"", ShaderName );
+	VLog( "+ Searching for Shader \"%s\"", ShaderName );
 
 	// Search the map for the specific pattern //
 	std::map<std::string, ShaderHandle>::iterator SearchIterator = ShaderLookup.find( ShaderName );
 	
 	// If it was found, return the Id //
 	if ( SearchIterator != ShaderLookup.end() ) {
-		Log( "- \"%s\" found!", ShaderName );
+		VLog( "- \"%s\" found!", ShaderName );
 		return SearchIterator->second;
 	}
 	else {
-		Log( "- ERROR! No Shader named \"%s\"", ShaderName );
+		VLog( "- ERROR! No Shader named \"%s\"", ShaderName );
 	}
 	
 	return 0;

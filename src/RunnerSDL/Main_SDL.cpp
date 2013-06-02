@@ -284,36 +284,6 @@ int main( int argc, char* argv[] ) {
 	signal( SIGINT, int_func );
 	
 	// *** //
-	
-	{
-		GelList<int> MyList;
-		MyList.Insert( 11, MyList.Front() );
-		MyList.Insert( 12, MyList.Front()->Next );
-		MyList.Insert( 10, MyList.Back() );
-		MyList.Insert( 11, MyList.Back() );
-//		MyList.Insert( 12, MyList.Back()->Prev );
-//		MyList.Insert( 15, MyList.Front() );
-		Log( "NOM: %i", MyList.Remove( MyList.Front()->Next ) );
-		
-		MyList.PushFront( 13 );
-		MyList.PushBack( 20 );
-		MyList.PushBack( 23 );
-		MyList.PushFront( 10 );
-//		Log( "NOM: %i", MyList.PopFront() );
-//		Log( "NOM: %i", MyList.PopFront() );
-		Log( "NOM: %i", MyList.PopBack() );
-		Log( "NOM: %i", MyList.PopBack() );
-		Log( "NOM: %i", MyList.PopBack() );
-		Log( "NOM: %i", MyList.PopBack() );
-		MyList.PushBack( 55 );
-		
-		GelList<int> List2;
-		MyList.Move( MyList.Front()->Next, &List2, List2.Front() );
-		MyList.Move( MyList.Back()->Prev, &List2, List2.Back() );
-
-		MyList.Logs();
-		List2.Logs();
-	}
 
 	Log( "-=======- GEL2 Application Started -- SDL2 Branch -- SKU: %s -=======-", PRODUCT_SKU );
 	Log( "GEL (C) Copyright 2008-2013 Mike Kasprzak and Sykhronics Entertainment" );
@@ -337,7 +307,7 @@ int main( int argc, char* argv[] ) {
 		
 	// **** //
 	
-	SDL_Init( SDL_INIT_VIDEO /*| SDL_INIT_JOYSTICK*/ );
+	SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK );
 	SDL_GL_LoadLibrary( NULL );
 	SDL_DisableScreenSaver();
 	atexit(SDL_Quit);
