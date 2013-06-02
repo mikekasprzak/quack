@@ -38,6 +38,10 @@ void AddFrame( TIMEVALUE* tv ) {
 	*tv = AddTime( *tv, OneFrameConstant );
 }
 // -------------------------------------------------------------------------- //
+void AddFrames( TIMEVALUE* tv, const int Count ) {
+	*tv = AddTime( *tv, OneFrameConstant * Count );
+}
+// -------------------------------------------------------------------------- //
 void SetFramesPerSecond( const int Ticks ) {
 	FrameRateConstant = Ticks;
 	OneFrameConstant = (1000 / Ticks);

@@ -43,6 +43,7 @@ TIMEVALUE SubtractTime( TIMEVALUE a, TIMEVALUE b );
 void SetFramesPerSecond( const int Ticks );
 int GetFrames( TIMEVALUE* tv );
 void AddFrame( TIMEVALUE* tv );
+void AddFrames( TIMEVALUE* tv, const int Count );
 void ResetTime();
 
 void Wait( const int Ticks );

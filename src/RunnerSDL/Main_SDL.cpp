@@ -255,6 +255,18 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+void LogMemoryUsage() {
+	static int OldMemory = 0;
+	int Memory = System::GetMemoryUsage();
+
+	char MemoryState[] = " ";
+	if ( Memory > OldMemory )
+		MemoryState[0] = '+';
+	else if ( Memory < OldMemory )
+		MemoryState[0] = '-';
+	Log( "** Mem[%s]: %i [%ik -- %iM] -- %s", MemoryState, Memory, Memory / 1024, Memory / 1024 / 1000, System::GetClockShortString() );
+	OldMemory = Memory;
+}
 
 // - ------------------------------------------------------------------------------------------ - //
 #include <signal.h>
@@ -273,6 +285,7 @@ void int_func( int Signal ) {
 // - ------------------------------------------------------------------------------------------ - //
 int main( int argc, char* argv[] ) {
 	LogInit();
+	LogMemoryUsage();
 	
 	signal( SIGTERM, term_func );
 	signal( SIGINT, int_func );
@@ -300,6 +313,8 @@ int main( int argc, char* argv[] ) {
 //	gelNetInit();
 		
 	// **** //
+
+	LogMemoryUsage();
 	
 	SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK );
 	SDL_GL_LoadLibrary( NULL );
@@ -310,6 +325,8 @@ int main( int argc, char* argv[] ) {
 	
 	ReportSDLSystemInfo();
 	ReportSDLGraphicsInfo();
+
+	LogMemoryUsage();
 	
 	// **** //
 	
@@ -326,11 +343,13 @@ int main( int argc, char* argv[] ) {
 	
 	// **** //
 
+	LogMemoryUsage();
+
 	{
 		cApp* App = new cApp();
 		SDL_SetEventFilter( EventHandler, 0 );
 		
-		Log( "Mem: %i", System::GetMemoryUsage() );
+		LogMemoryUsage();
 
 		int FPS_Step = 0;
 		int FPS_Draw = 0;
@@ -345,6 +364,7 @@ int main( int argc, char* argv[] ) {
 
 			if ( FramesOfWork >= 30 ) {
 				Log("! WARNING: FramesOfWork is high (%i)! Skipping Work...", FramesOfWork );
+				AddFrames( &WorkTime, FramesOfWork-1 );
 				FramesOfWork = 1;
 			}
 			
@@ -375,20 +395,11 @@ int main( int argc, char* argv[] ) {
 				}
 				FPS_Draw++;
 
-				// ** WEIRD ** //			
 				{
 					static int MemDrop = 0;
-					static int OldMemory = 0;
-					int Memory = System::GetMemoryUsage();
 					MemDrop++;
 					if ( (MemDrop & 255) == 255 ) {
-						char MemoryState[] = " ";
-						if ( Memory > OldMemory )
-							MemoryState[0] = '+';
-						else if ( Memory < OldMemory )
-							MemoryState[0] = '-';
-						Log( "Mem[%s]: %i [%ik -- %iM] -- %s", MemoryState, Memory, Memory / 1024, Memory / 1024 / 1000, System::GetClockShortString() );
-						OldMemory = Memory;
+						LogMemoryUsage();
 					}
 				}
 			}
