@@ -23,6 +23,9 @@ endif # NUMBER_OF_PROCESSORS #
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
+# MinGW HACK -- Blank out the Number of processors (so -j without args) #
+NUM_PROCESSORS 		:=
+# - ------------------------------------------------------------------------ - #
 default:
 	$(MAKE) -f $(BUILD_MAKEFILE) -j $(NUM_PROCESSORS)
 run clean cleanmain info upload package install cache startcache:

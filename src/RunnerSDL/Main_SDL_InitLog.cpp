@@ -222,7 +222,26 @@ void ReportSDLGraphicsInfo() {
 				);
 		}
 		Log("");
-	}	
+	}
+	
+	// TODO: Make an InputInfo function //
+	{
+		Log( "-=- SDL Joysticks -- %i Device(s) Connected -=-", SDL_NumJoysticks() );
+		for( int idx = 0; idx < SDL_NumJoysticks(); idx++ ) {
+			SDL_Joystick* Joy = SDL_JoystickOpen(idx);
+			Log( "%i - %s (Axis: %i  Buttons: %i  Hats: %i  Balls: %i  Haptic: %i)", 
+				idx, 
+				SDL_JoystickName( Joy ),
+				SDL_JoystickNumAxes( Joy ),
+				SDL_JoystickNumButtons( Joy ),
+				SDL_JoystickNumHats( Joy ),
+				SDL_JoystickNumBalls( Joy ),
+				SDL_JoystickIsHaptic( Joy )
+//				SDL_JoystickNameForIndex( idx )
+				);
+		}
+		Log("");	
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 
