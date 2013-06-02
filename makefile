@@ -24,9 +24,9 @@ endif # NUMBER_OF_PROCESSORS #
 
 # - ------------------------------------------------------------------------ - #
 default:
-	$(MAKE) -f $(BUILD_MAKEFILE) -j
+	$(MAKE) -f $(BUILD_MAKEFILE) -j $(NUM_PROCESSORS)
 run clean cleanmain info upload package install cache startcache:
-	$(MAKE) -f $(BUILD_MAKEFILE) -j $@
+	$(MAKE) -f $(BUILD_MAKEFILE) -j $(NUM_PROCESSORS) $@
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #

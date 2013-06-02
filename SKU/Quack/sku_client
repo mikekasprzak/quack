@@ -3,6 +3,7 @@
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
 SRC_FOLDERS			+=	src/Common \
+						src/RunnerSDL \
 						src/GEL2 \
 						src/GEL/Debug \
 						src/GEL/Core \
@@ -21,7 +22,7 @@ IGNORE_LIST			+=
 DEFINES				+=	PRODUCT_QUACK PRODUCT_CLIENT \
 						USES_GEL2 USES_GEL USES_GPU \
 						HG_VERSION=$(shell Tools/HGVersion.sh) \
-						HG_HASH=$(shell Tools/HGHash.sh) \
+						HG_HASH=\"$(shell Tools/HGHash.sh)\" \
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	-lcrypto \
@@ -53,7 +54,7 @@ USES_OPENGL3		:=	true
 # - ------------------------------------------------------------------------ - #
 # Game Specific Library Requesting Defines #
 USES_STB_IMAGE		:=	true
-#USES_CURL			:=	true
+USES_CURL			:=	true
 #USES_ENET			:=	true
 USES_CJSON			:=	true
 USES_TINYTHREAD		:=	true
