@@ -19,8 +19,6 @@ using namespace Render;
 extern cFont* Font;
 cFont* Font;
 
-Matrix4x4 Matrixer;
-
 DataBlock* NutFile;
 //cRenderTarget* RT_Main;
 //cUberShader* BlurShader;
@@ -41,11 +39,6 @@ void ErrorFunc(HSQUIRRELVM v, const SQChar *s, ...) {
 	vsprintf(Dummy, s, arglist);
 	Log(Dummy);
 	va_end(arglist); 
-}
-// - ------------------------------------------------------------------------------------------ - //
-SQInteger SeaFunction(HSQUIRRELVM vm) {
-	Log("I was called. I am C code.");
-	return 0;
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -119,27 +112,30 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;
-
+	
+	SQUserPointer uMatrix = 0;
+	
 	int NumArgs = sq_gettop(vm);
 //	Log( "%i", NumArgs );
 	if ( NumArgs > 0 ) {
-		sq_getfloat(vm,3,&Radius);
-		int Elements = sq_getsize(vm,2);
+		sq_getuserdata(vm,2,&uMatrix,NULL);
+		sq_getfloat(vm,4,&Radius);
+		int Elements = sq_getsize(vm,3);
 		if ( Elements >= 1 ) {
 			sq_pushinteger(vm,0);	// Push the desired array Index //
-			sq_get(vm,2);			// Get the value from an array found at stack pos //
+			sq_get(vm,3);			// Get the value from an array found at stack pos //
 			sq_getfloat(vm,-1,&x);
 			sq_pop(vm,1);
 		}
 		if ( Elements >= 2 ) {
 			sq_pushinteger(vm,1);	// Push the desired array Index //
-			sq_get(vm,2);			// Get the value from an array found at stack pos //
+			sq_get(vm,3);			// Get the value from an array found at stack pos //
 			sq_getfloat(vm,-1,&y);
 			sq_pop(vm,1);
 		}
 		if ( Elements >= 3 ) {
 			sq_pushinteger(vm,2);	// Push the desired array Index //
-			sq_get(vm,2);			// Get the value from an array found at stack pos //
+			sq_get(vm,3);			// Get the value from an array found at stack pos //
 			sq_getfloat(vm,-1,&z);
 			sq_pop(vm,1);
 		}
@@ -149,7 +145,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	Vector3D Verts[ VertCount ];
 	generate_Vertex3D_Circle( Verts, Vector3D(x,y,z), Real(Radius) );
 
-	Render::Flat( GEL_LINE_LOOP, Matrixer, GEL_RGBA(128,255,128,255), Verts, VertCount );
+	Render::Flat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), GEL_RGBA(128,255,128,255), Verts, VertCount );
 
 	return 0;	
 }
@@ -174,6 +170,22 @@ void CallSqFunction( HSQUIRRELVM vm, const char* fname ) {
 	// Push Other Arguments Here //
 	
 	sq_call(vm,1,SQFalse,SQFalse);	// VM, Arg Count (including this), Push RetVal on Stack, On Error Call Handlers //
+	
+	sq_pop(vm,2);					// Root Table and Function //
+}
+// - ------------------------------------------------------------------------------------------ - //
+void CallSqMatrixFunction( HSQUIRRELVM vm, const char* fname, const Matrix4x4& Matrix ) {
+	sq_pushroottable(vm);
+	
+	sq_pushstring(vm,fname,-1);
+	sq_get(vm,-2);
+	sq_pushroottable(vm);			// this //
+	// Push Other Arguments Here //
+	SQUserPointer uPtr = sq_newuserdata(vm,sizeof(Matrix));
+	Matrix4x4* mPtr = (Matrix4x4*)uPtr;
+	(*mPtr) = Matrix;
+	
+	sq_call(vm,2,SQFalse,SQFalse);	// VM, Arg Count (including this), Push RetVal on Stack, On Error Call Handlers //
 	
 	sq_pop(vm,2);					// Root Table and Function //
 }
@@ -235,7 +247,6 @@ cApp::cApp() {
 
 	sq_pushroottable(vm); //push the root table(were the globals of the script will be stored)
 	
-	RegisterSqFunction( vm, SeaFunction, "SeaFunction" );
 	RegisterSqFunction( vm, qkGetPad, "qkGetPad" );
 	RegisterSqFunction( vm, qkDrawCircle, "qkDrawCircle" );
 	
@@ -300,7 +311,6 @@ void cApp::Draw( Screen::cNative& Native ) {
 	extern cFont* Font;
 	Font->printf( Vector3D(0,0,0), 32.0f, GEL_ALIGN_MIDDLE_CENTER, "I want bacon" );
 
-	Matrixer = ViewMatrix;
-	CallSqFunction( vm, "Draw" );
+	CallSqMatrixFunction( vm, "Draw", ViewMatrix );
 }
 // - ------------------------------------------------------------------------------------------ - //
