@@ -5,6 +5,7 @@
 #include <Render/Render.h>
 #include <Input/Input.h>
 #include <Generate/Vertex.h>
+#include <Graphics/Graphics_Buffer.h>	// gelClear
 
 #include "App.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -106,7 +107,11 @@ SQInteger qkGetPad(HSQUIRRELVM vm) {
 	return 1;
 }
 // - ------------------------------------------------------------------------------------------ - //
-
+SQInteger qkClear(HSQUIRRELVM vm) {
+	gelClear( true, true );
+	return 0;
+}
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	float Radius = 10.0f;
 	float x = 0.0f;
@@ -251,6 +256,7 @@ cApp::cApp() {
 	sq_pushroottable(vm); //push the root table(were the globals of the script will be stored)
 	
 	RegisterSqFunction( vm, qkGetPad, "qkGetPad" );
+	RegisterSqFunction( vm, qkClear, "qkClear" );
 	RegisterSqFunction( vm, qkDrawCircle, "qkDrawCircle" );
 	
 	NutFile = new_read_DataBlock( Search::Search("main.nut") );
