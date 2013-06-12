@@ -3,6 +3,7 @@
 
 #include <Search/Search.h>
 #include <Render/Render.h>
+#include <Input/Input.h>
 
 #include "App.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -43,6 +44,73 @@ SQInteger SeaFunction(HSQUIRRELVM vm) {
 	Log("I was called. I am C code.");
 	return 0;
 }
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+void sqslot_bool(HSQUIRRELVM vm, const char* name, SQBool value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushbool(vm,value);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
+void sqslot_int(HSQUIRRELVM vm, const char* name, SQInteger value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushinteger(vm,value);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
+void sqslot_float(HSQUIRRELVM vm, const char* name, SQFloat value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushfloat(vm,value);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
+void sqslot_string(HSQUIRRELVM vm, const char* name, const char* value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushstring(vm,value,-1);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkGetPad(HSQUIRRELVM vm) {
+	int Index = 0;
+	int NumArgs = sq_gettop(vm);
+	if ( NumArgs > 0 ) {
+		sq_getinteger(vm,2,&Index);
+		if ( (Index > 3) || (Index < 0) ) {
+			sq_newtable(vm);	// Error //
+			return 1;
+		}
+	}
+	
+	// Create a new table to store the data we want to return //
+	sq_newtable(vm);
+	
+	sqslot_int(vm,"Index", Index);
+	sqslot_bool(vm,"Connected", Input::XInput::IsConnected(Index));
+	sqslot_int(vm,"Button", Input::XInput::GamePad[Index].Button);
+	sqslot_float(vm,"LTrigger", Input::XInput::GamePad[Index].LTrigger);
+	sqslot_float(vm,"RTrigger", Input::XInput::GamePad[Index].RTrigger);
+
+	// LStick //			
+	sq_pushstring(vm,"LStick",-1);
+	sq_newtable(vm);
+	sqslot_float(vm,"x", Input::XInput::GamePad[Index].LStick.x.ToFloat());
+	sqslot_float(vm,"y", Input::XInput::GamePad[Index].LStick.y.ToFloat());		
+	sq_newslot(vm,-3,SQFalse);
+
+	// RStick //			
+	sq_pushstring(vm,"RStick",-1);
+	sq_newtable(vm);
+	sqslot_float(vm,"x", Input::XInput::GamePad[Index].RStick.x.ToFloat());
+	sqslot_float(vm,"y", Input::XInput::GamePad[Index].RStick.y.ToFloat());		
+	sq_newslot(vm,-3,SQFalse);
+
+	return 1;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 void RegisterSqFunction( HSQUIRRELVM vm, SQFUNCTION fn, const char* fname ) {
 	sq_pushroottable(vm);
@@ -125,6 +193,7 @@ cApp::cApp() {
 	sq_pushroottable(vm); //push the root table(were the globals of the script will be stored)
 	
 	RegisterSqFunction( vm, SeaFunction, "SeaFunction" );
+	RegisterSqFunction( vm, qkGetPad, "qkGetPad" );
 	
 	NutFile = new_read_DataBlock( Search::Search("main.nut") );
 		
