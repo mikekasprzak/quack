@@ -115,11 +115,14 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	
 	SQUserPointer uMatrix = 0;
 	
+	GelColor Color = GEL_RGBA(255,255,255,255);
+	
 	int NumArgs = sq_gettop(vm);
 //	Log( "%i", NumArgs );
 	if ( NumArgs > 0 ) {
 		sq_getuserdata(vm,2,&uMatrix,NULL);
 		sq_getfloat(vm,4,&Radius);
+		sq_getinteger(vm,5,&Color);
 		int Elements = sq_getsize(vm,3);
 		if ( Elements >= 1 ) {
 			sq_pushinteger(vm,0);	// Push the desired array Index //
@@ -145,7 +148,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	Vector3D Verts[ VertCount ];
 	generate_Vertex3D_Circle( Verts, Vector3D(x,y,z), Real(Radius) );
 
-	Render::Flat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), GEL_RGBA(128,255,128,255), Verts, VertCount );
+	Render::Flat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), Color, Verts, VertCount );
 
 	return 0;	
 }
