@@ -4,6 +4,7 @@
 #include <Search/Search.h>
 #include <Render/Render.h>
 #include <Input/Input.h>
+#include <Generate/Vertex.h>
 
 #include "App.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -17,6 +18,8 @@ using namespace Render;
 //TextureHandle Texas;
 extern cFont* Font;
 cFont* Font;
+
+Matrix4x4 Matrixer;
 
 DataBlock* NutFile;
 //cRenderTarget* RT_Main;
@@ -111,6 +114,46 @@ SQInteger qkGetPad(HSQUIRRELVM vm) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+SQInteger qkDrawCircle(HSQUIRRELVM vm) {
+	float Radius = 10.0f;
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+
+	int NumArgs = sq_gettop(vm);
+//	Log( "%i", NumArgs );
+	if ( NumArgs > 0 ) {
+		sq_getfloat(vm,3,&Radius);
+		int Elements = sq_getsize(vm,2);
+		if ( Elements >= 1 ) {
+			sq_pushinteger(vm,0);	// Push the desired array Index //
+			sq_get(vm,2);			// Get the value from an array found at stack pos //
+			sq_getfloat(vm,-1,&x);
+			sq_pop(vm,1);
+		}
+		if ( Elements >= 2 ) {
+			sq_pushinteger(vm,1);	// Push the desired array Index //
+			sq_get(vm,2);			// Get the value from an array found at stack pos //
+			sq_getfloat(vm,-1,&y);
+			sq_pop(vm,1);
+		}
+		if ( Elements >= 3 ) {
+			sq_pushinteger(vm,2);	// Push the desired array Index //
+			sq_get(vm,2);			// Get the value from an array found at stack pos //
+			sq_getfloat(vm,-1,&z);
+			sq_pop(vm,1);
+		}
+	}	
+	
+	const st32 VertCount = size_Vertex3D_Circle();
+	Vector3D Verts[ VertCount ];
+	generate_Vertex3D_Circle( Verts, Vector3D(x,y,z), Real(Radius) );
+
+	Render::Flat( GEL_LINE_LOOP, Matrixer, GEL_RGBA(128,255,128,255), Verts, VertCount );
+
+	return 0;	
+}
+
 // - ------------------------------------------------------------------------------------------ - //
 void RegisterSqFunction( HSQUIRRELVM vm, SQFUNCTION fn, const char* fname ) {
 	sq_pushroottable(vm);
@@ -194,6 +237,7 @@ cApp::cApp() {
 	
 	RegisterSqFunction( vm, SeaFunction, "SeaFunction" );
 	RegisterSqFunction( vm, qkGetPad, "qkGetPad" );
+	RegisterSqFunction( vm, qkDrawCircle, "qkDrawCircle" );
 	
 	NutFile = new_read_DataBlock( Search::Search("main.nut") );
 		
@@ -256,6 +300,7 @@ void cApp::Draw( Screen::cNative& Native ) {
 	extern cFont* Font;
 	Font->printf( Vector3D(0,0,0), 32.0f, GEL_ALIGN_MIDDLE_CENTER, "I want bacon" );
 
+	Matrixer = ViewMatrix;
 	CallSqFunction( vm, "Draw" );
 }
 // - ------------------------------------------------------------------------------------------ - //
