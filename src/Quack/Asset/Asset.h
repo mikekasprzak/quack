@@ -7,6 +7,13 @@
 enum eAssetType {
 	AT_NULL = 0,
 	AT_SCRIPT,		// Squirrel .nut file //
+	AT_TEXTURE,
+	AT_SHADER,
+	AT_SOUND,
+	AT_JSON,		// Processed JSON Data //
+	AT_XML,			// Processed XML Data //
+	AT_BINARY,		// Arbitrary Data Pointer //
+	AT_TEXT,		// Zero Terminated Arbitrary Data Pointer //
 };
 // - ------------------------------------------------------------------------------------------ - //
 class cAsset {

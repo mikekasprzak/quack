@@ -37,7 +37,37 @@ void ErrorFunc(HSQUIRRELVM v, const SQChar *s, ...) {
 	vsprintf(Dummy, s, arglist);
 	Log(Dummy);
 	va_end(arglist); 
-} 
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger SeaFunction(HSQUIRRELVM vm) {
+	Log("I was called. I am C code.");
+	return 0;
+}
+// - ------------------------------------------------------------------------------------------ - //
+void RegisterSqFunction( HSQUIRRELVM vm, SQFUNCTION fn, const char* fname ) {
+	sq_pushroottable(vm);
+	
+	sq_pushstring(vm,fname,-1);
+	sq_newclosure(vm,fn,0);		// create a new function
+	sq_newslot(vm,-3,SQFalse);	// VM, Stack Pos, RetVal //
+	
+	sq_pop(vm,1);				// pops the root table
+}
+// - ------------------------------------------------------------------------------------------ - //
+void CallSqFunction( HSQUIRRELVM vm, const char* fname ) {
+	sq_pushroottable(vm);
+	
+	sq_pushstring(vm,fname,-1);
+	sq_get(vm,-2);
+	sq_pushroottable(vm);			// this //
+	// Push Other Arguments Here //
+	
+	sq_call(vm,1,SQFalse,SQFalse);	// VM, Arg Count (including this), Push RetVal on Stack, On Error Call Handlers //
+	
+	sq_pop(vm,2);					// Root Table and Function //
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 cApp::cApp() {
 	Search::AddDirectory( "project/" );
@@ -94,6 +124,8 @@ cApp::cApp() {
 
 	sq_pushroottable(vm); //push the root table(were the globals of the script will be stored)
 	
+	RegisterSqFunction( vm, SeaFunction, "SeaFunction" );
+	
 	NutFile = new_read_DataBlock( Search::Search("main.nut") );
 		
 	if( SQ_SUCCEEDED(sq_compilebuffer(vm, NutFile->Data, NutFile->Size, "main.nut", true)) ) {
@@ -130,6 +162,7 @@ cApp::~cApp() {
 // - ------------------------------------------------------------------------------------------ - //
 void cApp::Step( ) {
 //	Project->Step();
+	CallSqFunction( vm, "Step" );
 }
 // - ------------------------------------------------------------------------------------------ - //
 void cApp::Draw( Screen::cNative& Native ) {	
@@ -154,5 +187,6 @@ void cApp::Draw( Screen::cNative& Native ) {
 	extern cFont* Font;
 	Font->printf( Vector3D(0,0,0), 32.0f, GEL_ALIGN_MIDDLE_CENTER, "I want bacon" );
 
+	CallSqFunction( vm, "Draw" );
 }
 // - ------------------------------------------------------------------------------------------ - //
