@@ -123,11 +123,9 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	GelColor Color = GEL_RGBA(255,255,255,255);
 	
 	int NumArgs = sq_gettop(vm);
-//	Log( "%i", NumArgs );
-	if ( NumArgs > 0 ) {
+	if ( NumArgs >= 2 ) {
 		sq_getuserdata(vm,2,&uMatrix,NULL);
-		sq_getfloat(vm,4,&Radius);
-		sq_getinteger(vm,5,&Color);
+
 		int Elements = sq_getsize(vm,3);
 		if ( Elements >= 1 ) {
 			sq_pushinteger(vm,0);	// Push the desired array Index //
@@ -147,14 +145,24 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 			sq_getfloat(vm,-1,&z);
 			sq_pop(vm,1);
 		}
-	}	
+		
+		if ( NumArgs >= 4 ) {
+			sq_getfloat(vm,4,&Radius);
+		}
+		if ( NumArgs >= 5 ) {
+			sq_getinteger(vm,5,&Color);
+		}
 	
-	const st32 VertCount = size_Vertex3D_Circle();
-	Vector3D Verts[ VertCount ];
-	generate_Vertex3D_Circle( Verts, Vector3D(x,y,z), Real(Radius) );
-
-	Render::Flat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), Color, Verts, VertCount );
-
+		const st32 VertCount = size_Vertex3D_Circle();
+		Vector3D Verts[ VertCount ];
+		generate_Vertex3D_Circle( Verts, Vector3D(x,y,z), Real(Radius) );
+	
+		Render::Flat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), Color, Verts, VertCount );
+	}
+	else {
+		Log("! qkDrawCircle -- Not enough arguments");
+	}
+	
 	return 0;	
 }
 
