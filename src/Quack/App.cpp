@@ -280,9 +280,13 @@ cApp::cApp() {
 	}
 
 	//Log("* Nut: %s", Search::Search("main.nut") );
+	
+	CallSqFunction( vm, "Init" );
 }
 // - ------------------------------------------------------------------------------------------ - //
 cApp::~cApp() {
+	CallSqFunction( vm, "Exit" );
+
 	delete_DataBlock( NutFile );
 	
 	// Cleanup //

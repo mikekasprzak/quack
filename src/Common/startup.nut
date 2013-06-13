@@ -12,8 +12,9 @@ const QK_CT_FILL			= 3;		// Unlikely what anyone wants, but Viewport scaled to f
 // NOTE: Smiles style orientation change is probably not supported here? Wide Tall? //
 
 // ENGINES //
-const QK_ENGINE_NONE 		= 0;		// Normal linear script (manual gameloop and frameskipping) //
-const QK_ENGINE_STEPDRAW	= 1;		// Step and Draw gameloop with frameskipping //
+const QK_ENGINE_NONE 		= 0;		// Linear script. Exits once the last script is executed. No Reloading supported. //
+const QK_ENGINE_MAIN		= 1;		// Calls Main function, exits at end of it (manual gameloop and frameskipping) //
+const QK_ENGINE_STEPDRAW	= 2;		// Step and Draw gameloop with frameskipping //
 //const QK_ENGINE_PLATFORMER	= 2;	// Platformer game engine with messaging //
 
 // RUNNERS (Not devices, unless it's a one-shot) //
