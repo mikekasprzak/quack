@@ -1,0 +1,17 @@
+output
+Output
+obj
+Obj
+content
+Content
+project
+Project
+config
+Config
+src/RunnerSDLAndroid/jni/SDL
+src/RunnerSDLAndroid/bin
+src/RunnerSDLAndroid/gen
+src/RunnerSDLAndroid/libs
+src/RunnerSDLAndroid/obj
+src/RunnerSDLAndroid/local.properties
+src/RunnerSDLAndroid/project.properties
