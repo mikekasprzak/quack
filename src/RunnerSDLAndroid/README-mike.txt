@@ -16,7 +16,7 @@ NOTES:
 - libstlport_static.a has bad permissions. Right click and give yourself permission to access it.
 - all mentions of the "android" command are "android.bat".
 - $(SDL_PATH)/test/testgles.c needs $(SDL_PATH)/src/test/SDL_test_common.c
-
+- use "stlfix.sh" to fix the broken libstlport_static.a
 
 TODO:
 1. Create a shell script or makefile that generates the list of files to be compiled.
