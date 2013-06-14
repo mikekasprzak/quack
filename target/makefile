@@ -68,7 +68,17 @@ info:
 	@echo '* SKU_FILE * $(SKU_FILE)'
 	@echo '* TARGET_FILE * $(TARGET_FILE)'
 	@echo '* SYSTEM_SUFFIX * $(SYSTEM_SUFFIX)'
-	
+# - ------------------------------------------------------------------------ - #
+files:
+	@echo 'BINARY_NAME		:=	$(BINARY_NAME)'
+	@echo 'TARGET_DIR		:=	$(TARGET_DIR)'
+	@echo 'TARGET			:=	$(TARGET)'
+	@echo 'CODE_FILES		:=	$(CODE_FILES)'
+	@echo 'INCLUDES			:=	$(INCLUDES)'
+	@echo 'DEFINES			:=	$(DEFINES)'
+	@echo 'CFLAGS			:=	$(CFLAGS)'
+	@echo 'CPPFLAGS			:=	$(CPPFLAGS)'
+	@echo 'LDFLAGS			:=	$(LDFLAGS)'
 # - ------------------------------------------------------------------------ - #
 help:
 	@echo "* The Following Options can be Combined *"
