@@ -6,9 +6,9 @@ How to Build Android SDL Build:
 3. Put the latest SDL in "\jni\SDL". **WINDOWS SYMLINKS DO NOT WORK (not detected as directories)**
 4. Add the following lines to the end of your ~/.bash_profile file.
 
-PATH="/cygdrive/c/Development/AndroidSDK/tools:/cygdrive/c/Development/AndroidSDK/platform-tools:/cygdrive/c/Development/AndroidNDK:${PATH}"
 ANDROID_SDK_ROOT="/cygdrive/c/Development/AndroidSDK"
 ANDROID_NDK_ROOT="/cygdrive/c/Development/AndroidNDK"
+PATH="${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/build-tools/17.0.0:${ANDROID_NDK_ROOT}:${PATH}"
 
 5. Done'ish. Now read README-android.txt
 6. cd jni; ndk-build; cd ..; ant debug; ant installd
