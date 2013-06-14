@@ -1,7 +1,0 @@
-jni/SDL/
-bin/
-gen/
-libs/
-obj/
-local.properties
-project.properties
