@@ -11,20 +11,22 @@ PROJECT_FILE		=	$(shell cat $(__PROJECT_FILE__))
 SKU_FILE			=	$(shell cat $(__SKU_FILE__))
 SKU_ALL_FILE		=	$(shell cat $(__SKU_ALL_FILE__))
 # - ------------------------------------------------------------------------ - #
-ifdef NUMBER_OF_PROCESSORS
-NUM_PROCESSORS		:=	$(NUMBER_OF_PROCESSORS)
-else # NUMBER_OF_PROCESSORS #
+# MinGW HACK -- Blank out the Number of processors (so -j without args) #
+ifdef WINDIR
+NUM_PROCESSORS		:=	$(J)
+else # WINDIR #
+ifdef J
+NUM_PROCESSORS		:=	$(J)
+else # J #
 NUM_PROCESSORS		:=	$(shell nproc)
-endif # NUMBER_OF_PROCESSORS #
+endif # J #
+endif # WINDIR #
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
 .PHONY: default run clean cleanmain info all cache startcache
 # - ------------------------------------------------------------------------ - #
 
-# - ------------------------------------------------------------------------ - #
-# MinGW HACK -- Blank out the Number of processors (so -j without args) #
-NUM_PROCESSORS 		:=
 # - ------------------------------------------------------------------------ - #
 default:
 	$(MAKE) -f $(BUILD_MAKEFILE) -j $(NUM_PROCESSORS)
