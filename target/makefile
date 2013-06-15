@@ -3,9 +3,9 @@ ifndef WINDIR
 SYSTEM_SUFFIX		=	_$(shell uname -s)
 endif # WINDIR #
 # - ------------------------------------------------------------------------ - #
-__PROJECT_FILE__	:=	Config/.project
-__SKU_FILE__		:=	Config/.sku
-__TARGET_FILE__		:=	Config/.target$(SYSTEM_SUFFIX)
+__PROJECT_FILE__	:=	config/.project
+__SKU_FILE__		:=	config/.sku
+__TARGET_FILE__		:=	config/.target$(SYSTEM_SUFFIX)
 # - ------------------------------------------------------------------------ - #
 # NOTE: No colon here means that it will only overwrite if it did not exist. #
 PROJECT_FILE		=	$(shell cat $(__PROJECT_FILE__))

@@ -1,11 +1,11 @@
 # - ------------------------------------------------------------------------ - #
 # make other target=clean
 # - ------------------------------------------------------------------------ - #
-BUILD_MAKEFILE		:=	Target/makefile
+BUILD_MAKEFILE		:=	target/makefile
 # - ------------------------------------------------------------------------ - #
-__PROJECT_FILE__	:=	Config/.project
-__SKU_FILE__		:=	Config/.sku
-__SKU_ALL_FILE__	:=	Config/.sku_all
+__PROJECT_FILE__	:=	config/.project
+__SKU_FILE__		:=	config/.sku
+__SKU_ALL_FILE__	:=	config/.sku_all
 # - ------------------------------------------------------------------------ - #
 PROJECT_FILE		=	$(shell cat $(__PROJECT_FILE__))
 SKU_FILE			=	$(shell cat $(__SKU_FILE__))
