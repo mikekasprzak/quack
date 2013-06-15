@@ -19,8 +19,8 @@ ifdef NDEBUG
 TARGET_NAME			:=	$(TARGET_NAME)-release
 endif # NDEBUG #
 # - ------------------------------------------------------------------------ - #
-__SKU_CHECK__		:=	$(shell Tools/FileExists.sh $(__SKU_FILE__))
-__TARGET_CHECK__	:=	$(shell Tools/FileExists.sh $(__TARGET_FILE__))
+__SKU_CHECK__		:=	$(shell tools/FileExists.sh $(__SKU_FILE__))
+__TARGET_CHECK__	:=	$(shell tools/FileExists.sh $(__TARGET_FILE__))
 # - ------------------------------------------------------------------------ - #
 ifneq ($(__TARGET_CHECK__),$(__TARGET_FILE__))
 ___default:
