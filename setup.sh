@@ -3,8 +3,8 @@
 #
 # TODO: Make the SKU complain if the directory doesn't contain the project
 
-DEFAULTDIR=Target/default
-CONFIGDIR=Config
+DEFAULTDIR=target/default
+CONFIGDIR=config
 
 # Are we running Windows? #
 if [ "$WINDIR" != "" ]; then

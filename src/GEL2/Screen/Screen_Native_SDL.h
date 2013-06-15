@@ -222,7 +222,11 @@ extern bool FullScreen;
 extern cGelArray<cNative> Native;
 // - ------------------------------------------------------------------------------------------ - //
 inline void InitNative() {
-	FullScreen = false;
+	#ifdef USES_DESKTOP
+		FullScreen = false;
+	#else // USES_DESKTOP //
+		FullScreen = true;
+	#endif // USES_DESKTOP
 
 	const size_t NumVideoDisplays = SDL_GetNumVideoDisplays();
 	Native = new_GelArray<cNative>( NumVideoDisplays );
