@@ -3,7 +3,7 @@
 #
 # TODO: Make the SKU complain if the directory doesn't contain the project
 
-DEFAULTDIR=target/default
+DEFAULTDIR=target/Default
 CONFIGDIR=config
 
 # Are we running Windows? #
