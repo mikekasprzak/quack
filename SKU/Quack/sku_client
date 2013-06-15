@@ -22,8 +22,8 @@ IGNORE_LIST			+=
 # Defines specific to this file #
 DEFINES				+=	PRODUCT_QUACK PRODUCT_CLIENT \
 						USES_GEL2 USES_GEL USES_GPU \
-						HG_VERSION=$(shell tools/HGVersion.sh) \
-						HG_HASH=\"$(shell tools/HGHash.sh)\" \
+						HG_VERSION=$(shell tools/HgVersion.sh) \
+						HG_HASH=\"$(shell tools/HgHash.sh)\" \
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	-lcrypto \
