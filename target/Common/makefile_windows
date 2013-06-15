@@ -8,7 +8,13 @@ LDFLAGS				+=	-L /usr/local/lib -L /usr/local/ssl/lib -static-libgcc -static-lib
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_MINGW
 # - ------------------------------------------------------------------------ - #
-LIBRARIES			+=	-lmingw32
+LIBRARIES			+=	-lmingw32 \
+						-lIphlpapi \
+						-lPsapi \
+						-lwinmm \
+# -lIphlpapi = TCP/IP stuff
+# -lPsapi = Process Info (Memory Usage)
+# -lwinmm = timegettime() (GEL::Timer)
 # - ------------------------------------------------------------------------ - #
 # Release Build Only #
 ifdef NDEBUG
@@ -26,8 +32,8 @@ USES_MINGW			:=	true		# Compiler Suite (For completeness) #
 
 
 # - ------------------------------------------------------------------------ - #
-include Target/Common/common_libraries
+include target/Common/common_libraries
 # - ------------------------------------------------------------------------ - #
 # Finally, include the standard makefile body #
-include Target/Common/common_makefile
+include target/Common/common_makefile
 # - ------------------------------------------------------------------------ - #

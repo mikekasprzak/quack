@@ -1,1 +1,33 @@
-include Target/SDL/makefile_linux_sdlmixer
+# - ------------------------------------------------------------------------ - #
+CPUFLAGS			:=	-msse2 -mmmx -mfpmath=sse -ftree-vectorize
+# - ------------------------------------------------------------------------ - #
+# Compiler and Linker Flags (specific to this target) #
+CFLAGS				+=	-I /usr/local/include -I /usr/local/ssl/include $(CPUFLAGS)
+CPPFLAGS			+=	-I /usr/local/include -I /usr/local/ssl/include $(CPUFLAGS)
+LDFLAGS				+=	-L /usr/local/lib -L /usr/local/ssl/lib
+# - ------------------------------------------------------------------------ - #
+DEFINES				+=	USES_UNIX USES_DESKTOP USES_GCC NO_TWEAKVALUE
+# - ------------------------------------------------------------------------ - #
+LIBRARIES			+=	
+# - ------------------------------------------------------------------------ - #
+# Release Build Only #
+ifdef NDEBUG
+LDFLAGS				+=	
+endif
+# - ------------------------------------------------------------------------ - #
+# File extension for the Binary (.exe on Windows, .i686 .x86_64 on Linux) #
+BINARY_SUFFIX		:=	
+# - ------------------------------------------------------------------------ - #
+# Platform Specific Target Influencing Defines #
+USES_UNIX			:=	true		# OS #
+USES_DESKTOP		:=	true		# OS MODE #
+USES_GCC			:=	true		# Compiler Suite (For completeness) #
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+include target/Common/common_libraries
+# - ------------------------------------------------------------------------ - #
+# Finally, include the standard makefile body #
+include target/Common/common_makefile
+# - ------------------------------------------------------------------------ - #

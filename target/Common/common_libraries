@@ -26,9 +26,9 @@ OTHER_O_FILES		+=
 # - ------------------------------------------------------------------------ - #
 # The SKU file may say that the game requires OpenGL 2.0 Grade Hardware //
 ifdef USES_OPENGL2
-include Target/Common/common_opengl2
+include target/Common/common_opengl2
 else # USES_OPENGL2 #
-include Target/Common/common_opengl1
+include target/Common/common_opengl1
 endif # USES_OPENGL2 #
 # - ------------------------------------------------------------------------ - #
 # NOTE: OpenGL 3 and 4 are the same includes as OpenGL 2, just extra defines #
