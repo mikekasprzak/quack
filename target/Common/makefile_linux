@@ -16,7 +16,7 @@ LDFLAGS				+=
 endif
 # - ------------------------------------------------------------------------ - #
 # File extension for the Binary (.exe on Windows, .i686 .x86_64 on Linux) #
-BINARY_SUFFIX		:=	
+BINARY_SUFFIX		:=	.$(shell uname -p)
 # - ------------------------------------------------------------------------ - #
 # Platform Specific Target Influencing Defines #
 USES_UNIX			:=	true		# OS #

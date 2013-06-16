@@ -16,7 +16,7 @@ extern "C" {
 // NOTE: struct keyword because STUPID C library has both a function and a type called stat //
 // -------------------------------------------------------------------------- //
 //#ifdef USES_WINDOWS
-typedef struct stat stat_t;
+//typedef struct stat stat_t;
 //#else // USES_WINDOWS //
 //typedef stat stat_t;
 //#endif // USES_WINDOWS //
@@ -25,10 +25,10 @@ typedef struct stat stat_t;
 // -------------------------------------------------------------------------- //
 
 // -------------------------------------------------------------------------- //
-struct GelFileInfo {
+class GelFileInfo {
+public:
 	int Err;				// Error code returned by stat //
-	
-	stat_t Status;
+	struct stat Status;
 
 public:
 	inline GelFileInfo() :
