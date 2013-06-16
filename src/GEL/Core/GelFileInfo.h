@@ -15,11 +15,11 @@ extern "C" {
 // -------------------------------------------------------------------------- //
 // NOTE: struct keyword because STUPID C library has both a function and a type called stat //
 // -------------------------------------------------------------------------- //
-#ifdef USES_WINDOWS
+//#ifdef USES_WINDOWS
 typedef struct stat stat_t;
-#else // USES_WINDOWS //
-typedef stat stat_t;
-#endif // USES_WINDOWS //
+//#else // USES_WINDOWS //
+//typedef stat stat_t;
+//#endif // USES_WINDOWS //
 // -------------------------------------------------------------------------- //
 }; // extern "C" //
 // -------------------------------------------------------------------------- //
