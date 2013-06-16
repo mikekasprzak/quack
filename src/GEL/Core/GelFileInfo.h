@@ -14,7 +14,7 @@
 class GelFileInfo {
 public:
 	int Err;				// Error code returned by stat //
-	struct stat Status;
+	struct _stat Status;
 
 public:
 	inline GelFileInfo() :
@@ -24,7 +24,7 @@ public:
 	}
 	
 	inline GelFileInfo( const char* InFile ) {
-		Err = stat( InFile, &Status );
+		Err = _stat( InFile, &Status );
 	}
 
 public:
