@@ -24,6 +24,34 @@ USES_DESKTOP		:=	true		# OS MODE #
 USES_GCC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
 
+# - ------------------------------------------------------------------------ - #
+# Graphical Applications on Windows use SDL2 and OpenGL. This decides which GL #
+# - ------------------------------------------------------------------------ - #
+ifdef USES_GRAPHICS				# Has Graphics #
+# - ------------------------------------------------------------------------ - #
+USES_SDL2			:=	true	# Uses Simple Directmedia Layer 2 API #
+USES_OPENGL			:=	true	# Uses one of the "OpenGL Family" of APIs #
+#USES_SDLMIXER		:=	true	# Use SDL's Standard Addon Audio Library #
+# - ------------------------------------------------------------------------ - #
+ifdef USES_SHADERS				# Graphics with Shaders #
+ifdef USES_BATCHING				# Graphics with Shaders and Advanced Batching #
+# - ------------------------------------------------------------------------ - #
+USES_OPENGL3		:=	true	# Use OpenGL3 with its advanced batching #
+USES_OPENGL2		:=	true	# GL3 is backwards compatible, so GL2 is ok #
+# - ------------------------------------------------------------------------ - #
+else  # !USES_BATCHING #
+# - ------------------------------------------------------------------------ - #
+USES_OPENGL2		:=	true	# Use OpenGL2 with its standard batching (VBO) #
+# - ------------------------------------------------------------------------ - #
+endif # USES_BATCHING #
+else  # !USES_SHADERS #
+# - ------------------------------------------------------------------------ - #
+USES_OPENGL1		:=	true	# Use OpenGL1 (GL without shaders) #
+# - ------------------------------------------------------------------------ - #
+endif # USES_SHADERS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_GRAPHICS #
+# - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
 include target/Common/common_libraries
