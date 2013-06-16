@@ -21,9 +21,7 @@ IGNORE_LIST			+=
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
 DEFINES				+=	PRODUCT_QUACK PRODUCT_CLIENT \
-						USES_GEL2 USES_GEL USES_GPU \
-						HG_VERSION=$(shell tools/HgVersion.sh) \
-						HG_HASH=\"$(shell tools/HgHash.sh)\" \
+						USES_GEL2 USES_GEL
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	-lcrypto \
@@ -33,22 +31,13 @@ LIBRARIES			+=	-lcrypto \
 # Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
 COPY_FILES			+=	
 # - ------------------------------------------------------------------------ - #
-#ifdef USES_DESKTOP			# Disabled for now #
-# - ------------------------------------------------------------------------ - #
 # Game Specific Library Requesting Defines #
-USES_SDL2			:=	true
-USES_OPENGL2		:=	true
-#USES_OPENGL3		:=	true
-#USES_SDLMIXER		:=	true
-# TODO: Consoles will need a NON SDL, GL, CURL, ENET way of building. 
-#   The Solution may be to extract USES_DESKTOP from makefile_windows, and make
-#   it in to some sort of Target Specific feature. I.e. Windows is a Desktop OS,
-#   The PS3 is a Console OS, and iOS is a Mobile OS. Console and Mobile might
-#   be considered the same (Ouya). XINPUT/SIXENSE/HIDAPI are DESKTOP protected.
+USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
+USES_SHADERS		:=	true	# Uses vertex or fragement shaders (GL2) #
+#USES_BATCHING		:=	true	# Uses advanced batching features (GL3, D3D11) #
 # - ------------------------------------------------------------------------ - #
-#endif # USES_DESKTOP #		# Disabled for now #
+USES_HG				:=	true	# Uses Mercurial Version Control #
 # - ------------------------------------------------------------------------ - #
-# Game Specific Library Requesting Defines #
 USES_STB_IMAGE		:=	true
 USES_CURL			:=	true
 #USES_ENET			:=	true
@@ -60,9 +49,9 @@ USES_SQUIRREL		:=	true
 ifdef WINDIR 		# Can't use USES_WINDOWS because not defined yet #
 # - ------------------------------------------------------------------------ - #
 # Game Specific Platform Specific Library Requesting Defines #
-USES_XINPUT			:=	true
-#USES_SIXENSE		:=	true
-#USES_HIDAPI		:=	true
+USES_XINPUT			:=	true	# XBOX 360 Controllers #
+#USES_SIXENSE		:=	true	# Razer Hydra Motion Controller #
+#USES_HIDAPI		:=	true	# HID devices including SpaceNavigator #
 # - ------------------------------------------------------------------------ - #
 endif # WINDIR #
 # - ------------------------------------------------------------------------ - #
