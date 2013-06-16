@@ -12,7 +12,7 @@ TARGET				:=	$(TARGET_DIR)/$(BINARY_NAME)$(BINARY_SUFFIX)
 # Compiler and Linker Flags (NOTE: Optimizations are in common_tools) #
 CFLAGS				+=	-fno-strict-aliasing
 # - ------------------------------------------------------------------------ - #
-CPPFLAGS			+=	--std=gnu++0x -fno-rtti -fno-strict-aliasing	\
+CPPFLAGS			+=	-fno-rtti -fno-strict-aliasing	\
 						-Wshadow -Wlogical-op \
 						-Wmissing-braces -Wmissing-include-dirs \
 						-Wall -Wno-unknown-pragmas -Wno-unused-parameter \
