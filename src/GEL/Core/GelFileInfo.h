@@ -9,11 +9,21 @@
 
 #include <Core/Data.h>
 // -------------------------------------------------------------------------- //
+
+// -------------------------------------------------------------------------- //
+extern "C" {
+// -------------------------------------------------------------------------- //
+// NOTE: struct keyword because STUPID C library has both a function and a type called stat //
+typedef struct stat stat_t;
+// -------------------------------------------------------------------------- //
+}; // extern "C" //
+// -------------------------------------------------------------------------- //
+
+// -------------------------------------------------------------------------- //
 struct GelFileInfo {
 	int Err;				// Error code returned by stat //
 	
-	// NOTE: struct keyword because STUPID C library has both a function and a type called stat //
-	struct stat Status;
+	stat_t Status;
 
 public:
 	inline GelFileInfo() :
