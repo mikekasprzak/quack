@@ -111,7 +111,8 @@ inline const bool haschanged_GelDirectory( const GelDirectory* p, const size_t I
 	GelFileInfo FileStatus( CurrentFile );
 	
 	// Compare the modified time //
-	return FileStatus.Status.st_mtime != info_GelDirectory(p,Index).Status.st_mtime;
+	return FileStatus.HasChanged( info_GelDirectory(p,Index) );
+//	return FileStatus.Status.st_mtime != info_GelDirectory(p,Index).Status.st_mtime;
 }
 // - ------------------------------------------------------------------------------------------ - //
 

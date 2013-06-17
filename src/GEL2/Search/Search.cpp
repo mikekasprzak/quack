@@ -37,7 +37,7 @@ public:
 //		DataBlock* Data;
 //	};
 public:
-	inline cAssetInfo() {	
+	inline cAssetInfo() {
 	}
 	
 	inline cAssetInfo( const char* _FileName ) :
@@ -84,6 +84,8 @@ void AddDirectory( const char* Directory ) {
 		ReadDir += Directory;
 	}
 	//ReadDir += String::Slash;
+	
+	//Log("* Add Directory %s", ReadDir.c_str() );
 	
 	{
 		// TODO: Make this a less dumb structure (i.e. calling Test) //

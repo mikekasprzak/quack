@@ -4,48 +4,50 @@
 #ifndef __GEL_Core_GelFileInfo_H__
 #define __GEL_Core_GelFileInfo_H__
 // -------------------------------------------------------------------------- //
-#include <sys/types.h>
-#include <sys/stat.h>
-
-#include <Core/Data.h>
-// -------------------------------------------------------------------------- //
-
+#include <Style/Style.h>
+#include "GelFileInfo_stat.h"
 // -------------------------------------------------------------------------- //
 class GelFileInfo {
-public:
-	int Err;				// Error code returned by stat //
-	struct stat Status;
-
+	_GelFileInfo* Info;
 public:
 	inline GelFileInfo() :
-		Err( -1 )
+		Info( new_GelFileInfo(0) )
 	{
-		//Clear();
+		//clear_GelFileInfo(Info);
+		Log( "+ (Z) 0x%x (%i)", Info, getErr_GelFileInfo(Info) );
 	}
 	
-	inline GelFileInfo( const char* InFile ) {
-		Err = stat( InFile, &Status );
+	inline GelFileInfo( const char* InFile ) :
+		Info( new_GelFileInfo( InFile ) )
+	{
+		Log( "+ (!) 0x%x (%i)", Info, getErr_GelFileInfo(Info) );
+	}
+	
+	inline ~GelFileInfo() {
+		Log( "- [K] 0x%x (%i)", Info, getErr_GelFileInfo(Info) );
+		if ( Info )
+			delete_GelFileInfo( Info );
 	}
 
 public:
 	inline const bool Exists() const {
-		return Err == 0;// Status.st_mode != 0;
+		return exists_GelFileInfo(Info);
 	}
 	
 	inline const bool IsDirectory() const {
-		return S_ISDIR( Status.st_mode ) != 0;
+		return isDirectory_GelFileInfo(Info) != 0;
 	}
 	inline const bool IsFile() const {
-		return S_ISREG( Status.st_mode ) != 0;
+		return isFile_GelFileInfo(Info) != 0;
 	}
 	
 	inline const bool HasChanged( const GelFileInfo& Vs ) const {
-		return Status.st_mtime != Vs.Status.st_mtime;	
+		return hasChanged_GelFileInfo( Info, Vs.Info );
 	}
 	
-	inline void Clear() {
-		set_Data( 0, this, sizeof( GelFileInfo ) );
-	}
+//	inline void Clear() {
+//		set_Data( 0, this, sizeof( GelFileInfo ) );
+//	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_Core_GelFileInfo_H__ //
