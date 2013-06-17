@@ -4,7 +4,7 @@
 #ifndef __GEL_UTIL_GELERROR_H__
 #define __GEL_UTIL_GELERROR_H__
 // - ------------------------------------------------------------------------------------------ - //
-typedef int GelError;	// An Error Code //
+typedef size_t GelError;	// An Error Code //
 
 enum {
 	GEL_OK = 0,
