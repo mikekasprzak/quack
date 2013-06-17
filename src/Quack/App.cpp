@@ -155,7 +155,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 			sq_getfloat(vm,4,&Radius);
 		}
 		if ( NumArgs >= 5 ) {
-			sq_getinteger(vm,5,&Color);
+			sq_getinteger(vm,5,(SQInteger*)&Color);
 		}
 	
 		const st32 VertCount = size_Vertex3D_Circle();

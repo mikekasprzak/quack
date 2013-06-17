@@ -29,6 +29,7 @@ BINARY_SUFFIX		:=	.exe
 USES_WINDOWS		:=	true	# OS #
 USES_DESKTOP		:=	true	# OS MODE #
 USES_MINGW			:=	true	# Compiler Suite (For completeness) #
+USES_WARNINGS		:=	true	# Use Extra Compiler Warnings #
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
