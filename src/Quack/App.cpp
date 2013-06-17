@@ -72,6 +72,7 @@ void sqslot_string(HSQUIRRELVM vm, const char* name, const char* value ) {
 
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkGetPad(HSQUIRRELVM vm) {
+#ifdef USES_WINDOWS
 	int Index = 0;
 	int NumArgs = sq_gettop(vm);
 	if ( NumArgs > 0 ) {
@@ -106,6 +107,9 @@ SQInteger qkGetPad(HSQUIRRELVM vm) {
 	sq_newslot(vm,-3,SQFalse);
 
 	return 1;
+#else
+	return 0;
+#endif
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkClear(HSQUIRRELVM vm) {
