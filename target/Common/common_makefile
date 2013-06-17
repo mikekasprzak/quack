@@ -15,12 +15,14 @@ CFLAGS				+=	-fno-strict-aliasing
 CPPFLAGS			+=	--std=gnu++0x -fno-rtti -fno-strict-aliasing
 # - ------------------------------------------------------------------------ - #
 ifdef USES_WARNINGS
+# - ------------------------------------------------------------------------ - #
 CPPFLAGS			+=	-Wshadow -Wlogical-op \
 						-Wmissing-braces -Wmissing-include-dirs \
 						-Wall -Wno-unknown-pragmas -Wno-unused-parameter \
 						-Wextra -Wno-ignored-qualifiers \
 #						-Winline -Wundef -Wcast-qual -Wconversion -Wpadded \
 #						-Wdouble-promotion -Wfloat-equal \
+# - ------------------------------------------------------------------------ - #
 endif # USES_WARNINGS #
 # - ------------------------------------------------------------------------ - #
 LDFLAGS				+=	
