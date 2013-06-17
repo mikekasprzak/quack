@@ -23,7 +23,7 @@ const char* GetComputerName() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 const char** GetEnv() {
-	return environ;
+	return (const char**)environ;
 }
 // - ------------------------------------------------------------------------------------------ - //
 const char* GetEnv( const char* Var ) {
