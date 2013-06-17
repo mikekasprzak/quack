@@ -266,7 +266,7 @@ void LogMemoryUsage() {
 		MemoryState[0] = '+';
 	else if ( Memory < OldMemory )
 		MemoryState[0] = '-';
-	Log( "** Mem[%s]: %i [%ik -- %iM] -- %s", MemoryState, Memory, Memory / 1024, Memory / 1024 / 1000, System::GetClockShortString() );
+//	Log( "** Mem[%s]: %i [%ik -- %iM] -- %s", MemoryState, Memory, Memory / 1024, Memory / 1024 / 1000, System::GetClockShortString() );
 	OldMemory = Memory;
 }
 
