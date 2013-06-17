@@ -34,6 +34,14 @@ TIMEVALUE SubtractTime( TIMEVALUE a, TIMEVALUE b ) {
 	return tv;
 }
 // -------------------------------------------------------------------------- //
+TIMEVALUE MultiplyTime( TIMEVALUE a, const int b ) {
+	TIMEVALUE tv;
+	tv.tv_usec = a.tv_usec * b;
+	tv.tv_sec = a.tv_sec * b + (tv.tv_usec / 1000000);
+	tv.tv_usec %= 1000000;
+	return tv;
+}
+// -------------------------------------------------------------------------- //
 
 // -------------------------------------------------------------------------- //
 int GetFrames( TIMEVALUE* tv ) {
@@ -46,7 +54,7 @@ void AddFrame( TIMEVALUE* tv ) {
 }
 // -------------------------------------------------------------------------- //
 void AddFrames( TIMEVALUE* tv, const int Count ) {
-	*tv = AddTime( *tv, OneFrameConstant * Count );
+	*tv = AddTime( *tv, MultiplyTime(OneFrameConstant, Count) );
 }
 // -------------------------------------------------------------------------- //
 void SetFramesPerSecond( const int Ticks ) {
