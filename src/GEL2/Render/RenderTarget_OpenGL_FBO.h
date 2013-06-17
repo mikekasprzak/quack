@@ -229,7 +229,7 @@ public:
 		
 	inline static void UnBind( ) {
 		_UnBind();
-		Screen::Native[0].UpdateViewport();		// Reset glViewport to the whole Native Screen //
+		Gel::Screen::Native[0].UpdateViewport();		// Reset glViewport to the whole Native Screen //
 	}
 	
 	inline void BindAsTexture( const st32 Index = 0, const st32 TextureUnit = 0 ) const {

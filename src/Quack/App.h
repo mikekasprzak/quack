@@ -23,7 +23,7 @@ public: // Main ----------------------------------------------------------------
 	~cApp();
 
 	void Step();
-	void Draw( Screen::cNative& Native );
+	void Draw( Gel::Screen::cNative& Native );
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __PLAYMORE_APP_H__ //
