@@ -10,6 +10,7 @@ struct _GelFileInfo;
 
 _GelFileInfo* new_GelFileInfo( const char* InFile );
 void delete_GelFileInfo( _GelFileInfo* Me );
+_GelFileInfo* copy_GelFileInfo( _GelFileInfo* Vs );
 
 const int exists_GelFileInfo( _GelFileInfo* Me );
 const int isDirectory_GelFileInfo( _GelFileInfo* Me );

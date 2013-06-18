@@ -35,6 +35,14 @@ void delete_GelFileInfo( struct _GelFileInfo* Me ) {
 //	free( Me );
 }
 // -------------------------------------------------------------------------- //
+struct _GelFileInfo* copy_GelFileInfo( struct _GelFileInfo* Vs ) {
+	struct _GelFileInfo* Ret = alloc_GelFileInfo( _GelFileInfo_Size );
+	
+	memcpy( Ret, Vs, _GelFileInfo_Size );
+	
+	return Ret;
+}
+// -------------------------------------------------------------------------- //
 
 // -------------------------------------------------------------------------- //
 const int exists_GelFileInfo( struct _GelFileInfo* Me ) {

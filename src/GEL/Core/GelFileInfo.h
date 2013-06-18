@@ -23,10 +23,30 @@ public:
 		Log( "+ (!) 0x%x (%i)", Info, getErr_GelFileInfo(Info) );
 	}
 	
-	inline ~GelFileInfo() {
+	inline void _Delete() {
 		Log( "- [K] 0x%x (%i)", Info, getErr_GelFileInfo(Info) );
-		if ( Info )
-			delete_GelFileInfo( Info );
+		if ( Info ) {
+			delete_GelFileInfo( Info );	
+			Info = 0;
+		}
+	}
+	
+	inline ~GelFileInfo() {
+		_Delete();
+	}
+	
+	inline GelFileInfo( const GelFileInfo& In ) :
+		Info( copy_GelFileInfo( In.Info ) )
+	{
+		Log( "* [c] 0x%x (%i)", Info, getErr_GelFileInfo(Info) );
+	}
+
+	inline const GelFileInfo& operator = ( const GelFileInfo& In ) {
+		Log( "* [=] 0x%x (%i)", Info, getErr_GelFileInfo(Info) );
+		_Delete();
+		
+		Info = copy_GelFileInfo( In.Info );
+		return *this;
 	}
 
 public:
