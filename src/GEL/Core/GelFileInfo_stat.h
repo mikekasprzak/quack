@@ -6,7 +6,7 @@
 // -------------------------------------------------------------------------- //
 extern "C" {
 // -------------------------------------------------------------------------- //
-struct _GelFileInfo;	
+struct _GelFileInfo;
 
 _GelFileInfo* new_GelFileInfo( const char* InFile );
 void delete_GelFileInfo( _GelFileInfo* Me );

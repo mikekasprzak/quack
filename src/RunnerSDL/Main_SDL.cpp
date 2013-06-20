@@ -272,6 +272,7 @@ void LogMemoryUsage() {
 
 // - ------------------------------------------------------------------------------------------ - //
 #include <signal.h>
+#include <Core/GelFileInfo_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
 void term_func( int Signal ) {
 	Log( "\nSIGTERM (Terminate) recieved -- %i", Signal );
@@ -301,7 +302,15 @@ int main( int argc, char* argv[] ) {
 	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
 	Log( "Hg Revision: %i:%s", HG_VERSION, HG_HASH );
 	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
-	
+
+	{
+		GelFileInfo_Core Finf;
+		stat_GelFileInfo_Core( &Finf, "Output" );
+		Log("> Output %x", Finf.Flags );
+		stat_GelFileInfo_Core( &Finf, "makefile" );
+		Log("> makefile %x", Finf.Flags );
+	}
+		
 	ReportCompilerVersion();
 	#ifdef USES_MINGW
 	Log( "Using DrMinGW: %s", (InitDrMinGW() ? "No" : "Yes") );
