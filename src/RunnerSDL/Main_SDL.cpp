@@ -299,10 +299,6 @@ int main( int argc, char* argv[] ) {
 	Log( "GEL (C) Copyright 2008-2013 Mike Kasprzak and Sykhronics Entertainment" );
 	Log( "" );
 	
-	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
-	Log( "Hg Revision: %i:%s", HG_VERSION, HG_HASH );
-	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
-
 	{
 		GelFileInfo_Core Finf;
 		stat_GelFileInfo_Core( &Finf, "Output" );
@@ -310,6 +306,11 @@ int main( int argc, char* argv[] ) {
 		stat_GelFileInfo_Core( &Finf, "makefile" );
 		Log("> makefile %x", Finf.Flags );
 	}
+
+	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
+	Log( "Hg Revision: %i:%s", HG_VERSION, HG_HASH );
+	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
+
 		
 	ReportCompilerVersion();
 	#ifdef USES_MINGW
