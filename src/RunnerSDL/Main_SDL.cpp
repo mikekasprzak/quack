@@ -301,8 +301,10 @@ int main( int argc, char* argv[] ) {
 	
 	{
 		GelFileInfo_Core Finf;
-		stat_GelFileInfo_Core( &Finf, "Output" );
-		Log("> Output %x", Finf.Flags );
+		stat_GelFileInfo_Core( &Finf, "shugar" );
+		Log("> shugar %x", Finf.Flags );
+		stat_GelFileInfo_Core( &Finf, "output" );
+		Log("> output %x", Finf.Flags );
 		stat_GelFileInfo_Core( &Finf, "makefile" );
 		Log("> makefile %x", Finf.Flags );
 	}
