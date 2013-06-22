@@ -30,7 +30,7 @@ endif # WINDIR #
 # - ------------------------------------------------------------------------ - #
 default:
 	$(MAKE) -f $(BUILD_MAKEFILE) -j $(NUM_PROCESSORS)
-run clean cleanmain info files upload package install cache startcache:
+run debug gdebug clean cleanmain info files upload package install cache startcache:
 	$(MAKE) -f $(BUILD_MAKEFILE) -j $(NUM_PROCESSORS) $@
 # - ------------------------------------------------------------------------ - #
 
