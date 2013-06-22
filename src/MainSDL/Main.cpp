@@ -49,7 +49,7 @@ int main( int argc, char* argv[] ) {
 //	}
 
 	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
-	Log( "Hg Revision: %i:%s", HG_VERSION, HG_HASH );
+	Log( "Hg Revision: %i [%s]", HG_VERSION, HG_HASH );
 	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
 
 		
