@@ -311,8 +311,8 @@ int main( int argc, char* argv[] ) {
 
 	#define STRINGIFY(x) #x
 	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
-	Log( "Hg Revision: %i", HG_VERSION );
-	Log( "Hg Revision: %i:%s", HG_VERSION, STRINGIFY(HG_HASH) );
+//	Log( "Hg Revision: %i", HG_VERSION );
+//	Log( "Hg Revision: %i:%s", HG_VERSION, STRINGIFY(HG_HASH) );
 	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
 
 		
