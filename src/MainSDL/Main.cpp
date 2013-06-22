@@ -27,7 +27,6 @@ void int_func( int Signal ) {
 // - ------------------------------------------------------------------------------------------ - //
 int main( int argc, char* argv[] ) {
 	LogInit();
-//	LogMemoryUsage();
 	
 	signal( SIGTERM, term_func );
 	signal( SIGINT, int_func );
@@ -38,6 +37,10 @@ int main( int argc, char* argv[] ) {
 	Log( "GEL (C) Copyright 2008-2014 Mike Kasprzak and Sykhronics Entertainment" );
 	Log( "" );
 	
+	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
+	Log( "Hg Revision: %i [%s]", HG_VERSION, HG_HASH );
+	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
+
 //	{
 //		GelFileInfo_Core Finf;
 //		stat_GelFileInfo_Core( &Finf, "shugar" );
@@ -47,10 +50,6 @@ int main( int argc, char* argv[] ) {
 //		stat_GelFileInfo_Core( &Finf, "makefile" );
 //		Log("> makefile %x", Finf.Flags );
 //	}
-
-	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
-	Log( "Hg Revision: %i [%s]", HG_VERSION, HG_HASH );
-	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
 
 		
 //	ReportCompilerVersion();

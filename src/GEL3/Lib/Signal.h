@@ -4,10 +4,10 @@
 // Does not do: Slot Ordering, Arguments, Chaining Arguments/Returns, Blocking, Scoped Connections
 // Reference: http://www.boost.org/doc/libs/1_52_0/doc/html/signals/tutorial.html
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_UTIL_SIGNAL_H__
-#define __GEL_UTIL_SIGNAL_H__
+#ifndef __GEL_LIB_SIGNAL_H__
+#define __GEL_LIB_SIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <Core/GelArray_Core.h>
+#include <Lib/GelArray_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
 class Signal {
 public:
@@ -48,5 +48,5 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_UTIL_SIGNAL_H__ //
+#endif // __GEL_LIB_SIGNAL_H__ //
 // - ------------------------------------------------------------------------------------------ - //

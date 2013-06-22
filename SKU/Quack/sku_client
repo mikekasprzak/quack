@@ -38,6 +38,8 @@ COPY_FILES			+=
 # - ------------------------------------------------------------------------ - #
 # Game Specific Library Requesting Defines #
 USES_SDL2			:=	true
+USES_GEL3			:=	true
+
 #USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
 #USES_SHADERS		:=	true	# Uses vertex or fragement shaders (GL2) #
 #USES_BATCHING		:=	true	# Uses advanced batching features (GL3, D3D11) #
@@ -48,7 +50,6 @@ USES_HG				:=	true	# Uses Mercurial Version Control #
 #USES_CURL			:=	true
 #USES_ENET			:=	true
 USES_CJSON			:=	true
-USES_TINYTHREAD		:=	true
 USES_SQUIRREL		:=	true
 #USES_SPINE			:=	true
 # - ------------------------------------------------------------------------ - #

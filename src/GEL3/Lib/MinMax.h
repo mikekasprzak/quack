@@ -1,6 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL2_STYLE_MINMAX_H__
-#define __GEL2_STYLE_MINMAX_H__
+#ifndef __GEL_LIB_MINMAX_H__
+#define __GEL_LIB_MINMAX_H__
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
 inline const T Min( const T a ) {
@@ -150,5 +150,5 @@ inline const T Max( const T a, const T b, const T c, const T d, const T e, const
 	return High;
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL2_STYLE_MINMAX_H__ //
+#endif // __GEL_LIB_MINMAX_H__ //
 // - ------------------------------------------------------------------------------------------ - //
