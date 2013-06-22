@@ -74,9 +74,10 @@ const char* GetMLogData() {
 int vMEMprintf( MLogType* Dest, const char* Format, va_list VArgs ) {	
 #ifdef _MSC_VER
 	while( true ) {
+		int Diff = Dest->Size - Dest->Used;
 		int Count = vsprintf_s( 
 			&(Dest->Data[ Dest->Used ]),
-			Dest->Size - Dest->Used,
+			Diff,
 			Format, 
 			VArgs 
 			);
@@ -91,15 +92,20 @@ int vMEMprintf( MLogType* Dest, const char* Format, va_list VArgs ) {
 	};
 #else // GCC or CLANG //
 	while( true ) {
+		int Diff = Dest->Size - Dest->Used;
 		int Count = vsnprintf( 
 			&(Dest->Data[ Dest->Used ]),
-			Dest->Size - Dest->Used,
+			Diff,
 			Format, 
 			VArgs 
 			);
 		
-		if ( Count >= (Dest->Size - Dest->Used) ) { // Greater & Equal (vsnprintf) not enough room
+		if ( Count >= Diff ) { // Greater & Equal (vsnprintf) not enough room
 			Dest->Grow();
+		}
+		else if ( Count < 0 ) {
+			// Less than zero, meaning there was an error building the string //
+			return 0;//Count;
 		}
 		else {
 			Dest->Used += Count;
