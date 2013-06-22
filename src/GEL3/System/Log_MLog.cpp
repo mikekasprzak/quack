@@ -4,8 +4,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef NO_MLOGGING
 // - ------------------------------------------------------------------------------------------ - //
-#include <Lib/safe_sprintf.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -71,8 +72,9 @@ const char* GetMLogData() {
 
 // - ------------------------------------------------------------------------------------------ - //
 int vMEMprintf( MLogType* Dest, const char* Format, va_list VArgs ) {	
+#ifdef _MSC_VER
 	while( true ) {
-		int Count = safe_vsprintf( 
+		int Count = vsprintf_s( 
 			&(Dest->Data[ Dest->Used ]),
 			Dest->Size - Dest->Used,
 			Format, 
@@ -82,7 +84,21 @@ int vMEMprintf( MLogType* Dest, const char* Format, va_list VArgs ) {
 		if ( Count < 0 ) { // Less than Zero (vsprintf_s) not enough room //
 			Dest->Grow();
 		}
-		else if ( Count >= (Dest->Size - Dest->Used) ) { // Greater & Equal (vsnprintf) not enough room
+		else {
+			Dest->Used += Count;
+			return Count;
+		}
+	};
+#else // GCC or CLANG //
+	while( true ) {
+		int Count = vsnprintf( 
+			&(Dest->Data[ Dest->Used ]),
+			Dest->Size - Dest->Used,
+			Format, 
+			VArgs 
+			);
+		
+		if ( Count >= (Dest->Size - Dest->Used) ) { // Greater & Equal (vsnprintf) not enough room
 			Dest->Grow();
 		}
 		else {
@@ -90,6 +106,7 @@ int vMEMprintf( MLogType* Dest, const char* Format, va_list VArgs ) {
 			return Count;
 		}
 	};
+#endif // _MSC_VER //
 }
 // - ------------------------------------------------------------------------------------------ - //
 int MEMprintf( MLogType* Dest, const char* Format, ... ) {
