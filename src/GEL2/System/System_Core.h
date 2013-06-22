@@ -10,8 +10,8 @@ namespace System {
 extern Signal GainFocus;
 extern Signal LoseFocus;
 
-extern char BaseDir[2048];
-extern char SaveDir[2048];
+extern char BaseDir[4096];
+extern char SaveDir[4096];
 
 void Init();
 void Exit();						// NOTE: This doesn't need to be called //
