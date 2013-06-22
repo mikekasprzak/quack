@@ -6,8 +6,8 @@ namespace System {
 Signal GainFocus;
 Signal LoseFocus;
 
-char BaseDir[2048];
-char SaveDir[2048] = "";
+char BaseDir[4096] = "";
+char SaveDir[4096] = "";
 
 eGPU GPUVendor = GPU_NONE;
 // - ------------------------------------------------------------------------------------------ - //
