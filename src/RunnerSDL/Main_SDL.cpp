@@ -258,6 +258,7 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 void LogMemoryUsage() {
+	return;
 	static int OldMemory = 0;
 	int Memory = System::GetMemoryUsage();
 
@@ -309,11 +310,9 @@ int main( int argc, char* argv[] ) {
 		Log("> makefile %x", Finf.Flags );
 	}
 
-	#define STRINGIFY(x) #x
-	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
-//	Log( "Hg Revision: %i", HG_VERSION );
-//	Log( "Hg Revision: %i:%s", HG_VERSION, STRINGIFY(HG_HASH) );
-	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
+//	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
+	Log( "Hg Revision: %i:%s", HG_VERSION, HG_HASH );
+//	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
 
 		
 	ReportCompilerVersion();
@@ -331,7 +330,8 @@ int main( int argc, char* argv[] ) {
 	// **** //
 
 	LogMemoryUsage();
-	
+
+	return 0;
 	SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK );
 	SDL_GL_LoadLibrary( NULL );
 	SDL_DisableScreenSaver();

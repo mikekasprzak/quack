@@ -1,7 +1,7 @@
 #!/bin/sh
 # gdebug.sh - Debug the currently built game with gDEBugger
 
-CONFIGDIR=Config
+CONFIGDIR=config
 OUTPUTDIR=output
 
 # Are we running Windows? #
