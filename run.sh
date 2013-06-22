@@ -1,7 +1,7 @@
 #!/bin/sh
 # run.sh - Run the currently built game
 
-CONFIGDIR=Config
+CONFIGDIR=config
 OUTPUTDIR=output
 
 # Are we running Windows? #
