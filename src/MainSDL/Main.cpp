@@ -6,7 +6,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
-#include <Main/Main_HGVersion.h>
+#include <Main/Main_HgVersion.h>
 #include <Main/Main_Product.h>
 // - ------------------------------------------------------------------------------------------ - //
 
