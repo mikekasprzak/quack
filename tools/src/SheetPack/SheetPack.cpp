@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 // - ---------------------------------------------------------------------- - //
-#include <string.h> // for size_t //
+#include <External/STB/stb_image_write.h>
+#define STBI_NO_WRITE
 #include <External/STB/stb_image.h>
 // - ---------------------------------------------------------------------- - //
 #include <External/RectangleBinPack/MaxRectsBinPack.h>
@@ -14,7 +15,7 @@ using namespace std;
 #include <Lib/Lib.h>
 // - ---------------------------------------------------------------------- - //
 #define _Log(...) {printf(__VA_ARGS__);}
-#define Log(...) {printf(__VA_ARGS__);printf("\n");}
+#define Log(...) {printf(__VA_ARGS__);printf("\n");fflush(0);}
 // - ---------------------------------------------------------------------- - //
 struct Vec2 {
 	int x, y;
@@ -118,6 +119,30 @@ void ReduceRect( const Image& Img, Rect& r ) {
 	r = NewRect;	// Overwrite original //
 }
 // - ---------------------------------------------------------------------- - //
+void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) {
+	// TODO: Clip coordinates //
+	
+	for ( size_t y = 0; y < SrcRect.height; y++ ) {
+		for ( size_t x = 0; x < SrcRect.width; x++ ) {
+			size_t SX = (SrcRect.x+x);
+			size_t SY = (SrcRect.y+y);
+			size_t SrcIndex = SX + (SY*Src.width);
+
+			if ( SX >= Src.width ) Log( "Invalid Src x: %i", SX );
+			if ( SY >= Src.height ) Log( "Invalid Src y: %i", SY );
+
+			size_t DX = (DestRect.x+x);
+			size_t DY = (DestRect.y+y);
+			size_t DestIndex = DX + (DY*Dest.width);
+
+			if ( DX >= Dest.width ) Log( "Invalid Dest x: %i", DX );
+			if ( DY >= Dest.height ) Log( "Invalid Dest y: %i", DY );
+			
+			Dest.Data[DestIndex] = Src.Data[SrcIndex];
+		}
+	}	
+}
+// - ---------------------------------------------------------------------- - //
 
 // - ---------------------------------------------------------------------- - //
 int main(int argc, char* argv[]) {
@@ -127,16 +152,16 @@ int main(int argc, char* argv[]) {
 	}
 	
 	// Set Defalts // 
-	CellW = 16;
-	CellH = 16;
+	CellW = 64;
+	CellH = 64;
 	
 	// You should always use the same padding about both axis, but internally I should support seperate //
 	PadX = 2;
 	PadY = 2;
 
 	// Target Output //
-	TargetW = 64;
-	TargetH = 64;
+	TargetW = 256;
+	TargetH = 512;
 	
 	
 	// PreStep 1 - Parse Info-File for Instructions //
@@ -205,15 +230,38 @@ int main(int argc, char* argv[]) {
 	
 	// Step 4 - Sort Rectangles //
 	
-	// Step 5 - Add Rectangles to BinPack Structure //
+	// Step 5 - Add Rectangles to BinPack Structure, Recording New Positions //
 	MaxRectsBinPack Pack( TargetW, TargetH );
 	vector<Rect> NewSpriteRect;
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
 		NewSpriteRect.push_back( Pack.Insert( SpriteRect[idx].width, SpriteRect[idx].height, MaxRectsBinPack::RectBestAreaFit ) );
-		Log("%i: (%i,%i)-(%i,%i)", idx, NewSpriteRect[idx].x,NewSpriteRect[idx].y,NewSpriteRect[idx].width,NewSpriteRect[idx].height );
+		//Log("%i: (%i,%i)-(%i,%i)", idx, NewSpriteRect[idx].x,NewSpriteRect[idx].y,NewSpriteRect[idx].width,NewSpriteRect[idx].height );
+	}
+	
+	// Step 6 - Create an image to blit our new rectangles of data to //
+	Image Out;
+	Out.width = TargetW;
+	Out.height = TargetH;
+	Out.BPP = Img.BPP;
+	Out.Data = new u32[Out.width*Out.height];
+	memset( Out.Data, Out.width*Out.height*Out.BPP, 0 );
+	
+	Log("Yep");
+
+	// Step 7 - Blit data from old image to new image, at positions specified //
+	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+		Blit( Img, Out, SpriteRect[idx], NewSpriteRect[idx] );
 	}
 
+	Log("Yep");
+	
+	// Step 8 - Save Image File //
+	stbi_write_png( argv[2], Out.width, Out.height, Out.BPP, (u8*)Out.Data, 0 );
+	
+	// Step 9 - Save Offsets File //
+
 	// Free Data //
+	delete [] Out.Data;
 	stbi_image_free( Img.Data );
 	
 	return 0;

@@ -27,13 +27,16 @@ else
 fi
 fi
 
+#CFLAGS="-O3 -s"
+CFLAGS="-g"
+
 # src, GEL and gel, since some file systems don't support upper case dirs #
 INCLUDES="-I../../src -I../../src/GEL3"
 
 mkdir -p obj
-gcc -c $INCLUDES -D STBI_NO_WRITE ../../src/GEL3/External/STB/stb_image.c -O3 -o obj/stb_image.c.o -static -s
-gcc -c $INCLUDES ../../src/GEL3/External/STB/stb_image_write.c -O3 -o obj/stb_image_write.c.o -static -s
+gcc -c $INCLUDES -D STBI_NO_WRITE ../../src/GEL3/External/STB/stb_image.c "$CFLAGS" -o obj/stb_image.c.o -static
+gcc -c $INCLUDES ../../src/GEL3/External/STB/stb_image_write.c "$CFLAGS" -o obj/stb_image_write.c.o -static
 
-g++ $INCLUDES "$1"/"$1".cpp obj/*.o ../../src/External/RectangleBinPack/*.cpp -O3 -o "$EXE" -static -s
+g++ $INCLUDES "$1"/"$1".cpp obj/*.o ../../src/External/RectangleBinPack/*.cpp "$CFLAGS" -o "$EXE" -static
 
 exit $?
