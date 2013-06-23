@@ -40,11 +40,82 @@ inline u32 Alpha( const u32 Val ) {
 }
 // - ---------------------------------------------------------------------- - //
 void ReduceRect( const Image& Img, Rect& r ) {
-	// Top Row //
-	for ( size_t y = 0; y < r.height; y++ ) {
+	Rect NewRect = r;
+	bool Found = false;
+
+	// Bottom Row //
+	Found = false;
+	for ( size_t y = r.height; y--; ) {
 		for ( size_t x = 0; x < r.width; x++ ) {
+			size_t Index = (r.x+x)+((r.y+y)*Img.width);
+			if ( Alpha(Img.Data[Index]) > 0 ) {
+				Found = true;
+			}
+		}
+		if ( Found ) {
+			break;
+		}
+		else {
+			NewRect.height -= 1;
 		}
 	}
+	r = NewRect;	// Overwrite original //
+	
+	// Top Row //
+	Found = false;
+	for ( size_t y = 0; y < r.height; y++ ) {
+		for ( size_t x = 0; x < r.width; x++ ) {
+			size_t Index = (r.x+x)+((r.y+y)*Img.width);
+			if ( Alpha(Img.Data[Index]) > 0 ) {
+				Found = true;
+			}
+		}
+		if ( Found ) {
+			break;
+		}
+		else {
+			NewRect.y += 1;
+			NewRect.height -= 1;
+		}
+	}
+	r = NewRect;	// Overwrite original //
+	
+	// Right Row //
+	Found = false;
+	for ( size_t x = r.width; x--; ) {
+		for ( size_t y = 0; y < r.height; y++ ) {
+			size_t Index = (r.x+x)+((r.y+y)*Img.width);
+			if ( Alpha(Img.Data[Index]) > 0 ) {
+				Found = true;
+			}
+		}
+		if ( Found ) {
+			break;
+		}
+		else {
+			NewRect.width -= 1;
+		}
+	}
+	r = NewRect;	// Overwrite original //
+	
+	// Left Row //
+	Found = false;
+	for ( size_t x = 0; x < r.width; x++ ) {
+		for ( size_t y = 0; y < r.height; y++ ) {
+			size_t Index = (r.x+x)+((r.y+y)*Img.width);
+			if ( Alpha(Img.Data[Index]) > 0 ) {
+				Found = true;
+			}
+		}
+		if ( Found ) {
+			break;
+		}
+		else {
+			NewRect.x += 1;
+			NewRect.width -= 1;
+		}
+	}
+	r = NewRect;	// Overwrite original //
 }
 // - ---------------------------------------------------------------------- - //
 
@@ -92,7 +163,7 @@ int main(int argc, char* argv[]) {
 	int CellsX = Img.width / CellW;
 	int CellsY = Img.height / CellH;
 	
-	Log( "Image contains %i (%i*%i) Cells of size %i,%i", CellsX*CellsY, CellsX, CellsY, CellW, CellH );
+	Log( "Image contains %i (%ix%i) Cells of size %ix%i", CellsX*CellsY, CellsX, CellsY, CellW, CellH );
 		
 	// Step 1 - Slice the image (i.e. make Rectangles) //
 	vector<Vec2> SpriteBase;
@@ -117,15 +188,18 @@ int main(int argc, char* argv[]) {
 	// Step 2 - For every Rectangle, attempt to reduce it's size //
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
 		ReduceRect( Img, SpriteRect[idx] );
-	}
-	
+		//Log("%i: %i,%i %i,%i", idx, SpriteRect[idx].x,SpriteRect[idx].y,SpriteRect[idx].width,SpriteRect[idx].height );
+	}	
 
 	// Step 3 - Apply Padding to Rectangles //
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		SpriteRect[idx].x -= PadX;
-		SpriteRect[idx].y -= PadY;
-		SpriteRect[idx].width  += PadX+PadX;
-		SpriteRect[idx].height += PadY+PadY;
+		// Do padding only if the item we are padding is not zero wide and tall //
+		if ( (SpriteRect[idx].width != 0) && (SpriteRect[idx].height != 0) ) {
+			SpriteRect[idx].x -= PadX;
+			SpriteRect[idx].y -= PadY;
+			SpriteRect[idx].width  += PadX+PadX;
+			SpriteRect[idx].height += PadY+PadY;
+		}
 		// TODO: Add code elsewhere that erases the pixels in the padding region //
 	}
 	
