@@ -205,7 +205,13 @@ int main(int argc, char* argv[]) {
 	
 	// Step 4 - Sort Rectangles //
 	
-	
+	// Step 5 - Add Rectangles to BinPack Structure //
+	MaxRectsBinPack Pack( TargetW, TargetH );
+	vector<Rect> NewSpriteRect;
+	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+		NewSpriteRect.push_back( Pack.Insert( SpriteRect[idx].width, SpriteRect[idx].height, MaxRectsBinPack::RectBestAreaFit ) );
+		Log("%i: (%i,%i)-(%i,%i)", idx, NewSpriteRect[idx].x,NewSpriteRect[idx].y,NewSpriteRect[idx].width,NewSpriteRect[idx].height );
+	}
 
 	// Free Data //
 	stbi_image_free( Img.Data );
