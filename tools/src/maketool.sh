@@ -28,8 +28,12 @@ fi
 fi
 
 # src, GEL and gel, since some file systems don't support upper case dirs #
-INCLUDES="-I../../src -I../../src/GEL -I../../src/GEL2"
+INCLUDES="-I../../src -I../../src/GEL3"
 
-g++ $INCLUDES "$1"/"$1".cpp ../../src/GEL2/Style/*.cpp -O3 -o "$EXE" -static -s
+mkdir -p obj
+gcc -c $INCLUDES -D STBI_NO_WRITE ../../src/GEL3/External/STB/stb_image.c -O3 -o obj/stb_image.c.o -static -s
+gcc -c $INCLUDES ../../src/GEL3/External/STB/stb_image_write.c -O3 -o obj/stb_image_write.c.o -static -s
+
+g++ $INCLUDES "$1"/"$1".cpp obj/*.o -O3 -o "$EXE" -static -s
 
 exit $?
