@@ -36,7 +36,8 @@ struct Image {
 // - ---------------------------------------------------------------------- - //
 // Globals //
 int CellW, CellH;
-int PadX, PadY;
+int Pad;	// How Many Pixel to Pad //
+int Align;	// What Pixel Boundary to Align to (like padding for POT scaling) //
 int TargetW, TargetH;
 // - ---------------------------------------------------------------------- - //
 
@@ -127,8 +128,11 @@ void ReduceRect( const Image& Img, Rect& r ) {
 void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) {
 	// TODO: Clip coordinates //
 	
+	int WidthPadded = SrcRect.width + Pad;
+	WidthPadded += (Align - (WidthPadded % Align)) % Align;
+	
 	// Regular Mode //
-	if ( SrcRect.width == (DestRect.width-(PadX+PadX)) ) {
+	if ( WidthPadded == DestRect.width ) {
 		for ( size_t y = 0; y < SrcRect.height; y++ ) {
 			for ( size_t x = 0; x < SrcRect.width; x++ ) {
 				size_t SX = (SrcRect.x+x);
@@ -138,8 +142,8 @@ void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) 
 				if ( SX >= Src.width ) Log( "Invalid Src x: %i", SX );
 				if ( SY >= Src.height ) Log( "Invalid Src y: %i", SY );
 	
-				size_t DX = (DestRect.x+x)+PadX;
-				size_t DY = (DestRect.y+y)+PadY;
+				size_t DX = (DestRect.x+x);
+				size_t DY = (DestRect.y+y);
 				size_t DestIndex = DX + (DY*Dest.width);
 	
 				if ( DX >= Dest.width ) Log( "Invalid Dest x: %i", DX );
@@ -161,8 +165,8 @@ void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) 
 				if ( SY >= Src.height ) Log( "Invalid Src y: %i", SY );
 	
 				// The only differences are here. x+y, y+x //
-				size_t DX = (DestRect.x+y)+PadX;
-				size_t DY = (DestRect.y+x)+PadY;
+				size_t DX = (DestRect.x+y);
+				size_t DY = (DestRect.y+x);
 				size_t DestIndex = DX + (DY*Dest.width);
 	
 				if ( DX >= Dest.width ) Log( "Invalid Dest x: %i", DX );
@@ -186,9 +190,8 @@ int main(int argc, char* argv[]) {
 	CellW = 64;
 	CellH = 64;
 	
-	// You should always use the same padding about both axis, but internally I should support seperate //
-	PadX = 2;
-	PadY = 2;
+	Pad = 1;
+	Align = 16;
 
 	// Target Output //
 	TargetW = 256;
@@ -246,18 +249,6 @@ int main(int argc, char* argv[]) {
 		ReduceRect( Img, SpriteRect[idx] );
 		//Log("%i: %i,%i %i,%i", idx, SpriteRect[idx].x,SpriteRect[idx].y,SpriteRect[idx].width,SpriteRect[idx].height );
 	}	
-
-	// Step 3 - Apply Padding to Rectangles //
-//	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-//		// Do padding only if the item we are padding is not zero wide and tall //
-//		if ( (SpriteRect[idx].width != 0) && (SpriteRect[idx].height != 0) ) {
-//			SpriteRect[idx].x -= PadX;
-//			SpriteRect[idx].y -= PadY;
-//			SpriteRect[idx].width  += PadX+PadX;
-//			SpriteRect[idx].height += PadY+PadY;
-//		}
-//		// TODO: Add code elsewhere that erases the pixels in the padding region //
-//	}
 	
 	// Step 4 - Sort Rectangles //
 	
@@ -275,23 +266,13 @@ int main(int argc, char* argv[]) {
 //	BinPack Pack( TargetW, TargetH, false );
 
 	vector<Rect> NewSpriteRect;
-	Rect Dummy;
-	Dummy.x = 0;
-	Dummy.y = 0;
-	Dummy.width = 0;
-	Dummy.height = 0;
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		if ( (SpriteRect[idx].width == 0) && (SpriteRect[idx].height == 0) ) {
-			NewSpriteRect.push_back( Dummy );
-		}
-		else {
-			Rect Ret = Pack.Insert( 
-				SpriteRect[idx].width+PadX+PadX, 
-				SpriteRect[idx].height+PadY+PadY, 
-				Heuristic
-			);
-			NewSpriteRect.push_back( Ret );
-		} 
+		int PW = SpriteRect[idx].width + Pad;
+		PW += (Align - (PW % Align)) % Align;
+		int PH = SpriteRect[idx].height + Pad;
+		PH += (Align - (PH % Align)) % Align;
+		
+		NewSpriteRect.push_back( Pack.Insert( PW, PH, Heuristic	) );
 		
 		if ( (SpriteRect[idx].width != 0) && (SpriteRect[idx].height != 0) ) {
 			if ( (NewSpriteRect.back().width == 0) || (NewSpriteRect.back().height == 0) ) {
