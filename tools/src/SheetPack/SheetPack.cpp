@@ -6,8 +6,13 @@
 #define STBI_NO_WRITE
 #include <External/STB/stb_image.h>
 // - ---------------------------------------------------------------------- - //
+#include <External/RectangleBinPack/ShelfBinPack.h>
+#include <External/RectangleBinPack/GuillotineBinPack.h>
 #include <External/RectangleBinPack/MaxRectsBinPack.h>
+#include <External/RectangleBinPack/SkylineBinPack.h>
 using namespace rbp;
+// - ---------------------------------------------------------------------- - //
+
 // - ---------------------------------------------------------------------- - //
 #include <vector>
 using namespace std;
@@ -122,25 +127,51 @@ void ReduceRect( const Image& Img, Rect& r ) {
 void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) {
 	// TODO: Clip coordinates //
 	
-	for ( size_t y = 0; y < SrcRect.height; y++ ) {
-		for ( size_t x = 0; x < SrcRect.width; x++ ) {
-			size_t SX = (SrcRect.x+x);
-			size_t SY = (SrcRect.y+y);
-			size_t SrcIndex = SX + (SY*Src.width);
-
-			if ( SX >= Src.width ) Log( "Invalid Src x: %i", SX );
-			if ( SY >= Src.height ) Log( "Invalid Src y: %i", SY );
-
-			size_t DX = (DestRect.x+x);
-			size_t DY = (DestRect.y+y);
-			size_t DestIndex = DX + (DY*Dest.width);
-
-			if ( DX >= Dest.width ) Log( "Invalid Dest x: %i", DX );
-			if ( DY >= Dest.height ) Log( "Invalid Dest y: %i", DY );
-			
-			Dest.Data[DestIndex] = Src.Data[SrcIndex];
+	// Regular Mode //
+	if ( SrcRect.width == (DestRect.width-(PadX+PadX)) ) {
+		for ( size_t y = 0; y < SrcRect.height; y++ ) {
+			for ( size_t x = 0; x < SrcRect.width; x++ ) {
+				size_t SX = (SrcRect.x+x);
+				size_t SY = (SrcRect.y+y);
+				size_t SrcIndex = SX + (SY*Src.width);
+	
+				if ( SX >= Src.width ) Log( "Invalid Src x: %i", SX );
+				if ( SY >= Src.height ) Log( "Invalid Src y: %i", SY );
+	
+				size_t DX = (DestRect.x+x)+PadX;
+				size_t DY = (DestRect.y+y)+PadY;
+				size_t DestIndex = DX + (DY*Dest.width);
+	
+				if ( DX >= Dest.width ) Log( "Invalid Dest x: %i", DX );
+				if ( DY >= Dest.height ) Log( "Invalid Dest y: %i", DY );
+				
+				Dest.Data[DestIndex] = Src.Data[SrcIndex];
+			}
 		}
-	}	
+	}
+	// Flipped Mode //
+	else {
+		for ( size_t y = 0; y < SrcRect.height; y++ ) {
+			for ( size_t x = 0; x < SrcRect.width; x++ ) {
+				size_t SX = (SrcRect.x+x);
+				size_t SY = (SrcRect.y+y);
+				size_t SrcIndex = SX + (SY*Src.width);
+	
+				if ( SX >= Src.width ) Log( "Invalid Src x: %i", SX );
+				if ( SY >= Src.height ) Log( "Invalid Src y: %i", SY );
+	
+				// The only differences are here. x+y, y+x //
+				size_t DX = (DestRect.x+y)+PadX;
+				size_t DY = (DestRect.y+x)+PadY;
+				size_t DestIndex = DX + (DY*Dest.width);
+	
+				if ( DX >= Dest.width ) Log( "Invalid Dest x: %i", DX );
+				if ( DY >= Dest.height ) Log( "Invalid Dest y: %i", DY );
+				
+				Dest.Data[DestIndex] = Src.Data[SrcIndex];
+			}
+		}		
+	}
 }
 // - ---------------------------------------------------------------------- - //
 
@@ -161,7 +192,7 @@ int main(int argc, char* argv[]) {
 
 	// Target Output //
 	TargetW = 256;
-	TargetH = 512;
+	TargetH = 256;
 	
 	
 	// PreStep 1 - Parse Info-File for Instructions //
@@ -217,24 +248,56 @@ int main(int argc, char* argv[]) {
 	}	
 
 	// Step 3 - Apply Padding to Rectangles //
-	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		// Do padding only if the item we are padding is not zero wide and tall //
-		if ( (SpriteRect[idx].width != 0) && (SpriteRect[idx].height != 0) ) {
-			SpriteRect[idx].x -= PadX;
-			SpriteRect[idx].y -= PadY;
-			SpriteRect[idx].width  += PadX+PadX;
-			SpriteRect[idx].height += PadY+PadY;
-		}
-		// TODO: Add code elsewhere that erases the pixels in the padding region //
-	}
+//	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+//		// Do padding only if the item we are padding is not zero wide and tall //
+//		if ( (SpriteRect[idx].width != 0) && (SpriteRect[idx].height != 0) ) {
+//			SpriteRect[idx].x -= PadX;
+//			SpriteRect[idx].y -= PadY;
+//			SpriteRect[idx].width  += PadX+PadX;
+//			SpriteRect[idx].height += PadY+PadY;
+//		}
+//		// TODO: Add code elsewhere that erases the pixels in the padding region //
+//	}
 	
 	// Step 4 - Sort Rectangles //
 	
-	// Step 5 - Add Rectangles to BinPack Structure, Recording New Positions //
-	MaxRectsBinPack Pack( TargetW, TargetH );
+	// Step 5 - Add Rectangles to BinPack Structure, Recording New Positions //	
+	// - ---------------------------------------------------------------------- - //
+	// Algorithm Choice Happens Here //
+	// - ---------------------------------------------------------------------- - //
+	typedef MaxRectsBinPack BinPack;
+	BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestShortSideFit;
+	BinPack Pack( TargetW, TargetH );
+//	typedef GuillotineBinPack BinPack;
+//	BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestAreaFit;
+//	typedef SkylineBinPack BinPack;
+//	BinPack::LevelChoiceHeuristic Heuristic = BinPack::LevelMinWasteFit;
+//	BinPack Pack( TargetW, TargetH, false );
+
 	vector<Rect> NewSpriteRect;
+	Rect Dummy;
+	Dummy.x = 0;
+	Dummy.y = 0;
+	Dummy.width = 0;
+	Dummy.height = 0;
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		NewSpriteRect.push_back( Pack.Insert( SpriteRect[idx].width, SpriteRect[idx].height, MaxRectsBinPack::RectBestAreaFit ) );
+		if ( (SpriteRect[idx].width == 0) && (SpriteRect[idx].height == 0) ) {
+			NewSpriteRect.push_back( Dummy );
+		}
+		else {
+			Rect Ret = Pack.Insert( 
+				SpriteRect[idx].width+PadX+PadX, 
+				SpriteRect[idx].height+PadY+PadY, 
+				Heuristic
+			);
+			NewSpriteRect.push_back( Ret );
+		} 
+		
+		if ( (SpriteRect[idx].width != 0) && (SpriteRect[idx].height != 0) ) {
+			if ( (NewSpriteRect.back().width == 0) || (NewSpriteRect.back().height == 0) ) {
+				Log("Error! Unable to fit sprite on sheet!");
+			}
+		}
 		//Log("%i: (%i,%i)-(%i,%i)", idx, NewSpriteRect[idx].x,NewSpriteRect[idx].y,NewSpriteRect[idx].width,NewSpriteRect[idx].height );
 	}
 	
@@ -243,17 +306,27 @@ int main(int argc, char* argv[]) {
 	Out.width = TargetW;
 	Out.height = TargetH;
 	Out.BPP = Img.BPP;
-	Out.Data = new u32[Out.width*Out.height];
-	memset( Out.Data, Out.width*Out.height*Out.BPP, 0 );
-	
-	Log("Yep");
+	Out.Data = (u32*)new u8[Out.width*Out.height*Out.BPP];
+	memset( Out.Data, 255, Out.width*Out.height*Out.BPP );
 
 	// Step 7 - Blit data from old image to new image, at positions specified //
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
 		Blit( Img, Out, SpriteRect[idx], NewSpriteRect[idx] );
 	}
 
-	Log("Yep");
+//	// Hack: Output the exact same image to check clip borders//
+//	Image Out;
+//	Out.width = Img.width;
+//	Out.height = Img.height;
+//	Out.BPP = Img.BPP;
+//	Out.Data = (u32*)new u8[Out.width*Out.height*Out.BPP];
+//	memset( Out.Data, 255, Out.width*Out.height*Out.BPP );
+
+//	// Step 7 - Blit data from old image to new image, at positions specified //
+//	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+//		Blit( Img, Out, SpriteRect[idx], SpriteRect[idx] );
+//	}
+	
 	
 	// Step 8 - Save Image File //
 	stbi_write_png( argv[2], Out.width, Out.height, Out.BPP, (u8*)Out.Data, 0 );
