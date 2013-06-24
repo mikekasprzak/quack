@@ -1,6 +1,10 @@
 // - ---------------------------------------------------------------------- - //
+// TODO: Add a way given an input, output the same image, but with trimmed regions //
+// TODO: Add a way to process any image file, generate a draw list that omits completely empty parts //
+// - ---------------------------------------------------------------------- - //
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 // - ---------------------------------------------------------------------- - //
 #include <External/STB/stb_image_write.h>
 #define STBI_NO_WRITE
@@ -15,6 +19,7 @@ using namespace rbp;
 
 // - ---------------------------------------------------------------------- - //
 #include <vector>
+#include <algorithm>
 using namespace std;
 // - ---------------------------------------------------------------------- - //
 #include <Lib/Lib.h>
@@ -39,6 +44,7 @@ int CellW, CellH;
 int Pad;	// How Many Pixel to Pad //
 int Align;	// What Pixel Boundary to Align to (like padding for POT scaling) //
 int TargetW, TargetH;
+bool Flip;
 // - ---------------------------------------------------------------------- - //
 
 // - ---------------------------------------------------------------------- - //
@@ -179,6 +185,18 @@ void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) 
 }
 // - ---------------------------------------------------------------------- - //
 
+struct RectInfo {
+	int Index;
+	int Area;
+	int LongestAxis;
+	int Manhattan;	
+	float Magnitude;
+};
+
+bool Compare( const RectInfo& a, const RectInfo& b ) {
+	return (a.Area < b.Area);
+}
+
 // - ---------------------------------------------------------------------- - //
 int main(int argc, char* argv[]) {
 	if ( argc <= 2 ) {
@@ -186,12 +204,18 @@ int main(int argc, char* argv[]) {
 		exit(-1);	
 	}
 	
+	if ( strcmp( argv[1], argv[2] ) != -1 ) {
+		Log("ERROR! Input and Output can't be the same!", argv[1]);
+		exit(-1);	
+	}
+	
 	// Set Defalts // 
 	CellW = 64;
 	CellH = 64;
 	
-	Pad = 1;
-	Align = 8;
+	Pad = 0;//1;
+	Align = 1;//8;
+	Flip = true;//false;
 
 	// Target Output //
 	TargetW = 256;
@@ -251,36 +275,50 @@ int main(int argc, char* argv[]) {
 	}	
 	
 	// Step 4 - Sort Rectangles //
+	//vector<int> Lookup;
+	vector<RectInfo> Info;
+	// Populate Info Structure //
+	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+		Rect& r = SpriteRect[idx];
+		
+		Info.push_back( RectInfo() );
+		Info.back().Index = idx;
+		Info.back().Area = r.width * r.height;
+		Info.back().LongestAxis = r.width > r.height ? r.width : r.height;		
+		Info.back().Manhattan = abs(r.width) + abs(r.height); // Will always be positive //
+		Info.back().Magnitude = sqrt(r.width*r.width+r.height*r.height);
+	}
+	
+	sort(Info.begin(),Info.end(),Compare);
+	reverse(Info.begin(),Info.end());
+	for ( size_t idx = 0; idx < Info.size(); idx++ ) {
+		Log("%i: %i (%i)",idx,Info[idx].Index,Info[idx].Area);
+	}
 	
 	// Step 5 - Add Rectangles to BinPack Structure, Recording New Positions //	
-	// - ---------------------------------------------------------------------- - //
-	// Algorithm Choice Happens Here //
-	// - ---------------------------------------------------------------------- - //
 	typedef MaxRectsBinPack BinPack;
 	BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestShortSideFit;
 	BinPack Pack( TargetW, TargetH );
-	Pack.DisableFlip();
-//	typedef GuillotineBinPack BinPack;
-//	BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestAreaFit;
-//	typedef SkylineBinPack BinPack;
-//	BinPack::LevelChoiceHeuristic Heuristic = BinPack::LevelMinWasteFit;
-//	BinPack Pack( TargetW, TargetH, false );
+	if ( !Flip )
+		Pack.DisableFlip();
 
 	vector<Rect> NewSpriteRect;
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		int PW = SpriteRect[idx].width + Pad;
+		int Index = Info[idx].Index;
+		
+		int PW = SpriteRect[Index].width + Pad;
 		PW += (Align - (PW % Align)) % Align;
-		int PH = SpriteRect[idx].height + Pad;
+		int PH = SpriteRect[Index].height + Pad;
 		PH += (Align - (PH % Align)) % Align;
 		
 		NewSpriteRect.push_back( Pack.Insert( PW, PH, Heuristic	) );
 		
-		if ( (SpriteRect[idx].width != 0) && (SpriteRect[idx].height != 0) ) {
+		if ( (SpriteRect[Index].width != 0) && (SpriteRect[Index].height != 0) ) {
 			if ( (NewSpriteRect.back().width == 0) || (NewSpriteRect.back().height == 0) ) {
 				Log("Error! Unable to fit sprite on sheet!");
 			}
 		}
-		//Log("%i: (%i,%i)-(%i,%i)", idx, NewSpriteRect[idx].x,NewSpriteRect[idx].y,NewSpriteRect[idx].width,NewSpriteRect[idx].height );
+		//Log("%i: (%i,%i)-(%i,%i)", Index, NewSpriteRect[Index].x,NewSpriteRect[Index].y,NewSpriteRect[Index].width,NewSpriteRect[Index].height );
 	}
 	
 	// Step 6 - Create an image to blit our new rectangles of data to //
@@ -293,7 +331,9 @@ int main(int argc, char* argv[]) {
 
 	// Step 7 - Blit data from old image to new image, at positions specified //
 	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		Blit( Img, Out, SpriteRect[idx], NewSpriteRect[idx] );
+		int Index = Info[idx].Index;
+		
+		Blit( Img, Out, SpriteRect[Index], NewSpriteRect[idx] );
 	}
 
 //	// Hack: Output the exact same image to check clip borders//
@@ -307,8 +347,7 @@ int main(int argc, char* argv[]) {
 //	// Step 7 - Blit data from old image to new image, at positions specified //
 //	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
 //		Blit( Img, Out, SpriteRect[idx], SpriteRect[idx] );
-//	}
-	
+//	}	
 	
 	// Step 8 - Save Image File //
 	stbi_write_png( argv[2], Out.width, Out.height, Out.BPP, (u8*)Out.Data, 0 );
