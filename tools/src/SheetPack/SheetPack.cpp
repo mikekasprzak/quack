@@ -1,13 +1,18 @@
 // - ---------------------------------------------------------------------- - //
 // TODO: Add a way given an input, output the same image, but with trimmed regions //
 // TODO: Add a way to process any image file, generate a draw list that omits completely empty parts //
+// TODO: If implementing edge algorithms, pad each side as you normally would (x+=Pad;w+=Pad+Pad).
+//       Then as a post-process, shift the image back Pad units left and upward, while making the now
+//       off screen parts of the data loop through the other side. This will correctly allow you to 
+//       wrap images and align them correctly.
+//       Algorithms: Cell Tiled (same one again+again), replicate edges, blank (what we have now)
 // - ---------------------------------------------------------------------- - //
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 // - ---------------------------------------------------------------------- - //
 #include <External/STB/stb_image_write.h>
-#define STBI_NO_WRITE
+#define STBI_NO_WRITE		// To stop stb_image from generating write functions //
 #include <External/STB/stb_image.h>
 // - ---------------------------------------------------------------------- - //
 #include <External/RectangleBinPack/ShelfBinPack.h>
@@ -40,11 +45,13 @@ struct Image {
 
 // - ---------------------------------------------------------------------- - //
 // Globals //
-int CellW, CellH;
-int Pad;	// How Many Pixel to Pad //
-int Align;	// What Pixel Boundary to Align to (like padding for POT scaling) //
-int TargetW, TargetH;
-bool Flip;
+int CellW, CellH;	// Size of Cells //
+int Pad;			// How Many Pixel to Pad //
+int Align;			// What Pixel Boundary to Align to (like padding for POT scaling) //
+int TargetW, TargetH; // Desired dimensions of the output file (if Packing) //
+bool Flip;			// Optimize space by flipping (rotating) rectangles //
+bool Packing;		// Packing Enabled (may only be doing Cell optimizations) //
+bool CellOptimize;	// Optimize space by reducing cell sizes //
 // - ---------------------------------------------------------------------- - //
 
 // - ---------------------------------------------------------------------- - //
@@ -131,6 +138,31 @@ void ReduceRect( const Image& Img, Rect& r ) {
 	r = NewRect;	// Overwrite original //
 }
 // - ---------------------------------------------------------------------- - //
+void ReduceEmptyRect( const Image& Img, Rect& r ) {
+	Rect NewRect = r;
+	bool Found = false;
+
+	// Bottom Row //
+	Found = false;
+	for ( size_t y = r.height; y--; ) {
+		for ( size_t x = 0; x < r.width; x++ ) {
+			size_t Index = (r.x+x)+((r.y+y)*Img.width);
+			if ( Alpha(Img.Data[Index]) > 0 ) {
+				Found = true;
+			}
+		}
+		if ( Found ) {
+			break;
+		}
+		else {
+			NewRect.height -= 1;
+		}
+	}
+	if ( NewRect.height == 0 ) {
+		r = NewRect;	// Overwrite original //
+	}
+}
+// - ---------------------------------------------------------------------- - //
 void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) {
 	// TODO: Clip coordinates //
 	
@@ -185,6 +217,7 @@ void Blit( Image& Src, Image& Dest, const Rect& SrcRect, const Rect& DestRect ) 
 }
 // - ---------------------------------------------------------------------- - //
 
+// - ---------------------------------------------------------------------- - //
 struct RectInfo {
 	int Index;
 	int Area;
@@ -192,10 +225,11 @@ struct RectInfo {
 	int Manhattan;	
 	float Magnitude;
 };
-
+// - ---------------------------------------------------------------------- - //
 bool Compare( const RectInfo& a, const RectInfo& b ) {
 	return (a.Area < b.Area);
 }
+// - ---------------------------------------------------------------------- - //
 
 // - ---------------------------------------------------------------------- - //
 int main(int argc, char* argv[]) {
@@ -204,18 +238,20 @@ int main(int argc, char* argv[]) {
 		exit(-1);	
 	}
 	
-	if ( strcmp( argv[1], argv[2] ) != -1 ) {
-		Log("ERROR! Input and Output can't be the same!", argv[1]);
-		exit(-1);	
-	}
+//	if ( strcmp( argv[1], argv[2] ) != -1 ) {
+//		Log("ERROR! Input and Output can't be the same!", argv[1]);
+//		exit(-1);	
+//	}
 	
 	// Set Defalts // 
 	CellW = 64;
 	CellH = 64;
 	
-	Pad = 0;//1;
+	Pad = 1;//1;
 	Align = 1;//8;
 	Flip = true;//false;
+	Packing = true;
+	CellOptimize = true;
 
 	// Target Output //
 	TargetW = 256;
@@ -232,6 +268,11 @@ int main(int argc, char* argv[]) {
 	Image Img;
 	Img.Data = (u32*)stbi_load(argv[1],&Img.width,&Img.height,&Img.BPP,4); 	// FileName, w*, h*, NumComponents*, RequiredNumComponents //
 	// For now, we're forcing the number of components to 4, so I don't have to write more code //
+
+	if ( Img.Data == 0 ) {
+		Log("File \"%s\" not found!",argv[1]);
+		exit(-1);
+	}
 
 	Log("%s loaded.",argv[1]);
 	Log("Size: %i,%i -- %i bytes per pixel",Img.width,Img.height,Img.BPP);
@@ -269,86 +310,99 @@ int main(int argc, char* argv[]) {
 	}	
 
 	// Step 2 - For every Rectangle, attempt to reduce it's size //
-	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		ReduceRect( Img, SpriteRect[idx] );
-		//Log("%i: %i,%i %i,%i", idx, SpriteRect[idx].x,SpriteRect[idx].y,SpriteRect[idx].width,SpriteRect[idx].height );
-	}	
-	
-	// Step 4 - Sort Rectangles //
-	//vector<int> Lookup;
-	vector<RectInfo> Info;
-	// Populate Info Structure //
-	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		Rect& r = SpriteRect[idx];
-		
-		Info.push_back( RectInfo() );
-		Info.back().Index = idx;
-		Info.back().Area = r.width * r.height;
-		Info.back().LongestAxis = r.width > r.height ? r.width : r.height;		
-		Info.back().Manhattan = abs(r.width) + abs(r.height); // Will always be positive //
-		Info.back().Magnitude = sqrt(r.width*r.width+r.height*r.height);
-	}
-	
-	sort(Info.begin(),Info.end(),Compare);
-	reverse(Info.begin(),Info.end());
-	for ( size_t idx = 0; idx < Info.size(); idx++ ) {
-		Log("%i: %i (%i)",idx,Info[idx].Index,Info[idx].Area);
-	}
-	
-	// Step 5 - Add Rectangles to BinPack Structure, Recording New Positions //	
-	typedef MaxRectsBinPack BinPack;
-	BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestShortSideFit;
-	BinPack Pack( TargetW, TargetH );
-	if ( !Flip )
-		Pack.DisableFlip();
-
-	vector<Rect> NewSpriteRect;
-	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		int Index = Info[idx].Index;
-		
-		int PW = SpriteRect[Index].width + Pad;
-		PW += (Align - (PW % Align)) % Align;
-		int PH = SpriteRect[Index].height + Pad;
-		PH += (Align - (PH % Align)) % Align;
-		
-		NewSpriteRect.push_back( Pack.Insert( PW, PH, Heuristic	) );
-		
-		if ( (SpriteRect[Index].width != 0) && (SpriteRect[Index].height != 0) ) {
-			if ( (NewSpriteRect.back().width == 0) || (NewSpriteRect.back().height == 0) ) {
-				Log("Error! Unable to fit sprite on sheet!");
-			}
+	if ( CellOptimize ) {
+		for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+			ReduceRect( Img, SpriteRect[idx] );
+			//Log("%i: %i,%i %i,%i", idx, SpriteRect[idx].x,SpriteRect[idx].y,SpriteRect[idx].width,SpriteRect[idx].height );
 		}
-		//Log("%i: (%i,%i)-(%i,%i)", Index, NewSpriteRect[Index].x,NewSpriteRect[Index].y,NewSpriteRect[Index].width,NewSpriteRect[Index].height );
+	}
+	else {
+		// Remove only Empty Rects //
+		for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+			ReduceEmptyRect( Img, SpriteRect[idx] );
+		}		
 	}
 	
-	// Step 6 - Create an image to blit our new rectangles of data to //
+	// Step 3 -- Have an Image *shrug* //
 	Image Out;
-	Out.width = TargetW;
-	Out.height = TargetH;
-	Out.BPP = Img.BPP;
-	Out.Data = (u32*)new u8[Out.width*Out.height*Out.BPP];
-	memset( Out.Data, 255, Out.width*Out.height*Out.BPP );
-
-	// Step 7 - Blit data from old image to new image, at positions specified //
-	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-		int Index = Info[idx].Index;
-		
-		Blit( Img, Out, SpriteRect[Index], NewSpriteRect[idx] );
-	}
-
-//	// Hack: Output the exact same image to check clip borders//
-//	Image Out;
-//	Out.width = Img.width;
-//	Out.height = Img.height;
-//	Out.BPP = Img.BPP;
-//	Out.Data = (u32*)new u8[Out.width*Out.height*Out.BPP];
-//	memset( Out.Data, 255, Out.width*Out.height*Out.BPP );
-
-//	// Step 7 - Blit data from old image to new image, at positions specified //
-//	for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
-//		Blit( Img, Out, SpriteRect[idx], SpriteRect[idx] );
-//	}	
 	
+	if ( Packing ) {
+		
+		// Step 4 - Sort Rectangles //
+		vector<RectInfo> Info;
+		// Populate Info Structure //
+		for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+			Rect& r = SpriteRect[idx];
+			
+			Info.push_back( RectInfo() );
+			Info.back().Index = idx;
+			Info.back().Area = r.width * r.height;
+			Info.back().LongestAxis = r.width > r.height ? r.width : r.height;		
+			Info.back().Manhattan = abs(r.width) + abs(r.height); // NOTE: Will always be positive //
+			Info.back().Magnitude = sqrt(r.width*r.width+r.height*r.height);
+		}
+		
+		sort(Info.begin(),Info.end(),Compare);	// Ascending Order -- Lowest to Highest //
+		reverse(Info.begin(),Info.end());		// Swap that around (Highest to Lowest) //
+		
+//		for ( size_t idx = 0; idx < Info.size(); idx++ ) {
+//			Log("%i: %i (%i)",idx,Info[idx].Index,Info[idx].Area);
+//		}
+		
+		// Step 5 - Add Rectangles to BinPack Structure, Recording New Positions //	
+		typedef MaxRectsBinPack BinPack;
+		BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestShortSideFit;
+		BinPack Pack( TargetW, TargetH );
+		if ( !Flip )
+			Pack.DisableFlip();
+	
+		vector<Rect> NewSpriteRect;
+		for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+			int Index = Info[idx].Index;
+			
+			int PW = SpriteRect[Index].width + Pad;
+			PW += (Align - (PW % Align)) % Align;
+			int PH = SpriteRect[Index].height + Pad;
+			PH += (Align - (PH % Align)) % Align;
+			
+			NewSpriteRect.push_back( Pack.Insert( PW, PH, Heuristic	) );
+			
+			if ( (SpriteRect[Index].width != 0) && (SpriteRect[Index].height != 0) ) {
+				if ( (NewSpriteRect.back().width == 0) || (NewSpriteRect.back().height == 0) ) {
+					Log("Error! Unable to fit sprite on sheet!");
+				}
+			}
+			//Log("%i: (%i,%i)-(%i,%i)", Index, NewSpriteRect[Index].x,NewSpriteRect[Index].y,NewSpriteRect[Index].width,NewSpriteRect[Index].height );
+		}
+		
+		// Step 6 - Populate an image to blit our new rectangles of data to //
+		Out.width = TargetW;
+		Out.height = TargetH;
+		Out.BPP = Img.BPP;
+		Out.Data = (u32*)new u8[Out.width*Out.height*Out.BPP];
+		memset( Out.Data, 255, Out.width*Out.height*Out.BPP );
+	
+		// Step 7 - Blit data from old image to new image, at positions specified //
+		for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+			int Index = Info[idx].Index;
+			
+			Blit( Img, Out, SpriteRect[Index], NewSpriteRect[idx] );
+		}
+	} // Packing //
+	else {
+		// Hack: Output the exact same image to check clip borders//
+		Out.width = Img.width;
+		Out.height = Img.height;
+		Out.BPP = Img.BPP;
+		Out.Data = (u32*)new u8[Out.width*Out.height*Out.BPP];
+		memset( Out.Data, 255, Out.width*Out.height*Out.BPP );
+	
+		// Step 7 - Blit data from old image to new image, at positions specified //
+		for ( size_t idx = 0; idx < SpriteRect.size(); idx++ ) {
+			Blit( Img, Out, SpriteRect[idx], SpriteRect[idx] );
+		}
+	}
+		
 	// Step 8 - Save Image File //
 	stbi_write_png( argv[2], Out.width, Out.height, Out.BPP, (u8*)Out.Data, 0 );
 	
