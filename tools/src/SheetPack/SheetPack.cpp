@@ -191,7 +191,7 @@ int main(int argc, char* argv[]) {
 	CellH = 64;
 	
 	Pad = 1;
-	Align = 16;
+	Align = 8;
 
 	// Target Output //
 	TargetW = 256;
@@ -259,6 +259,7 @@ int main(int argc, char* argv[]) {
 	typedef MaxRectsBinPack BinPack;
 	BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestShortSideFit;
 	BinPack Pack( TargetW, TargetH );
+	Pack.DisableFlip();
 //	typedef GuillotineBinPack BinPack;
 //	BinPack::FreeRectChoiceHeuristic Heuristic = BinPack::RectBestAreaFit;
 //	typedef SkylineBinPack BinPack;

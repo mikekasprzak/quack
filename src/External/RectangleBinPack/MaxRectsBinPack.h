@@ -50,9 +50,15 @@ public:
 	/// Computes the ratio of used surface area to the total bin area.
 	float Occupancy() const;
 
+	// MK
+	void DisableFlip();
+	void EnableFlip();
+
 private:
 	int binWidth;
 	int binHeight;
+	
+	bool NoFlip; // MK
 
 	std::vector<Rect> usedRectangles;
 	std::vector<Rect> freeRectangles;
