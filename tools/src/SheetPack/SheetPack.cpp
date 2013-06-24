@@ -228,7 +228,8 @@ struct RectInfo {
 };
 // - ---------------------------------------------------------------------- - //
 bool Compare( const RectInfo& a, const RectInfo& b ) {
-	return (a.Area < b.Area);
+//	return (a.Area < b.Area);
+	return (a.LongestAxis < b.LongestAxis);
 }
 // - ---------------------------------------------------------------------- - //
 
@@ -243,15 +244,15 @@ int main(int argc, char* argv[]) {
 	CellW = 40;//64;
 	CellH = 40;//64;
 	
-	Pad = 0;//1;
+	Pad = 1;//1;
 	Align = 1;//8;
-	Flip = true;
+	Flip = false;//true;
 	Packing = true;
-	CellOptimize = true;
+	CellOptimize = false;//true;
 
 	// Target Output //
-	TargetW = 320;//256;
-	TargetH = 320;//256;
+	TargetW = 480;//256;
+	TargetH = 480;//256;
 	
 	
 	// PreStep 1 - Parse Info-File for Instructions //
@@ -316,26 +317,61 @@ int main(int argc, char* argv[]) {
 	if ( true ) {
 		// X Axis //
 		for ( size_t idx = SpriteRect.size()-1; idx--; ) {
-			if ( SpriteRect[idx].y == SpriteRect[idx+1].y ) {
-				if ( SpriteRect[idx+1].height != 0 ) {
-					if ( SpriteRect[idx].height != 0 ) {
-						SpriteRect[idx].width += SpriteRect[idx+1].width;
-						SpriteRect[idx+1].width = 0;
-						SpriteRect[idx+1].height = 0;
+			Rect& S1 = SpriteRect[idx];
+			Rect& S2 = SpriteRect[idx+1];
+			if ( S1.y == S2.y ) {
+				if ( (S1.height != 0) && (S2.height != 0) ) {
+					S1.width += S2.width;
+					S2.width = 0;
+					S2.height = 0;
+				}
+			}
+		}
+		
+		int CombineError = 4*CellW;
+		// NOTE: THIS ISN'T WORKING BECAUSE THE ONLY LEGAL TEST IS VS THE TILE BELOW YOU! //
+		
+		// Y Axis (Bottom to top) //
+		for ( size_t idx = SpriteRect.size()-CellsX; idx--; ) {
+			Rect& S1 = SpriteRect[idx];
+			Rect& S2 = SpriteRect[idx+CellsX];
+			if ( abs(S1.x - S2.x) == 0 )//<= CombineError ) 
+			{
+				if ( abs(S1.width - S2.width) == 0 )//<= CombineError )
+				{
+					if ( (S1.height != 0) && (S2.height != 0) ) {
+						S1.height += S2.height;
+						
+						//int XDiff = abs(S1.x-S2.x);
+						S1.width = S1.width > S2.width ? S1.width : S2.width;
+						//S1.width += XDiff;
+						//S1.x = S1.x < S2.x ? S1.x : S2.x;;
+
+						S2.width = 0;
+						S2.height = 0;
 					}
 				}
 			}
 		}
-		// Y Axis //
-		for ( size_t idx = SpriteRect.size()-CellsX; idx--; ) {
-			if ( SpriteRect[idx].x == SpriteRect[idx+CellsX].x ) {
-				if ( SpriteRect[idx].width == SpriteRect[idx+CellsX].width ) {
-					if ( SpriteRect[idx+CellsX].height != 0 ) {
-						if ( SpriteRect[idx].height != 0 ) {
-							SpriteRect[idx].height += SpriteRect[idx+CellsX].height;
-							SpriteRect[idx+CellsX].width = 0;
-							SpriteRect[idx+CellsX].height = 0;
-						}
+
+		// Y Axis (Top to bottom) //
+		for ( size_t idx = 0; idx < SpriteRect.size()-CellsX-1; idx++ ) {
+			Rect& S1 = SpriteRect[idx];
+			Rect& S2 = SpriteRect[idx+CellsX];
+			if ( abs(S1.x - S2.x) == 0 )//<= CombineError ) 
+			{
+				if ( abs(S1.width - S2.width) <= CombineError )
+				{
+					if ( (S1.height != 0) && (S2.height != 0) ) {
+						S1.height += S2.height;
+						
+						//int XDiff = abs(S1.x-S2.x);
+						S1.width = S1.width > S2.width ? S1.width : S2.width;
+						//S1.width += XDiff;
+						//S1.x = S1.x < S2.x ? S1.x : S2.x;;
+
+						S2.width = 0;
+						S2.height = 0;
 					}
 				}
 			}
