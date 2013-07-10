@@ -3,6 +3,7 @@
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
 SRC_FOLDERS			+=	src/MainSDL \
+						src/MainWeb \
 						src/GEL3 \
 #src/Quack \
 #						src/Common \
@@ -24,7 +25,7 @@ IGNORE_LIST			+=
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
 DEFINES				+=	PRODUCT_QUACK PRODUCT_CLIENT \
-						USES_GEL3 USES_SDL2 STBI_NO_WRITE
+						USES_GEL3 STBI_NO_WRITE
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	
@@ -37,10 +38,9 @@ LIBRARIES			+=
 COPY_FILES			+=	
 # - ------------------------------------------------------------------------ - #
 # Game Specific Library Requesting Defines #
-USES_SDL2			:=	true
 USES_GEL3			:=	true
 
-#USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
+USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
 #USES_SHADERS		:=	true	# Uses vertex or fragement shaders (GL2) #
 #USES_BATCHING		:=	true	# Uses advanced batching features (GL3, D3D11) #
 # - ------------------------------------------------------------------------ - #

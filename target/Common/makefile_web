@@ -1,19 +1,19 @@
 # - ------------------------------------------------------------------------ - #
 # Platform Specific Target Influencing Defines #
 USES_UNIX			:=	true		# OS #
-USES_DESKTOP		:=	true		# OS MODE #
-USES_GCC			:=	true		# Compiler Suite (For completeness) #
+USES_WEB			:=	true		# OS MODE #
+USES_CLANG			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
-DEFINES				+=	USES_UNIX USES_DESKTOP USES_GCC NO_TWEAKVALUE
+DEFINES				+=	USES_UNIX USES_WEB USES_CLANG NO_TWEAKVALUE
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
-CPUFLAGS			:=	-msse2 -mmmx -mfpmath=sse -ftree-vectorize
+CPUFLAGS			:=	
 # - ------------------------------------------------------------------------ - #
 # Compiler and Linker Flags (specific to this target) #
-CFLAGS				+=	-I /usr/local/include $(CPUFLAGS)
-CPPFLAGS			+=	-I /usr/local/include $(CPUFLAGS)
-LDFLAGS				+=	-L /usr/local/lib
+CFLAGS				+=	#-I /usr/local/include $(CPUFLAGS)
+CPPFLAGS			+=	#-I /usr/local/include $(CPUFLAGS)
+LDFLAGS				+=	#-L /usr/local/lib
 # - ------------------------------------------------------------------------ - #
 LIBRARIES			+=	
 # - ------------------------------------------------------------------------ - #
@@ -23,43 +23,20 @@ LDFLAGS				+=
 endif
 # - ------------------------------------------------------------------------ - #
 # File extension for the Binary (.exe on Windows, .i686 .x86_64 on Linux) #
-BINARY_SUFFIX		:=	.$(shell uname -p)
+BINARY_SUFFIX		:=	.html
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
-# Graphical Applications on Linux use SDL2 and OpenGL. This decides which GL #
+# Graphical Applications on the Web use OpenGL w/ Shaders. #
 # - ------------------------------------------------------------------------ - #
 ifdef USES_GRAPHICS				# Has Graphics #
-# - ------------------------------------------------------------------------ - #
-USES_SDL2			:=	true	# Uses Simple Directmedia Layer 2 API #
-USES_OPENGL			:=	true	# Uses one of the "OpenGL Family" of APIs #
-# - ------------------------------------------------------------------------ - #
 ifdef USES_SHADERS				# Graphics with Shaders #
-ifdef USES_BATCHING				# Graphics with Shaders and Advanced Batching #
 # - ------------------------------------------------------------------------ - #
-USES_OPENGL3		:=	true	# Use OpenGL3 with its advanced batching #
-USES_OPENGL2		:=	true	# GL3 is backwards compatible, so GL2 is ok #
-# - ------------------------------------------------------------------------ - #
-else  # !USES_BATCHING #
-# - ------------------------------------------------------------------------ - #
+USES_OPENGL			:=	true	# Uses one of the "OpenGL Family" of APIs #
 USES_OPENGL2		:=	true	# Use OpenGL2 with its standard batching (VBO) #
 # - ------------------------------------------------------------------------ - #
-endif # USES_BATCHING #
-else  # !USES_SHADERS #
-# - ------------------------------------------------------------------------ - #
-USES_OPENGL1		:=	true	# Use OpenGL1 (GL without shaders) #
-# - ------------------------------------------------------------------------ - #
 endif # USES_SHADERS #
-# - ------------------------------------------------------------------------ - #
 endif # USES_GRAPHICS #
-# - ------------------------------------------------------------------------ - #
-
-# - ------------------------------------------------------------------------ - #
-ifdef USES_AUDIO
-# - ------------------------------------------------------------------------ - #
-#USES_SDLMIXER		:=	true	# Use SDL's Standard Addon Audio Library #
-# - ------------------------------------------------------------------------ - #
-endif # USES_AUDIO #
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
@@ -67,7 +44,7 @@ include target/Common/common_libraries
 # - ------------------------------------------------------------------------ - #
 include target/Common/common_makefile
 # - ------------------------------------------------------------------------ - #
-include target/Common/common_compiler_gcc
+include target/Common/common_compiler_emscripten
 # - ------------------------------------------------------------------------ - #
 include target/Common/common_rules
 # - ------------------------------------------------------------------------ - #

@@ -1,0 +1,54 @@
+# - ------------------------------------------------------------------------ - #
+ifndef NON_STANDARD_RUN
+run: $(TARGET)
+	$(RUN_PREFIX) ./$(TARGET) -DIR ./ -SAVE $(TARGET_DIR)/ $(RUN_SUFFIX)
+debug: $(TARGET)
+	gdb --args $(RUN_PREFIX) ./$(TARGET) -DIR ./ -SAVE $(TARGET_DIR)/ $(RUN_SUFFIX)
+endif # NON_STANDARD_RUN #
+# - ------------------------------------------------------------------------ - #
+clean:
+	-rm $(.O_FILES) $(.O_FILES:.o=.o.d) $(TARGET_DIR)/* obj/$(TARGET_NAME)/.ocache
+# - ------------------------------------------------------------------------ - #
+cleanmain:
+	-rm $(filter %Main.cpp.o,$(.O_FILES) $(.O_FILES:.o=.o.d)) $(TARGET_DIR)/*
+# - ------------------------------------------------------------------------ - #
+cleandeps:
+	-rm $(.O_FILES:.o=.o.d)
+# - ------------------------------------------------------------------------ - #
+makedirs:
+	-mkdir -p $(.O_FOLDERS)
+# - ------------------------------------------------------------------------ - #
+deps: $(.O_FILES:.o=.o.d)
+	@echo Dependencies rebuilt.
+# - ------------------------------------------------------------------------ - #
+cache:
+	@echo Updating Depend Cache...
+	@cat $(.O_FILES:.o=.o.d)>obj/$(TARGET_NAME)/.ocache
+	@echo Depend Cache Updated
+# - ------------------------------------------------------------------------ - #
+startcache:
+	$(MAKE) --quiet --no-print-directory cache NO_DEPEND=true &
+# - ------------------------------------------------------------------------ - #
+.PHONY: run clean cleanmain cleandeps deps makedirs cache startcache
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+obj/%/_stub:
+	mkdir -p obj/$*
+	@touch $@
+# - ------------------------------------------------------------------------ - #
+# Yes, this creates the output folder, but notes the creation under obj #
+obj/$(TARGET_NAME)/output_stub:
+	mkdir -p output/$(TARGET_NAME) obj/$(TARGET_NAME)
+	@touch $@	
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+ifeq ($(TARGET_STUBS_CHECK),$(TARGET_STUBS))
+ifndef NO_DEPEND
+#-include $(.O_FILES:.o=.o.d)
+-include obj/$(TARGET_NAME)/.ocache
+endif # NO_DEPEND #
+endif # TARGET_STUBS does not exist #
+# - ------------------------------------------------------------------------ - #

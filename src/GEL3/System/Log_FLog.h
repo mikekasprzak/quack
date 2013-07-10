@@ -6,11 +6,11 @@
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef NO_FLOGGING
 // - ------------------------------------------------------------------------------------------ - //
-#ifdef NO_FLOG_COLORS
+#ifndef FLOG_COLORS
 	void FLogColor( const int InColor );
-#else // NO_FLOG_COLORS //
+#else // FLOG_COLORS //
 	#define FLogColor( ... ) ;
-#endif // NO_FLOG_COLORS //
+#endif // FLOG_COLORS //
 // - ------------------------------------------------------------------------------------------ - //
 void FLogInit( const char* );
 void FLogExit();

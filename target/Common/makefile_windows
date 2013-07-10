@@ -1,12 +1,21 @@
 # - ------------------------------------------------------------------------ - #
+# Platform Specific Target Influencing Defines #
+USES_WINDOWS		:=	true	# OS #
+USES_DESKTOP		:=	true	# OS MODE #
+USES_MINGW			:=	true	# Compiler Suite (For completeness) #
+USES_WARNINGS		:=	true	# Use Extra Compiler Warnings #
+FLOG_COLORS			:=	true
+# - ------------------------------------------------------------------------ - #
+DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW FLOG_COLORS
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
 CPUFLAGS			:=	-msse2 -mmmx -mfpmath=sse -ftree-vectorize
 # - ------------------------------------------------------------------------ - #
 # Compiler and Linker Flags (specific to this target) #
 CFLAGS				+=	-I /usr/local/include -I /usr/local/ssl/include $(CPUFLAGS)
 CPPFLAGS			+=	-I /usr/local/include -I /usr/local/ssl/include $(CPUFLAGS)
 LDFLAGS				+=	-L /usr/local/lib -L /usr/local/ssl/lib -static-libgcc -static-libstdc++ -static
-# - ------------------------------------------------------------------------ - #
-DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW
 # - ------------------------------------------------------------------------ - #
 LIBRARIES			+=	-lmingw32 \
 						-lIphlpapi \
@@ -25,12 +34,6 @@ endif
 # File extension for the Binary (.exe on Windows, .i686 .x86_64 on Linux) #
 BINARY_SUFFIX		:=	.exe
 # - ------------------------------------------------------------------------ - #
-# Platform Specific Target Influencing Defines #
-USES_WINDOWS		:=	true	# OS #
-USES_DESKTOP		:=	true	# OS MODE #
-USES_MINGW			:=	true	# Compiler Suite (For completeness) #
-USES_WARNINGS		:=	true	# Use Extra Compiler Warnings #
-# - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
 # Graphical Applications on Windows use SDL2 and OpenGL. This decides which GL #
@@ -39,7 +42,6 @@ ifdef USES_GRAPHICS				# Has Graphics #
 # - ------------------------------------------------------------------------ - #
 USES_SDL2			:=	true	# Uses Simple Directmedia Layer 2 API #
 USES_OPENGL			:=	true	# Uses one of the "OpenGL Family" of APIs #
-#USES_SDLMIXER		:=	true	# Use SDL's Standard Addon Audio Library #
 # - ------------------------------------------------------------------------ - #
 ifdef USES_SHADERS				# Graphics with Shaders #
 ifdef USES_BATCHING				# Graphics with Shaders and Advanced Batching #
@@ -62,9 +64,19 @@ endif # USES_GRAPHICS #
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
+ifdef USES_AUDIO
+# - ------------------------------------------------------------------------ - #
+#USES_SDLMIXER		:=	true	# Use SDL's Standard Addon Audio Library #
+# - ------------------------------------------------------------------------ - #
+endif # USES_AUDIO #
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
 include target/Common/common_libraries
 # - ------------------------------------------------------------------------ - #
 include target/Common/common_makefile
 # - ------------------------------------------------------------------------ - #
 include target/Common/common_compiler_gcc
+# - ------------------------------------------------------------------------ - #
+include target/Common/common_rules
 # - ------------------------------------------------------------------------ - #
