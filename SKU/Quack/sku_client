@@ -2,7 +2,7 @@
 # NOTE: Only reference files here suitable for GAME scope (no platform) #
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
-SRC_FOLDERS			+=	src/MainWeb \
+SRC_FOLDERS			+=	
 #						src/Quack \
 # - ------------------------------------------------------------------------ - #
 # Places to ONLY include from #
