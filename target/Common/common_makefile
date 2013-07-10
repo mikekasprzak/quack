@@ -29,7 +29,7 @@ DEFINES				:=	$(addprefix -D,$(DEFINES))
 FOLDER_STUBS		:=	$(addsuffix _stub,$(.O_FOLDERS))
 # - ------------------------------------------------------------------------ - #
 TARGET_STUBS		:=	obj/$(TARGET_NAME)/output_stub
-TARGET_STUBS_CHECK	:=	$(shell tools/FileExists.sh $(TARGET_STUBS))
+TARGET_STUBS_CHECK	:=	$(shell $(FileExists) $(TARGET_STUBS))
 # - ------------------------------------------------------------------------ - #
 #OTHER_FILES			+=	$(shell $(TreeTool) $(FILES_FOLDER) %)
 #OTHER_FILES_DEP		+=	$(subst $(FILES_FOLDER)/,output/$(TARGET_NAME)/,$(OTHER_FILES))
