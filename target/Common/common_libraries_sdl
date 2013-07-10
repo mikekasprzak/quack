@@ -1,0 +1,92 @@
+
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_SDL2
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	src/MainSDL
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	
+# - ------------------------------------------------------------------------ - #
+# Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
+IGNORE_LIST			+=	
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_SDL2
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+# The SKU file may say that the game requires OpenGL 2.0 Grade Hardware //
+ifdef USES_OPENGL2
+include target/Common/common_opengl2
+else # USES_OPENGL2 #
+include target/Common/common_opengl1
+endif # USES_OPENGL2 #
+# - ------------------------------------------------------------------------ - #
+# NOTE: OpenGL 3 and 4 are the same includes as OpenGL 2, just extra defines #
+# - ------------------------------------------------------------------------ - #
+# TODO: Use sdl2-config
+#CFLAGS				+=	$(shell sdl2-config --cflags)
+#CPPFLAGS			+=	$(shell sdl2-config --cflags)
+# - ------------------------------------------------------------------------ - #
+ifdef USES_WINDOWS
+SRC_FOLDERS			+=	src/External/MainSDL
+DEFINES				+=	NO_STDIO_REDIRECT
+LIBRARIES			+=	-lSDL2.dll
+COPY_FILES			+=	/usr/local/bin/SDL2.dll
+else # USES_WINDOWS #
+LIBRARIES			+=	$(shell sdl2-config --libs)
+COPY_FILES			+=	/usr/local/lib/libSDL2-2.0.so.0
+endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_SDL2 #
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_SDLMIXER
+ifdef USES_SDL2
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	
+# - ------------------------------------------------------------------------ - #
+# Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
+IGNORE_LIST			+=	
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_SDLMIXER
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+ifdef USES_WINDOWS
+LIBRARIES			+=	-lSDL2_mixer.dll
+COPY_FILES			+=	/usr/local/bin/SDL2_mixer.dll \
+						/usr/local/bin/libvorbis-*.dll \
+						/usr/local/bin/libvorbisfile-*.dll \
+						/usr/local/bin/libogg-*.dll
+else # USES_WINDOWS #
+LIBRARIES			+=	-lSDL2_mixer
+COPY_FILES			+=	/usr/local/lib/libSDL2_mixer-1.2.so.0
+endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_SDL2 #
+endif # USES_SDLMIXER #
+# - ------------------------------------------------------------------------ - #

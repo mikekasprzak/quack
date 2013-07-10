@@ -2,43 +2,23 @@
 # NOTE: Only reference files here suitable for GAME scope (no platform) #
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
-SRC_FOLDERS			+=	src/MainSDL \
-						src/MainWeb \
-						src/GEL3 \
-#src/Quack \
-#						src/Common \
-#						src/RunnerSDL \
-#						src/GEL2 \
-#						src/GEL/Debug \
-#						src/GEL/Core \
-#						src/GEL/Math \
-#						src/GEL/System \
-#						src/GEL/Timer \
+SRC_FOLDERS			+=	src/MainWeb \
+#						src/Quack \
 # - ------------------------------------------------------------------------ - #
 # Places to ONLY include from #
 INCLUDE_FOLDERS		+=	
-#src/External \
-#src/GEL \
 # - ------------------------------------------------------------------------ - #
 # Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
 IGNORE_LIST			+=	
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	PRODUCT_QUACK PRODUCT_CLIENT \
-						USES_GEL3 STBI_NO_WRITE
-# - ------------------------------------------------------------------------ - #
-# Libraries specific to this file (full include path or -l) #
-LIBRARIES			+=	
-
-#-lcrypto \
-						
-# -lcrypto = md5 hash and base64 encode/decode
+DEFINES				+=	PRODUCT_QUACK PRODUCT_CLIENT
 # - ------------------------------------------------------------------------ - #
 # Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
 COPY_FILES			+=	
 # - ------------------------------------------------------------------------ - #
 # Game Specific Library Requesting Defines #
-USES_GEL3			:=	true
+USES_GEL3			:=	true	# Uses the GEL3 Library (Game Engineering Library) #
 
 USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
 #USES_SHADERS		:=	true	# Uses vertex or fragement shaders (GL2) #
@@ -46,19 +26,9 @@ USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
 # - ------------------------------------------------------------------------ - #
 USES_HG				:=	true	# Uses Mercurial Version Control #
 # - ------------------------------------------------------------------------ - #
-#USES_STB_IMAGE		:=	true
 #USES_CURL			:=	true
 #USES_ENET			:=	true
 USES_CJSON			:=	true
 USES_SQUIRREL		:=	true
 #USES_SPINE			:=	true
-# - ------------------------------------------------------------------------ - #
-ifdef WINDIR 		# Can't use USES_WINDOWS because not defined yet #
-# - ------------------------------------------------------------------------ - #
-# Game Specific Platform Specific Library Requesting Defines #
-USES_XINPUT			:=	true	# XBOX 360 Controllers #
-#USES_SIXENSE		:=	true	# Razer Hydra Motion Controller #
-#USES_HIDAPI		:=	true	# HID devices including SpaceNavigator #
-# - ------------------------------------------------------------------------ - #
-endif # WINDIR #
 # - ------------------------------------------------------------------------ - #

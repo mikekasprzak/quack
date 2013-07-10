@@ -1,0 +1,153 @@
+
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_IRRKLANG
+ifdef USES_WINDOWS
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/irrKlang/include
+# - ------------------------------------------------------------------------ - #
+# Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
+IGNORE_LIST			+=	
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_IRRKLANG
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	src/External/irrKlang/lib/win32-gcc/libirrKlang.a
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	src/External/irrKlang/bin/win32-gcc/irrKlang.dll \
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+endif # USES_WINDOWS #
+endif # USES_IRRKLANG #
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_ASSIMP
+ifdef USES_WINDOWS
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/Assimp/include \
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_ASSIMP
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	src/External/Assimp/mingw32/libassimp.dll.a \
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	src/External/Assimp/mingw32/libassimp.dll \
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+endif # USES_WINDOWS #
+endif # USES_ASSIMP #
+# - ------------------------------------------------------------------------ - #
+
+
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_XINPUT
+# - ------------------------------------------------------------------------ - #
+ifdef USES_WINDOWS
+ifdef USES_DESKTOP
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/XInput/include \
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_XINPUT
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	src/External/XInput/lib/XInput.lib \
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+endif # USES_DESKTOP #
+endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_XINPUT #
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_SIXENSE
+# - ------------------------------------------------------------------------ - #
+ifdef USES_WINDOWS
+ifdef USES_DESKTOP
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/Sixense/include \
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_SIXENSE
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	src/External/Sixense/lib/win32/release_dll/sixense.lib \
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	src/External/Sixense/bin/win32/DeviceDLL.dll \
+						src/External/Sixense/bin/win32/release_dll/sixense.dll \
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+endif # USES_DESKTOP #
+endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_SIXENSE #
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_HIDAPI
+# - ------------------------------------------------------------------------ - #
+ifdef USES_WINDOWS
+ifdef USES_DESKTOP
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	src/External/HidAPI/windows \
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/HidAPI/hidapi
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_HIDAPI
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	-lsetupapi
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+endif # USES_DESKTOP #
+endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_HIDAPI #
+# - ------------------------------------------------------------------------ - #
+

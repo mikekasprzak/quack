@@ -12,6 +12,11 @@ USES_WARNINGS		:=	true		# Use Extra Compiler Warnings #
 DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW 
 DEFINES				+=	USES_STDOUT USES_FLOG_COLORS USES_WARNINGS
 # - ------------------------------------------------------------------------ - #
+USES_XINPUT			:=	true	# XBOX 360 Controllers #
+#USES_SIXENSE		:=	true	# Razer Hydra Motion Controller #
+#USES_HIDAPI		:=	true	# HID devices including SpaceNavigator #
+# - ------------------------------------------------------------------------ - #
+
 
 # - ------------------------------------------------------------------------ - #
 CPUFLAGS			:=	-msse2 -mmmx -mfpmath=sse -ftree-vectorize
@@ -25,9 +30,12 @@ LIBRARIES			+=	-lmingw32 \
 						-lIphlpapi \
 						-lPsapi \
 						-lwinmm \
+#						-lcrypto \
+
 # -lIphlpapi = TCP/IP stuff
 # -lPsapi = Process Info (Memory Usage)
 # -lwinmm = timegettime() (GEL::Timer)
+# -lcrypto = md5 hash and base64 encode/decode
 # - ------------------------------------------------------------------------ - #
 # Release Build Only #
 ifdef NDEBUG
