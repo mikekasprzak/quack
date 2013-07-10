@@ -24,15 +24,6 @@ COPY_FILES			+=
 # Other Object files you want to link against (i.e. an embedded Windows Icon) #
 OTHER_O_FILES		+=	
 # - ------------------------------------------------------------------------ - #
-# The SKU file may say that the game requires OpenGL 2.0 Grade Hardware //
-ifdef USES_OPENGL2
-include target/Common/common_opengl2
-else # USES_OPENGL2 #
-include target/Common/common_opengl1
-endif # USES_OPENGL2 #
-# - ------------------------------------------------------------------------ - #
-# NOTE: OpenGL 3 and 4 are the same includes as OpenGL 2, just extra defines #
-# - ------------------------------------------------------------------------ - #
 # TODO: Use sdl2-config
 #CFLAGS				+=	$(shell sdl2-config --cflags)
 #CPPFLAGS			+=	$(shell sdl2-config --cflags)
@@ -46,6 +37,8 @@ else # USES_WINDOWS #
 LIBRARIES			+=	$(shell sdl2-config --libs)
 COPY_FILES			+=	/usr/local/lib/libSDL2-2.0.so.0
 endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+USES_OPENGL_LIB		:=	true	# Requires OpenGL #
 # - ------------------------------------------------------------------------ - #
 endif # USES_SDL2 #
 # - ------------------------------------------------------------------------ - #

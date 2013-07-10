@@ -44,6 +44,7 @@ endif # USES_SVN #
 include target\Common\common_libraries_gel
 
 include target\Common\common_libraries_sdl
+include target\Common\common_libraries_opengl
 include target\Common\common_libraries_windows
 include target\Common\common_libraries_shared
 # - ------------------------------------------------------------------------ - #

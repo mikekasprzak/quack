@@ -21,7 +21,7 @@ COPY_FILES			+=
 USES_GEL3			:=	true	# Uses the GEL3 Library (Game Engineering Library) #
 
 USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
-#USES_SHADERS		:=	true	# Uses vertex or fragement shaders (GL2) #
+USES_SHADERS		:=	true	# Uses vertex or fragement shaders (GL2) #
 #USES_BATCHING		:=	true	# Uses advanced batching features (GL3, D3D11) #
 # - ------------------------------------------------------------------------ - #
 USES_HG				:=	true	# Uses Mercurial Version Control #
