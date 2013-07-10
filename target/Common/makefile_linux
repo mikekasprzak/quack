@@ -56,6 +56,7 @@ endif # USES_GRAPHICS #
 # - ------------------------------------------------------------------------ - #
 include target/Common/common_libraries
 # - ------------------------------------------------------------------------ - #
-# Finally, include the standard makefile body #
 include target/Common/common_makefile
+# - ------------------------------------------------------------------------ - #
+include target/Common/common_compiler_gcc
 # - ------------------------------------------------------------------------ - #
