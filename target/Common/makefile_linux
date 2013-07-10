@@ -4,7 +4,10 @@ USES_UNIX			:=	true		# OS #
 USES_DESKTOP		:=	true		# OS MODE #
 USES_GCC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
-DEFINES				+=	USES_UNIX USES_DESKTOP USES_GCC NO_TWEAKVALUE
+USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
+# - ------------------------------------------------------------------------ - #
+DEFINES				+=	USES_UNIX USES_DESKTOP USES_GCC
+DEFINES				+=	USES_FLOG_COLORS
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #

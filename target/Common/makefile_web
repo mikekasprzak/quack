@@ -4,7 +4,7 @@ USES_UNIX			:=	true		# OS #
 USES_WEB			:=	true		# OS MODE #
 USES_CLANG			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
-DEFINES				+=	USES_UNIX USES_WEB USES_CLANG NO_TWEAKVALUE
+DEFINES				+=	USES_UNIX USES_WEB USES_CLANG
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #

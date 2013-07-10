@@ -1,12 +1,15 @@
 # - ------------------------------------------------------------------------ - #
 # Platform Specific Target Influencing Defines #
-USES_WINDOWS		:=	true	# OS #
-USES_DESKTOP		:=	true	# OS MODE #
-USES_MINGW			:=	true	# Compiler Suite (For completeness) #
-USES_WARNINGS		:=	true	# Use Extra Compiler Warnings #
-FLOG_COLORS			:=	true
+USES_WINDOWS		:=	true		# OS #
+USES_DESKTOP		:=	true		# OS MODE #
+USES_GCC			:=	true		# Compiler Suite (For completeness) #
+USES_MINGW			:=	true		# Compiler Extra Name (where applicible) #
 # - ------------------------------------------------------------------------ - #
-DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW FLOG_COLORS
+USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
+USES_WARNINGS		:=	true		# Use Extra Compiler Warnings #
+# - ------------------------------------------------------------------------ - #
+DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW 
+DEFINES				+=	USES_FLOG_COLORS USES_WARNINGS
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
