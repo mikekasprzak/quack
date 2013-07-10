@@ -2,7 +2,7 @@
 #ifdef USES_SDL2
 // - ------------------------------------------------------------------------------------------ - //
 #include <API/API_SDL2.h>
-#include <API/API_OpenGL2.h>
+#include <API/API_OpenGL.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
