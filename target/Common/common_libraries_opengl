@@ -134,7 +134,7 @@ endif # USES_OPENGL2
 ifdef USES_GLEE
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
-#SRC_FOLDERS			+=	src/GEL/External/GLEE
+SRC_FOLDERS			+=	src/External/GLEE
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
 DEFINES				+=	USES_GLEE
