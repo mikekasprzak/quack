@@ -24,7 +24,7 @@ IGNORE_LIST			+=
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
 DEFINES				+=	PRODUCT_QUACK PRODUCT_CLIENT \
-						USES_GEL3 USES_SDL2
+						USES_GEL3 USES_SDL2 STBI_NO_WRITE
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	

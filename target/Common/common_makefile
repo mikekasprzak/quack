@@ -8,33 +8,6 @@ TARGET_DIR			:=	output/$(TARGET_NAME)
 TARGET				:=	$(TARGET_DIR)/$(BINARY_NAME)$(BINARY_SUFFIX)
 # - ------------------------------------------------------------------------ - #
 
-# - ------------------------------------------------------------------------ - #
-# Compiler and Linker Flags (NOTE: Optimizations are in common_tools) #
-CFLAGS				+=	-fno-strict-aliasing
-# - ------------------------------------------------------------------------ - #
-CPPFLAGS			+=	-fno-rtti -fno-strict-aliasing
-# - ------------------------------------------------------------------------ - #
-LDFLAGS				+=	
-# - ------------------------------------------------------------------------ - #
-
-# - ------------------------------------------------------------------------ - #
-ifdef USES_CPP11		# C++11 Support (Disabled by default) #
-# - ------------------------------------------------------------------------ - #
-CPPFLAGS			+=	--std=gnu++0x 
-# - ------------------------------------------------------------------------ - #
-endif # USES_CPP11 #
-# - ------------------------------------------------------------------------ - #
-ifdef USES_WARNINGS		# Extra Warnings #
-# - ------------------------------------------------------------------------ - #
-CPPFLAGS			+=	-Wshadow -Wlogical-op \
-						-Wmissing-braces -Wmissing-include-dirs \
-						-Wall -Wno-unknown-pragmas -Wno-unused-parameter \
-						-Wextra -Wno-ignored-qualifiers \
-#						-Winline -Wundef -Wcast-qual -Wconversion -Wpadded \
-#						-Wdouble-promotion -Wfloat-equal \
-# - ------------------------------------------------------------------------ - #
-endif # USES_WARNINGS #
-# - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
 SRC_FILTER			:=	$(addsuffix /%,$(SRC_FOLDERS))
@@ -64,17 +37,6 @@ TARGET_STUBS_CHECK	:=	$(shell tools/FileExists.sh $(TARGET_STUBS))
 #output/$(TARGET_NAME)/%: $(FILES_FOLDER)/%
 #	cp $< $@
 # - ------------------------------------------------------------------------ - #
-
-
-# - ------------------------------------------------------------------------ - #
-$(TARGET): $(TARGET_STUBS) $(FOLDER_STUBS) $(H_FILES) $(.O_FILES) $(OTHER_FILES_DEP) startcache
-ifneq ($(strip $(COPY_FILES)),)
-	cp -t $(TARGET_DIR) $(COPY_FILES)
-endif
-	$(GXX) $(DEFINES) $(LDFLAGS) $(OTHER_O_FILES) $(.O_FILES) -o $@ $(LIBRARIES)
-# - ------------------------------------------------------------------------ - #
-#	./tools/version.sh>obj/$(TARGET_NAME)/BuildVersion.cpp
-# obj/$(TARGET_NAME)/BuildVersion.cpp
 
 
 # - ------------------------------------------------------------------------ - #
@@ -111,20 +73,6 @@ startcache:
 .PHONY: run clean cleanmain cleandeps deps makedirs cache startcache
 # - ------------------------------------------------------------------------ - #
 
-# - ------------------------------------------------------------------------ - #
-obj/$(TARGET_NAME)/%.c.o: %.c
-	$(GCC) $(DEFINES) $(INCLUDES) $(CFLAGS) -MMD -MF $@.d -c $< -o $@
-# - ------------------------------------------------------------------------ - #
-obj/$(TARGET_NAME)/%.cpp.o: %.cpp
-	$(GXX) $(DEFINES) $(INCLUDES) $(CPPFLAGS) -MMD -MF $@.d -c $< -o $@
-# - ------------------------------------------------------------------------ - #
-# The below 2 cause a conflict with the -include at the bottom. #
-# - ------------------------------------------------------------------------ - #
-#obj/$(TARGET_NAME)/%.c.o.d: %.c
-#	$(GCC) $(DEFINES) $(INCLUDES) $(CFLAGS) -MMD -MF $@ -E $< -o $@.pp
-# - ------------------------------------------------------------------------ - #
-#obj/$(TARGET_NAME)/%.cpp.o.d: %.cpp
-#	$(GXX) $(DEFINES) $(INCLUDES) $(CPPFLAGS) -MMD -MF $@ -E $< -o $@.pp
 # - ------------------------------------------------------------------------ - #
 obj/%/_stub:
 	mkdir -p obj/$*
