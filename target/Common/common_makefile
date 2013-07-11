@@ -8,7 +8,6 @@ TARGET_DIR			:=	output/$(TARGET_NAME)
 TARGET				:=	$(TARGET_DIR)/$(BINARY_NAME)$(BINARY_SUFFIX)
 # - ------------------------------------------------------------------------ - #
 
-
 # - ------------------------------------------------------------------------ - #
 SRC_FILTER			:=	$(addsuffix /%,$(SRC_FOLDERS))
 # - ------------------------------------------------------------------------ - #
@@ -21,8 +20,13 @@ endif # WINDIR #
 CODE_FILES			:=	$(filter %.cpp %.c,$(filter $(SRC_FILTER),$(ALL_CODE_FILES)))
 H_FILES				:=	$(filter %.hpp %.h,$(filter $(SRC_FILTER),$(ALL_CODE_FILES)))
 
-INCLUDES			:=	$(addprefix -I,$(SRC_FOLDERS) $(INCLUDE_FOLDERS))
-DEFINES				:=	$(addprefix -D,$(DEFINES))
+# Make a backup of all include folders and defines, in case we need to use something other than -I and -D #
+INCLUDES_ORIGINAL	:=	$(SRC_FOLDERS) $(INCLUDE_FOLDERS)
+DEFINES_ORIGINAL	:=	$(DEFINES)
+
+# Add -I and -D prefix used by GCC and Clang #
+INCLUDES			:=	$(addprefix -I,$(INCLUDES_ORIGINAL))
+DEFINES				:=	$(addprefix -D,$(DEFINES_ORIGINAL))
 # - ------------------------------------------------------------------------ - #
 .O_FILES			:=	$(addprefix obj/$(TARGET_NAME)/,$(addsuffix .o,$(filter-out $(IGNORE_LIST),$(CODE_FILES))))
 .O_FOLDERS			:=	$(sort $(dir $(.O_FILES)))
