@@ -19,9 +19,9 @@ DEFINES				+=	USES_LOGCAT USES_LESS_NEWLINES USES_EXTRA_QUOTES
 CPUFLAGS			:=	
 # - ------------------------------------------------------------------------ - #
 # Compiler and Linker Flags (specific to this target) #
-CFLAGS				+=	$(CPUFLAGS) #-I /usr/local/include 
-CPPFLAGS			+=	$(CPUFLAGS) #-I /usr/local/include
-LDFLAGS				+=	#-L /usr/local/lib 
+CFLAGS				+=	$(CPUFLAGS) 
+CPPFLAGS			+=	$(CPUFLAGS) -fexceptions
+LDFLAGS				+=	
 # - ------------------------------------------------------------------------ - #
 LIBRARIES			+=	
 # - ------------------------------------------------------------------------ - #

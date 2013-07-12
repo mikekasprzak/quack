@@ -8,10 +8,11 @@ SDL_PATH := ../SDL2
 # Load our generated list of things #
 include ../../output/sku_client-makefile_android/Android.mk
 
-_FLAGS			:=	$(addprefix -D,$(DEFINES))
+DEFINES			:=	$(addprefix -D,$(DEFINES))
 
-LOCAL_CFLAGS	:= $(_FLAGS)
-LOCAL_CPPFLAGS	:= $(_FLAGS) -fexceptions
+LOCAL_CFLAGS	:= $(DEFINES) $(CFLAGS)
+LOCAL_CPPFLAGS	:= $(DEFINES) $(CPPFLAGS)
+LOCAL_LDFLAGS	:= $(LDFLAGS)
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include $(addprefix ../../,$(INCLUDES))
 
@@ -22,8 +23,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_SHARED_LIBRARIES := SDL2
 
-LOCAL_LDLIBS := -lGLESv2 -llog
-#LOCAL_LDLIBS := -lGLESv1_CM -llog
+LOCAL_LDLIBS := $(LIBRARIES) -llog
 
 # -llog - Needed for __android_log_print
 

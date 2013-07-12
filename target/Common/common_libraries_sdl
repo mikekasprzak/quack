@@ -24,7 +24,8 @@ COPY_FILES			+=
 # Other Object files you want to link against (i.e. an embedded Windows Icon) #
 OTHER_O_FILES		+=	
 # - ------------------------------------------------------------------------ - #
-# TODO: Use sdl2-config
+ifdef USES_DESKTOP
+# - ------------------------------------------------------------------------ - #
 CFLAGS				+=	$(shell sdl2-config --cflags)
 CPPFLAGS			+=	$(shell sdl2-config --cflags)
 # - ------------------------------------------------------------------------ - #
@@ -37,6 +38,8 @@ else # USES_WINDOWS #
 LIBRARIES			+=	$(shell sdl2-config --libs)
 COPY_FILES			+=	/usr/local/lib/libSDL2-2.0.so.0
 endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_DESKTOP #
 # - ------------------------------------------------------------------------ - #
 USES_OPENGL_LIB		:=	true	# Requires OpenGL #
 # - ------------------------------------------------------------------------ - #
