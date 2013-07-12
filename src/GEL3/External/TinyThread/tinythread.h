@@ -59,6 +59,10 @@ freely, subject to the following restrictions:
 #if !defined(_TTHREAD_PLATFORM_DEFINED_)
   #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
     #define _TTHREAD_WIN32_
+  #elif defined(USES_3DS)
+    #define _TTHREAD_3DS_
+  #elif defined(USES_WIIU)
+    #define _TTHREAD_WIIU_
   #else
     #define _TTHREAD_POSIX_
   #endif
@@ -76,6 +80,10 @@ freely, subject to the following restrictions:
     #undef WIN32_LEAN_AND_MEAN
     #undef __UNDEF_LEAN_AND_MEAN
   #endif
+#elif defined(_TTHREAD_3DS_)
+  // TODO //
+#elif defined(_TTHREAD_WIIU_)
+  // TODO //
 #else
   #include <pthread.h>
   #include <signal.h>
@@ -166,6 +174,8 @@ class mutex {
     {
 #if defined(_TTHREAD_WIN32_)
       InitializeCriticalSection(&mHandle);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutex_init(&mHandle, NULL);
 #endif
@@ -176,6 +186,8 @@ class mutex {
     {
 #if defined(_TTHREAD_WIN32_)
       DeleteCriticalSection(&mHandle);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutex_destroy(&mHandle);
 #endif
@@ -191,6 +203,8 @@ class mutex {
       EnterCriticalSection(&mHandle);
       while(mAlreadyLocked) Sleep(1000); // Simulate deadlock...
       mAlreadyLocked = true;
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutex_lock(&mHandle);
 #endif
@@ -211,6 +225,10 @@ class mutex {
         ret = false;
       }
       return ret;
+#elif defined(_TTHREAD_3DS_)
+	  // STUB //
+	  return false;
+#elif defined(_TTHREAD_WIIU_)
 #else
       return (pthread_mutex_trylock(&mHandle) == 0) ? true : false;
 #endif
@@ -224,6 +242,8 @@ class mutex {
 #if defined(_TTHREAD_WIN32_)
       mAlreadyLocked = false;
       LeaveCriticalSection(&mHandle);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutex_unlock(&mHandle);
 #endif
@@ -235,6 +255,8 @@ class mutex {
 #if defined(_TTHREAD_WIN32_)
     CRITICAL_SECTION mHandle;
     bool mAlreadyLocked;
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     pthread_mutex_t mHandle;
 #endif
@@ -255,6 +277,8 @@ class recursive_mutex {
     {
 #if defined(_TTHREAD_WIN32_)
       InitializeCriticalSection(&mHandle);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutexattr_t attr;
       pthread_mutexattr_init(&attr);
@@ -268,6 +292,8 @@ class recursive_mutex {
     {
 #if defined(_TTHREAD_WIN32_)
       DeleteCriticalSection(&mHandle);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutex_destroy(&mHandle);
 #endif
@@ -281,6 +307,8 @@ class recursive_mutex {
     {
 #if defined(_TTHREAD_WIN32_)
       EnterCriticalSection(&mHandle);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutex_lock(&mHandle);
 #endif
@@ -295,6 +323,10 @@ class recursive_mutex {
     {
 #if defined(_TTHREAD_WIN32_)
       return TryEnterCriticalSection(&mHandle) ? true : false;
+#elif defined(_TTHREAD_3DS_)
+	  // STUB //
+	  return false;
+#elif defined(_TTHREAD_WIIU_)
 #else
       return (pthread_mutex_trylock(&mHandle) == 0) ? true : false;
 #endif
@@ -307,6 +339,8 @@ class recursive_mutex {
     {
 #if defined(_TTHREAD_WIN32_)
       LeaveCriticalSection(&mHandle);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_mutex_unlock(&mHandle);
 #endif
@@ -317,6 +351,8 @@ class recursive_mutex {
   private:
 #if defined(_TTHREAD_WIN32_)
     CRITICAL_SECTION mHandle;
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     pthread_mutex_t mHandle;
 #endif
@@ -394,6 +430,8 @@ class condition_variable {
     /// Constructor.
 #if defined(_TTHREAD_WIN32_)
     condition_variable();
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     condition_variable()
     {
@@ -404,6 +442,8 @@ class condition_variable {
     /// Destructor.
 #if defined(_TTHREAD_WIN32_)
     ~condition_variable();
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     ~condition_variable()
     {
@@ -430,6 +470,8 @@ class condition_variable {
       aMutex.unlock();
       _wait();
       aMutex.lock();
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
       pthread_cond_wait(&mHandle, &aMutex.mHandle);
 #endif
@@ -442,6 +484,8 @@ class condition_variable {
     /// woken up.
 #if defined(_TTHREAD_WIN32_)
     void notify_one();
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     inline void notify_one()
     {
@@ -456,6 +500,8 @@ class condition_variable {
     /// woken up.
 #if defined(_TTHREAD_WIN32_)
     void notify_all();
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     inline void notify_all()
     {
@@ -471,6 +517,8 @@ class condition_variable {
     HANDLE mEvents[2];                  ///< Signal and broadcast event HANDLEs.
     unsigned int mWaitersCount;         ///< Count of the number of waiters.
     CRITICAL_SECTION mWaitersCountLock; ///< Serialize access to mWaitersCount.
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     pthread_cond_t mHandle;
 #endif
@@ -482,6 +530,10 @@ class thread {
   public:
 #if defined(_TTHREAD_WIN32_)
     typedef HANDLE native_handle_type;
+#elif defined(_TTHREAD_3DS_)
+	// STUB //
+	typedef int native_handle_type;
+#elif defined(_TTHREAD_WIIU_)
 #else
     typedef pthread_t native_handle_type;
 #endif
@@ -651,7 +703,7 @@ namespace chrono {
 
       /// Construct a duration object with the given duration.
       template <class _Rep2>
-        explicit duration(const _Rep2& r) : rep_(r) {};
+        explicit duration(const _Rep2& r) : rep_(r) {}
 
       /// Return the value of the duration object.
       rep count() const
@@ -682,6 +734,8 @@ namespace this_thread {
   {
 #if defined(_TTHREAD_WIN32_)
     Sleep(0);
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     sched_yield();
 #endif
@@ -700,6 +754,8 @@ namespace this_thread {
   {
 #if defined(_TTHREAD_WIN32_)
     Sleep(int(double(aTime.count()) * (1000.0 * _Period::_as_double()) + 0.5));
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
     usleep(int(double(aTime.count()) * (1000000.0 * _Period::_as_double()) + 0.5));
 #endif

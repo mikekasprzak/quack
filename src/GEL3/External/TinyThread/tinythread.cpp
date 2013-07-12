@@ -156,7 +156,7 @@ struct _thread_start_info {
 // Thread wrapper function.
 #if defined(_TTHREAD_WIN32_)
 unsigned WINAPI thread::wrapper_function(void * aArg)
-#elif defined(_TTHREAD_POSIX_)
+#elif defined(_TTHREAD_POSIX_) || defined(_TTHREAD_3DS_) || defined(_TTHREAD_WIIU_)
 void * thread::wrapper_function(void * aArg)
 #endif
 {
@@ -264,6 +264,10 @@ thread::id thread::get_id() const
     return id();
 #if defined(_TTHREAD_WIN32_)
   return id((unsigned long int) mWin32ThreadID);
+#elif defined(_TTHREAD_3DS_)
+	// Stub //
+    return 0;
+#elif defined(_TTHREAD_WIIU_)
 #elif defined(_TTHREAD_POSIX_)
   return _pthread_t_to_ID(mHandle);
 #endif
@@ -295,6 +299,10 @@ thread::id this_thread::get_id()
 {
 #if defined(_TTHREAD_WIN32_)
   return thread::id((unsigned long int) GetCurrentThreadId());
+#elif defined(_TTHREAD_3DS_)
+  // Stub //
+  return 0;
+#elif defined(_TTHREAD_WIIU_)
 #elif defined(_TTHREAD_POSIX_)
   return _pthread_t_to_ID(pthread_self());
 #endif

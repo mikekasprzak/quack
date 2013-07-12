@@ -30,6 +30,8 @@ freely, subject to the following restrictions:
 #if !defined(_TTHREAD_PLATFORM_DEFINED_)
   #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
     #define _TTHREAD_WIN32_
+  #elif defined(USES_3DS)
+    #define _TTHREAD_3DS_
   #else
     #define _TTHREAD_POSIX_
   #endif
@@ -56,6 +58,8 @@ freely, subject to the following restrictions:
     #undef WIN32_LEAN_AND_MEAN
     #undef __UNDEF_LEAN_AND_MEAN
   #endif
+#elif defined(_TTHREAD_3DS_)
+#elif defined(_TTHREAD_WIIU_)
 #else
   #ifdef _FAST_MUTEX_ASM_
     #include <sched.h>
