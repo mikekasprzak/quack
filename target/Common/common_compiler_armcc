@@ -8,9 +8,14 @@ LD					:=	$(BIN_DIR)/armlink
 # - ------------------------------------------------------------------------ - #
 LM_LICENSE_FILE		=	C:/Nintendo/armcc_4_1/nintendo-anyhost.lic
 # - ------------------------------------------------------------------------ - #
-INCLUDES			+=	-I$(ROOT_DIR)/include
+INCLUDES			+=	-JC:/Nintendo/CTR_SDK/include \
+						-JC:/Nintendo/armcc_4_1/include \
 # - ------------------------------------------------------------------------ - #
-
+LIBRARIES			+=	
+# - ------------------------------------------------------------------------ - #
+LDFLAGS				+=	--libpath C:/Nintendo/CTR_SDK/libraries/CTR-TS.Process.MPCore \
+						--libpath C:/Nintendo/armcc_4_1/lib/armlib \
+# - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
 # Release Build Only #
@@ -63,8 +68,8 @@ $(TARGET): $(TARGET_STUBS) $(FOLDER_STUBS) $(H_FILES) $(.O_FILES) $(OTHER_FILES_
 # The below 2 cause a conflict with the -include in common_makefile. #
 # - ------------------------------------------------------------------------ - #
 obj/$(TARGET_NAME)/%.c.o: %.c
-	$(CC) $(DEFINES) $(INCLUDES) $(CFLAGS) --depend=$@.d --depend-format=unix -c $< -o $@
+	$(CC) $(DEFINES) $(INCLUDES) $(CFLAGS) --depend=$@.d --depend-format=unix --no_depend_system_headers -c $< -o $@
 # - ------------------------------------------------------------------------ - #
 obj/$(TARGET_NAME)/%.cpp.o: %.cpp
-	$(CXX) $(DEFINES) $(INCLUDES) $(CPPFLAGS) --depend=$@.d --depend-format=unix -c $< -o $@
+	$(CXX) $(DEFINES) $(INCLUDES) $(CPPFLAGS) --depend=$@.d --depend-format=unix --no_depend_system_headers -c $< -o $@
 # - ------------------------------------------------------------------------ - #
