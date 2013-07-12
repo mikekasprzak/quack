@@ -25,11 +25,11 @@ void int_func( int Signal ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-int main( int argc, char* argv[] ) {
+extern "C" int main( int argc, char* argv[] ) {
 	LogInit();
 	
-	signal( SIGTERM, term_func );
-	signal( SIGINT, int_func );
+//	signal( SIGTERM, term_func );
+//	signal( SIGINT, int_func );
 	
 	// *** //
 #define STR(m) #m

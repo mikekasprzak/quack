@@ -4,10 +4,10 @@ USES_ANDROID		:=	true		# OS #
 USES_MOBILE			:=	true		# OS MODE #
 USES_GCC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
-USES_STDOUT			:=	true		# FileLog Output to use #
+USES_LOGCAT			:=	true		# FileLog Output to use #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_ANDROID USES_MOBILE USES_GCC
-DEFINES				+=	USES_STDOUT
+DEFINES				+=	USES_LOGCAT
 # - ------------------------------------------------------------------------ - #
 
 
