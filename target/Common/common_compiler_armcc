@@ -14,7 +14,7 @@ INCLUDES			+=	-JC:/Nintendo/CTR_SDK/include \
 LIBRARIES			+=	
 # - ------------------------------------------------------------------------ - #
 LDFLAGS				+=	--libpath C:/Nintendo/CTR_SDK/libraries/CTR-TS.Process.MPCore \
-						--libpath C:/Nintendo/armcc_4_1/lib/armlib \
+						--libpath C:/Nintendo/armcc_4_1/lib \
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
