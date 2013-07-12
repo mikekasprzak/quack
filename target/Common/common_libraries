@@ -19,7 +19,7 @@ endif # USES_BATCHING #
 ifdef USES_HG
 # - ------------------------------------------------------------------------ - #
 HG_VERSION			:=	$(shell tools/HgVersion.sh)
-HG_HASH				:=	'"$(shell tools/HgHash.sh)"'
+HG_HASH				:=	"$(shell tools/HgHash.sh)"
 SCM_VERSION			:=	$(HG_VERSION)
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	HG_VERSION=$(HG_VERSION) \
