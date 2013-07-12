@@ -22,7 +22,9 @@ LOCAL_SRC_FILES := \
 
 LOCAL_SHARED_LIBRARIES := SDL2
 
-#LOCAL_LDLIBS := -lGLESv2 -llog
-LOCAL_LDLIBS := -lGLESv1_CM -llog
+LOCAL_LDLIBS := -lGLESv2 -llog
+#LOCAL_LDLIBS := -lGLESv1_CM -llog
+
+# -llog - Needed for __android_log_print
 
 include $(BUILD_SHARED_LIBRARY)

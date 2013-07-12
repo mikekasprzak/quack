@@ -157,7 +157,9 @@ void FLogAlways( const char* s, va_list vargs ) {
 	FLOG_FUNCV( s, vargs );
 	FPostLog( s );
 
+#ifndef USES_NO_LOG_NEWLINE
 	FLOG_FUNC( (char*)"\n" );
+#endif // USES_NO_LOG_NEWLINE //
 
 	_FLogFlush();
 }
