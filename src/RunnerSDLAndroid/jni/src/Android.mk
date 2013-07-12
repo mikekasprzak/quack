@@ -6,7 +6,7 @@ LOCAL_MODULE := main
 SDL_PATH := ../SDL2
 
 # Load our generated list of things #
-include ../../obj/sku_client-makefile_android/Android.mk
+include ../../output/sku_client-makefile_android/Android.mk
 
 _FLAGS			:=	$(addprefix -D,$(DEFINES))
 
