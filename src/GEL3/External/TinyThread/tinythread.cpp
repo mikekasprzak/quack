@@ -268,6 +268,8 @@ thread::id thread::get_id() const
 	// Stub //
     return 0;
 #elif defined(_TTHREAD_WIIU_)
+	// Stub //
+    return 0;
 #elif defined(_TTHREAD_POSIX_)
   return _pthread_t_to_ID(mHandle);
 #endif
@@ -303,6 +305,8 @@ thread::id this_thread::get_id()
   // Stub //
   return 0;
 #elif defined(_TTHREAD_WIIU_)
+  // Stub //
+  return 0;
 #elif defined(_TTHREAD_POSIX_)
   return _pthread_t_to_ID(pthread_self());
 #endif

@@ -229,6 +229,8 @@ class mutex {
 	  // STUB //
 	  return false;
 #elif defined(_TTHREAD_WIIU_)
+	  // STUB //
+	  return false;
 #else
       return (pthread_mutex_trylock(&mHandle) == 0) ? true : false;
 #endif
@@ -327,6 +329,8 @@ class recursive_mutex {
 	  // STUB //
 	  return false;
 #elif defined(_TTHREAD_WIIU_)
+	  // STUB //
+	  return false;
 #else
       return (pthread_mutex_trylock(&mHandle) == 0) ? true : false;
 #endif
@@ -534,6 +538,8 @@ class thread {
 	// STUB //
 	typedef int native_handle_type;
 #elif defined(_TTHREAD_WIIU_)
+	// STUB //
+	typedef int native_handle_type;
 #else
     typedef pthread_t native_handle_type;
 #endif

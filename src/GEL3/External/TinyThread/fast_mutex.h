@@ -32,6 +32,8 @@ freely, subject to the following restrictions:
     #define _TTHREAD_WIN32_
   #elif defined(USES_3DS)
     #define _TTHREAD_3DS_
+  #elif defined(USES_WIIU)
+    #define _TTHREAD_WIIU_
   #else
     #define _TTHREAD_POSIX_
   #endif

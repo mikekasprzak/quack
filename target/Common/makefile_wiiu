@@ -1,0 +1,61 @@
+# - ------------------------------------------------------------------------ - #
+# Platform Specific Target Influencing Defines #
+USES_UNIX			:=	true		# OS #
+USES_WIIU			:=	true		# OS MODE #
+USES_GHSMULTI		:=	true		# Compiler Suite (For completeness) #
+# - ------------------------------------------------------------------------ - #
+USES_STDOUT			:=	true		# FileLog Output to use #
+# - ------------------------------------------------------------------------ - #
+# DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
+# - ------------------------------------------------------------------------ - #
+DEFINES				+=	USES_UNIX USES_WIIU USES_GHSMULTI
+DEFINES				+=	USES_STDOUT
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
+SRC_FOLDERS			+=	src/MainWiiU
+# - ------------------------------------------------------------------------ - #
+CPUFLAGS			:=	
+# - ------------------------------------------------------------------------ - #
+# Compiler and Linker Flags (specific to this target) #
+CFLAGS				+=	
+CPPFLAGS			+=	--exceptions
+LDFLAGS				+=	
+# - ------------------------------------------------------------------------ - #
+LIBRARIES			+=	
+# - ------------------------------------------------------------------------ - #
+INCLUDE_FOLDERS		+=	
+# - ------------------------------------------------------------------------ - #
+# Release Build Only #
+ifdef NDEBUG
+LDFLAGS				+=	
+endif
+# - ------------------------------------------------------------------------ - #
+# File extension for the Binary (.exe on Windows, .i686 .x86_64 on Linux) #
+BINARY_SUFFIX		:=	.wiiu
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+# Graphical Applications on the Web use OpenGL w/ Shaders. #
+# - ------------------------------------------------------------------------ - #
+#ifdef USES_GRAPHICS				# Has Graphics #
+#ifdef USES_SHADERS				# Graphics with Shaders #
+# - ------------------------------------------------------------------------ - #
+#USES_OPENGL			:=	true	# Uses one of the "OpenGL Family" of APIs #
+#USES_OPENGL_ES		:=	true	# Uses one of the OpenGL ES APIs #
+#USES_OPENGL_ES2		:=	true	# Use OpenGL2 with its standard batching (VBO) #
+# - ------------------------------------------------------------------------ - #
+#endif # USES_SHADERS #
+#endif # USES_GRAPHICS #
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+include target/Common/common_libraries
+# - ------------------------------------------------------------------------ - #
+include target/Common/common_makefile
+# - ------------------------------------------------------------------------ - #
+include target/Common/common_compiler_multi
+# - ------------------------------------------------------------------------ - #
+include target/Common/common_rules
+# - ------------------------------------------------------------------------ - #
