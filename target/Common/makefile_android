@@ -5,10 +5,13 @@ USES_MOBILE			:=	true		# OS MODE #
 USES_GCC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
 USES_LOGCAT			:=	true		# FileLog Output to use #
-USES_NO_LOG_NEWLINE	:=	true		# Don't output extra newline (\n) in logs #
+USES_LESS_NEWLINES	:=	true		# Don't output extra newline (\n) in logs #
+USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
+# - ------------------------------------------------------------------------ - #
+# DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_ANDROID USES_MOBILE USES_GCC
-DEFINES				+=	USES_LOGCAT USES_NO_LOG_NEWLINE
+DEFINES				+=	USES_LOGCAT USES_LESS_NEWLINES USES_EXTRA_QUOTES
 # - ------------------------------------------------------------------------ - #
 
 

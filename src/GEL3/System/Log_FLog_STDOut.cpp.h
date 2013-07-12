@@ -22,9 +22,11 @@ inline void _FLogFlush() {
 #ifdef USES_LOGCAT
 // - ------------------------------------------------------------------------------------------ - //
 #include <android/log.h>
+#include <Main/Main_Product.h>
+
 FILE* FLOG_TARGET = 			stdout;
-#define FLOG_FUNCV( ... )		__android_log_vprint( ANDROID_LOG_DEBUG, "Quack", __VA_ARGS__ )
-#define FLOG_FUNC( ... )		__android_log_print( ANDROID_LOG_DEBUG, "Quack", __VA_ARGS__ )
+#define FLOG_FUNCV( ... )		__android_log_vprint( ANDROID_LOG_DEBUG, ProductName, __VA_ARGS__ )
+#define FLOG_FUNC( ... )		__android_log_print( ANDROID_LOG_DEBUG, ProductName, __VA_ARGS__ )
 
 inline void _FLogFlush() {
 }

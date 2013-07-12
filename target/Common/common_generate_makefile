@@ -10,25 +10,15 @@ $(TARGET).mk: $(TARGET_STUBS) always
 	@echo "DEFINES := $(DEFINES_ORIGINAL)" >>$@
 	@echo "INCLUDES := $(INCLUDES_ORIGINAL)" >>$@
 	@echo "LIBRARIES := $(LIBRARIES)" >>$@
+	@echo "-------------------------------------------------------------------------"
 	@echo "Finished generating makefile. To create an Android .apk do the following:"
 	@echo "  ndk-build     (to compile native code (gnu make))"
 	@echo "  ant debug     (to build the debug .apk file)"
 	@echo "  ant installd  (to install the debug build on device)"
 	@echo "(or optionally 'ant release' and 'ant installr' for release builds)"
+	@echo "-------------------------------------------------------------------------"
 # - ------------------------------------------------------------------------ - #
 
-# - ------------------------------------------------------------------------ - #
-cache:
-	@echo Updating Depend Cache...
-	@cat $(.O_FILES:.o=.o.d)>obj/$(TARGET_NAME)/.ocache
-	@echo Depend Cache Updated
-# - ------------------------------------------------------------------------ - #
-startcache:
-	$(MAKE) --quiet --no-print-directory cache NO_DEPEND=true &
-# - ------------------------------------------------------------------------ - #
-obj/%/_stub:
-	mkdir -p obj/$*
-	@touch $@
 # - ------------------------------------------------------------------------ - #
 # Yes, this creates the output folder, but notes the creation under obj #
 obj/$(TARGET_NAME)/output_stub:
@@ -39,5 +29,5 @@ obj/$(TARGET_NAME)/output_stub:
 # - ------------------------------------------------------------------------ - #
 always:
 # - ------------------------------------------------------------------------ - #
-.PHONY: always cache startcache
+.PHONY: always
 # - ------------------------------------------------------------------------ - #

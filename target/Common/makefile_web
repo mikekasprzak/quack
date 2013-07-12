@@ -6,6 +6,8 @@ USES_CLANG			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
 USES_STDOUT			:=	true		# FileLog Output to use #
 # - ------------------------------------------------------------------------ - #
+# DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
+# - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_UNIX USES_WEB USES_CLANG
 DEFINES				+=	USES_STDOUT
 # - ------------------------------------------------------------------------ - #

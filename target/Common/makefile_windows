@@ -9,6 +9,8 @@ USES_STDOUT			:=	true		# FileLog Output to use #
 USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
 USES_WARNINGS		:=	true		# Use Extra Compiler Warnings #
 # - ------------------------------------------------------------------------ - #
+# DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
+# - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW 
 DEFINES				+=	USES_STDOUT USES_FLOG_COLORS USES_WARNINGS
 # - ------------------------------------------------------------------------ - #
