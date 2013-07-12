@@ -3,6 +3,7 @@
 #define __GEL_MAIN_PRODUCT_H__
 // - ------------------------------------------------------------------------------------------ - //
 extern const char* const ProductName;
+extern const char* const ProductVersion;
 extern const char* const FullProductName;
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef PRODUCT_SKU
