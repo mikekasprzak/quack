@@ -11,11 +11,13 @@ $(TARGET).mk: $(TARGET_STUBS) always
 	@echo "INCLUDES := $(INCLUDES_ORIGINAL)" >>$@
 	@echo "LIBRARIES := $(LIBRARIES)" >>$@
 	@echo "-------------------------------------------------------------------------"
-	@echo "Finished generating makefile. To create an Android .apk do the following:"
+	@echo "Finished generating makefile. Open a Cygwin shell and do the following:"
 	@echo "  ndk-build     (to compile native code (gnu make))"
 	@echo "  ant debug     (to build the debug .apk file)"
 	@echo "  ant installd  (to install the debug build on device)"
-	@echo "(or optionally 'ant release' and 'ant installr' for release builds)"
+	@echo "(optionally 'ant release' and 'ant installr' for release builds)"
+	@echo "('adb logcat' to view realtime logs, 'adb shell' to exec remote commands')"
+	@echo "('adb push' to send files to device, 'adb devices' to see if connected)" 
 	@echo "-------------------------------------------------------------------------"
 # - ------------------------------------------------------------------------ - #
 
