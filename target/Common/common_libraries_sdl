@@ -4,7 +4,7 @@
 ifdef USES_SDL2
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
-SRC_FOLDERS			+=	src/Main/MainSDL
+SRC_FOLDERS			+=	src/Main/SDL
 # - ------------------------------------------------------------------------ - #
 # Places to ONLY include from #
 INCLUDE_FOLDERS		+=	
