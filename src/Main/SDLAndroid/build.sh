@@ -5,7 +5,7 @@
 set -e
 
 # Build Process #
-ndk-build
+ndk-build -j
 ant debug
 ant installd
 ./run.sh

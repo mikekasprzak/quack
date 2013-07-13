@@ -3,6 +3,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := main
+
 SDL_PATH := ../SDL2
 
 # Load our generated list of things #
