@@ -27,7 +27,7 @@
 #ifndef __GEL_LIB_SIGNAL_H__
 #define __GEL_LIB_SIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <Lib/GelArray_Core.h>
+#include <Lib/GelArray/GelArray_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
 class Signal {
 public:
