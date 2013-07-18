@@ -47,16 +47,31 @@ public:
 		}
 	}
 	
-	inline void operator () ( void* UserDataPtr = 0 ) const {
+	// Pointer version of calling //
+	inline void operator () ( void* UserDataPtr ) const {
 		if ( Funcs ) {
 			for ( size_t idx = 0; idx < Funcs->Size; idx++ ) {
 				Funcs->Data[idx]( UserDataPtr );
 			}
 		}
 	}
-	
-	inline void Connect( FVoidPtr _Func ) {
-		pushback_GelArray<FVoidPtr>( &Funcs, _Func );
+	// size_t version of calling //
+	inline void operator () ( const size_t UserData = 0 ) const {
+		if ( Funcs ) {
+			for ( size_t idx = 0; idx < Funcs->Size; idx++ ) {
+				Funcs->Data[idx]( (void*)UserData );
+			}
+		}
+	}
+		
+	// Now supports any pointer type as the argument //
+	template<class T>
+	inline void Connect( void (*_Func)(T*) ) {
+		pushback_GelArray<FVoidPtr>( &Funcs, (FVoidPtr)_Func );
+	}
+	// Alternatively, the size_t type is supported too since it's the same width as a pointer //
+	inline void Connect( void (*_Func)(size_t) ) {
+		pushback_GelArray<FVoidPtr>( &Funcs, (FVoidPtr)_Func );
 	}
 
 	inline void Disconnect( FVoidPtr _Func ) {
