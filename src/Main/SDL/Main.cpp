@@ -9,6 +9,8 @@
 #include <Main/Main_HgVersion.h>
 #include <Main/Main_Product.h>
 // - ------------------------------------------------------------------------------------------ - //
+#include <App.h>
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #include <signal.h>
@@ -24,12 +26,6 @@ void int_func( int Signal ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
-void MyFunc( void* ) {
-	Log("Triggered");
-}
-void MyFunc2( st Arg ) {
-	Log("Triggered Also. %i", (int)Arg );
-}
 
 // - ------------------------------------------------------------------------------------------ - //
 extern "C" int main( int argc, char* argv[] ) {
@@ -47,13 +43,7 @@ extern "C" int main( int argc, char* argv[] ) {
 	Log( "Hg Revision: %i [%s]", HG_VERSION, HG_HASH );
 	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
 
-	{
-		// Signal Testing Code //
-		Signal MySignal;
-		MySignal.Connect( MyFunc );
-		MySignal.Connect( MyFunc2 );
-		MySignal( 10 );
-	}
+	int Ret = AppMain();
 
 //	{
 //		GelFileInfo_Core Finf;
@@ -189,7 +179,7 @@ extern "C" int main( int argc, char* argv[] ) {
 //	
 	// **** //
 
-	return 0;
+	return Ret;
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_SDL2 //

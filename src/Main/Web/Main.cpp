@@ -8,13 +8,8 @@
 #include <Main/Main_HgVersion.h>
 #include <Main/Main_Product.h>
 // - ------------------------------------------------------------------------------------------ - //
-
-void MyFunc( void* ) {
-	Log("Triggered");
-}
-void MyFunc2( st Arg ) {
-	Log("Triggered Also. %i", (int)Arg );
-}
+#include <App.h>
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 int main( int argc, char* argv[] ) {
@@ -30,15 +25,7 @@ int main( int argc, char* argv[] ) {
 	Log( "Hg Revision: %i [%s]", HG_VERSION, HG_HASH );
 	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
 
-	{
-		// Signal Testing Code //
-		Signal MySignal;
-		MySignal.Connect( MyFunc );
-		MySignal.Connect( MyFunc2 );
-		MySignal( 13 );
-	}
-	
-	return 0;
+	return AppMain();
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_WEB //
