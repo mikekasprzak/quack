@@ -23,7 +23,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "Functor.h"		// Functor, and TFunctor -- Uses TinyThread++ //
 
-//#include "Signal.h"
+#include "Signal.h"
 
 //#include "threadlocal.h"	// Provides 'threadlocal' keyword, as a wrapper for __thread //
 // - ------------------------------------------------------------------------------------------ - //
