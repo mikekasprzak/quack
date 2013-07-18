@@ -18,7 +18,7 @@ struct _GelFileInfo* new_GelFileInfo( const char* InFile ) {
 //	struct _GelFileInfo* Ret = malloc( _GelFileInfo_Size );
 //	struct _GelFileInfo* Ret = calloc( _GelFileInfo_Size, 1 );
 	struct _GelFileInfo* Ret = alloc_GelFileInfo( _GelFileInfo_Size );
-	printf("T(%i) 0x%x (%s)\n", _GelFileInfo_Size, Ret, InFile );
+	//printf("T(%i) 0x%x (%s)\n", _GelFileInfo_Size, Ret, InFile );
 	
 	if ( InFile != 0 ) {
 		Ret->Err = stat( InFile, &(Ret->Status) );
