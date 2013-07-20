@@ -29,8 +29,8 @@ int main( int argc, char* argv[] ) {
 		
 	// *** //
 		
-	const char* FileName = "startup.nut.txt";
-	emscripten_async_wget_data(FileName,(void*)FileName,onLoad,onError);
+//	const char* FileName = "startup.nut.txt";
+//	emscripten_async_wget_data(FileName,(void*)FileName,onLoad,onError);
 
 	return AppMain();
 }
