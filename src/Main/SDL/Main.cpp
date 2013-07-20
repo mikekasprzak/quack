@@ -15,12 +15,12 @@
 #include <signal.h>
 // - ------------------------------------------------------------------------------------------ - //
 void term_func( int Signal ) {
-	Log( "\nSIGTERM (Terminate) recieved -- %i", Signal );
+	LogAlways( "\nGEL3: SIGTERM (Terminate) recieved -- %i", Signal );
 	exit(1);
 }
 // - ------------------------------------------------------------------------------------------ - //
 void int_func( int Signal ) {
-	Log( "\nSIGINT (Interrupt) recieved (CTRL+C) -- %i", Signal );
+	LogAlways( "\nGEL3: SIGINT (Interrupt) recieved (CTRL+C) -- %i", Signal );
 	exit(1);
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -30,17 +30,16 @@ void int_func( int Signal ) {
 extern "C" int main( int argc, char* argv[] ) {
 	LogInit();
 	
-	// *** //
-
+	// Install C/Unix Signals //
 	signal( SIGTERM, term_func );
 	signal( SIGINT, int_func );
-	
-	// *** //
 	
 	gelLogSystemAPIDetails();
 	gelLogGraphicsAPIDetails();
 
-	int Ret = AppMain();
+	// *** //
+
+	return AppMain();
 
 //	{
 //		GelFileInfo_Core Finf;
@@ -174,9 +173,6 @@ extern "C" int main( int argc, char* argv[] ) {
 //	Screen::DestroyNative();
 //	Log( "- Shutdown Complete." );
 //	
-	// **** //
-
-	return Ret;
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_SDL2 //

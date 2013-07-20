@@ -38,7 +38,10 @@ inline void FLogIndentation( int Count, const char Val = ' ' ) {
 		}
 		s[Count] = 0;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-security"
 		FLOG_FUNC( s );
+#pragma clang diagnostic pop
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
