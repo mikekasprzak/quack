@@ -6,13 +6,14 @@ USES_GCC			:=	true		# Compiler Suite (For completeness) #
 USES_MINGW			:=	true		# Compiler Extra Name (where applicible) #
 # - ------------------------------------------------------------------------ - #
 USES_STDOUT			:=	true		# FileLog Output to use #
+USES_UNIX_STAT		:=	true		# Uses standard Unix Style File Info Lookups #
 USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
 USES_WARNINGS		:=	true		# Use Extra Compiler Warnings #
 # - ------------------------------------------------------------------------ - #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW 
-DEFINES				+=	USES_STDOUT USES_FLOG_COLORS USES_WARNINGS
+DEFINES				+=	USES_STDOUT USES_UNIX_STAT USES_FLOG_COLORS USES_WARNINGS
 # - ------------------------------------------------------------------------ - #
 USES_XINPUT			:=	true	# XBOX 360 Controllers #
 #USES_SIXENSE		:=	true	# Razer Hydra Motion Controller #
