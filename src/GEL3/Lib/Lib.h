@@ -21,11 +21,8 @@
 #include "NSet.h"			// NSet1 to NSet5. Sets of N values, each with their own type //
 // NOTE: Supports indexing operator [], which returns a void* to the specific elements. Cast it to your desired type.
 // - ------------------------------------------------------------------------------------------ - //
-#include "Functor.h"		// Functor, and TFunctor -- Uses TinyThread++ //
-
 #include "Signal.h"
 
-//#include "threadlocal.h"	// Provides 'threadlocal' keyword, as a wrapper for __thread //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_LIB_LIB_H__ //
 // - ------------------------------------------------------------------------------------------ - //
