@@ -32,9 +32,8 @@
 class Signal {
 public:
 	typedef void (*FVoidPtr)(void*);
-	
+protected:
 	GelArray<FVoidPtr>* Funcs;
-
 public:
 	inline Signal() :
 		Funcs( 0 ) 
@@ -57,11 +56,7 @@ public:
 	}
 	// size_t version of calling //
 	inline void operator () ( const size_t UserData = 0 ) const {
-		if ( Funcs ) {
-			for ( size_t idx = 0; idx < Funcs->Size; idx++ ) {
-				Funcs->Data[idx]( (void*)UserData );
-			}
-		}
+		operator()( (void*)UserData );
 	}
 		
 	// Now supports any pointer type as the argument //
