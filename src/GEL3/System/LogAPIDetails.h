@@ -1,9 +1,8 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SYSTEM_SYSTEM_H__
-#define __GEL_SYSTEM_SYSTEM_H__
+#ifndef __GEL_SYSTEM_LOGAPIDETAILS_H__
+#define __GEL_SYSTEM_LOGAPIDETAILS_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "Log.h"
-#include "LogAPIDetails.h"
+void gelLogSystemAPIDetails();
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SYSTEM_SYSTEM_H__ //
+#endif // __GEL_SYSTEM_LOGAPIDETAILS_H__ //
 // - ------------------------------------------------------------------------------------------ - //

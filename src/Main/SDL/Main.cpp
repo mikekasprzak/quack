@@ -6,6 +6,8 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
+#include <Graphics/Graphics.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <Main/Main_HgVersion.h>
 #include <Main/Main_Product.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -42,6 +44,9 @@ extern "C" int main( int argc, char* argv[] ) {
 	Log( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
 	Log( "Hg Revision: %i [%s]", HG_VERSION, HG_HASH );
 	Log( "Compiled on: %s %s", __DATE__, __TIME__ );
+	
+	gelLogSystemAPIDetails();
+	gelLogGraphicsAPIDetails();
 
 	int Ret = AppMain();
 
