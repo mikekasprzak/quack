@@ -1,8 +1,16 @@
 // - ------------------------------------------------------------------------------------------ - //
-// Get Funky with the FuncChain //
+// My own Signal, inspired by Boost and Loki signals, but not shit //
+//
+// Does not do: Slot Ordering, Blocking, Scoped Connections
+// Reference: http://www.boost.org/doc/libs/1_52_0/doc/html/signals/tutorial.html
 // - ------------------------------------------------------------------------------------------ - //
 // Usage:
-// ??
+//   Signal MySignal;
+//   MySignal.Connect( MyFunc );
+//   MySignal.Connect( MyFunc2, 200 );
+//   MySignal.Connect( MyFunc3, 1 );
+//   MySignal.Connect( MyFunc3, 2 );
+//   void* Ret = MySignal( 25 );
 //
 // Pass 1 of 4 different function formattings for different usage.
 //
@@ -35,12 +43,12 @@
 // ProTip: You can pass class members if you have an appropriate static function in your class.
 // Sample goes here;
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_LIB_FUNCCHAIN_H__
-#define __GEL_LIB_FUNCCHAIN_H__
+#ifndef __GEL_LIB_SIGNAL_H__
+#define __GEL_LIB_SIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/GelArray/GelArray_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
-class FuncChain {
+class Signal {
 public:
 	// Arguments: User Ptr, Arguments Ptr, Return Ptr (also returns)  //
 	typedef void  (*F0VoidPtr)();
@@ -61,6 +69,7 @@ public:
 		F3VoidPtr	Function;
 		void*		UserPtr;
 		FuncFlags	Flags;
+		// TODO: Slot Ordering, either as an order member (int) or in some unused flag space //
 		
 		inline FuncType() { }
 		
@@ -79,12 +88,12 @@ public:
 protected:
 	GelArray<FuncType>*	Funcs;
 public:
-	inline FuncChain() :
+	inline Signal() :
 		Funcs( 0 )
 	{
 	}
 	
-	inline ~FuncChain() {
+	inline ~Signal() {
 		if ( Funcs ) {
 			delete_GelArray<FuncType>( Funcs );
 		}
@@ -132,10 +141,6 @@ public:
 	}
 	
 	// Zero Argument Functions //
-//	inline void Connect( void (*_Func)(void) ) {
-//		FuncType MyFunc( (F3VoidPtr)_Func, 0, FF_MODE_0 );
-//		pushback_GelArray<FuncType>( &Funcs, MyFunc );
-//	}
 	template<class T1>
 	inline void Connect( void (*_Func)(void), T1* = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, 0, FF_MODE_0 );
@@ -226,6 +231,7 @@ public:
 
 
 	// Remove Functions //
+	// TODO: this //
 	inline void Disconnect( FuncType _Func ) {
 		// findlast, to allow us to correctly nest a scoped connection //
 		int Index = findlast_GelArray<FuncType>( &Funcs, _Func );
@@ -234,7 +240,12 @@ public:
 		}
 	}
 	// TODO: all variations of the above //
+	
+	// TODO: Blocking //
+	
+	// TODO: Connections. i.e. a type returned by the Connect function that can be used to disconnect //
+	// TODO: Scoped Connections. A variant of the connection type that knows to auto-disconnect in destructor. //
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_LIB_FUNCCHAIN_H__
+#endif // __GEL_LIB_SIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //

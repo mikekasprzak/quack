@@ -21,7 +21,7 @@ st MyFunc3( st User, st Arg, st Ret ) {
 int AppMain() {
 	{
 		// Signal Testing Code //
-		FuncChain MySignal;
+		Signal MySignal;
 		MySignal.Connect( MyFunc );
 		MySignal.Connect( MyFunc2, 200 );
 		MySignal.Connect( MyFunc3, 1 );
