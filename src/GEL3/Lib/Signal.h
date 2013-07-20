@@ -69,6 +69,7 @@ public:
 		pushback_GelArray<FVoidPtr>( &Funcs, (FVoidPtr)_Func );
 	}
 
+	// Detach //
 	inline void Disconnect( FVoidPtr _Func ) {
 		// findlast, to allow us to correctly nest a scoped connection //
 		int Index = findlast_GelArray<FVoidPtr>( &Funcs, _Func );

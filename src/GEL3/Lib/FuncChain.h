@@ -132,85 +132,94 @@ public:
 	}
 	
 	// Zero Argument Functions //
-	inline void Connect( void (*_Func)(void) ) {
+//	inline void Connect( void (*_Func)(void) ) {
+//		FuncType MyFunc( (F3VoidPtr)_Func, 0, FF_MODE_0 );
+//		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+//	}
+	template<class T1>
+	inline void Connect( void (*_Func)(void), T1* = 0 ) {
+		FuncType MyFunc( (F3VoidPtr)_Func, 0, FF_MODE_0 );
+		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+	}
+	inline void Connect( void (*_Func)(void), size_t = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, 0, FF_MODE_0 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	
 	// One Argument Version (Pointer) //
 	template<class T1>
-	inline void Connect( void (*_Func)(T1*), T1* UserData ) {
+	inline void Connect( void (*_Func)(T1*), T1* UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_1 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	// One Argument Version (size_t) //
-	inline void Connect( void (*_Func)(size_t), size_t UserData ) {
+	inline void Connect( void (*_Func)(size_t), size_t UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_1 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 
 	// Two Argument Version (Pointer,Pointer) //
 	template<class T1, class T2>
-	inline void Connect( void (*_Func)(T1*,T2*), T1* UserData ) {
+	inline void Connect( void (*_Func)(T1*,T2*), T1* UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	// Two Argument Version (size_t,size_t) //
-	inline void Connect( void (*_Func)(size_t,size_t), size_t UserData ) {
+	inline void Connect( void (*_Func)(size_t,size_t), size_t UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	// Two Argument Version (size_t,Pointer) //
 	template<class T2>
-	inline void Connect( void (*_Func)(size_t,T2*), size_t UserData ) {
+	inline void Connect( void (*_Func)(size_t,T2*), size_t UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	// Two Argument Version (Pointer,size_t) //
 	template<class T1>
-	inline void Connect( void (*_Func)(T1*,size_t), T1* UserData ) {
+	inline void Connect( void (*_Func)(T1*,size_t), T1* UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 
 	// Three Argument Version (Pointer,Pointer,Pointer) //
 	template<class T1, class T2, class T3>
-	inline void Connect( T3* (*_Func)(T1*,T2*,T3*), T1* UserData ) {
+	inline void Connect( T3* (*_Func)(T1*,T2*,T3*), T1* UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	template<class T1, class T2>
-	inline void Connect( size_t (*_Func)(T1*,T2*,size_t), T1* UserData ) {
+	inline void Connect( size_t (*_Func)(T1*,T2*,size_t), T1* UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	template<class T1, class T3>
-	inline void Connect( T3* (*_Func)(T1*,size_t,T3*), T1* UserData ) {
+	inline void Connect( T3* (*_Func)(T1*,size_t,T3*), T1* UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	template<class T1>
-	inline void Connect( size_t (*_Func)(T1*,size_t,size_t), T1* UserData ) {
+	inline void Connect( size_t (*_Func)(T1*,size_t,size_t), T1* UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	// Three Argument Version (size_t,size_t,size_t) //
-	inline void Connect( size_t (*_Func)(size_t,size_t,size_t), size_t UserData ) {
+	inline void Connect( size_t (*_Func)(size_t,size_t,size_t), size_t UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	template<class T2>
-	inline void Connect( size_t (*_Func)(size_t,T2*,size_t), size_t UserData ) {
+	inline void Connect( size_t (*_Func)(size_t,T2*,size_t), size_t UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	template<class T3>
-	inline void Connect( T3* (*_Func)(size_t,size_t,T3*), size_t UserData ) {
+	inline void Connect( T3* (*_Func)(size_t,size_t,T3*), size_t UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
 	template<class T2, class T3>
-	inline void Connect( T3* (*_Func)(size_t,T2*,T3*), size_t UserData ) {
+	inline void Connect( T3* (*_Func)(size_t,T2*,T3*), size_t UserData = 0 ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 );
 		pushback_GelArray<FuncType>( &Funcs, MyFunc );
 	}
