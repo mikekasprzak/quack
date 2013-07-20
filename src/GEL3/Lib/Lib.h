@@ -21,8 +21,7 @@
 #include "NSet.h"			// NSet1 to NSet5. Sets of N values, each with their own type //
 // NOTE: Supports indexing operator [], which returns a void* to the specific elements. Cast it to your desired type.
 // - ------------------------------------------------------------------------------------------ - //
-#include "Signal.h"
-#include "FuncChain.h"
+#include "Signal.h"			// Type that stores and calls many functions //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_LIB_LIB_H__ //
 // - ------------------------------------------------------------------------------------------ - //
