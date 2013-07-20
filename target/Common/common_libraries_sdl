@@ -13,7 +13,8 @@ INCLUDE_FOLDERS		+=
 IGNORE_LIST			+=	
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	USES_SDL2
+DEFINES				+=	USES_SDL2 \
+						PRODUCT_BRANCH_NAME=$(STR_PREFIX)SDL2$(STR_SUFFIX)
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	

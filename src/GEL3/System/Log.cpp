@@ -114,6 +114,9 @@ int GetPID() {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+#include <Main/Main_HgVersion.h>
+#include <Main/Main_Product.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <time.h>
 // - ------------------------------------------------------------------------------------------ - //
 void LogInit( const char* TargetFile ) {
@@ -136,6 +139,14 @@ void LogInit( const char* TargetFile ) {
 		// asctime adds a "\n" //
 		_LogAlways( "-=- Logging Started -- PID: %i -- %s", GetPID(), asctime(timeinfo) );
 	}
+
+	LogAlways( "-=======- GEL3 Application Started -- %s Branch -- SKU: %s -=======-", PRODUCT_BRANCH_NAME, PRODUCT_SKU );
+	LogAlways( "GEL (C) Copyright 2008-2014 Mike Kasprzak and Sykhronics Entertainment" );
+	LogAlways( "" );
+	LogAlways( "-=- SKU: %s -=- %s -=-", PRODUCT_SKU, FullProductName );
+	LogAlways( "Hg Revision: %i [%s]", HG_VERSION, HG_HASH );
+	LogAlways( "Compiled on: %s %s", __DATE__, __TIME__ );
+	LogAlways( "" );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
