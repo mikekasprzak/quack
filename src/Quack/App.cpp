@@ -22,11 +22,11 @@ int AppMain() {
 	{
 		// Signal Testing Code //
 		FuncChain MySignal;
-		MySignal.Connect( &MyFunc );
-		MySignal.Connect( &MyFunc2, 200 );
-		MySignal.Connect( &MyFunc3, 1 );
-		MySignal.Connect( &MyFunc3, 2 );
-		MySignal.Connect( &MyFunc3, 3 );
+		MySignal.Connect( MyFunc );
+		MySignal.Connect( MyFunc2, 200 );
+		MySignal.Connect( MyFunc3, 1 );
+		MySignal.Connect( MyFunc3, 2 );
+		MySignal.Connect( MyFunc3, 3 );
 		st Ret = (st)MySignal( 25 );
 		Log( "Final Ret is: %i", (int)Ret );
 	}
