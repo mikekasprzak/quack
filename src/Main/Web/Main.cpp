@@ -15,6 +15,7 @@
 void onLoad(void* InputArg, void* Data, int DataSize) {
 	// NOTE: there is something wrong here. Only 1 command ever gets run. //
 	Log( (char*)Data );
+	Log("Musical Furut");
 }
 void onError( void* FileName ) {
 	Log("ERROR: %s failed to load", (char*)FileName);
