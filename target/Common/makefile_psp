@@ -17,16 +17,17 @@ DEFINES				+=	USES_STDOUT
 # - ------------------------------------------------------------------------ - #
 SRC_FOLDERS			+=	src/Main/TestSuite
 # - ------------------------------------------------------------------------ - #
-CPUFLAGS			:=	
+CPUFLAGS			:=	-ffunction-sections -fdata-sections
 # - ------------------------------------------------------------------------ - #
 # Compiler and Linker Flags (specific to this target) #
-CFLAGS				+=	
-CPPFLAGS			+=	#-STLIO --exceptions
-LDFLAGS				+=	
+CFLAGS				+=	$(CPUFLAGS)
+CPPFLAGS			+=	$(CPUFLAGS) #-STLIO --exceptions
+LDFLAGS				+=	-LC:/Sony/PSP/ProDG/lib -LC:/Sony/PSP/devkit/lib
 # - ------------------------------------------------------------------------ - #
-LIBRARIES			+=	
+LIBRARIES			+=	-lgcs -lc -lm -lsncpp -lstl -lgum -lgu \
+						ctrl_stub.a display_stub.a ge_user_stub.a
 # - ------------------------------------------------------------------------ - #
-INCLUDE_FOLDERS		+=	
+INCLUDE_FOLDERS		+=	-IC:/Sony/PSP/ProDG/include -IC:/Sony/PSP/devkit/include
 # - ------------------------------------------------------------------------ - #
 # Release Build Only #
 ifdef NDEBUG
