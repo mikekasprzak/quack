@@ -7,12 +7,12 @@
 #define _OP_RET_BOOL( _op_name, _op ) \
 \
 template< typename T > \
-inline const bool _op_name( const T Vs, const T a ) { \
+inline bool _op_name( const T Vs, const T a ) { \
 	return Vs _op a; \
 }; \
 \
 template< typename T > \
-inline const bool _op_name( const T Vs, const T a, const T b ) { \
+inline bool _op_name( const T Vs, const T a, const T b ) { \
 	if ( Vs _op a ) \
 		return true; \
 	else \
@@ -20,7 +20,7 @@ inline const bool _op_name( const T Vs, const T a, const T b ) { \
 }; \
 \
 template< typename T > \
-inline const bool _op_name( const T Vs, const T a, const T b, const T c ) { \
+inline bool _op_name( const T Vs, const T a, const T b, const T c ) { \
 	if ( Vs _op a ) \
 		return true; \
 	else if ( Vs _op b ) \
@@ -30,7 +30,7 @@ inline const bool _op_name( const T Vs, const T a, const T b, const T c ) { \
 }; \
 \
 template< typename T > \
-inline const bool _op_name( const T Vs, const T a, const T b, const T c, const T d ) { \
+inline bool _op_name( const T Vs, const T a, const T b, const T c, const T d ) { \
 	if ( Vs _op a )  \
 		return true; \
 	else if ( Vs _op b )  \
@@ -42,7 +42,7 @@ inline const bool _op_name( const T Vs, const T a, const T b, const T c, const T
 }; \
 \
 template< typename T > \
-inline const bool _op_name( const T Vs, const T a, const T b, const T c, const T d, const T e ) { \
+inline bool _op_name( const T Vs, const T a, const T b, const T c, const T d, const T e ) { \
 	if ( Vs _op a )  \
 		return true; \
 	else if ( Vs _op b )  \
@@ -56,7 +56,7 @@ inline const bool _op_name( const T Vs, const T a, const T b, const T c, const T
 }; \
 \
 template< typename T > \
-inline const bool _op_name( const T Vs, const T a, const T b, const T c, const T d, const T e, const T f ) { \
+inline bool _op_name( const T Vs, const T a, const T b, const T c, const T d, const T e, const T f ) { \
 	if ( Vs _op a )  \
 		return true; \
 	else if ( Vs _op b )  \
@@ -72,7 +72,7 @@ inline const bool _op_name( const T Vs, const T a, const T b, const T c, const T
 }; \
 \
 template< typename T > \
-inline const bool _op_name( const T Vs, const T a, const T b, const T c, const T d, const T e, const T f, const T g ) { \
+inline bool _op_name( const T Vs, const T a, const T b, const T c, const T d, const T e, const T f, const T g ) { \
 	if ( Vs _op a )  \
 		return true; \
 	else if ( Vs _op b )  \

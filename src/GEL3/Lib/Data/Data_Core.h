@@ -89,7 +89,7 @@ inline void move_Data( const void* _Src, void* _Dest, const st _Size ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 // MemCMP wrapper //
-inline const int compare_Data( const void* const _Src, const void* _Dest, const st _Size ) {
+inline int compare_Data( const void* const _Src, const void* _Dest, const st _Size ) {
 	return memcmp( _Dest, _Src, _Size );
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -156,7 +156,7 @@ inline void One( tType* _Data, const st Count ) {
 
 
 // - ------------------------------------------------------------------------------------------ - //
-inline const st read_Data( const char* _FileName, void* Data, const st _Size ) {
+inline st read_Data( const char* _FileName, void* Data, const st _Size ) {
 	// Open File //
 	FILE* fp = fopen( _FileName, "rb" );
 	if ( fp == 0 ) {
@@ -183,7 +183,7 @@ inline const st read_Data( const char* _FileName, void* Data, const st _Size ) {
 	return BytesRead;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const st write_Data( const char* _FileName, void* Data, st _Size ) {
+inline st write_Data( const char* _FileName, void* Data, st _Size ) {
 	// Open File //
 	FILE* fp = fopen( _FileName, "wb" );
 	if ( fp == 0 ) {

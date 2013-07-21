@@ -170,7 +170,7 @@ inline Type* index_GelArray( GelArray<Type>* p, const size_t _Index ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline const st32 size_GelArray( GelArray<Type>* p ) {
+inline st32 size_GelArray( GelArray<Type>* p ) {
 	return p->Size;
 }
 // - ------------------------------------------------------------------------------------------ - //

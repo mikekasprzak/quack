@@ -1,7 +1,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 // My own Signal, inspired by Boost and Loki signals, but not shit //
 //
-// Does not do: Slot Ordering, Blocking, Scoped Connections
+// Does not do: Slot Ordering, Scoped Connections
 // Reference: http://www.boost.org/doc/libs/1_52_0/doc/html/signals/tutorial.html
 // - ------------------------------------------------------------------------------------------ - //
 // Usage:
@@ -42,6 +42,8 @@
 //
 // ProTip: You can pass class members if you have an appropriate static function in your class.
 // Sample goes here;
+//
+// NEW: Can set additional flags, such as Signal::FF_BLOCKED_AFTER_CALL, on Connect().
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_LIB_SIGNAL_H__
 #define __GEL_LIB_SIGNAL_H__
@@ -56,7 +58,7 @@ public:
 	typedef void  (*F2VoidPtr)(void*,void*);
 	typedef void* (*F3VoidPtr)(void*,void*,void*);
 	
-	enum FuncFlags {
+	enum /*FuncFlags*/ {
 		FF_NULL						= 0,
 		
 		// Mode is number of arguments //
@@ -91,10 +93,11 @@ public:
 		}
 		
 		// For the erase function we need an == operator //
-		inline const bool operator == ( const FuncType& Vs ) const {
+		inline bool operator == ( const FuncType& Vs ) const {
 			return (Function == Vs.Function) && (UserPtr == Vs.UserPtr);
 		}
 		
+		// Blocked - Function does not call //
 		inline bool IsBlocked() const {
 			return Flags & FF_BLOCKED;
 		}
@@ -105,6 +108,7 @@ public:
 			Flags &= ~FF_BLOCKED;
 		}
 		
+		// Blocked After Call - After being called, set the Blocked state //
 		inline bool IsBlockedAfterCall() const {
 			return Flags & FF_BLOCKED_AFTER_CALL;
 		}
@@ -114,7 +118,6 @@ public:
 		inline void ClearBlockedAfterCall() {
 			Flags &= ~FF_BLOCKED_AFTER_CALL;
 		}
-
 	};
 protected:
 	GelArray<FuncType>*	Funcs;
