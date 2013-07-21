@@ -22,6 +22,7 @@
 // NOTE: Supports indexing operator [], which returns a void* to the specific elements. Cast it to your desired type.
 // - ------------------------------------------------------------------------------------------ - //
 #include "Signal.h"			// Type that stores and calls many functions //
+#include "Deferred.h"
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_LIB_LIB_H__ //
 // - ------------------------------------------------------------------------------------------ - //
