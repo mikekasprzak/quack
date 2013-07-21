@@ -38,10 +38,14 @@ inline void FLogIndentation( int Count, const char Val = ' ' ) {
 		}
 		s[Count] = 0;
 
+#ifdef USES_CLANG
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-security"
+#endif // USES_CLANG //
 		FLOG_FUNC( s );
+#ifdef USES_CLANG
 #pragma clang diagnostic pop
+#endif // USES_CLANG //
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
