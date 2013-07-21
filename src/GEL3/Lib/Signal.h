@@ -57,12 +57,17 @@ public:
 	typedef void* (*F3VoidPtr)(void*,void*,void*);
 	
 	enum FuncFlags {
-		FF_MODE_0		= 0,
-		FF_MODE_1		= 1,
-		FF_MODE_2		= 2,
-		FF_MODE_3		= 3,
+		// Mode is number of arguments //
+		FF_MODE_0					= 0,
+		FF_MODE_1					= 1,
+		FF_MODE_2					= 2,
+		FF_MODE_3					= 3,
+		FF_MODE_MASK				= 0xF,
 		
-		FF_MODE_MASK	= 0xF,
+		// Stops functions from being called //
+		FF_BLOCKED					= 0x10,
+		
+		FF_MODE_OR_BLOCKED_MASK		= FF_MODE_MASK | FF_BLOCKED,
 	};
 	
 	struct FuncType {
@@ -106,7 +111,9 @@ public:
 		if ( Funcs ) {
 			for ( size_t idx = 0; idx < Funcs->Size; idx++ ) {
 				FuncType& Func = Funcs->Data[idx];
-				switch( Func.Flags & FF_MODE_MASK ) {
+				// NOTE: Cleverness! If the FF_BLOCKED flag is set, then none of these functions //
+				//   below will be called, because the bitmask will be incorrect. //
+				switch( Func.Flags & FF_MODE_OR_BLOCKED_MASK ) {
 					case FF_MODE_0: {
 						F0VoidPtr FunctionToCall = (F0VoidPtr)Func.Function;
 						FunctionToCall();
