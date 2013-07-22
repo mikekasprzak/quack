@@ -4,13 +4,13 @@
 #ifndef __Library_GELCore_GelArray_File_H__
 #define __Library_GELCore_GelArray_File_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelFile.h"
-#include "GelVFile.h"
-#include "GelContentHandle.h"
-#include "GelStorageHandle.h"
+#include "../GelFile/GelFile.h"
+#include "../GelVFile/GelVFile.h"
+//#include "GelContentHandle.h"
+//#include "GelStorageHandle.h"
 
-#include "GelArray_Core.h"
-#include "DataBlock_File.h"
+#include "../GelArray/GelArray_Core.h"
+#include "../DataBlock/DataBlock_File.h"
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //

@@ -7,10 +7,10 @@
 // TODO: Add functions for reading/adapting floating point numbers from IEEE to other needed types
 // TODO: Add functions for converting/writing floats to fixed point numbers (a cheat)
 // - ------------------------------------------------------------------------------------------ - //
-#include "Data_Core.h"
-#include "GelArray_Core.h"
+#include "../Data/Data_Core.h"
+#include "../GelArray/GelArray_Core.h"
 
-#include "Endian.h"
+#include "../GelFile/Endian.h"
 // - ------------------------------------------------------------------------------------------ - //
 struct GelVFile {
 	size_t Position;

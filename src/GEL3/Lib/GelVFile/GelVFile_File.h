@@ -4,13 +4,13 @@
 #ifndef __Library_GELCore_GelVFile_File_H__
 #define __Library_GELCore_GelVFile_File_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelFile.h"
-#include "GelContentHandle.h"
-#include "GelStorageHandle.h"
+#include "../GelFile/GelFile.h"
+//#include "GelContentHandle.h"
+//#include "GelStorageHandle.h"
 
 #include "GelVFile_Core.h"
 
-#include "GelArray_File.h"
+#include "../GelArray/GelArray_File.h"
 // - ------------------------------------------------------------------------------------------ - //
 // These functions are required by this code, but since VFile relies on GelArray, it's a circle.  //
 // - ------------------------------------------------------------------------------------------ - //

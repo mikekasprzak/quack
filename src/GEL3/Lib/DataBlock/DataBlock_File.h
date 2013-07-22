@@ -4,10 +4,10 @@
 #ifndef __Library_GELCore_DataBlock_File_H__
 #define __Library_GELCore_DataBlock_File_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelFile.h"
-#include "GelVFile.h"
-#include "GelContentHandle.h"
-#include "GelStorageHandle.h"
+#include "../GelFile/GelFile.h"
+#include "../GelVFile/GelVFile.h"
+//#include "GelContentHandle.h"
+//#include "GelStorageHandle.h"
 
 #include "DataBlock_Core.h"
 // - ------------------------------------------------------------------------------------------ - //
