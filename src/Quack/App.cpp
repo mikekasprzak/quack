@@ -61,7 +61,7 @@ int AppMain() {
 		
 		MyAsset.Load( "project/main.nut" );
 		if ( MyAsset.IsLoaded() ) {
-			Log( MyAsset.Get() );
+			Log( MyAsset.GetStr() );
 		}
 		else {
 			Log( "Nope!" );

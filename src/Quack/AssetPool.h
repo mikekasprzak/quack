@@ -66,6 +66,15 @@ public:
 			return 0;
 		}
 	}
+	// Variation of Get. Returns an empty string upon fail (instead of 0) //
+	inline char* GetStr() {
+		if ( IsLoaded() ) {
+			return Data->Data;
+		}
+		else {
+			return "";
+		}
+	}
 
 	inline st32 GetSize() {
 		if ( IsLoaded() ) {
