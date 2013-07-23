@@ -13,10 +13,10 @@ public:
 	typedef unsigned int UID;
 protected:
 	DataBlock* Data;
+	std::string FileName;
 	
 	enum /* AssetFlags */ {
 		AF_NULL				= 0,
-		
 		AF_LOADED			= 0x1,
 	};
 	
