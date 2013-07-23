@@ -55,6 +55,19 @@ int AppMain() {
 		MyDef.OnError( MyFunc );
 	}
 	
+	{
+		// Asset Test //
+		cAsset MyAsset;
+		
+		MyAsset.Load( "project/main.nut" );
+		if ( MyAsset.IsLoaded() ) {
+			Log( MyAsset.Get() );
+		}
+		else {
+			Log( "Nope!" );
+		}
+	}
+	
 	return 0;
 }
 // - ------------------------------------------------------------------------------------------ - //

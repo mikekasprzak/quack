@@ -23,18 +23,58 @@ protected:
 	int Flags;
 public:
 	inline cAsset() :
+		Data( 0 ),
 		Flags( AF_NULL )
 	{
 	}
 	
-	inline DataBlock* Get() {
-		if ( Flags & AF_LOADED ) {
-			return Data;
+	inline cAsset( const char* _FileName ) :
+		Data( 0 ),
+		Flags( AF_NULL )
+	{
+		Load( _FileName );		
+	}
+	
+	inline ~cAsset() {
+		UnLoad();
+	}
+	
+	inline void Load( const char* _FileName ) {
+		UnLoad();
+		FileName = _FileName;
+		// Using the Null Terminator version of new_read, so the loaded data can //
+		// safely be used as strings. //
+		Data = new_read_nullterminate_DataBlock( _FileName );
+		Flags |= AF_LOADED;
+	}
+	
+	inline void UnLoad() {
+		if ( Data ) {
+			delete_DataBlock( Data );
+		}		
+	}
+	
+	inline bool IsLoaded() {
+		return (bool)(Flags & AF_LOADED);
+	}
+	
+	inline char* Get() {
+		if ( IsLoaded() ) {
+			return Data->Data;
 		}
 		else {
 			return 0;
 		}
-	}	
+	}
+
+	inline st32 GetSize() {
+		if ( IsLoaded() ) {
+			return Data->Size;
+		}
+		else {
+			return 0;
+		}
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 class cAssetPool {

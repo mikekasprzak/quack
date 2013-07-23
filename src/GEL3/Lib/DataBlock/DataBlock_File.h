@@ -38,6 +38,7 @@ inline DataBlock* new_read_DataBlock( const char* _FileName ) {
 	return p;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// Allocates an extra byte for a null terminator. Not included in DataBlock->Size. //
 inline DataBlock* new_read_nullterminate_DataBlock( const char* _FileName ) {
 	// Open File //
 	GelFile* fp = open_readonly_GelFile( _FileName );
@@ -46,16 +47,19 @@ inline DataBlock* new_read_nullterminate_DataBlock( const char* _FileName ) {
 	}
 	
 	// Determine how large file is //
-	size_t Size = size_GelFile( fp ) + 1;
+	size_t Size = size_GelFile( fp );
 	
-	// Allocate space (Size is automatically set inside new_DataBlock) //
-	DataBlock* p = new_DataBlock( Size );
+	// Allocate space + 1 byte for a null (Size is automatically set inside new_DataBlock) //
+	DataBlock* p = new_DataBlock( Size + 1 );
 	
 	// Read data //
-	read_GelFile( fp, p->Data, Size - 1 );
+	read_GelFile( fp, p->Data, Size );
 	
 	// Write Zero to final byte //
-	p->Data[Size-1] = 0;
+	p->Data[Size] = 0;
+	
+	// Set the internal size to the data size (hiding the null terminator) //
+	p->Size = Size;
 	
 	// Close file //
 	close_GelFile( fp );
@@ -87,16 +91,19 @@ inline DataBlock* new_read_DataBlock( GelFile* fp ) {
 // - ------------------------------------------------------------------------------------------ - //
 inline DataBlock* new_read_nullterminate_DataBlock( GelFile* fp ) {
 	// Read Size //
-	size_t Size = read_GelFile<size_t>( fp ) + 1;
+	size_t Size = read_GelFile<size_t>( fp );
 	
 	// Allocate space (Size is automatically set inside new_DataBlock) //
-	DataBlock* p = new_DataBlock( Size );
+	DataBlock* p = new_DataBlock( Size + 1 );
 	
 	// Read data //
-	read_GelFile( fp, p->Data, Size - 1 );
+	read_GelFile( fp, p->Data, Size );
 
 	// Write Zero to final byte //
-	p->Data[Size-1] = 0;
+	p->Data[Size] = 0;
+
+	// Set the internal size to the data size (hiding the null terminator) //
+	p->Size = Size;
 	
 	// Return data //
 	return p;
@@ -118,16 +125,19 @@ inline DataBlock* new_read_DataBlock( GelVFile* fp ) {
 // - ------------------------------------------------------------------------------------------ - //
 inline DataBlock* new_read_nullterminate_DataBlock( GelVFile* fp ) {
 	// Read Size //
-	size_t Size = read_GelVFile<size_t>( fp ) + 1;
+	size_t Size = read_GelVFile<size_t>( fp );
 	
 	// Allocate space (Size is automatically set inside new_DataBlock) //
-	DataBlock* p = new_DataBlock( Size );
+	DataBlock* p = new_DataBlock( Size + 1 );
 	
 	// Read data //
-	read_GelVFile( fp, p->Data, Size - 1 );
+	read_GelVFile( fp, p->Data, Size );
 
 	// Write Zero to final byte //
-	p->Data[Size-1] = 0;
+	p->Data[Size] = 0;
+
+	// Set the internal size to the data size (hiding the null terminator) //
+	p->Size = Size;
 	
 	// Return data //
 	return p;
