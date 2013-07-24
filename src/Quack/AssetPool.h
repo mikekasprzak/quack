@@ -26,6 +26,7 @@ protected:
 	std::string FileName;
 	// TODO: FileInfo //
 	// TODO: TimeStamp //
+	int Flags;
 	
 	enum /* AssetFlags */ {
 		AF_NULL				= 0,
@@ -41,10 +42,9 @@ protected:
 		
 		AF_STATE_MASK		= 0xFF,
 		
-		AF_WAS_COMPRESSED	= 0x100,	// The data was compressed //
+		// Additional Flags (Not States) //
+		AF_DECOMPRESSED		= 0x100,	// The data was decompressed //
 	};
-	
-	int Flags;
 public:
 	inline cAsset() :
 		Data( 0 ),
@@ -52,19 +52,20 @@ public:
 	{
 	}
 	
-	inline cAsset( const char* _FileName ) :
-		Data( 0 ),
-		Flags( AF_NULL )
-	{
-		Load( _FileName );		
-	}
-	
-	inline ~cAsset() {
-		// NOTE: Disabled cleanup. cAssetPool is going to clean-up for us. //	
-		//Unload();
-	}
+	// Disabled Constructor and Destructor. Loading/Unloading is now explicit. //
+//	inline cAsset( const char* _FileName ) :
+//		Data( 0 ),
+//		Flags( AF_NULL )
+//	{
+//		Load( _FileName );		
+//	}
+//	
+//	inline ~cAsset() {
+//		// NOTE: Disabled cleanup. cAssetPool is going to clean-up for us. //	
+//		//Unload();
+//	}
 
-public:	
+protected:	
 	inline void Load( const char* _FileName ) {
 		Unload();
 		FileName = _FileName;
@@ -80,15 +81,6 @@ public:
 		}
 	}
 	
-	// Releasing is a special kind of Unload. Should only be used by memory managers. //
-	inline void Release() {
-		if ( Data ) {
-			delete_DataBlock( Data );
-			Data = 0;
-			SetState( AF_RELEASED );
-		}		
-	}
-	
 	// Like Load, but used on Released data (i.e. I still have the filename) //
 	inline void DoLoad() {
 		// TODO: Detect (.lzma, .gz, etc) and Uncompress the data // 
@@ -98,7 +90,17 @@ public:
 		Data = new_read_nullterminate_DataBlock( FileName.c_str() );
 		SetState( AF_LOADED );
 	}
-	
+
+public:
+	// Releasing is a special kind of Unload. Should only be used by memory managers. //
+	inline void Release() {
+		if ( Data ) {
+			delete_DataBlock( Data );
+			Data = 0;
+			SetState( AF_RELEASED );
+		}		
+	}
+
 	inline void RequestReload() {
 		// TODO: Make this queue a reload //
 		// NOTE: A reload is a call to DoLoad() //
@@ -131,6 +133,9 @@ public:
 	inline bool IsTimedOut() const {
 		return _IsTimedOut();
 	}
+	inline bool IsDecompressed() const {
+		return _IsDecompressed();
+	}
 	
 	// Safe Versions that only check flags //
 	inline bool _IsLoaded() const {
@@ -151,7 +156,11 @@ public:
 	inline bool _IsTimedOut() const {
 		return (bool)(Flags & AF_TIMED_OUT);
 	}
-	
+	inline bool _IsDecompressed() const {
+		return (bool)(Flags & AF_DECOMPRESSED);
+	}
+
+protected:	
 	// Set States //
 	inline void SetState( const int _Flags ) {
 		Flags = (Flags & ~AF_STATE_MASK) | _Flags;
@@ -288,6 +297,7 @@ public:
 				pushback_GelArray( &Assets );
 				// TODO: Add this to the Job Queue //
 				back_GelArray( Assets )->Load( _FileName );
+				Log( "Asset \"%s\" loaded as: %i", _FileName, Id );
 				return Id;
 			}
 		}

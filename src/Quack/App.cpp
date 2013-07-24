@@ -94,6 +94,15 @@ int AppMain() {
 			Log( "Nope!" );
 		}
 		
+		cAssetPool::UID YouId = AssetPool.Load( "project/content/C64Pro.fnt" );
+			
+		if ( AssetPool[YouId].IsLoaded() ) {
+			Log( "Yep2!" );
+		}
+		else {
+			Log( "Nope2!" );
+		}		
+		
 		// Automatic Cleanup //
 	}
 	
