@@ -47,8 +47,8 @@ public:
 	}
 	
 public:
-	template<class T2>
-	inline void* Callback( T2* ArgsPtr = 0 ) {
+	template<class TC2>
+	inline void* Callback( TC2* ArgsPtr = 0 ) {
 		Flags |= DF_CALLED | DF_MODE_CALLBACK;
 		Args = (void*)ArgsPtr;
 		void* Ret = Callbacks( ArgsPtr );
@@ -59,8 +59,8 @@ public:
 		return Callback( (void*)ArgsData );
 	}
 
-	template<class T2>
-	inline void* Errback( T2* ArgsPtr ) {
+	template<class TC2>
+	inline void* Errback( TC2* ArgsPtr ) {
 		Flags |= DF_CALLED | DF_MODE_ERRBACK;
 		Args = (void*)ArgsPtr;
 		void* Ret = Errbacks( ArgsPtr );
@@ -71,9 +71,9 @@ public:
 		return Errback( (void*)ArgsData );
 	}
 	
-	#define _T1 class T1
-	#define _T2 class T2
-	#define _T3 class T3
+	#define _TC1 class TC1
+	#define _TC2 class TC2
+	#define _TC3 class TC3
 
 	#define DEFERRED_FUNC_T( __name, __istype, __usertype, __func, ... ) \
 		template< __VA_ARGS__ > \
@@ -120,54 +120,54 @@ public:
 			} \
 		}
 
-	DEFERRED_FUNC_T( Then, Call, T1*,    void   (*_Func)(void), _T1 );
-	DEFERRED_FUNC_T( Then, Call, T1*,    void   (*_Func)(T1*), _T1 );
-	DEFERRED_FUNC_T( Then, Call, T1*,    void   (*_Func)(T1*,T2*), _T1, _T2 );
-	DEFERRED_FUNC_T( Then, Call, T1*,    T3*    (*_Func)(T1*,T2*,T3*), _T1, _T2, _T3 );
-	DEFERRED_FUNC_T( Then, Call, T1*,    void   (*_Func)(T1*,size_t), _T1 );
-	DEFERRED_FUNC_T( Then, Call, T1*,    T3*    (*_Func)(T1*,size_t,T3*), _T1, _T3 );
-	DEFERRED_FUNC_T( Then, Call, T1*,    size_t (*_Func)(T1*,T2*,size_t), _T1, _T2 );
+	DEFERRED_FUNC_T( Then, Call, TC1*,    void   (*_Func)(void), _TC1 );
+	DEFERRED_FUNC_T( Then, Call, TC1*,    void   (*_Func)(TC1*), _TC1 );
+	DEFERRED_FUNC_T( Then, Call, TC1*,    void   (*_Func)(TC1*,TC2*), _TC1, _TC2 );
+	DEFERRED_FUNC_T( Then, Call, TC1*,    TC3*    (*_Func)(TC1*,TC2*,TC3*), _TC1, _TC2, _TC3 );
+	DEFERRED_FUNC_T( Then, Call, TC1*,    void   (*_Func)(TC1*,size_t), _TC1 );
+	DEFERRED_FUNC_T( Then, Call, TC1*,    TC3*    (*_Func)(TC1*,size_t,TC3*), _TC1, _TC3 );
+	DEFERRED_FUNC_T( Then, Call, TC1*,    size_t (*_Func)(TC1*,TC2*,size_t), _TC1, _TC2 );
 	DEFERRED_FUNC_s( Then, Call, size_t, void   (*_Func)(void) );
 	DEFERRED_FUNC_s( Then, Call, size_t, void   (*_Func)(size_t) );
-	DEFERRED_FUNC_T( Then, Call, size_t, void   (*_Func)(size_t,T2*), _T2 );
-	DEFERRED_FUNC_T( Then, Call, size_t, T3*    (*_Func)(size_t,T2*,T3*), _T2, _T3 );
+	DEFERRED_FUNC_T( Then, Call, size_t, void   (*_Func)(size_t,TC2*), _TC2 );
+	DEFERRED_FUNC_T( Then, Call, size_t, TC3*    (*_Func)(size_t,TC2*,TC3*), _TC2, _TC3 );
 	DEFERRED_FUNC_s( Then, Call, size_t, void   (*_Func)(size_t,size_t) );
-	DEFERRED_FUNC_T( Then, Call, size_t, T3*    (*_Func)(size_t,size_t,T3*), _T3 );
-	DEFERRED_FUNC_T( Then, Call, size_t, size_t (*_Func)(size_t,T2*,size_t), _T2 );
+	DEFERRED_FUNC_T( Then, Call, size_t, TC3*    (*_Func)(size_t,size_t,TC3*), _TC3 );
+	DEFERRED_FUNC_T( Then, Call, size_t, size_t (*_Func)(size_t,TC2*,size_t), _TC2 );
 
-	DEFERRED_FUNC_T( OnError, Err, T1*,    void   (*_Func)(void), _T1 );
-	DEFERRED_FUNC_T( OnError, Err, T1*,    void   (*_Func)(T1*), _T1 );
-	DEFERRED_FUNC_T( OnError, Err, T1*,    void   (*_Func)(T1*,T2*), _T1, _T2 );
-	DEFERRED_FUNC_T( OnError, Err, T1*,    T3*    (*_Func)(T1*,T2*,T3*), _T1, _T2, _T3 );
-	DEFERRED_FUNC_T( OnError, Err, T1*,    void   (*_Func)(T1*,size_t), _T1 );
-	DEFERRED_FUNC_T( OnError, Err, T1*,    T3*    (*_Func)(T1*,size_t,T3*), _T1, _T3 );
-	DEFERRED_FUNC_T( OnError, Err, T1*,    size_t (*_Func)(T1*,T2*,size_t), _T1, _T2 );
+	DEFERRED_FUNC_T( OnError, Err, TC1*,    void   (*_Func)(void), _TC1 );
+	DEFERRED_FUNC_T( OnError, Err, TC1*,    void   (*_Func)(TC1*), _TC1 );
+	DEFERRED_FUNC_T( OnError, Err, TC1*,    void   (*_Func)(TC1*,TC2*), _TC1, _TC2 );
+	DEFERRED_FUNC_T( OnError, Err, TC1*,    TC3*    (*_Func)(TC1*,TC2*,TC3*), _TC1, _TC2, _TC3 );
+	DEFERRED_FUNC_T( OnError, Err, TC1*,    void   (*_Func)(TC1*,size_t), _TC1 );
+	DEFERRED_FUNC_T( OnError, Err, TC1*,    TC3*    (*_Func)(TC1*,size_t,TC3*), _TC1, _TC3 );
+	DEFERRED_FUNC_T( OnError, Err, TC1*,    size_t (*_Func)(TC1*,TC2*,size_t), _TC1, _TC2 );
 	DEFERRED_FUNC_s( OnError, Err, size_t, void   (*_Func)(void) );
 	DEFERRED_FUNC_s( OnError, Err, size_t, void   (*_Func)(size_t) );
-	DEFERRED_FUNC_T( OnError, Err, size_t, void   (*_Func)(size_t,T2*), _T2 );
-	DEFERRED_FUNC_T( OnError, Err, size_t, T3*    (*_Func)(size_t,T2*,T3*), _T2, _T3 );
+	DEFERRED_FUNC_T( OnError, Err, size_t, void   (*_Func)(size_t,TC2*), _TC2 );
+	DEFERRED_FUNC_T( OnError, Err, size_t, TC3*    (*_Func)(size_t,TC2*,TC3*), _TC2, _TC3 );
 	DEFERRED_FUNC_s( OnError, Err, size_t, void   (*_Func)(size_t,size_t) );
-	DEFERRED_FUNC_T( OnError, Err, size_t, T3*    (*_Func)(size_t,size_t,T3*), _T3 );
-	DEFERRED_FUNC_T( OnError, Err, size_t, size_t (*_Func)(size_t,T2*,size_t), _T2 );
+	DEFERRED_FUNC_T( OnError, Err, size_t, TC3*    (*_Func)(size_t,size_t,TC3*), _TC3 );
+	DEFERRED_FUNC_T( OnError, Err, size_t, size_t (*_Func)(size_t,TC2*,size_t), _TC2 );
 
-	DEFERRED_BOTH_FUNC_T( Always, T1*,    void   (*_Func)(void), _T1 );
-	DEFERRED_BOTH_FUNC_T( Always, T1*,    void   (*_Func)(T1*), _T1 );
-	DEFERRED_BOTH_FUNC_T( Always, T1*,    void   (*_Func)(T1*,T2*), _T1, _T2 );
-	DEFERRED_BOTH_FUNC_T( Always, T1*,    T3*    (*_Func)(T1*,T2*,T3*), _T1, _T2, _T3 );
-	DEFERRED_BOTH_FUNC_T( Always, T1*,    void   (*_Func)(T1*,size_t), _T1 );
-	DEFERRED_BOTH_FUNC_T( Always, T1*,    T3*    (*_Func)(T1*,size_t,T3*), _T1, _T3 );
-	DEFERRED_BOTH_FUNC_T( Always, T1*,    size_t (*_Func)(T1*,T2*,size_t), _T1, _T2 );
+	DEFERRED_BOTH_FUNC_T( Always, TC1*,    void   (*_Func)(void), _TC1 );
+	DEFERRED_BOTH_FUNC_T( Always, TC1*,    void   (*_Func)(TC1*), _TC1 );
+	DEFERRED_BOTH_FUNC_T( Always, TC1*,    void   (*_Func)(TC1*,TC2*), _TC1, _TC2 );
+	DEFERRED_BOTH_FUNC_T( Always, TC1*,    TC3*    (*_Func)(TC1*,TC2*,TC3*), _TC1, _TC2, _TC3 );
+	DEFERRED_BOTH_FUNC_T( Always, TC1*,    void   (*_Func)(TC1*,size_t), _TC1 );
+	DEFERRED_BOTH_FUNC_T( Always, TC1*,    TC3*    (*_Func)(TC1*,size_t,TC3*), _TC1, _TC3 );
+	DEFERRED_BOTH_FUNC_T( Always, TC1*,    size_t (*_Func)(TC1*,TC2*,size_t), _TC1, _TC2 );
 	DEFERRED_BOTH_FUNC_s( Always, size_t, void   (*_Func)(void) );
 	DEFERRED_BOTH_FUNC_s( Always, size_t, void   (*_Func)(size_t) );
-	DEFERRED_BOTH_FUNC_T( Always, size_t, void   (*_Func)(size_t,T2*), _T2 );
-	DEFERRED_BOTH_FUNC_T( Always, size_t, T3*    (*_Func)(size_t,T2*,T3*), _T2, _T3 );
+	DEFERRED_BOTH_FUNC_T( Always, size_t, void   (*_Func)(size_t,TC2*), _TC2 );
+	DEFERRED_BOTH_FUNC_T( Always, size_t, TC3*    (*_Func)(size_t,TC2*,TC3*), _TC2, _TC3 );
 	DEFERRED_BOTH_FUNC_s( Always, size_t, void   (*_Func)(size_t,size_t) );
-	DEFERRED_BOTH_FUNC_T( Always, size_t, T3*    (*_Func)(size_t,size_t,T3*), _T3 );
-	DEFERRED_BOTH_FUNC_T( Always, size_t, size_t (*_Func)(size_t,T2*,size_t), _T2 );
+	DEFERRED_BOTH_FUNC_T( Always, size_t, TC3*    (*_Func)(size_t,size_t,TC3*), _TC3 );
+	DEFERRED_BOTH_FUNC_T( Always, size_t, size_t (*_Func)(size_t,TC2*,size_t), _TC2 );
 
-	#undef _T1
-	#undef _T2
-	#undef _T3
+	#undef _TC1
+	#undef _TC2
+	#undef _TC3
 
 	#undef DEFERRED_BOTH_FUNC_T
 	#undef DEFERRED_BOTH_FUNC_s
