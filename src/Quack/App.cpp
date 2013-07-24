@@ -44,7 +44,7 @@ int AppMain() {
 		Deferred MyDef;
 		MyDef.Then( MyFunc );
 		MyDef.OnError( MyFunc2 );
-		MyDef.Always( MyFunc2, 64 );
+		//MyDef.Always( MyFunc2, 64 );
 		
 		MyDef.Callback( 13 );
 //		MyDef.Errback( 10 );
