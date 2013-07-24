@@ -104,6 +104,7 @@ public:
 	inline void RequestReload() {
 		// TODO: Make this queue a reload //
 		// NOTE: A reload is a call to DoLoad() //
+		DoLoad();
 	}
 
 public:

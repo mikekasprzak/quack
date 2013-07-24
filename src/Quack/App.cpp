@@ -101,7 +101,16 @@ int AppMain() {
 		}
 		else {
 			Log( "Nope2!" );
-		}		
+		}
+		
+		AssetPool[YouId].Release();
+		if ( !AssetPool[YouId].IsLoaded() ) {
+			Log( "Aww2!" );
+		}
+		AssetPool[YouId].RequestReload();
+		if ( AssetPool[YouId].IsLoaded() ) {
+			Log( "Yep2!" );
+		}
 		
 		// Automatic Cleanup //
 	}
