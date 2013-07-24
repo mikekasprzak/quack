@@ -78,7 +78,17 @@ int AppMain() {
 		cAssetPool::UID MyOtherId = AssetPool.Load( "project/main.nut" );
 			
 		if ( AssetPool[MyId].IsLoaded() ) {
-			Log( AssetPool[MyId].GetStr() );
+			Log( "Yep!" );
+			//Log( AssetPool[MyId].GetStr() );
+		}
+		else {
+			Log( "Nope!" );
+		}
+		
+		AssetPool.Unload( MyOtherId );
+
+		if ( AssetPool[MyId].IsLoaded() ) {
+			Log( "Yep!" );
 		}
 		else {
 			Log( "Nope!" );

@@ -62,6 +62,16 @@ public:
 			delete_DataBlock( Data );
 			Data = 0;
 			Flags = AF_UNLOADED;
+			FileName = "";	// Clear the FileName too. No reminants! //
+		}
+	}
+	
+	// Releasing is a special kind of Unload. Should only be used by memory managers. //
+	inline void Release() {
+		if ( Data ) {
+			delete_DataBlock( Data );
+			Data = 0;
+			Flags = AF_RELEASED;
 		}		
 	}
 
@@ -86,6 +96,10 @@ public:
 		if ( IsLoaded() ) {
 			return Data->Data;
 		}
+		else if ( IsReleased() ) {
+			// TODO: Make this queue a reload //
+			return 0;
+		}
 		else {
 			return 0;
 		}
@@ -96,11 +110,16 @@ public:
 		if ( IsLoaded() ) {
 			return Data->Data;
 		}
+		else if ( IsReleased() ) {
+			// TODO: Make this queue a reload //
+			return 0;
+		}
 		else {
 			return "";
 		}
 	}
 
+	// TODO: Decide if checking size should trigger a Refresh (if Released) //
 	inline st32 GetSize() const {
 		if ( IsLoaded() ) {
 			return Data->Size;
