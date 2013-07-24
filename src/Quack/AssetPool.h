@@ -1,4 +1,14 @@
 // - ------------------------------------------------------------------------------------------ - //
+// Assets are loaded files //
+//
+// Once an Asset is loaded, details about it will be remembered.
+// An asset can be released, which means details are still tracked, but the data is gone.
+// The next time an asset is asked for, a released asset will trigger a reload, and eventually
+//   the data will work. 
+// A released asset is still a usable asset.
+//
+// NOTE: VRAM should auto-release the Data after upload, as the 2nd copy isn't necessary. //
+// - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_WTF_ASSETPOOL_H__
 #define __GEL_WTF_ASSETPOOL_H__
 // - ------------------------------------------------------------------------------------------ - //
@@ -8,7 +18,7 @@
 #include <map>
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
-// IMPORTANT NOTE: cAsset DOES NOT clean up after itself. Managed by cAssetPool. //
+// IMPORTANT NOTE: cAsset DOES NOT clean up after itself! Managed by cAssetPool. //
 class cAsset {
 	friend class cAssetPool;
 protected:
@@ -20,11 +30,18 @@ protected:
 	enum /* AssetFlags */ {
 		AF_NULL				= 0,
 		
-		AF_LOADED			= 0x1,	// Asset is Loaded //
-		AF_RELEASED			= 0x2,	// Asset was Unloaded due to the autorelease mechanism (NOT IMPLEMENTED) // 
+		// States //
+		AF_LOADED			= 0x1,		// Asset is Loaded //
+		AF_RELEASED			= 0x2,		// Asset was Unloaded due to the autorelease mechanism //
+		AF_UNLOADED			= 0x4,		// Asset was explicitly Unloaded //
+		AF_DONT_LOAD		= 0x8,		// Never load the asset (Index Zero) //
 		
-		AF_DONT_LOAD		= 0x4,	// Never load the asset (Index Zero) //
-		AF_UNLOADED			= 0x8,	// Asset was explicitly Unloaded //
+		AF_FILE_NOT_FOUND	= 0x10,		// Failed to load file: Was not found :( //
+		AF_TIMED_OUT		= 0x20,		// Failed to load file: It took too long. //
+		
+		AF_STATE_MASK		= 0xFF,
+		
+		AF_WAS_COMPRESSED	= 0x100,	// The data was compressed //
 	};
 	
 	int Flags;
@@ -51,17 +68,14 @@ public:
 	inline void Load( const char* _FileName ) {
 		Unload();
 		FileName = _FileName;
-		// Using the Null Terminator version of new_read, so the loaded data can //
-		// safely be used as strings. //
-		Data = new_read_nullterminate_DataBlock( _FileName );
-		Flags |= AF_LOADED;
+		DoLoad();
 	}
 	
 	inline void Unload() {
 		if ( Data ) {
 			delete_DataBlock( Data );
 			Data = 0;
-			Flags = AF_UNLOADED;
+			SetState( AF_UNLOADED );
 			FileName = "";	// Clear the FileName too. No reminants! //
 		}
 	}
@@ -71,62 +85,142 @@ public:
 		if ( Data ) {
 			delete_DataBlock( Data );
 			Data = 0;
-			Flags = AF_RELEASED;
+			SetState( AF_RELEASED );
 		}		
 	}
+	
+	// Like Load, but used on Released data (i.e. I still have the filename) //
+	inline void DoLoad() {
+		// TODO: Detect (.lzma, .gz, etc) and Uncompress the data // 
+		
+		// Using the Null Terminator version of new_read, so the loaded data can //
+		// safely be used as strings. //
+		Data = new_read_nullterminate_DataBlock( FileName.c_str() );
+		SetState( AF_LOADED );
+	}
+	
+	inline void RequestReload() {
+		// TODO: Make this queue a reload //
+		// NOTE: A reload is a call to DoLoad() //
+	}
 
 public:
-	// Flag and State Checking Functions //	
-	inline bool IsLoaded() const {
-		return (bool)(Flags & AF_LOADED);
-	}
-	inline bool IsUnloaded() const {
-		return (bool)(Flags & AF_UNLOADED);
+	// Flag and State Checking Functions //
+	inline bool IsLoaded() {
+		bool Loaded = _IsLoaded();
+		if ( !Loaded ) {
+			// If we ever did a IsLoaded check on something that was released, then we should reload it //
+			if ( _IsReleased() ) {
+				RequestReload();
+			}
+		}
+		return Loaded;
 	}
 	inline bool IsReleased() const {
-		return (bool)(Flags & AF_RELEASED);
+		return _IsReleased();
+	}
+	inline bool IsUnloaded() const {
+		return _IsUnloaded();
 	}
 	inline bool IsDontLoad() const {
+		return _IsDontLoad();
+	}
+	inline bool IsFileNotFound() const {
+		return _IsFileNotFound();
+	}
+	inline bool IsTimedOut() const {
+		return _IsTimedOut();
+	}
+	
+	// Safe Versions that only check flags //
+	inline bool _IsLoaded() const {
+		return (bool)(Flags & AF_LOADED);
+	}
+	inline bool _IsReleased() const {
+		return (bool)(Flags & AF_RELEASED);
+	}
+	inline bool _IsUnloaded() const {
+		return (bool)(Flags & AF_UNLOADED);
+	}
+	inline bool _IsDontLoad() const {
 		return (bool)(Flags & AF_DONT_LOAD);
+	}
+	inline bool _IsFileNotFound() const {
+		return (bool)(Flags & AF_FILE_NOT_FOUND);
+	}
+	inline bool _IsTimedOut() const {
+		return (bool)(Flags & AF_TIMED_OUT);
+	}
+	
+	// Set States //
+	inline void SetState( const int _Flags ) {
+		Flags = (Flags & ~AF_STATE_MASK) | _Flags;
 	}
 
 public:
+	// Get the Data (as a char*) //
 	inline char* Get() {
 		// TODO: Write a timestamp every time this is accessed //
-		if ( IsLoaded() ) {
+		if ( _IsLoaded() )
 			return Data->Data;
-		}
-		else if ( IsReleased() ) {
-			// TODO: Make this queue a reload //
-			return 0;
-		}
-		else {
-			return 0;
-		}
+		else if ( _IsReleased() )
+			RequestReload();
+		return 0;
 	}
 	// Variation of Get. Returns an empty string upon fail (instead of 0) //
 	inline const char* GetStr() {
 		// TODO: Write a timestamp every time this is accessed //
-		if ( IsLoaded() ) {
+		if ( _IsLoaded() )
 			return Data->Data;
-		}
-		else if ( IsReleased() ) {
-			// TODO: Make this queue a reload //
-			return 0;
-		}
-		else {
-			return "";
-		}
+		else if ( _IsReleased() )
+			RequestReload();
+		return "";
 	}
 
-	// TODO: Decide if checking size should trigger a Refresh (if Released) //
-	inline st32 GetSize() const {
-		if ( IsLoaded() ) {
-			return Data->Size;
-		}
-		else {
+	// Variation that does not request Reload //
+	inline char* _Get() {
+		// TODO: Write a timestamp every time this is accessed //
+		if ( _IsLoaded() )
+			return Data->Data;
+		else
 			return 0;
-		}
+	}
+	inline const char* _GetStr() {
+		// TODO: Write a timestamp every time this is accessed //
+		if ( _IsLoaded() )
+			return Data->Data;
+		else
+			return "";
+	}
+
+	// Weak version that does not set timestamp or request reload //
+	inline char* __Get() {
+		if ( _IsLoaded() )
+			return Data->Data;
+		else
+			return 0;
+	}
+	inline const char* __GetStr() {
+		if ( _IsLoaded() )
+			return Data->Data;
+		else
+			return "";
+	}
+
+	// Gets the size, and also requests a reload if the data was released //
+	inline st32 GetSize() {
+		if ( _IsLoaded() )
+			return Data->Size;
+		else if ( _IsReleased() )
+			RequestReload();
+		return 0;
+	}
+	// Does not request a reload //
+	inline st32 _GetSize() const {
+		if ( _IsLoaded() )
+			return Data->Size;
+		else
+			return 0;
 	}
 	
 	inline const char* GetFileName() const {
@@ -148,7 +242,7 @@ public:
 	{
 		// Add 1 element to the Assets array: A dummy placeholder for Id 0. //
 		pushback_GelArray( &Assets );
-		back_GelArray( Assets )->Flags |= cAsset::AF_DONT_LOAD;
+		back_GelArray( Assets )->SetState( cAsset::AF_DONT_LOAD );
 	}
 	
 	inline ~cAssetPool() {
@@ -167,6 +261,8 @@ public:
 	
 	// Get a UID for an Asset //
 	inline UID Load( const char* _FileName ) {
+		// NOTE: This should always return a legal UID //
+		
 		// Step 1: Check Hash Table for a match //
 		std::map<std::string,UID>::iterator Itr = NameTable.find(_FileName);
 		if ( Itr != NameTable.end() ) {
@@ -202,7 +298,7 @@ public:
 		std::map<std::string,UID>::iterator Itr = NameTable.find(_FileName);
 		if ( Itr != NameTable.end() ) {
 			// Only Unload if it wasn't previously Unloaded //
-			if ( !operator[]( Itr->second ).IsUnloaded() ) {
+			if ( !operator[]( Itr->second )._IsUnloaded() ) {
 				operator[]( Itr->second ).Unload();
 				NameTable.erase( Itr );
 				// TODO: Store this UID in the 'available' table //
@@ -212,7 +308,7 @@ public:
 	// Remove an Asset via the UID //
 	inline void Unload( const UID Id ) {
 		// Only Unload if it wasn't previously Unloaded //
-		if ( !operator[](Id).IsUnloaded() ) {
+		if ( !operator[](Id)._IsUnloaded() ) {
 			NameTable.erase( NameTable.find( operator[](Id).GetFileName() ) );
 			operator[](Id).Unload();
 			// TODO: Store this UID in the 'available' table //
