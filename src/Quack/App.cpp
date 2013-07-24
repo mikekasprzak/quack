@@ -56,16 +56,35 @@ int AppMain() {
 	}
 	
 	{
-		// Asset Test //
-		cAsset MyAsset;
+//		// Asset Test //
+//		cAsset MyAsset;
+//		
+//		MyAsset.Load( "project/main.nut" );
+//		if ( MyAsset.IsLoaded() ) {
+//			Log( MyAsset.GetStr() );
+//		}
+//		else {
+//			Log( "Nope!" );
+//		}
+//		
+//		MyAsset.Unload();
+	}
+	
+	{
+		// AssetPool Test //
+		cAssetPool AssetPool;
 		
-		MyAsset.Load( "project/main.nut" );
-		if ( MyAsset.IsLoaded() ) {
-			Log( MyAsset.GetStr() );
+		cAssetPool::UID MyId = AssetPool.Load( "project/main.nut" );
+		cAssetPool::UID MyOtherId = AssetPool.Load( "project/main.nut" );
+			
+		if ( AssetPool[MyId].IsLoaded() ) {
+			Log( AssetPool[MyId].GetStr() );
 		}
 		else {
 			Log( "Nope!" );
 		}
+		
+		// Automatic Cleanup //
 	}
 	
 	return 0;
