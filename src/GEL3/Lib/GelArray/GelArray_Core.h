@@ -1,8 +1,11 @@
 // - ------------------------------------------------------------------------------------------ - //
 // GelArray - A dynamically allocated array.  A C implementation, and a lightweight STL vector. //
+//
+// IMPORTANT NOTE: Will not correctly copy STL containers! If you want STL, then you must use STL. //
+// (or fix the copy constructor/constructor/destuctor model)
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __Library_Data_GelArray_Core_H__
-#define __Library_Data_GelArray_Core_H__
+#ifndef __GEL_LIB_GelArray_Core_H__
+#define __GEL_LIB_GelArray_Core_H__
 // - ------------------------------------------------------------------------------------------ - //
 #ifdef _MSC_VER
 #pragma warning (disable : 4200) // Zero sized array member //
@@ -706,5 +709,5 @@ inline Type* popblockback_GelArray( GelArray<Type>** p, const st32 _Count ) {
 
 
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __Library_Data_GelArray_Core_H__ //
+#endif // __GEL_LIB_GelArray_Core_H__ //
 // - ------------------------------------------------------------------------------------------ - //
