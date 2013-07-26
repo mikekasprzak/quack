@@ -66,6 +66,7 @@ inline void FPreLog( const char* s ) {
 		}
 		else if ( s[1] == ' ' ) {
 			// Single Star //
+			_FLogColor( LOG_WHITE );
 			FLogIndentation( CurrentFLogIndentation );
 		}
 	}
@@ -116,6 +117,7 @@ inline void FPostLog( const char* s ) {
 		}
 		else if ( s[1] == ' ' ) {
 			// Single Star //
+			_FLogColor( LOG_NORMAL );
 		}
 	}
 	else if ( s[1] == ' ' ) {

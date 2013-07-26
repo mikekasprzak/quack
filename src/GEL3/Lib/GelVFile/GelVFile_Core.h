@@ -93,7 +93,7 @@ inline GelVFile* copy_GelVFile( const DataBlock* In ) {
 inline GelVFile* copy_GelVFile( GelArray<char>* In ) {
 	GelVFile* MyFile = new GelVFile;
 	MyFile->Position = 0;
-	MyFile->Data = copy_GelArray<char>( In );
+	MyFile->Data = new_copy_GelArray<char>( In );
 	return MyFile;
 }
 // - ------------------------------------------------------------------------------------------ - //

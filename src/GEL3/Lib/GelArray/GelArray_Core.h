@@ -56,6 +56,7 @@ inline void set_GelArray( GelArray<Type>* _Dest, const Type& _InitValue ) {
 	for( st idx = _Dest->Size; idx--; ) {
 		_Dest->Data[idx] = _InitValue;
 	}
+	Log("* SET 0x%x", _Dest );
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Copy one GelArray to another, no larger than Destination GelArray Size //
@@ -67,42 +68,18 @@ inline void copy_GelArray( GelArray<Type>* _Src, GelArray<Type>* _Dest ) {
 		// Copy only Source number of entries //
 		for( st idx = _Src->Size; idx--; ) {
 			_Dest->Data[idx] = _Src->Data[idx];
+//			new(_Dest->Data[idx]) Type(_Src->Data[idx]);
 		}
 	}
 	else {
 		// Copy Destination number of entries //
 		for( st idx = _Dest->Size; idx--; ) {
 			_Dest->Data[idx] = _Src->Data[idx];
+//			new(_Dest->Data[idx]) Type(_Src->Data[idx]);
 		}
 	}
-}
-// - ------------------------------------------------------------------------------------------ - //
-template< class Type >
-inline void copy_GelArray( DataBlock* _Src, GelArray<Type>* _Dest ) {
-	Type* SrcPtr = (Type*)_Src->Data;
-	st32 SrcSize = _Src->Size / sizeof( Type );
 	
-	// If source is smaller than the destination //
-	if ( _Dest->Size > SrcSize ) {
-		// Copy only Source number of entries //
-		for( st idx = SrcSize; idx--; ) {
-			_Dest->Data[idx] = SrcPtr[idx];
-		}
-	}
-	else {
-		// Copy Destination number of entries //
-		for( st idx = _Dest->Size; idx--; ) {
-			_Dest->Data[idx] = SrcPtr[idx];
-		}
-	}
-}
-// - ------------------------------------------------------------------------------------------ - //
-template< class Type >
-inline void copy_DataBlock( GelArray<Type>* _Src, DataBlock* _Dest  ) {
-	char* SrcPtr = (char*)_Src->Data;
-	st32 SrcSize = _Src->Size * sizeof( Type );
-	
-	copy_DataBlock( SrcPtr, SrcSize, _Dest );
+	Log("* COPY= 0x%x -> 0x%x", _Src, _Dest );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -120,13 +97,20 @@ inline GelArray<Type>* _new_GelArray( const st32 _Size ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
+inline void placement_new_GelArray( GelArray<Type>* p ) {
+	// Placement New //
+	for ( st32 idx = 0; idx < p->Size; idx++ ) {
+		new(&(p->Data[idx])) Type;
+	}
+	
+	Log("* pNEW %x",p);
+}
+// - ------------------------------------------------------------------------------------------ - //
+template< class Type >
 inline GelArray<Type>* new_GelArray( const st32 _Size ) {
 	GelArray<Type>* p = _new_GelArray<Type>( _Size );
 	
-	// Placement New //
-	for ( st32 idx = 0; idx < _Size; idx++ ) {
-		new(&(p->Data[idx])) Type;
-	}
+	placement_new_GelArray( p );
 
 	return p;
 }
@@ -154,11 +138,16 @@ inline void _delete_GelArray( GelArray<Type>* p ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline void delete_GelArray( GelArray<Type>* p ) {
+inline void placement_delete_GelArray( GelArray<Type>* p ) {
 	// Placement Delete //
 	for ( st32 idx = 0; idx < p->Size; idx++ ) {
 		p->Data[idx].~Type();
 	}
+}
+// - ------------------------------------------------------------------------------------------ - //
+template< class Type >
+inline void delete_GelArray( GelArray<Type>* p ) {
+	placement_delete_GelArray( p );
 	
 	_delete_GelArray<Type>( p );
 }
@@ -216,6 +205,7 @@ inline st32 size_GelArray( GelArray<Type>* p ) {
 
 
 // - ------------------------------------------------------------------------------------------ - //
+// Copy, but if the destination is larger, fill in rest of space with _InitValue //
 template< class Type >
 inline void copy_GelArray( GelArray<Type>* _Src, GelArray<Type>* _Dest, const Type& _InitValue ) {
 	// If source is smaller than the destination //
@@ -223,6 +213,7 @@ inline void copy_GelArray( GelArray<Type>* _Src, GelArray<Type>* _Dest, const Ty
 		// Copy Source number of entries //
 		for( st idx = _Src->Size; idx--; ) {
 			_Dest->Data[idx] = _Src->Data[idx];
+//			new(_Dest->Data[idx]) Type(_Src->Data[idx]);
 		}
 		
 		// Fill the rest of the data with initializer //
@@ -235,16 +226,19 @@ inline void copy_GelArray( GelArray<Type>* _Src, GelArray<Type>* _Dest, const Ty
 		// Copy Destination number of entries //
 		for( st idx = _Dest->Size; idx--; ) {
 			_Dest->Data[idx] = _Src->Data[idx];
+//			new(_Dest->Data[idx]) Type(_Src->Data[idx]);
 		}
 	}
+
+	Log("* COPY+ 0x%x -> 0x%x", _Src, _Dest );
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Return a duplicate of an GelArray //
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline GelArray<Type>* copy_GelArray( GelArray<Type>* _Src ) {
+inline GelArray<Type>* new_copy_GelArray( GelArray<Type>* _Src ) {
 	// Allocate our new block //
-	GelArray<Type>* NewBlock = new_GelArray<Type>( _Src->Size );
+	GelArray<Type>* NewBlock = _new_GelArray<Type>( _Src->Size );
 	
 	// Copy the data to our new block //
 	copy_GelArray<Type>( _Src, NewBlock );
@@ -261,12 +255,12 @@ inline GelArray<Type>* copy_GelArray( GelArray<Type>* _Src ) {
 
 
 // - ------------------------------------------------------------------------------------------ - //
-// Construct an GelArray from a DataBlock //
+// Convert from DataBlock to GelArray, and vice versa //
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline GelArray<Type>* copy_GelArray( DataBlock* _Src ) {
 	// Allocate our new block //
-	GelArray<Type>* NewBlock = new_GelArray<Type>( _Src->Size / sizeof(Type) );
+	GelArray<Type>* NewBlock = _new_GelArray<Type>( _Src->Size / sizeof(Type) );
 	
 	// Copy the data to our new block //
 	copy_GelArray<Type>( _Src, NewBlock );
@@ -280,13 +274,10 @@ inline GelArray<Type>* copy_GelArray( DataBlock* _Src ) {
 //	return copy_GelArray<Type>( _Src );
 //}
 // - ------------------------------------------------------------------------------------------ - //
-
-
-// - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline DataBlock* copy_DataBlock( GelArray<Type>* _Src ) {
 	// Allocate our new block //
-	DataBlock* NewBlock = new_DataBlock( _Src->Size * sizeof( Type ) );
+	DataBlock* NewBlock = _new_DataBlock( _Src->Size * sizeof( Type ) );
 	
 	// Copy the data to our new block //
 	copy_DataBlock( _Src, NewBlock );
@@ -300,6 +291,34 @@ inline DataBlock* new_DataBlock( GelArray<Type>* _Src ) {
 	return copy_DataBlock( _Src );
 }
 // - ------------------------------------------------------------------------------------------ - //
+template< class Type >
+inline void copy_GelArray( DataBlock* _Src, GelArray<Type>* _Dest ) {
+	Type* SrcPtr = (Type*)_Src->Data;
+	st32 SrcSize = _Src->Size / sizeof( Type );
+	
+	// If source is smaller than the destination //
+	if ( _Dest->Size > SrcSize ) {
+		// Copy only Source number of entries //
+		for( st idx = SrcSize; idx--; ) {
+			_Dest->Data[idx] = SrcPtr[idx];
+		}
+	}
+	else {
+		// Copy Destination number of entries //
+		for( st idx = _Dest->Size; idx--; ) {
+			_Dest->Data[idx] = SrcPtr[idx];
+		}
+	}
+}
+// - ------------------------------------------------------------------------------------------ - //
+template< class Type >
+inline void copy_DataBlock( GelArray<Type>* _Src, DataBlock* _Dest  ) {
+	char* SrcPtr = (char*)_Src->Data;
+	st32 SrcSize = _Src->Size * sizeof( Type );
+	
+	copy_DataBlock( SrcPtr, SrcSize, _Dest );
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 
 
@@ -307,7 +326,7 @@ inline DataBlock* new_DataBlock( GelArray<Type>* _Src ) {
 template< class Type >
 inline void reallocate_GelArray( GelArray<Type>** p, const st32 _NewSize ) {
 	// Allocate our new block //
-	GelArray<Type>* NewGelArray = new_GelArray<Type>( _NewSize );
+	GelArray<Type>* NewGelArray = _new_GelArray<Type>( _NewSize );
 	
 	if ( *p ) {
 		// Copy the data to our new block //
@@ -316,15 +335,20 @@ inline void reallocate_GelArray( GelArray<Type>** p, const st32 _NewSize ) {
 		// Delete the old block ponted to //
 		delete_GelArray<Type>( *p );
 	}
+	else {
+		// Do Constructors, as this data is brand new //
+		placement_new_GelArray( *p );
+	}
 	
 	// Make the pointer point to the new block //
 	(*p) = NewGelArray;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// Variation that, in the case it doesn't exist copies the _InitValue (instead of placement new) //
 template< class Type >
 inline void reallocate_GelArray( GelArray<Type>** p, const st32 _NewSize, const Type& _InitValue ) {
 	// Allocate our new block //
-	GelArray<Type>* NewGelArray = new_GelArray<Type>( _NewSize );
+	GelArray<Type>* NewGelArray = _new_GelArray<Type>( _NewSize );
 	
 	if ( *p ) {
 		// Copy the data to our new block //
@@ -412,6 +436,7 @@ inline void reallocate_GelArray( GelArray<Type>** p ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize ) {
+	Log( "* %s", __PRETTY_FUNCTION__ );
 	if ( *p == 0 ) {
 		*p = new_GelArray<Type>( _NewSize );
 	}
@@ -428,6 +453,7 @@ inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize, const Type& _InitValue ) {
+	Log( "* %s", __PRETTY_FUNCTION__ );
 	if ( *p == 0 ) {
 		*p = new_GelArray<Type>( _NewSize, _InitValue );
 	}
@@ -508,6 +534,7 @@ inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize, const Type
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void pushback_GelArray( GelArray<Type>** p ) {
+	Log( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 
 	if ( (*p) == 0 ) {
@@ -522,6 +549,7 @@ inline void pushback_GelArray( GelArray<Type>** p ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void pushback_GelArray( GelArray<Type>** p, const Type& _Value ) {
+	Log( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 
 	if ( (*p) == 0 )
@@ -534,6 +562,7 @@ inline void pushback_GelArray( GelArray<Type>** p, const Type& _Value ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline Type& popback_GelArray( GelArray<Type>** p ) {
+	Log( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 	
 	return_value_Warning ( Type(), (*p)->Size == 0, "Zero Size" );
@@ -548,6 +577,7 @@ inline Type& popback_GelArray( GelArray<Type>** p ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void insert_GelArray( GelArray<Type>** p, const size_t Index, const Type& _Value ) {
+	Log( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 
 	pushback_GelArray( p );

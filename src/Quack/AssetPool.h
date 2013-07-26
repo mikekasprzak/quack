@@ -16,6 +16,7 @@
 #include <Lib/GelArray/GelArray_Core.h>
 
 #include <map>
+#include <vector>
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
 // IMPORTANT NOTE: cAsset DOES NOT clean up after itself! Managed by cAssetPool. //
@@ -51,6 +52,14 @@ public:
 		Flags( AF_NULL )
 	{
 	}
+	
+//	inline cAsset& operator = ( const cAsset& _Vs ) {
+//		Data = _Vs.Data;
+//		FileName = _Vs.FileName;
+//		Flags = _Vs.Flags;
+//		
+//		return *this;
+//	}
 	
 	// Disabled Constructor and Destructor. Loading/Unloading is now explicit. //
 //	inline cAsset( const char* _FileName ) :
@@ -243,30 +252,42 @@ public:
 	typedef int UID;
 protected:
 	// TODO: This should use the doubler allocator, as assets are a-plenty //
-	GelArray<cAsset>* Assets;
+	//GelArray<cAsset>* Assets;
+	std::vector<cAsset> Assets;
 	
 	std::map<std::string,UID> NameTable;
 public:
-	inline cAssetPool() :
-		Assets( 0 )
-	{
+//	inline cAssetPool() :
+//		Assets( 0 )
+//	{
+//		// Add 1 element to the Assets array: A dummy placeholder for Id 0. //
+//		pushback_GelArray( &Assets );
+//		back_GelArray( Assets )->SetState( cAsset::AF_DONT_LOAD );
+//	}
+//	inline ~cAssetPool() {
+//		if ( Assets ) {
+//			for ( st idx = 0; idx < Assets->Size; idx++ ) {
+//				Assets->Data[idx].Unload();
+//			}
+//		}
+//	}
+
+	inline cAssetPool() {
 		// Add 1 element to the Assets array: A dummy placeholder for Id 0. //
-		pushback_GelArray( &Assets );
-		back_GelArray( Assets )->SetState( cAsset::AF_DONT_LOAD );
+		Assets.push_back( cAsset() );
+		Assets.back().SetState( cAsset::AF_DONT_LOAD );
 	}
-	
 	inline ~cAssetPool() {
-		if ( Assets ) {
-			for ( st idx = 0; idx < Assets->Size; idx++ ) {
-				Assets->Data[idx].Unload();
-			}
+		for ( st idx = 0; idx < Assets.size(); idx++ ) {
+			Assets[idx].Unload();
 		}
 	}
 	
 public:
 	// Lookup an asset via the UID //
 	inline cAsset& operator[] ( const UID Id ) {
-		return Assets->Data[ Id ];
+		//return Assets->Data[ Id ];
+		return Assets[Id];
 	}
 	
 	// Get a UID for an Asset //
@@ -293,11 +314,13 @@ public:
 			}
 			else {
 				// Use the Back, as there are no UID's in the 'available' table //
-				UID Id = Assets->Size;
+				UID Id = Assets.size();//Assets->Size;
 				NameTable[_FileName] = Id;
-				pushback_GelArray( &Assets );
+				//pushback_GelArray( &Assets );
+				Assets.push_back( cAsset() );
 				// TODO: Add this to the Job Queue //
-				back_GelArray( Assets )->Load( _FileName );
+				//back_GelArray( Assets )->Load( _FileName );
+				Assets.back().Load( _FileName );
 				Log( "Asset \"%s\" loaded as: %i", _FileName, Id );
 				return Id;
 			}
