@@ -36,13 +36,14 @@ void LogColor( const int Color ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 void LogAlways( const char* s, ... ) {
+	// These had to be seperate (no sharing vargs) because of Linux 64 //
 	{
 		va_list vargs;
 		va_start( vargs, s );
 		FLogAlways( s, vargs );
 		va_end( vargs );
 	}
-
+	// These had to be seperate (no sharing vargs) because of Linux 64 //
 	{
 		va_list vargs;
 		va_start( vargs, s );
@@ -52,13 +53,14 @@ void LogAlways( const char* s, ... ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 void _LogAlways( const char* s, ... ) {
+	// These had to be seperate (no sharing vargs) because of Linux 64 //
 	{
 		va_list vargs;
 		va_start( vargs, s );
 		_FLogAlways( s, vargs );
 		va_end( vargs );
 	}
-
+	// These had to be seperate (no sharing vargs) because of Linux 64 //
 	{
 		va_list vargs;
 		va_start( vargs, s );
