@@ -97,7 +97,10 @@ protected:
 		// Using the Null Terminator version of new_read, so the loaded data can //
 		// safely be used as strings. //
 		Data = new_read_nullterminate_DataBlock( FileName.c_str() );
-		SetState( AF_LOADED );
+		if ( Data )
+			SetState( AF_LOADED );
+		else
+			SetState( AF_FILE_NOT_FOUND );		
 	}
 
 public:
@@ -219,7 +222,7 @@ public:
 		else
 			return 0;
 	}
-	inline const char* __GetStr() {
+	inline const char* __GetStr() const {
 		if ( _IsLoaded() )
 			return Data->Data;
 		else
