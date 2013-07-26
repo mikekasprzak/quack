@@ -93,16 +93,12 @@ int vMEMprintf( MLogType* Dest, const char* Format, va_list VArgs ) {
 #else // GCC or CLANG //
 	while( true ) {
 		int Diff = Dest->Size - Dest->Used;
-//		printf("w00p\n");
-//		fflush(0);
 		int Count = vsnprintf( 
 			&(Dest->Data[ Dest->Used ]),
 			Diff,
 			Format,
 			VArgs 
 			);
-//		printf("woop\n");
-//		fflush(0);
 		
 		if ( Count >= Diff ) { // Greater & Equal (vsnprintf) not enough room
 			Dest->Grow();
