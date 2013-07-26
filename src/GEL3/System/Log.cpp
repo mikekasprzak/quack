@@ -36,19 +36,35 @@ void LogColor( const int Color ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 void LogAlways( const char* s, ... ) {
-	va_list vargs;
-	va_start( vargs, s );
-	FLogAlways( s, vargs );
-	MLogAlways( s, vargs );
-	va_end( vargs );
+	{
+		va_list vargs;
+		va_start( vargs, s );
+		FLogAlways( s, vargs );
+		va_end( vargs );
+	}
+
+	{
+		va_list vargs;
+		va_start( vargs, s );
+		MLogAlways( s, vargs );
+		va_end( vargs );
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void _LogAlways( const char* s, ... ) {
-	va_list vargs;
-	va_start( vargs, s );
-	_FLogAlways( s, vargs );
-	_MLogAlways( s, vargs );
-	va_end( vargs );
+	{
+		va_list vargs;
+		va_start( vargs, s );
+		_FLogAlways( s, vargs );
+		va_end( vargs );
+	}
+
+	{
+		va_list vargs;
+		va_start( vargs, s );
+		_MLogAlways( s, vargs );
+		va_end( vargs );
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 // NOTE: vprintf style, so these can be nested inside new printf style functions //
