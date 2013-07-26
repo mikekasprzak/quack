@@ -115,6 +115,7 @@ inline GelArray<Type>* _new_GelArray( const st32 _Size ) {
 	p->Size = _Size;
 //	p->MaxSize = _Size;
 
+	Log("+ NEW %x",p);
 	return p;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -148,6 +149,7 @@ inline GelArray<Type>* new_GelArray( const st32 _Size, const Type& _InitValue ) 
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void _delete_GelArray( GelArray<Type>* p ) {
+	Log("- DELETE %x", p);
 	delete [] p;
 }
 // - ------------------------------------------------------------------------------------------ - //
