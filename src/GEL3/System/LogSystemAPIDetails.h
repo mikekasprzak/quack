@@ -1,8 +1,8 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SYSTEM_LOGAPIDETAILS_H__
-#define __GEL_SYSTEM_LOGAPIDETAILS_H__
+#ifndef __GEL_SYSTEM_LOGSYSTEMAPIDETAILS_H__
+#define __GEL_SYSTEM_LOGSYSTEMAPIDETAILS_H__
 // - ------------------------------------------------------------------------------------------ - //
 void gelLogSystemAPIDetails();
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SYSTEM_LOGAPIDETAILS_H__ //
+#endif // __GEL_SYSTEM_LOGSYSTEMAPIDETAILS_H__ //
 // - ------------------------------------------------------------------------------------------ - //
