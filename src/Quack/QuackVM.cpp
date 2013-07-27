@@ -8,9 +8,25 @@
 HSQUIRRELVM vm;
 // - ------------------------------------------------------------------------------------------ - //
 void QuackVMInit() {
-	// Initialize VM //
 	Log( "-=- Squirrel VM -=-" );
+	Log( SQUIRREL_VERSION );
+	Log( SQUIRREL_COPYRIGHT );
 	
+	#ifdef _SQ64
+	Log( "* _SQ64 Enabled." );
+	#endif // _SQ64 //
+	
+	#ifdef SQUSEDOUBLE
+	Log( "* SQUSEDOUBLE Enabled." );
+	#endif // SQUSEDOUBLE //
+	
+	#ifdef SQUNICODE
+	Log( "* SQUNICODE Enabled." );
+	#endif // SQUNICODE //
+
+	Log( "" );
+	
+	// Initialize VM //
 	Log( "Creating VM..." );
 	vm = sq_open(1024);			// Stack Size //
 	sq_setprintfunc_Log( vm );	// Set 'Log' to be the print function //
