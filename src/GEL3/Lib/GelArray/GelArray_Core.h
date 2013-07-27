@@ -59,7 +59,7 @@ inline void set_GelArray( GelArray<Type>* _Dest, const Type& _InitValue ) {
 	for( st idx = _Dest->Size; idx--; ) {
 		_Dest->Data[idx] = _InitValue;
 	}
-	Log("* SET 0x%x", _Dest );
+	VVVLog("* SET 0x%x", _Dest );
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Copy one GelArray to another, no larger than Destination GelArray Size //
@@ -82,7 +82,7 @@ inline void copy_GelArray( GelArray<Type>* _Src, GelArray<Type>* _Dest ) {
 		}
 	}
 	
-	Log("* COPY= 0x%x -> 0x%x", _Src, _Dest );
+	VVVLog("* COPY= 0x%x -> 0x%x", _Src, _Dest );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -95,7 +95,7 @@ inline GelArray<Type>* _new_GelArray( const st32 _Size ) {
 	p->Size = _Size;
 //	p->MaxSize = _Size;
 
-	Log("+ NEW %x",p);
+	VVVLog("+ NEW %x",p);
 	return p;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -106,7 +106,7 @@ inline void placement_new_GelArray( GelArray<Type>* p ) {
 		new(&(p->Data[idx])) Type;
 	}
 	
-	Log("* pNEW %x",p);
+	VVVLog("* pNEW %x",p);
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
@@ -136,7 +136,7 @@ inline GelArray<Type>* new_GelArray( const st32 _Size, const Type& _InitValue ) 
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void _delete_GelArray( GelArray<Type>* p ) {
-	Log("- DELETE %x", p);
+	VVVLog("- DELETE %x", p);
 	delete [] p;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -233,7 +233,7 @@ inline void copy_GelArray( GelArray<Type>* _Src, GelArray<Type>* _Dest, const Ty
 		}
 	}
 
-	Log("* COPY+ 0x%x -> 0x%x", _Src, _Dest );
+	VVVLog("* COPY+ 0x%x -> 0x%x", _Src, _Dest );
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Return a duplicate of an GelArray //
@@ -439,7 +439,7 @@ inline void reallocate_GelArray( GelArray<Type>** p ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize ) {
-	Log( "* %s", __PRETTY_FUNCTION__ );
+	VVVLog( "* %s", __PRETTY_FUNCTION__ );
 	if ( *p == 0 ) {
 		*p = new_GelArray<Type>( _NewSize );
 	}
@@ -456,7 +456,7 @@ inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize, const Type& _InitValue ) {
-	Log( "* %s", __PRETTY_FUNCTION__ );
+	VVVLog( "* %s", __PRETTY_FUNCTION__ );
 	if ( *p == 0 ) {
 		*p = new_GelArray<Type>( _NewSize, _InitValue );
 	}
@@ -537,7 +537,7 @@ inline void resize_GelArray( GelArray<Type>** p, const st32 _NewSize, const Type
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void pushback_GelArray( GelArray<Type>** p ) {
-	Log( "* %s", __PRETTY_FUNCTION__ );
+	VVVLog( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 
 	if ( (*p) == 0 ) {
@@ -552,7 +552,7 @@ inline void pushback_GelArray( GelArray<Type>** p ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void pushback_GelArray( GelArray<Type>** p, const Type& _Value ) {
-	Log( "* %s", __PRETTY_FUNCTION__ );
+	VVVLog( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 
 	if ( (*p) == 0 )
@@ -565,7 +565,7 @@ inline void pushback_GelArray( GelArray<Type>** p, const Type& _Value ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline Type& popback_GelArray( GelArray<Type>** p ) {
-	Log( "* %s", __PRETTY_FUNCTION__ );
+	VVVLog( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 	
 	return_value_Warning ( Type(), (*p)->Size == 0, "Zero Size" );
@@ -580,7 +580,7 @@ inline Type& popback_GelArray( GelArray<Type>** p ) {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline void insert_GelArray( GelArray<Type>** p, const size_t Index, const Type& _Value ) {
-	Log( "* %s", __PRETTY_FUNCTION__ );
+	VVVLog( "* %s", __PRETTY_FUNCTION__ );
 	Warning( p == 0, "Zero Pointer Pointer" );
 
 	pushback_GelArray( p );

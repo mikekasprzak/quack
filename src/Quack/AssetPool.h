@@ -36,15 +36,17 @@ protected:
 		AF_LOADED			= 0x1,		// Asset is Loaded //
 		AF_RELEASED			= 0x2,		// Asset was Unloaded due to the autorelease mechanism //
 		AF_UNLOADED			= 0x4,		// Asset was explicitly Unloaded //
-		AF_DONT_LOAD		= 0x8,		// Never load the asset (Index Zero) //
 		
+		// Bad States //
 		AF_FILE_NOT_FOUND	= 0x10,		// Failed to load file: Was not found :( //
 		AF_TIMED_OUT		= 0x20,		// Failed to load file: It took too long. //
 		
-		AF_STATE_MASK		= 0xFF,
+		AF_BAD				= 0xFFF0,	// The state is bad (Not found, timed out, etc) //
+		AF_STATE_MASK		= 0xFFFF,
 		
 		// Additional Flags (Not States) //
-		AF_DECOMPRESSED		= 0x100,	// The data was decompressed //
+		AF_DONT_LOAD		= 0x10000,	// Never load the asset (i.e. Index Zero) //
+		AF_DECOMPRESSED		= 0x20000,	// The data was decompressed //
 	};
 public:
 	inline cAsset() :
@@ -146,6 +148,9 @@ public:
 	inline bool IsTimedOut() const {
 		return _IsTimedOut();
 	}
+	inline bool IsBad() const {
+		return _IsBad();
+	}
 	inline bool IsDecompressed() const {
 		return _IsDecompressed();
 	}
@@ -169,6 +174,9 @@ public:
 	inline bool _IsTimedOut() const {
 		return (bool)(Flags & AF_TIMED_OUT);
 	}
+	inline bool _IsBad() const {
+		return (bool)(Flags & AF_BAD);
+	}
 	inline bool _IsDecompressed() const {
 		return (bool)(Flags & AF_DECOMPRESSED);
 	}
@@ -177,6 +185,10 @@ protected:
 	// Set States //
 	inline void SetState( const int _Flags ) {
 		Flags = (Flags & ~AF_STATE_MASK) | _Flags;
+	}
+	// Set Flags //
+	inline void SetFlag( const int _Flags ) {
+		Flags |= _Flags;
 	}
 
 public:
@@ -254,31 +266,13 @@ class cAssetPool {
 public:
 	typedef int UID;
 protected:
-	// TODO: This should use the doubler allocator, as assets are a-plenty //
-	//GelArray<cAsset>* Assets;
-	std::vector<cAsset> Assets;
-	
+	std::vector<cAsset> Assets;	
 	std::map<std::string,UID> NameTable;
 public:
-//	inline cAssetPool() :
-//		Assets( 0 )
-//	{
-//		// Add 1 element to the Assets array: A dummy placeholder for Id 0. //
-//		pushback_GelArray( &Assets );
-//		back_GelArray( Assets )->SetState( cAsset::AF_DONT_LOAD );
-//	}
-//	inline ~cAssetPool() {
-//		if ( Assets ) {
-//			for ( st idx = 0; idx < Assets->Size; idx++ ) {
-//				Assets->Data[idx].Unload();
-//			}
-//		}
-//	}
-
 	inline cAssetPool() {
 		// Add 1 element to the Assets array: A dummy placeholder for Id 0. //
 		Assets.push_back( cAsset() );
-		Assets.back().SetState( cAsset::AF_DONT_LOAD );
+		Assets.back().SetFlag( cAsset::AF_DONT_LOAD );
 	}
 	inline ~cAssetPool() {
 		for ( st idx = 0; idx < Assets.size(); idx++ ) {
@@ -289,7 +283,6 @@ public:
 public:
 	// Lookup an asset via the UID //
 	inline cAsset& operator[] ( const UID Id ) {
-		//return Assets->Data[ Id ];
 		return Assets[Id];
 	}
 	
@@ -319,10 +312,8 @@ public:
 				// Use the Back, as there are no UID's in the 'available' table //
 				UID Id = Assets.size();//Assets->Size;
 				NameTable[_FileName] = Id;
-				//pushback_GelArray( &Assets );
 				Assets.push_back( cAsset() );
 				// TODO: Add this to the Job Queue //
-				//back_GelArray( Assets )->Load( _FileName );
 				Assets.back().Load( _FileName );
 				Log( "Asset \"%s\" loaded as: %i", _FileName, Id );
 				return Id;
@@ -351,7 +342,6 @@ public:
 			// TODO: Store this UID in the 'available' table //
 		}
 	}
-	
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_WTF_ASSETPOOL_H__ //
