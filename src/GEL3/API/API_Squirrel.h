@@ -4,13 +4,11 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <squirrel.h>
 #include <sqstdio.h>
-#include <sqstdmath.h>
-#include <sqstdstring.h>
-#include <sqstdsystem.h>
 #include <sqstdblob.h>
+#include <sqstdmath.h>
+#include <sqstdsystem.h>
+#include <sqstdstring.h>
 #include <sqstdaux.h>
-
-// TODO: Disable Squirrel FileIO //
 
 // My Additions to the Squirrel library //
 #include <Extensions/Squirrel_Extensions.h>

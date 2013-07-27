@@ -28,6 +28,9 @@ st MyFunc3( st User, st Arg, st Ret ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 void SignalTest() {
+	Log( "" );
+	Log( "** Signal Test:" );
+
 	// Signal Testing Code //
 	Signal MySignal;
 	MySignal.Connect( MyFunc );
@@ -39,18 +42,38 @@ void SignalTest() {
 	Log( "Final Ret is: %i", (int)Ret );
 }
 // - ------------------------------------------------------------------------------------------ - //
+void DeferredTest() {
+	Log( "" );
+	Log( "** Deferred Test:" );
+	
+	// Deferred Testing Code //
+	Deferred MyDef;
+	MyDef.Then( MyFunc );
+	MyDef.OnError( MyFunc2 );
+	//MyDef.Always( MyFunc2, 64 );
+	
+	MyDef.Callback( 13 );
+//	MyDef.Errback( 10 );
 
+	Log( "Adding a late action. These will automatically trigger Callback or Errback." );
+	
+	MyDef.Then( MyFunc2 );
+	MyDef.OnError( MyFunc );
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 int main( int argc, char* argv[] ) {
 	LogInit();
 	
+	gelLogCompilerDetails();
 	gelLogSystemAPIDetails();
 	gelLogGraphicsAPIDetails();
 
 	// *** //
 
 	SignalTest();
+	DeferredTest();
 
 	// *** //
 	
