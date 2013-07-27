@@ -3,7 +3,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <System/System.h>
 #include <API/API_OpenGL.h>
-#include "Graphics.h"
+#include <Graphics/Graphics.h>
 // - ------------------------------------------------------------------------------------------ - //
 void gelLogGraphicsAPIDetails() {
 	Log( "-=- Khronos Libraries -=-" );

@@ -2,9 +2,11 @@
 #ifndef __GEL_SYSTEM_SYSTEM_H__
 #define __GEL_SYSTEM_SYSTEM_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "Log.h"
-#include "LogSystemAPIDetails.h"
-#include "LogCompilerDetails.h"
+#include "Log/Log.h"
+#include "Log/LogSystemAPIDetails.h"
+#include "Log/LogCompilerDetails.h"
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_SYSTEM_SYSTEM_H__ //
 // - ------------------------------------------------------------------------------------------ - //

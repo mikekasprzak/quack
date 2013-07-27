@@ -2,7 +2,7 @@
 #ifdef USES_SDL2
 // - ------------------------------------------------------------------------------------------ - //
 #include <API/API_SDL2.h>
-#include "System.h"
+#include <System/System.h>
 // - ------------------------------------------------------------------------------------------ - //
 void gelLogSystemAPIDetails() {
 	// Report SDL Version //
