@@ -11,7 +11,7 @@ void QuackVMInit() {
 	Log( "-=- Squirrel VM -=-" );
 	Log( SQUIRREL_VERSION );
 	Log( SQUIRREL_COPYRIGHT );
-	
+		
 	#ifdef _SQ64
 	Log( "* _SQ64 Enabled." );
 	#endif // _SQ64 //
@@ -28,9 +28,11 @@ void QuackVMInit() {
 	
 	// Initialize VM //
 	Log( "Creating VM..." );
-	vm = sq_open(1024);			// Stack Size //
+	vm = sq_open( 1024 );		// Start VM (Stack Size) //
 	sq_setprintfunc_Log( vm );	// Set 'Log' to be the print function //
-	sq_pushroottable(vm);
+	sq_pushroottable( vm );		// Push the Root Table //
+
+	atexit( QuackVMExit );
 	
 	// Load Standard Libraries //
 	Log( "Loading System Libraries..." );
@@ -51,5 +53,10 @@ void QuackVMInit() {
 	Log( "Calling User Init Function..." );
 	
 	Log( "" );
+}
+// - ------------------------------------------------------------------------------------------ - //
+void QuackVMExit() {
+	sq_pop( vm, 1 ); 	// Pop the Root Table //
+	sq_close( vm );		// Shutdown VM //
 }
 // - ------------------------------------------------------------------------------------------ - //
