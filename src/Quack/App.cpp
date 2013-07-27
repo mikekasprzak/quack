@@ -24,7 +24,7 @@ st MyFunc3( st User, st Arg, st Ret ) {
 int AppMain() {
 	{
 		Log( "" );
-		Log( "-=- Signal Test:" );
+		Log( "** Signal Test:" );
 		
 		// Signal Testing Code //
 		Signal MySignal;
@@ -39,7 +39,7 @@ int AppMain() {
 	
 	{
 		Log( "" );
-		Log( "-=- Deferred Test:" );
+		Log( "** Deferred Test:" );
 		
 		// Deferred Testing Code //
 		Deferred MyDef;
@@ -58,7 +58,7 @@ int AppMain() {
 	
 	{
 //		Log( "" );
-//		Log( "-=- Asset Test:" );
+//		Log( "** Asset Test:" );
 //
 //		// Asset Test //
 //		cAsset MyAsset;
@@ -76,7 +76,7 @@ int AppMain() {
 	
 	{
 		Log( "" );
-		Log( "-=- AssetPool Test:" );
+		Log( "** AssetPool Test:" );
 
 		// AssetPool Test //
 		cAssetPool AssetPool;

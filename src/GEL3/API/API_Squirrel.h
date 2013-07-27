@@ -1,12 +1,11 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_API_SDL2_H__
-#define __GEL_API_SDL2_H__
+#ifndef __GEL_API_SQUIRREL_H__
+#define __GEL_API_SQUIRREL_H__
 // - ------------------------------------------------------------------------------------------ - //
-// NOTE: Was <SDL2/SDL.h>, but this isn't Android friendly //
-#include <SDL.h>
+//#include <SDL.h>
 
-// My Additions to the SDL2 library //
-#include <Extensions/SDL2_Extensions.h>
+// My Additions to the Squirrel library //
+#include <Extensions/Squirrel_Extensions.h>
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_API_SDL2_H__ //
+#endif // __GEL_API_SQUIRREL_H__ //
 // - ------------------------------------------------------------------------------------------ - //

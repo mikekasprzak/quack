@@ -33,8 +33,29 @@ extern "C" int main( int argc, char* argv[] ) {
 	// Install C/Unix Signals //
 	signal( SIGTERM, term_func );
 	signal( SIGINT, int_func );
+
+	// **** //
 	
+	gelLogCompilerDetails();
+
+	// **** //
+	
+	// Initialize System //
+	SDL_Init( SDL_INIT_VIDEO /*| SDL_INIT_JOYSTICK*/ );
+	SDL_GL_LoadLibrary( NULL );
+	SDL_DisableScreenSaver();
+	atexit(SDL_Quit);
+	atexit(SDL_GL_UnloadLibrary);
+	atexit(SDL_EnableScreenSaver);
+
 	gelLogSystemAPIDetails();
+
+	// *** //
+	
+	// Initialize VM //
+
+	// *** //
+
 	gelLogGraphicsAPIDetails();
 
 	// *** //

@@ -2,9 +2,43 @@
 #ifdef USES_OPENGL
 // - ------------------------------------------------------------------------------------------ - //
 #include <System/System.h>
+#include <API/API_OpenGL.h>
 #include "Graphics.h"
 // - ------------------------------------------------------------------------------------------ - //
 void gelLogGraphicsAPIDetails() {
+	#ifdef USES_WGL
+	{
+		Log( "-=- WGL -=-" );
+		PROC wglGetExtString = wglGetProcAddress("wglGetExtensionsStringARB");
+		if ( wglGetExtString ) {
+			char* Extensions = ((char*(__stdcall*)(HDC))wglGetExtString)( wglGetCurrentDC() );
+			Log( "WGL Extensions (ARB):\n%s", Extensions );
+		}
+		else {
+			PROC wglGetExtString2 = wglGetProcAddress("wglGetExtensionsStringEXT");
+			if ( wglGetExtString2 ) {
+				char* Extensions = ((char*(__stdcall*)(HDC))wglGetExtString2)( wglGetCurrentDC() );
+				Log( "WGL Extensions (EXT, no ARB):\n%s", Extensions );
+			}
+		}
+		Log( "" );
+	}
+	#endif // USES_WGL //
+
+//	#ifdef USES_GLX
+//	{
+//		Log( "-=- GLX -=-" );
+//		Log( "" );
+//	}
+//	#endif // USES_GLX //
+//
+//	#ifdef USES_CGL
+//	{
+//		Log( "-=- CGL -=-" );
+//		Log( "" );
+//	}
+//	#endif // USES_CGL //
+
 	#ifdef USES_EGL
 	{
 		Log( "-=- EGL -=-" );
@@ -42,15 +76,17 @@ void gelLogGraphicsAPIDetails() {
 //
 //	Log( "" );
 	
-		{
+	{
 		int Dummy;	// Dummy Value for things we don't want to remember //
-	
+			
 		// GL Environment Settings //
-		glGetIntegerv( GL_DEPTH_BITS, (GLint*)&DepthBits );
-		Log( "GL_DEPTH_BITS: %i", DepthBits );
+		Dummy = 0;
+		glGetIntegerv( GL_DEPTH_BITS, (GLint*)&Dummy );
+		Log( "GL_DEPTH_BITS: %i", Dummy );
 	
-		glGetIntegerv( GL_STENCIL_BITS, (GLint*)&StencilBits );
-		Log( "GL_STENCIL_BITS: %i", StencilBits );
+		Dummy = 0;
+		glGetIntegerv( GL_STENCIL_BITS, (GLint*)&Dummy );
+		Log( "GL_STENCIL_BITS: %i", Dummy );
 		
 		Log( "" );
 	
@@ -66,8 +102,9 @@ void gelLogGraphicsAPIDetails() {
 		glGetIntegerv( GL_MAX_RENDERBUFFER_SIZE, (GLint*)&Dummy );
 		Log( "GL_MAX_RENDERBUFFER_SIZE: %i", Dummy );
 	
-		glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&System::MaxTextureSize );
-		Log( "GL_MAX_TEXTURE_SIZE: %i", System::MaxTextureSize );
+		Dummy = 0;
+		glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&Dummy );
+		Log( "GL_MAX_TEXTURE_SIZE: %i", Dummy );
 	
 		Dummy = 0;
 		glGetIntegerv( GL_MAX_CUBE_MAP_TEXTURE_SIZE, (GLint*)&Dummy );
@@ -78,7 +115,11 @@ void gelLogGraphicsAPIDetails() {
 		Log( "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: %i", Dummy );
 			
 		Log( "" );
-		Log( "TERMS: Attributes are Vertex Streams. Varyings are interpolated values from VS to FS. Uniforms are global variables/constants." );
+		Log( "TERMS:" );
+		Log( "* Attributes are Vertex Streams." );
+		Log( "* Varyings are interpolated values from VS to FS." );
+		Log( "* Uniforms are global variables/constants." );
+		Log( "" );
 	
 		// TODO: Log more data. http://www.opengl.org/sdk/docs/man/xhtml/glGet.xml	
 		Dummy = 0;
