@@ -37,7 +37,7 @@ void QuackVMInit() {
 	// Load Standard Libraries //
 	Log( "Loading System Libraries..." );
 //	Log("* IO lib"); sqstd_register_iolib( vm );			// FileIO (dofile, loadfile, writeclosuretofile)
-	Log("* Blob lib"); sqstd_register_bloblib( vm );		// Binary File Blobs (unnecessary?)
+//	Log("* Blob lib"); sqstd_register_bloblib( vm );		// Binary File Blobs (unnecessary?)
 	Log("* Math lib"); sqstd_register_mathlib( vm );		// Math (abs, fabs, sin, cos, log, rand, srand, sqrt, PI, ...)
 //	Log("* System lib"); sqstd_register_systemlib( vm );	// System (clock [time], getenv, remove [file], system [cmd], ...)
 	Log("* String lib"); sqstd_register_stringlib( vm );	// String (format [sprintf], regexp, l/r/strip, split [tokens])
