@@ -3,9 +3,30 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
+#include <API/API_Squirrel.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include "AssetPool.h"
 #include "Search.h"
+// - ------------------------------------------------------------------------------------------ - //
+HSQUIRRELVM vm;
+// - ------------------------------------------------------------------------------------------ - //
+void AppInit() {
+	// Initialize VM //
+	vm = sq_open(1024);			// Stack Size //
+	sq_setprintfunc_Log( vm );	// Set 'Log' to be the print function //
+	sq_pushroottable(vm);
+	
+	// Load Libraries //
+	//sqstd_register_iolib( vm );
+	sqstd_register_bloblib( vm );
+	sqstd_register_mathlib( vm );
+	//sqstd_register_systemlib( vm );
+	sqstd_register_stringlib( vm );
+	
+	// Do the Init function //
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 
 void MyFunc() {
@@ -54,24 +75,6 @@ int AppMain() {
 		
 		MyDef.Then( MyFunc2 );
 		MyDef.OnError( MyFunc );
-	}
-	
-	{
-//		Log( "" );
-//		Log( "** Asset Test:" );
-//
-//		// Asset Test //
-//		cAsset MyAsset;
-//		
-//		MyAsset.Load( "project/main.nut" );
-//		if ( MyAsset.IsLoaded() ) {
-//			Log( MyAsset.GetStr() );
-//		}
-//		else {
-//			Log( "Nope!" );
-//		}
-//		
-//		MyAsset.Unload();
 	}
 	
 	{
