@@ -72,13 +72,6 @@ extern "C" int main( int argc, char* argv[] ) {
 //		Log("> makefile %x", Finf.Flags );
 //	}
 
-		
-//	ReportCompilerVersion();
-//	#ifdef USES_MINGW
-//	Log( "Using DrMinGW: %s", (InitDrMinGW() ? "No" : "Yes") );
-//	#endif // USES_MINGW //
-//	ReportSDLVersion();
-	
 //	ArgInit( argc, argv );
 //
 //	// **** //
@@ -86,19 +79,6 @@ extern "C" int main( int argc, char* argv[] ) {
 ////	gelNetInit();
 //		
 //	// **** //
-//
-//	LogMemoryUsage();
-//
-//	//return 0;
-//	SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK );
-//	SDL_GL_LoadLibrary( NULL );
-//	SDL_DisableScreenSaver();
-//	atexit(SDL_Quit);
-//	atexit(SDL_GL_UnloadLibrary);
-//	atexit(SDL_EnableScreenSaver);
-//	
-//	ReportSDLSystemInfo();
-//	ReportSDLGraphicsInfo();
 //
 //	LogMemoryUsage();
 //	

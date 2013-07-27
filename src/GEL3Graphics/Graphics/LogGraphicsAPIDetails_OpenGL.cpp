@@ -6,6 +6,17 @@
 #include "Graphics.h"
 // - ------------------------------------------------------------------------------------------ - //
 void gelLogGraphicsAPIDetails() {
+	Log( "-=- Khronos Libraries -=-" );
+
+	#ifdef USES_GLEE
+	Log( "* Using GLEE" );
+	#endif // USES_GLEE //
+	#ifdef USES_GLEE
+	Log( "* Using GLEW" );
+	#endif // USES_GLEW //
+
+	Log( "" );
+	
 	#ifdef USES_WGL
 	{
 		Log( "-=- WGL -=-" );
