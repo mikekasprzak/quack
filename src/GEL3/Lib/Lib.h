@@ -21,6 +21,9 @@
 #include "NSet.h"			// NSet1 to NSet5. Sets of N values, each with their own type //
 // NOTE: Supports indexing operator [], which returns a void* to the specific elements. Cast it to your desired type.
 // - ------------------------------------------------------------------------------------------ - //
+// Usage: ABSet<int> MyType; // MyType.a and MyType.b are both int's //
+#include "Set.h"			// ASet->ABCDESet, XSet->XYWHSet, RSet->RGBASet, BSet->BGRASet, USet->UVWSet, WSet->WHLSet //
+// - ------------------------------------------------------------------------------------------ - //
 #include "Signal.h"			// Type that stores and calls many functions //
 #include "Deferred.h"
 // - ------------------------------------------------------------------------------------------ - //
