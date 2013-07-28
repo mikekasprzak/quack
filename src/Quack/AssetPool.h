@@ -29,7 +29,7 @@ protected:
 	DataBlock* Data;
 	std::string FileName;
 	GelFileInfo FileInfo;
-	// TODO: Signal (onchange, who to notify) //
+	GelSignal ChangeCallbacks; // Notifications to make upon file change //
 	int Flags;
 	
 	enum /* AssetFlags */ {
@@ -40,12 +40,14 @@ protected:
 		AF_RELEASED			= 0x2,		// Asset was Unloaded due to the autorelease mechanism //
 		AF_UNLOADED			= 0x4,		// Asset was explicitly Unloaded //
 		
+		AF_ACTIVE			= AF_LOADED | AF_RELEASED, // An active state is one of the good states //
+		
 		// Bad States //
 		AF_FILE_NOT_FOUND	= 0x10,		// Failed to load file: Was not found :( //
 		AF_TIMED_OUT		= 0x20,		// Failed to load file: It took too long. //
 		
 		AF_BAD				= 0xFFF0,	// The state is bad (Not found, timed out, etc) //
-		AF_STATE_MASK		= 0xFFFF,
+		AF_STATE_MASK		= 0xFFFF,	// If it's a state //
 		
 		// Additional Flags (Not States) //
 		AF_DONT_LOAD		= 0x10000,	// Never load the asset (i.e. Index Zero) //
@@ -90,12 +92,11 @@ protected:
 		if ( Data ) {
 			delete_DataBlock( Data );
 			Data = 0;
+			ChangeCallbacks.Clear();	// Clear the list of callbacks to call upon change //
+			FileName = "";				// Clear the FileName too. No reminants! //
 			SetState( AF_UNLOADED );
-			FileName = "";	// Clear the FileName too. No reminants! //
 		}
 	}
-	
-	// TODO: Scan for changes //
 	
 	// Like Load, but used on Released data (i.e. I still have the filename) //
 	inline void DoLoad() {
@@ -132,7 +133,9 @@ protected:
 	}
 
 public:
-	// Releasing is a special kind of Unload. Should only be used by memory managers. //
+	// Releasing is a special kind of Unload. Only removes the data, but keeps the rest of the //
+	// information around needed to reload the data. Used to both refresh data and to free memory //
+	// that would otherwise be wasted. //
 	inline void Release() {
 		if ( Data ) {
 			delete_DataBlock( Data );
@@ -149,7 +152,36 @@ public:
 		}
 	}
 
+
+	// Check if the file has since changed //
+	inline bool HasChanged() {
+		GelFileInfo NewFileInfo( FileName.c_str() );
+		return FileInfo != NewFileInfo;
+	}
+	// When a file has changed, this is how we reload. //
+	inline void Reload() {
+		Release();				// Release instead of Unload, as we want to keep the File Name //
+		DoLoad();				// Explicitly reload //
+		ChangeCallbacks();		// Notify the subscribers that this file was changed //
+	}
+	
+	// Attach a function that is notified whenever an asset is reloaded //
+	template< class T >
+	inline void SubscribeToChanges( T Callback ) {
+		ChangeCallbacks.Connect( Callback );
+	}
+	// Remove a function that was added to monitor for changes //
+	template< class T >
+	inline void UnsubscribeFromChanges( T Callback ) {
+		ChangeCallbacks.Disconnect( Callback );
+	}
+
 public:
+	// An active Asset is one that is either Loaded or Released (freed because data not needed) //
+	inline bool IsActive() {
+		return ( IsLoaded() || IsReleased() );
+	}
+	
 	// Flag and State Checking Functions //
 	inline bool IsLoaded() {
 		bool Loaded = _IsLoaded();
@@ -184,6 +216,9 @@ public:
 	}
 	
 	// Safe Versions that only check flags //
+	inline bool _IsActive() {
+		return (bool)(Flags & AF_ACTIVE);
+	}
 	inline bool _IsLoaded() const {
 		return (bool)(Flags & AF_LOADED);
 	}
@@ -351,6 +386,19 @@ public:
 				return Id;
 			}
 		}
+	}
+	
+	inline bool ScanForChanges() {
+		bool Changes = false;
+		for ( st idx = 0; idx < Assets.size(); idx++ ) {
+			if ( Assets[idx].IsActive() ) {
+				if ( Assets[idx].HasChanged() ) {
+					Assets[idx].Reload();
+					Changes = true;
+				}
+			}
+		}
+		return Changes;
 	}
 
 	// Remove an Asset via original FileName //	

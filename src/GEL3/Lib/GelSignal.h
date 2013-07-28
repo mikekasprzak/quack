@@ -132,6 +132,14 @@ public:
 			delete_GelArray<FuncType>( Funcs );
 		}
 	}
+	
+	inline void Clear() {
+		if ( Funcs ) {
+			delete_GelArray<FuncType>( Funcs );
+			Funcs = 0;
+		}
+	}
+	
 public:
 	// Call the function chain //
 	// NOTE: The Return is only ever changed by 3 argument functions! //
@@ -176,7 +184,7 @@ public:
 		return Ret;
 	}
 	// size_t version of calling //
-	inline void* operator () ( const size_t Args ) const {
+	inline void* operator () ( const size_t Args = 0 ) const {
 		return operator()( (void*)Args );
 	}
 	
