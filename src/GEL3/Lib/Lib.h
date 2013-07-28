@@ -26,6 +26,8 @@
 // Usage: ABSet<int> MyType; // MyType.a and MyType.b are both int's //
 #include "Set.h"			// ASet->ABCDESet, XSet->XYWHSet, RSet->RGBASet, BSet->BGRASet, USet->UVWSet, WSet->WHLSet //
 // - ------------------------------------------------------------------------------------------ - //
+#include "safe_sprintf.h"
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #include "GelSignal.h"		// Type that stores and calls many functions //
