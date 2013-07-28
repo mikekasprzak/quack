@@ -4,6 +4,8 @@
 #ifndef __GEL_LIB_GelFileInfo_Stat_Wrapper_H__
 #define __GEL_LIB_GelFileInfo_Stat_Wrapper_H__
 // -------------------------------------------------------------------------- //
+#ifdef USES_STAT
+// -------------------------------------------------------------------------- //
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus //
@@ -50,6 +52,8 @@ void stat_GelFileInfo_Stat_Wrapper( struct GelFileInfo_Stat_Wrapper* Out, const 
 #ifdef __cplusplus
 }; // extern "C" //
 #endif // __cplusplus //
+// -------------------------------------------------------------------------- //
+#endif // USES_STAT //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_Core_GelFileInfo_Core_H__ //
 // - ------------------------------------------------------------------------------------------ - //

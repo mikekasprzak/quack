@@ -25,6 +25,20 @@ int AppMain() {
 	
 	{
 		Log( "" );
+		Log( "** GelFileInfo Test: " );
+		
+		GelFileInfo Info( "project/main.nut" );
+		
+		if( Info.Exists() ) {
+			Log( "Size: %i   Type: %s (%i)   Time: %i", Info.Size, Info.IsDir() ? "Directory" : "File", Info.Flags, (int)Info.Time );
+		}
+		else {
+			Log( "Doesn't Exist" );
+		}
+	}
+	
+	{
+		Log( "" );
 		Log( "** AssetPool Test:" );
 
 		// AssetPool Test //

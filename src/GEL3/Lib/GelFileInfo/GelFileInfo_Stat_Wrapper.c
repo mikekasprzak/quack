@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------------- //
-#ifdef USES_UNIX_STAT
+#ifdef USES_STAT
 // -------------------------------------------------------------------------- //
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +16,10 @@ void stat_GelFileInfo_Stat_Wrapper( struct GelFileInfo_Stat_Wrapper* Out, const 
 	memset(Out,sizeof(struct GelFileInfo_Stat_Wrapper),0);
 	if ( Out->Error == 0 ) {
 		Out->Size = FileStat.st_size;
+		
+		Out->ATime = (unsigned long long int)FileStat.st_atime;
+		Out->MTime = (unsigned long long int)FileStat.st_mtime;
+		Out->CTime = (unsigned long long int)FileStat.st_ctime;
 		
 		Out->Flags = 0;
 		if ( S_ISDIR(FileStat.st_mode) )
@@ -60,5 +64,5 @@ void stat_GelFileInfo_Stat_Wrapper( struct GelFileInfo_Stat_Wrapper* Out, const 
 	}
 }
 // -------------------------------------------------------------------------- //
-#endif // USES_UNIX_STAT //
+#endif // USES_STAT //
 // -------------------------------------------------------------------------- //
