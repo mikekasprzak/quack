@@ -1,8 +1,7 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SYSTEM_GELSYSTEM_H__
-#define __GEL_SYSTEM_GELSYSTEM_H__
+#ifndef __GEL_SYSTEM_GELSCREEN_H__
+#define __GEL_SYSTEM_GELSCREEN_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <vector>
 #include <Lib/Lib.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelScreen {
@@ -42,36 +41,5 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-class GelScreens {
-	std::vector<GelScreen> Screens;
-public:
-	inline GelScreens() {
-	}
-	
-	inline void Add( const GelScreen& _Screen ) {
-		Screens.push_back( _Screen );
-	}
-	
-	inline const GelScreen& operator[]( const st Index ) const {
-		return Screens[Index];
-	}
-	
-	inline st Count() const {
-		return Screens.size();
-	}
-};
-// - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
-// - ------------------------------------------------------------------------------------------ - //
-// System Information Functions //
-inline bool HasScreen() {return true;}	// Does it have a screen (duh)? //
-bool HasFixedSizedScreens();			// True if one or more screens have a fixed size (3DS, WiiU, Android, PS Vita, ...)
-bool HasTV();							// True if one or more screens are TVs (Wii U, PS3, PS4)
-bool AreAllScreensRequired();			// True on a Multiscreen devices (3DS, Wii U) //
-// - ------------------------------------------------------------------------------------------ - //
-extern GelScreens Screen;
-// - ------------------------------------------------------------------------------------------ - //
-}; // namespace Gel //
-// - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SYSTEM_GELSYSTEM_H__ //
+#endif // __GEL_SYSTEM_GELSCREEN_H__ //
 // - ------------------------------------------------------------------------------------------ - //

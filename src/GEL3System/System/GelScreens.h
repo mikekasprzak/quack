@@ -1,48 +1,40 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifdef USES_SDL2
+#ifndef __GEL_SYSTEM_GELSCREENS_H__
+#define __GEL_SYSTEM_GELSCREENS_H__
 // - ------------------------------------------------------------------------------------------ - //
+#include <vector>
 #include <Lib/Lib.h>
-#include <API/API_SDL2.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelSystem.h"
+#include "GelScreen.h"
 // - ------------------------------------------------------------------------------------------ - //
-
-// - ------------------------------------------------------------------------------------------ - //
-void gelSystemInit() {
-	Log( "* SDL GelSystem Init()..." );
-	
-	// Populate List of Screens //
-	for( int idx = 0; idx < SDL_GetNumVideoDisplays(); idx++ ) {
-		SDL_DisplayMode Mode;
-		SDL_GetDesktopDisplayMode( idx, &Mode );
-
-		SDL_Rect Rect;
-		SDL_GetDisplayBounds( idx, &Rect );
-		
-		GelScreen Screen;
-		Screen.w = Mode.w;
-		Screen.h = Mode.h;
-		Screen.SetFlags( GelScreen::SF_TV | GelScreen::SF_WINDOW );
-		
-		Gel::Screen.Add( Screen );
-		
-//		Log( "%i - %i, %i at %i Hz [%x] -- Location: %i, %i (%i,%i)", 
-//			idx, 
-//			Mode.w, Mode.h, Mode.refresh_rate, Mode.format, 
-//			Rect.x, Rect.y, Rect.w, Rect.h 
-//			);
+class GelScreens {
+	std::vector<GelScreen> Screens;
+public:
+	inline GelScreens() {
 	}
-}
+	
+	inline void Add( const GelScreen& _Screen ) {
+		Screens.push_back( _Screen );
+	}
+	
+	inline const GelScreen& operator[]( const st Index ) const {
+		return Screens[Index];
+	}
+	
+	inline st Count() const {
+		return Screens.size();
+	}
+};
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-bool HasFixedSizedScreens() { return false; }
-bool HasTV() { return true; } // TODO: #ifdef Android, OUYA
-bool AreAllScreensRequired() { return false; }
+extern GelScreens Screen;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // USES_SDL2 //
+
+// - ------------------------------------------------------------------------------------------ - //
+#endif // __GEL_SYSTEM_GELSCREENS_H__ //
 // - ------------------------------------------------------------------------------------------ - //
