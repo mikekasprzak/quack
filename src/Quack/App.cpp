@@ -30,11 +30,30 @@ int AppMain() {
 		GelFileInfo Info( "project/main.nut" );
 		
 		if( Info.Exists() ) {
-			Log( "Size: %i   Type: %s (%i)   Time: %i", Info.Size, Info.IsDir() ? "Directory" : "File", Info.Flags, (int)Info.Time );
+			Log( "Size: %i   Type: %s (%x)   Time: %i", Info.Size, Info.IsDir() ? "Directory" : "File", Info.Flags, (int)Info.Time );
 		}
 		else {
 			Log( "Doesn't Exist" );
 		}
+
+		Info.Load( "project" );
+		
+		if( Info.Exists() ) {
+			Log( "Size: %i   Type: %s (%x)   Time: %i", Info.Size, Info.IsDir() ? "Directory" : "File", Info.Flags, (int)Info.Time );
+		}
+		else {
+			Log( "Doesn't Exist" );
+		}
+		
+		Info.Load( "project/main.nut.copy" );
+		
+		if( Info.Exists() ) {
+			Log( "Size: %i   Type: %s (%x)   Time: %i", Info.Size, Info.IsDir() ? "Directory" : "File", Info.Flags, (int)Info.Time );
+		}
+		else {
+			Log( "Doesn't Exist" );
+		}
+
 	}
 	
 	{
