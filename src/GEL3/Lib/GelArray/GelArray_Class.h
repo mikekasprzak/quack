@@ -4,10 +4,10 @@
 #ifndef __Library_Data_GelArray_Class_H__
 #define __Library_Data_GelArray_Class_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <System/Style.h>
+#include <Lib/Lib.h>
 
-#include "DataBlock_Core.h"
-#include "DataBlock_File.h"
+#include <Lib/DataBlock/DataBlock_Core.h>
+#include <Lib/DataBlock/DataBlock_File.h>
 
 #include "GelArray_Core.h"
 #include "GelArray_File.h"

@@ -163,7 +163,7 @@ extern const char* GetMLogData();
 	#define return_Log( __RETCODE, ... ) { Log( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_Log( ... ) { Log( __VA_ARGS__ ); return; }
 	#define return_value_Log( __RETCODE, ... ) { Log( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_Log( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { Log( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_Log( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { Log( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_Log( __TEST, ... ) { if( __TEST ) { Log( __VA_ARGS__ ); return; } }
 	#define return_if_value_Log( __RETCODE, __TEST, ... ) { if( __TEST ) { Log( __VA_ARGS__ ); return __RETCODE; } }
 	#define wLog( ... ) { if ( LogLevel >= 1 ) wLogAlways( __VA_ARGS__ ); }
@@ -172,7 +172,7 @@ extern const char* GetMLogData();
 	#define return_wLog( __RETCODE, ... ) { wLog( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_wLog( ... ) { wLog( __VA_ARGS__ ); return; }
 	#define return_value_wLog( __RETCODE, ... ) { wLog( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_wLog( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { wLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_wLog( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { wLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_wLog( __TEST, ... ) { if( __TEST ) { wLog( __VA_ARGS__ ); return; } }
 	#define return_if_value_wLog( __RETCODE, __TEST, ... ) { if( __TEST ) { wLog( __VA_ARGS__ ); return __RETCODE; } }
 #else // LOG_LEVEL //
@@ -182,7 +182,7 @@ extern const char* GetMLogData();
 	#define return_Log( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_Log( ... ) { return; }
 	#define return_value_Log( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_Log( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_Log( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_Log( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_Log( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 	#define wLog( ... ) ;
@@ -191,7 +191,7 @@ extern const char* GetMLogData();
 	#define return_wLog( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_wLog( ... ) { return; }
 	#define return_value_wLog( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_wLog( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_wLog( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_wLog( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_wLog( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 #endif // LOG_LEVEL //
@@ -203,7 +203,7 @@ extern const char* GetMLogData();
 	#define return_VLog( __RETCODE, ... ) { VLog( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_VLog( ... ) { VLog( __VA_ARGS__ ); return; }
 	#define return_value_VLog( __RETCODE, ... ) { VLog( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_VLog( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { VLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_VLog( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { VLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_VLog( __TEST, ... ) { if( __TEST ) { VLog( __VA_ARGS__ ); return; } }
 	#define return_if_value_VLog( __RETCODE, __TEST, ... ) { if( __TEST ) { VLog( __VA_ARGS__ ); return __RETCODE; } }
 	#define wVLog( ... ) { if ( LogLevel >= 2 ) wLogAlways( __VA_ARGS__ ); }
@@ -212,7 +212,7 @@ extern const char* GetMLogData();
 	#define return_wVLog( __RETCODE, ... ) { wVLog( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_wVLog( ... ) { wVLog( __VA_ARGS__ ); return; }
 	#define return_value_wVLog( __RETCODE, ... ) { wVLog( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_wVLog( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { wVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_wVLog( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { wVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_wVLog( __TEST, ... ) { if( __TEST ) { wVLog( __VA_ARGS__ ); return; } }
 	#define return_if_value_wVLog( __RETCODE, __TEST, ... ) { if( __TEST ) { wVLog( __VA_ARGS__ ); return __RETCODE; } }
 #else // VLog_LEVEL //
@@ -222,7 +222,7 @@ extern const char* GetMLogData();
 	#define return_VLog( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_VLog( ... ) { return; }
 	#define return_value_VLog( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_VLog( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_VLog( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_VLog( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_VLog( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 	#define wVLog( ... ) ;
@@ -231,7 +231,7 @@ extern const char* GetMLogData();
 	#define return_wVLog( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_wVLog( ... ) { return; }
 	#define return_value_wVLog( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_wVLog( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_wVLog( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_wVLog( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_wVLog( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 #endif // LOG_LEVEL //
@@ -243,7 +243,7 @@ extern const char* GetMLogData();
 	#define return_VVLog( __RETCODE, ... ) { VVLog( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_VVLog( ... ) { VVLog( __VA_ARGS__ ); return; }
 	#define return_value_VVLog( __RETCODE, ... ) { VVLog( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_VVLog( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { VVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_VVLog( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { VVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_VVLog( __TEST, ... ) { if( __TEST ) { VVLog( __VA_ARGS__ ); return; } }
 	#define return_if_value_VVLog( __RETCODE, __TEST, ... ) { if( __TEST ) { VVLog( __VA_ARGS__ ); return __RETCODE; } }
 	#define wVVLog( ... ) { if ( LogLevel >= 3 ) wLogAlways( __VA_ARGS__ ); }
@@ -252,7 +252,7 @@ extern const char* GetMLogData();
 	#define return_wVVLog( __RETCODE, ... ) { wVVLog( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_wVVLog( ... ) { wVVLog( __VA_ARGS__ ); return; }
 	#define return_value_wVVLog( __RETCODE, ... ) { wVVLog( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_wVVLog( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { wVVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_wVVLog( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { wVVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_wVVLog( __TEST, ... ) { if( __TEST ) { wVVLog( __VA_ARGS__ ); return; } }
 	#define return_if_value_wVVLog( __RETCODE, __TEST, ... ) { if( __TEST ) { wVVLog( __VA_ARGS__ ); return __RETCODE; } }
 #else // VVLog_LEVEL //
@@ -262,7 +262,7 @@ extern const char* GetMLogData();
 	#define return_VVLog( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_VVLog( ... ) { return; }
 	#define return_value_VVLog( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_VVLog( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_VVLog( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_VVLog( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_VVLog( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 	#define wVVLog( ... ) ;
@@ -271,7 +271,7 @@ extern const char* GetMLogData();
 	#define return_wVVLog( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_wVVLog( ... ) { return; }
 	#define return_value_wVVLog( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_wVVLog( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_wVVLog( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_wVVLog( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_wVVLog( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 #endif // LOG_LEVEL //
@@ -283,7 +283,7 @@ extern const char* GetMLogData();
 	#define return_VVVLog( __RETCODE, ... ) { VVVLog( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_VVVLog( ... ) { VVVLog( __VA_ARGS__ ); return; }
 	#define return_value_VVVLog( __RETCODE, ... ) { VVVLog( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_VVVLog( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { VVVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_VVVLog( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { VVVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_VVVLog( __TEST, ... ) { if( __TEST ) { VVVLog( __VA_ARGS__ ); return; } }
 	#define return_if_value_VVVLog( __RETCODE, __TEST, ... ) { if( __TEST ) { VVVLog( __VA_ARGS__ ); return __RETCODE; } }
 	#define wVVVLog( ... ) { if ( LogLevel >= 4 ) wLogAlways( __VA_ARGS__ ); }
@@ -292,7 +292,7 @@ extern const char* GetMLogData();
 	#define return_wVVVLog( __RETCODE, ... ) { wVVVLog( __VA_ARGS__ ); return __RETCODE; }
 	#define return_void_wVVVLog( ... ) { wVVVLog( __VA_ARGS__ ); return; }
 	#define return_value_wVVVLog( __RETCODE, ... ) { wVVVLog( __VA_ARGS__ ); return __RETCODE; }
-	#define return_if_wVVVLog( __TEST, ... ) { if( auto __Error ## __COUNTER__ = (__TEST) ) { wVVVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
+	#define return_if_wVVVLog( __TEST, ... ) { if( bool __Error ## __COUNTER__ = (__TEST) ) { wVVVLog( __VA_ARGS__ ); return __Error ## __COUNTER__; } }
 	#define return_if_void_wVVVLog( __TEST, ... ) { if( __TEST ) { wVVVLog( __VA_ARGS__ ); return; } }
 	#define return_if_value_wVVVLog( __RETCODE, __TEST, ... ) { if( __TEST ) { wVVVLog( __VA_ARGS__ ); return __RETCODE; } }
 #else // VVVLog_LEVEL //
@@ -302,7 +302,7 @@ extern const char* GetMLogData();
 	#define return_VVVLog( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_VVVLog( ... ) { return; }
 	#define return_value_VVVLog( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_VVVLog( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_VVVLog( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_VVVLog( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_VVVLog( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 	#define wVVVLog( ... ) ;
@@ -311,7 +311,7 @@ extern const char* GetMLogData();
 	#define return_wVVVLog( __RETCODE, ... ) { return __RETCODE; }
 	#define return_void_wVVVLog( ... ) { return; }
 	#define return_value_wVVVLog( __RETCODE, ... ) { return __RETCODE; }
-	#define return_if_wVVVLog( __TEST, ... ) { if ( auto __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
+	#define return_if_wVVVLog( __TEST, ... ) { if ( bool __Error ## __COUNTER__ = (__TEST) ) { return __Error ## __COUNTER__; } }
 	#define return_if_void_wVVVLog( __TEST, ... ) { if ( __TEST ) { return; } }
 	#define return_if_value_wVVVLog( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 #endif // LOG_LEVEL //
@@ -396,12 +396,12 @@ extern bool _AssertFlush;
 	}
 // - ------------------------------------------------------------------------------------------ - //
 #define Warning( __TEST, ... ) { if ( __TEST ) { __WarningText( __TEST, __VA_ARGS__ ); } }
-#define return_Warning( __TEST, ... ) { if ( auto __ERROR = (__TEST) ) { __WarningText( __TEST, __VA_ARGS__ ); return __ERROR; } }
+#define return_Warning( __TEST, ... ) { if ( bool __ERROR = (__TEST) ) { __WarningText( __TEST, __VA_ARGS__ ); return __ERROR; } }
 #define return_void_Warning( __TEST, ... ) { if ( __TEST ) { __WarningText( __TEST, __VA_ARGS__ ); return; } }
 #define return_value_Warning( __RETCODE, __TEST, ... ) { if ( __TEST ) { __WarningText( __TEST, __VA_ARGS__ ); return __RETCODE; } }
 
 #define if_Warning( __TEST, ... ) { if ( __TEST ) { __WarningText( __TEST, __VA_ARGS__ ); } }
-#define return_if_Warning( __TEST, ... ) { if ( auto __ERROR = (__TEST) ) { __WarningText( __TEST, __VA_ARGS__ ); return __ERROR; } }
+#define return_if_Warning( __TEST, ... ) { if ( bool __ERROR = (__TEST) ) { __WarningText( __TEST, __VA_ARGS__ ); return __ERROR; } }
 #define return_if_void_Warning( __TEST, ... ) { if ( __TEST ) { __WarningText( __TEST, __VA_ARGS__ ); return; } }
 #define return_if_value_Warning( __RETCODE, __TEST, ... ) { if ( __TEST ) { __WarningText( __TEST, __VA_ARGS__ ); return __RETCODE; } }
 // - ------------------------------------------------------------------------------------------ - //
@@ -417,13 +417,13 @@ extern bool _AssertFlush;
 #define AssertFlush() ;
 
 #define Warning( ... ) ;
-#define return_Warning( __TEST, ... ) { if ( auto __ERROR = (__TEST) ) { return __ERROR; } }
+#define return_Warning( __TEST, ... ) { if ( bool __ERROR = (__TEST) ) { return __ERROR; } }
 #define return_void_Warning( __TEST, ... ) { if ( __TEST ) { return; } }
 #define return_value_Warning( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 
 // For Syntax Compatibility //
 #define if_Warning( ... ) ;
-#define return_if_Warning( __TEST, ... ) { if ( auto __ERROR = (__TEST) ) { return __ERROR; } }
+#define return_if_Warning( __TEST, ... ) { if ( bool __ERROR = (__TEST) ) { return __ERROR; } }
 #define return_if_void_Warning( __TEST, ... ) { if ( __TEST ) { return; } }
 #define return_if_value_Warning( __RETCODE, __TEST, ... ) { if ( __TEST ) { return __RETCODE; } }
 // - ------------------------------------------------------------------------------------------ - //

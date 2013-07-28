@@ -12,9 +12,11 @@
 #ifndef __GEL_WTF_ASSETPOOL_H__
 #define __GEL_WTF_ASSETPOOL_H__
 // - ------------------------------------------------------------------------------------------ - //
+#include <Lib/Lib.h>
 #include <Lib/DataBlock/DataBlock.h>
-#include <Lib/GelArray/GelArray_Core.h>
-
+#include <Lib/GelArray/GelArray.h>
+#include <System/System.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <map>
 #include <vector>
 #include <string>
@@ -25,8 +27,7 @@ class cAsset {
 protected:
 	DataBlock* Data;
 	std::string FileName;
-	// TODO: FileInfo //
-	// TODO: TimeStamp (May be part of FileInfo) //
+	GelFileInfo FileInfo;
 	// TODO: Signal (onchange, who to notify) //
 	int Flags;
 	
@@ -93,17 +94,26 @@ protected:
 		}
 	}
 	
+	// TODO: Scan for changes //
+	
 	// Like Load, but used on Released data (i.e. I still have the filename) //
 	inline void DoLoad() {
-		// TODO: Detect (.lzma, .gz, etc) and Uncompress the data // 
+		FileInfo.Load( FileName.c_str() );	// Get Information about the File //
 		
-		// Using the Null Terminator version of new_read, so the loaded data can //
-		// safely be used as strings. //
-		Data = new_read_nullterminate_DataBlock( FileName.c_str() );
-		if ( Data )
-			SetState( AF_LOADED );
-		else
-			SetState( AF_FILE_NOT_FOUND );		
+		if ( FileInfo.Exists() ) {
+			// TODO: Detect (.lzma, .gz, etc) and Uncompress the data //
+			
+			// Using the Null Terminator version of new_read, so the loaded data can //
+			// safely be used as strings. //
+			Data = new_read_nullterminate_DataBlock( FileName.c_str() );
+			if ( Data )
+				SetState( AF_LOADED );
+			else
+				SetState( AF_FILE_NOT_FOUND );	// NOTE: Now a different failure case actually //
+		}
+		else {
+			SetState( AF_FILE_NOT_FOUND );
+		}
 	}
 
 public:
