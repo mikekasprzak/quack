@@ -11,7 +11,7 @@
 #include "Search.h"
 // - ------------------------------------------------------------------------------------------ - //
 void AppInit() {
-	GelSystem::Init();
+	gelSystemInit();
 	Log( "" );
 	
 	QuackVMInit();
@@ -21,7 +21,7 @@ void AppInit() {
 // - ------------------------------------------------------------------------------------------ - //
 int AppMain() {
 	Log( "-=- AppMain -=-" );
-	Log( "Screens: %i", (int)GelSystem::Screen.size() );
+	Log( "Screens: %i", (int)Gel::Screen.Count() );
 	
 	{
 		Log( "" );

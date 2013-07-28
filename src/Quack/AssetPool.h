@@ -26,7 +26,8 @@ protected:
 	DataBlock* Data;
 	std::string FileName;
 	// TODO: FileInfo //
-	// TODO: TimeStamp //
+	// TODO: TimeStamp (May be part of FileInfo) //
+	// TODO: Signal (onchange, who to notify) //
 	int Flags;
 	
 	enum /* AssetFlags */ {
