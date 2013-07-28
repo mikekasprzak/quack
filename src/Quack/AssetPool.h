@@ -14,6 +14,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Lib/DataBlock/DataBlock.h>
+#include <Lib/DataBlock/DataBlock_LZMA.h>
 #include <Lib/GelArray/GelArray.h>
 #include <System/System.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -101,15 +102,29 @@ protected:
 		FileInfo.Load( FileName.c_str() );	// Get Information about the File //
 		
 		if ( FileInfo.Exists() ) {
-			// TODO: Detect (.lzma, .gz, etc) and Uncompress the data //
-			
 			// Using the Null Terminator version of new_read, so the loaded data can //
 			// safely be used as strings. //
 			Data = new_read_nullterminate_DataBlock( FileName.c_str() );
-			if ( Data )
-				SetState( AF_LOADED );
-			else
+			if ( Data ) {
+				// TODO: Detect (.lzma, .gz, etc) //
+				if ( false ) {
+					// Uncompress the data //
+					DataBlock* Uncompressed = new_unpack_LZMA_DataBlock( Data );
+					
+					// Throw away original //
+					delete_DataBlock( Data );
+					Data = Uncompressed;
+					
+					// NOTE: SetFlags not SetState, because state only affects the lower part //
+					SetFlags( AF_LOADED | AF_DECOMPRESSED );
+				}
+				else {
+					SetState( AF_LOADED );
+				}			
+			}
+			else {
 				SetState( AF_FILE_NOT_FOUND );	// NOTE: Now a different failure case actually //
+			}
 		}
 		else {
 			SetState( AF_FILE_NOT_FOUND );
@@ -129,7 +144,9 @@ public:
 	inline void RequestReload() {
 		// TODO: Make this queue a reload //
 		// NOTE: A reload is a call to DoLoad() //
-		DoLoad();
+		if ( _IsReleased() ) {
+			DoLoad();
+		}
 	}
 
 public:
@@ -197,9 +214,13 @@ protected:
 	inline void SetState( const int _Flags ) {
 		Flags = (Flags & ~AF_STATE_MASK) | _Flags;
 	}
-	// Set Flags //
+	// Set Flag //
 	inline void SetFlag( const int _Flags ) {
 		Flags |= _Flags;
+	}
+	// Set Flags (i.e. All) //
+	inline void SetFlags( const int _Flags ) {
+		Flags = _Flags;
 	}
 
 public:
