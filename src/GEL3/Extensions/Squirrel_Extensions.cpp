@@ -2,7 +2,7 @@
 #ifdef USES_SQUIRREL
 // - ------------------------------------------------------------------------------------------ - //
 #include <stdarg.h>
-#include <System/System.h>
+#include <Lib/Lib.h>
 #include <API/API_Squirrel.h>
 // - ------------------------------------------------------------------------------------------ - //
 void sq_PrintFunc( HSQUIRRELVM v, const SQChar *s, ... ) {

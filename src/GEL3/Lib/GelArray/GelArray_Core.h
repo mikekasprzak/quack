@@ -13,7 +13,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <new>
 
-#include <System/Log/Log.h>
+#include <Lib/Log/Log.h>
 #include <Lib/DataBlock/DataBlock_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: Insertion code, Alignment resizing (min, max), searching, sorting  //
