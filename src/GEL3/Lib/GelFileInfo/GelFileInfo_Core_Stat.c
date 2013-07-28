@@ -7,13 +7,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 // -------------------------------------------------------------------------- //
-#include "GelFileInfo_Core.h"
+#include "GelFileInfo_Stat_Wrapper.h"
 // -------------------------------------------------------------------------- //
-// Use 'stat' to populate the GelFileInfo_Core structure //
-void stat_GelFileInfo_Core( struct GelFileInfo_Core* Out, const char* InFile ) {
+// Use 'stat' to populate the GelFileInfo_Stat_Wrapper structure //
+void stat_GelFileInfo_Stat_Wrapper( struct GelFileInfo_Stat_Wrapper* Out, const char* InFile ) {
 	struct stat FileStat;
 	Out->Error = stat(InFile, &FileStat);
-	memset(Out,sizeof(struct GelFileInfo_Core),0);
+	memset(Out,sizeof(struct GelFileInfo_Stat_Wrapper),0);
 	if ( Out->Error == 0 ) {
 		Out->Size = FileStat.st_size;
 		

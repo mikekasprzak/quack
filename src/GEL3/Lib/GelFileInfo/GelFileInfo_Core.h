@@ -1,8 +1,8 @@
 // - ------------------------------------------------------------------------------------------ - //
-// GelFileInfo_Core - C code wrapper for stat (since it doesn't work right anymore) //
+// GelFileInfo_Stat_Wrapper - C code wrapper for stat (since it doesn't work right on Linux) //
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_Core_GelFileInfo_Core_H__
-#define __GEL_Core_GelFileInfo_Core_H__
+#ifndef __GEL_LIB_GelFileInfo_Stat_Wrapper_H__
+#define __GEL_LIB_GelFileInfo_Stat_Wrapper_H__
 // -------------------------------------------------------------------------- //
 #ifdef __cplusplus
 extern "C" {
@@ -35,7 +35,7 @@ enum {
 // -------------------------------------------------------------------------- //
 // NOTE: This structure is free to be populated by other file system functions, so
 //   feel free to use it inside Archive wrapping libraries, remote access libs, etc.
-struct GelFileInfo_Core {
+struct GelFileInfo_Stat_Wrapper {
 	int 					Error;	// Error Code Returned By Stat (0 if exists) //
 	unsigned 				Flags;	// File Property Flags //
 	unsigned long long int	Size;	// File Size //	
@@ -45,7 +45,7 @@ struct GelFileInfo_Core {
 	unsigned long long int	CTime;	// Creation Time //
 };
 // -------------------------------------------------------------------------- //
-void stat_GelFileInfo_Core( struct GelFileInfo_Core* Out, const char* InFile );
+void stat_GelFileInfo_Stat_Wrapper( struct GelFileInfo_Stat_Wrapper* Out, const char* InFile );
 // -------------------------------------------------------------------------- //
 #ifdef __cplusplus
 }; // extern "C" //
