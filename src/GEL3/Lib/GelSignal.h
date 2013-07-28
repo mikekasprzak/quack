@@ -45,12 +45,12 @@
 //
 // NEW: Can set additional flags, such as Signal::FF_BLOCKED_AFTER_CALL, on Connect().
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_LIB_SIGNAL_H__
-#define __GEL_LIB_SIGNAL_H__
+#ifndef __GEL_LIB_GELSIGNAL_H__
+#define __GEL_LIB_GELSIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/GelArray/GelArray_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
-class Signal {
+class GelSignal {
 public:
 	// Arguments: User Ptr, Arguments Ptr, Return Ptr (also returns)  //
 	typedef void  (*F0VoidPtr)();
@@ -122,12 +122,12 @@ public:
 protected:
 	GelArray<FuncType>*	Funcs;
 public:
-	inline Signal() :
+	inline GelSignal() :
 		Funcs( 0 )
 	{
 	}
 	
-	inline ~Signal() {
+	inline ~GelSignal() {
 		if ( Funcs ) {
 			delete_GelArray<FuncType>( Funcs );
 		}
@@ -287,5 +287,5 @@ public:
 	// TODO: Scoped Connections. A variant of the connection type that knows to auto-disconnect in destructor. //
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_LIB_SIGNAL_H__
+#endif // __GEL_LIB_GELSIGNAL_H__ //
 // - ------------------------------------------------------------------------------------------ - //

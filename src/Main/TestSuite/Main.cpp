@@ -32,7 +32,7 @@ void SignalTest() {
 	Log( "** Signal Test:" );
 
 	// Signal Testing Code //
-	Signal MySignal;
+	GelSignal MySignal;
 	MySignal.Connect( MyFunc );
 	MySignal.Connect( MyFunc2, 200 );
 	MySignal.Connect( MyFunc3, 1 );

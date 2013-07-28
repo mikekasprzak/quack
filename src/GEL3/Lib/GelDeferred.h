@@ -3,14 +3,14 @@
 // - ------------------------------------------------------------------------------------------ - //
 // Typically used with threads, Deferreds lets you chain together a list of functions to call. //
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_LIB_DEFERRED_H__
-#define __GEL_LIB_DEFERRED_H__
+#ifndef __GEL_LIB_GELDEFERRED_H__
+#define __GEL_LIB_GELDEFERRED_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "Signal.h"
+#include "GelSignal.h"
 // - ------------------------------------------------------------------------------------------ - //
-class Deferred {
-	Signal Callbacks;
-	Signal Errbacks;
+class GelDeferred {
+	GelSignal Callbacks;
+	GelSignal Errbacks;
 	
 	void* Args;
 	
@@ -28,7 +28,7 @@ class Deferred {
 	
 	int Flags;
 public:
-	inline Deferred() :
+	inline GelDeferred() :
 		Flags( DF_NULL )
 	{
 	}
@@ -78,14 +78,14 @@ public:
 	#define DEFERRED_FUNC_T( ___name, ___istype, ___usertype, ___func, ... ) \
 		template< __VA_ARGS__ > \
 		inline void ___name( ___func, ___usertype UserPtr = 0 ) { \
-			___istype ## backs.Connect( _Func, UserPtr, Signal::FF_BLOCKED_AFTER_CALL ); \
+			___istype ## backs.Connect( _Func, UserPtr, GelSignal::FF_BLOCKED_AFTER_CALL ); \
 			if ( IsFinished() && Is ## ___istype ## back() ) { \
 				___istype ## backs( Args ); \
 			} \
 		}
 	#define DEFERRED_FUNC_s( ___name, ___istype, ___usertype, ___func ) \
 		inline void ___name( ___func, ___usertype UserPtr = 0 ) { \
-			___istype ## backs.Connect( _Func, UserPtr, Signal::FF_BLOCKED_AFTER_CALL ); \
+			___istype ## backs.Connect( _Func, UserPtr, GelSignal::FF_BLOCKED_AFTER_CALL ); \
 			if ( IsFinished() && Is ## ___istype ## back() ) { \
 				___istype ## backs( Args ); \
 			} \
@@ -95,8 +95,8 @@ public:
 	#define DEFERRED_BOTH_FUNC_T( ___name, ___usertype, ___func, ... ) \
 		template< __VA_ARGS__ > \
 		inline void ___name( ___func, ___usertype UserPtr = 0 ) { \
-			Callbacks.Connect( _Func, UserPtr, Signal::FF_BLOCKED_AFTER_CALL ); \
-			Errbacks.Connect( _Func, UserPtr, Signal::FF_BLOCKED_AFTER_CALL ); \
+			Callbacks.Connect( _Func, UserPtr, GelSignal::FF_BLOCKED_AFTER_CALL ); \
+			Errbacks.Connect( _Func, UserPtr, GelSignal::FF_BLOCKED_AFTER_CALL ); \
 			if ( IsFinished() ) { \
 				if ( IsCallback() ) { \
 					Callbacks( Args ); \
@@ -108,8 +108,8 @@ public:
 		}
 	#define DEFERRED_BOTH_FUNC_s( ___name, ___usertype, ___func ) \
 		inline void ___name( ___func, ___usertype UserPtr = 0 ) { \
-			Callbacks.Connect( _Func, UserPtr, Signal::FF_BLOCKED_AFTER_CALL ); \
-			Errbacks.Connect( _Func, UserPtr, Signal::FF_BLOCKED_AFTER_CALL ); \
+			Callbacks.Connect( _Func, UserPtr, GelSignal::FF_BLOCKED_AFTER_CALL ); \
+			Errbacks.Connect( _Func, UserPtr, GelSignal::FF_BLOCKED_AFTER_CALL ); \
 			if ( IsFinished() ) { \
 				if ( IsCallback() ) { \
 					Callbacks( Args ); \
@@ -175,5 +175,5 @@ public:
 	#undef DEFERRED_FUNC_s
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_LIB_DEFERRED_H__ //
+#endif // __GEL_LIB_GELDEFERRED_H__ //
 // - ------------------------------------------------------------------------------------------ - //
