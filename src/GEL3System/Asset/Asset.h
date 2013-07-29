@@ -23,10 +23,11 @@
 class cAsset {
 	friend class cAssetPool;
 protected:
-	DataBlock* Data;
-	std::string FileName;
-	GelFileInfo FileInfo;
-	GelSignal ChangeCallbacks; // Notifications to make upon file change //
+	DataBlock* 	Data;				// The Data //
+	std::string FileName;			// Name of the File //
+	GelFileInfo FileInfo;			// Information about the file //
+	GelTime 	TimeStamp;			// When the data was last accessed using .Get() //
+	GelSignal 	ChangeCallbacks; 	// Notifications to make upon file change //
 	int Flags;
 	
 	enum /* AssetFlags */ {
@@ -53,6 +54,7 @@ protected:
 public:
 	inline cAsset() :
 		Data( 0 ),
+		TimeStamp( 0ull ),
 		Flags( AF_NULL )
 	{
 	}
@@ -91,6 +93,7 @@ protected:
 			Data = 0;
 			ChangeCallbacks.Clear();	// Clear the list of callbacks to call upon change //
 			FileName = "";				// Clear the FileName too. No reminants! //
+			TimeStamp = 0ull;			// Clear the TimeStamp //
 			SetState( AF_UNLOADED );
 		}
 	}
@@ -171,6 +174,12 @@ public:
 	template< class T >
 	inline void UnsubscribeFromChanges( T Callback ) {
 		ChangeCallbacks.Disconnect( Callback );
+	}
+	
+	// Set the Time Stamp to the current time //
+	inline void DoTimeStamp() {
+		// TODO: Use FrameTime //
+		TimeStamp = get_s_GelTime();
 	}
 
 public:
@@ -258,7 +267,8 @@ protected:
 public:
 	// Get the Data (as a char*) //
 	inline char* Get() {
-		// TODO: Write a timestamp every time this is accessed //
+		DoTimeStamp(); // Write a timestamp every time this is accessed //
+		
 		if ( _IsLoaded() )
 			return Data->Data;
 		else if ( _IsReleased() )
@@ -267,7 +277,8 @@ public:
 	}
 	// Variation of Get. Returns an empty string upon fail (instead of 0) //
 	inline const char* GetStr() {
-		// TODO: Write a timestamp every time this is accessed //
+		DoTimeStamp(); // Write a timestamp every time this is accessed //
+		
 		if ( _IsLoaded() )
 			return Data->Data;
 		else if ( _IsReleased() )
@@ -277,14 +288,16 @@ public:
 
 	// Variation that does not request Reload //
 	inline char* _Get() {
-		// TODO: Write a timestamp every time this is accessed //
+		DoTimeStamp(); // Write a timestamp every time this is accessed //
+		
 		if ( _IsLoaded() )
 			return Data->Data;
 		else
 			return 0;
 	}
 	inline const char* _GetStr() {
-		// TODO: Write a timestamp every time this is accessed //
+		DoTimeStamp(); // Write a timestamp every time this is accessed //
+		
 		if ( _IsLoaded() )
 			return Data->Data;
 		else
