@@ -3,10 +3,6 @@
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __Library_GELCore_Directory_H__
 #define __Library_GELCore_Directory_H__
-// -------------------------------------------------------------------------- //
-#if defined(USES_GEL) && !defined(NO_PLATFORM_H)
-#include "../Platform.h"
-#endif // USES_GEL && NO_PLATFORM_H //
 // - ------------------------------------------------------------------------------------------ - //
 
 #include "GelDirectory_Core.h"

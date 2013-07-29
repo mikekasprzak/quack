@@ -11,12 +11,14 @@
 // - ------------------------------------------------------------------------------------------ - //
 void AppInit() {
 	Log( "-=- AppInit -=-" );
+	
+	LogLevel = 3;
 
 	gelTimeInit();
 	gelSystemInit();
 	gelAssetInit();
 	
-	Gel::Search.Add( "project/" );
+	Gel::Search.Add( "project" );
 
 	// **** //
 

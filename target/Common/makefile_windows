@@ -7,6 +7,7 @@ USES_MINGW			:=	true		# Compiler Extra Name (where applicible) #
 # - ------------------------------------------------------------------------ - #
 USES_STAT			:=	true		# Uses standard Unix Style File Info Lookups #
 USES_WINDOWS_TIME	:=	true		# Use Windows Timer Code #
+USES_WINDOWS_DIR	:=	true		# Use Windows Directory Code #
 # - ------------------------------------------------------------------------ - #
 USES_STDOUT			:=	true		# FileLog Output to use #
 USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
@@ -16,7 +17,7 @@ USES_WARNINGS		:=	true		# Use Extra Compiler Warnings #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW 
-DEFINES				+=	USES_STAT USES_WINDOWS_TIME
+DEFINES				+=	USES_STAT USES_WINDOWS_TIME USES_WINDOWS_DIR
 DEFINES				+=	USES_STDOUT USES_FLOG_COLORS 
 DEFINES				+=	USES_WARNINGS
 # - ------------------------------------------------------------------------ - #

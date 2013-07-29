@@ -21,8 +21,8 @@
 struct GelDirectory {
 	// The given Base GelDirectory name (include the trailing backslash .. ?) //
 	char* BaseName;
-	// A GelHeap of filenames //
-	GelHeap* FileName;
+	
+	GelHeap* FileName;					// A GelHeap of filenames //
 	
 	GelArray<GelFileInfo>* FileInfo;
 	
@@ -44,11 +44,11 @@ inline const size_t add_GelDirectory( GelDirectory* p, const char* _String, cons
 	return allocate_GelHeap( p->FileName, _String, StringLength );
 }
 // - ------------------------------------------------------------------------------------------ - //
-//inline const size_t add_GelDirectory( GelDirectory* p, const char* _String ) {
-//	size_t StringLength = length_String( _String ) + 1;
-//		
-//	return allocate_GelHeap( p->FileName, _String, StringLength );
-//}
+inline const size_t add_GelDirectory( GelDirectory* p, const char* _String ) {
+	size_t StringLength = length_String( _String ) + 1;
+		
+	return allocate_GelHeap( p->FileName, _String, StringLength );
+}
 // - ------------------------------------------------------------------------------------------ - //
 inline const size_t size_GelDirectory( const GelDirectory* p ) {
 	return size_GelHeap( p->FileName );
@@ -67,14 +67,14 @@ inline const GelFileInfo& info_GelDirectory( const GelDirectory* p, const size_t
 // - ------------------------------------------------------------------------------------------ - //
 // Create a dummy empty File Name list //
 inline GelDirectory* new_GelDirectory() {
-	GelDirectory* NewDir = new GelDirectory;
+	GelDirectory* NewDir = new GelDirectory();
 	
 	// Create and initalize an empty name string //
 	NewDir->BaseName = new_String("");
 	NewDir->FileName = new_GelHeap();
 	NewDir->FileInfo = new_GelArray<GelFileInfo>( 0 );
 
-	VVVLog("* NEWDIR: \"%s\"  0x%x  0x%x\n", NewDir->BaseName, NewDir->FileName, NewDir->FileInfo );
+	VVLog("* NEWDIR: \"%s\"  0x%x  0x%x\n", NewDir->BaseName, NewDir->FileName, NewDir->FileInfo );
 	
 	return NewDir;
 }

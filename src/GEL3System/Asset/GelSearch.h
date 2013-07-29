@@ -10,10 +10,28 @@
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
 class GelSearch {
-public:
+	GelDirectory* Dir;
+
+public:	
+	inline GelSearch() :
+		Dir( new_GelDirectory() )
+	{	
+	}
 	
+	inline ~GelSearch() {
+		if ( Dir ) {
+			delete_GelDirectory( Dir );
+		}
+	}
+	
+//	inline void Init( const char* DirName ) {
+//		Dir = new_GelDirectory( DirName );
+//	}
+
+public:	
 	inline void Add( const char* DirName ) {
 		Log( "Adding \"%s\" to Search...", DirName );
+		populate_GelDirectory( Dir, DirName, "" );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //

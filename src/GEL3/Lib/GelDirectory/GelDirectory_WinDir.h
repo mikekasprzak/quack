@@ -13,10 +13,10 @@
 #endif // WINCE //
 
 #include <string>
-#include <Util/String/String.h>
+#include <Lib/String/String.h>
 
 #include "GelDirectory_Core.h"
-#include "GelFileInfo.h"
+#include <Lib/GelFileInfo/GelFileInfo.h>
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -37,7 +37,7 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 	std::string SearchPath(SearchDirectory);
 	SearchPath += "\\*.*";
 
-	VVLog( "- populate_GelDirectory: %s - %s - %s\n", SearchDirectory, Prefix, SearchPath.c_str() );
+	VVLog( "+ %s: %s [%s -- %s]", __func__, SearchDirectory, Prefix, SearchPath.c_str() );
 	
 	// Extract the directory part, and open the directory //
 	// Read the first entry in the directory //
@@ -57,12 +57,12 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 			
 			// If it's a directory //
 			if ( Data.attrib & _A_SUBDIR ) {
-				VVLog("*");
+				VVVLog("*");
 				// Recursively do this again, if not a dot file or folder //
 				if( Data.name[0] != '.' ) {
-					VVLog("*");
+					VVVLog("*");
 					if( Data.name[0] != '_' ) {
-						VVLog("* DIRECTORY ADDED\n");
+						VVVLog("* DIRECTORY ADDED");
 						// Build our prefix string //
 						char* PrefixString = new char[ length_String(Prefix) + length_String(Data.name) + 2 ];
 						copy_String( Prefix, PrefixString );
@@ -80,11 +80,11 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 			// If it's a regular file //
 			else
 			{
-				VVLog("#");
+				VVVLog("#");
 				if( Data.name[0] != '.' ) {
-					VVLog("#");
+					VVVLog("#");
 					if( Data.name[0] != '_' ) {
-						VVLog("# FILE ADDED");
+						VVVLog("# FILE ADDED");
 						// Build our filename string //
 						char* NewFile = new char[ length_String(Prefix) + length_String(Data.name) + 1 ];
 						copy_String( Prefix, NewFile );
@@ -98,8 +98,6 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 					}
 				}
 			}
-
-			VVLog("\n");
 			
 			// Remove our string //
 			delete_String( CurrentFile );
@@ -111,6 +109,7 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 		// Close the directory //
 		_findclose( ThisDir );
 	}
+	VVLog( "- %s: %s", __func__, SearchDirectory );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void populate_GelDirectory( GelDirectory* p ) {
@@ -121,7 +120,7 @@ inline void populate_GelDirectory( GelDirectory* p ) {
 
 // - ------------------------------------------------------------------------------------------ - //
 inline GelDirectory* new_GelDirectory( const char* _BaseName ) {
-	GelDirectory* NewDir = new GelDirectory;
+	GelDirectory* NewDir = new GelDirectory();
 
 	NewDir->BaseName = new_String( _BaseName );
 	NewDir->FileName = new_GelHeap();
