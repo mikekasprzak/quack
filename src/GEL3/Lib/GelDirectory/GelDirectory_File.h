@@ -4,10 +4,8 @@
 #ifndef __Library_GELCore_GelDirectory_File_H__
 #define __Library_GELCore_GelDirectory_File_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelFile.h"
-#include "GelVFile.h"
-#include "GelContentHandle.h"
-#include "GelStorageHandle.h"
+#include <Lib/GelFile/GelFile.h>
+#include <Lib/GelVFile/GelVFile.h>
 
 #include "GelDirectory_Core.h"
 // - ------------------------------------------------------------------------------------------ - //

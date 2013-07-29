@@ -4,8 +4,8 @@
 #ifndef __Library_Data_GelHeap_Core_H__
 #define __Library_Data_GelHeap_Core_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "DataBlock_Core.h"
-#include "GelArray_Core.h"
+#include <Lib/DataBlock/DataBlock_Core.h>
+#include <Lib/GelArray/GelArray_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
 struct GelHeap {
 	GelArray<size_t>* Index;

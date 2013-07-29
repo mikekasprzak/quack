@@ -4,12 +4,12 @@
 #ifndef __Library_Data_GelDirectory_Core_H__
 #define __Library_Data_GelDirectory_Core_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelString_Core.h"
-#include "GelString_File.h"
-#include "GelHeap_Core.h"
-#include "GelHeap_File.h"
+#include <Lib/GelString/GelString_Core.h>
+#include <Lib/GelString/GelString_File.h>
+#include <Lib/GelHeap/GelHeap_Core.h>
+#include <Lib/GelHeap/GelHeap_File.h>
 
-#include "GelFileInfo.h"
+#include <Lib/GelFileInfo/GelFileInfo.h>
 // - ------------------------------------------------------------------------------------------ - //
 // Directories are lists of file names.  They can be populated manually, or be polled from disk
 //   and other sources.  The next step up from a Directory is an Archive, which contains data too.

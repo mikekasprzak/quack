@@ -2,6 +2,9 @@
 #ifndef __GEL_SYSTEM_GELSEARCH_H__
 #define __GEL_SYSTEM_GELSEARCH_H__
 // - ------------------------------------------------------------------------------------------ - //
+#include <Lib/Lib.h>
+#include <Lib/GelDirectory/GelDirectory.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <map>
 #include <vector>
 #include <string>

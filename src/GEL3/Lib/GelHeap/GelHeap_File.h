@@ -4,12 +4,11 @@
 #ifndef __Library_GELCore_GelHeap_File_H__
 #define __Library_GELCore_GelHeap_File_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelFile.h"
-#include "GelVFile.h"
-#include "GelContentHandle.h"
-#include "GelStorageHandle.h"
+#include <Lib/GelFile/GelFile.h>
+#include <Lib/GelVFile/GelVFile.h>
 
-#include "GelArray_File.h"
+#include <Lib/GelArray/GelArray.h>
+#include <Lib/GelArray/GelArray_File.h>
 
 #include "GelHeap_Core.h"
 // - ------------------------------------------------------------------------------------------ - //
