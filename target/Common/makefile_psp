@@ -5,12 +5,12 @@ USES_PSP			:=	true		# OS MODE #
 USES_SNC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
 USES_STDOUT			:=	true		# FileLog Output to use #
-USES_EXTRA_QUOTES	:=	true
+USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
 # - ------------------------------------------------------------------------ - #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_UNIX USES_PSP USES_SNC
-DEFINES				+=	USES_STDOUT
+DEFINES				+=	USES_STDOUT USES_EXTRA_QUOTES
 # - ------------------------------------------------------------------------ - #
 
 

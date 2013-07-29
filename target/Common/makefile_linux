@@ -4,14 +4,17 @@ USES_UNIX			:=	true		# OS #
 USES_DESKTOP		:=	true		# OS MODE #
 USES_GCC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
-USES_STDOUT			:=	true		# FileLog Output to use #
 USES_STAT			:=	true		# Uses standard Unix Style File Info Lookups #
+USES_UNIX_TIME		:=	true		# Use Unix Timer Code #
+# - ------------------------------------------------------------------------ - #
+USES_STDOUT			:=	true		# FileLog Output to use #
 USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
 # - ------------------------------------------------------------------------ - #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_UNIX USES_DESKTOP USES_GCC
-DEFINES				+=	USES_STDOUT USES_STAT USES_FLOG_COLORS
+DEFINES				+=	USES_STAT USES_UNIX_TIME
+DEFINES				+=	USES_STDOUT USES_FLOG_COLORS
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #

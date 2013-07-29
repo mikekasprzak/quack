@@ -4,15 +4,18 @@ USES_ANDROID		:=	true		# OS #
 USES_MOBILE			:=	true		# OS MODE #
 USES_GCC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
-USES_LOGCAT			:=	true		# FileLog Output to use #
 USES_STAT			:=	true		# Uses standard Unix Style File Info Lookups #
+USES_UNIX_TIME		:=	true		# Use Unix Timer Code #
+# - ------------------------------------------------------------------------ - #
+USES_LOGCAT			:=	true		# FileLog Output to use #
 USES_LESS_NEWLINES	:=	true		# Don't output extra newline (\n) in logs #
 USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
 # - ------------------------------------------------------------------------ - #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_ANDROID USES_MOBILE USES_GCC
-DEFINES				+=	USES_LOGCAT USES_STAT USES_LESS_NEWLINES USES_EXTRA_QUOTES
+DEFINES				+=	USES_STAT USES_UNIX_TIME
+DEFINES				+=	USES_LOGCAT USES_LESS_NEWLINES USES_EXTRA_QUOTES
 # - ------------------------------------------------------------------------ - #
 
 

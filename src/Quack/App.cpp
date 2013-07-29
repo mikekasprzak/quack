@@ -22,7 +22,7 @@ void AppInit() {
 int AppMain() {
 	Log( "-=- AppMain -=-" );
 	Log( "Screens: %i", (int)Gel::Screen.Count() );
-	
+		
 	{
 		Log( "" );
 		Log( "** GelFileInfo Test: " );
@@ -103,6 +103,38 @@ int AppMain() {
 		
 		// Automatic Cleanup //
 	}
+
+	{
+		Log( "" );
+		Log( "** GelTime Test:" );
+
+		// GelTime Test //	
+		GelTime Start = get_time_GelTime();
+		GelTime StartMs = get_ms_GelTime();
+		
+		int Barf = 0;
+		for ( int idx = 0; idx < 1000000000; idx++ ) {
+			Barf++;
+		}
+			
+		GelTime End = get_time_GelTime();
+		GelTime EndMs = get_ms_GelTime();
+		
+		GelTime Diff = End-Start;
+		GelTime DiffMs = EndMs-StartMs;
+		
+		#ifdef USES_WINDOWS
+			#define PRi64 "%I64i"
+		#else  // USES_UNIX //
+			#define PRi64 "%lli"
+		#endif // USES_WINDOWS //
+		
+		Log( "Time: "PRi64" ("PRi64" -> "PRi64") :: TimeMs: "PRi64" ("PRi64" -> "PRi64")", 
+			Diff, Start, End, 
+			DiffMs, StartMs, EndMs 
+		);
+	}
+	
 	
 	return 0;
 }
