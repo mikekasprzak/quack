@@ -19,12 +19,17 @@ void gelsTimeInit() {
 // Internal version of the Time Getter function //
 // NOTE: Provides microsecond detail, instead of millisecond detail like Windows timeGetTime //
 // - ------------------------------------------------------------------------------------------ - //
-GelTime timeGetTime64() {
+GelTime _timeGetTime64() {
 	struct timeval tv;
 	gettimeofday( &tv, 0 );
 	GelTime Ret = tv.tv_usec;
 	Ret += tv.tv_sec * 1000000;
 	return Ret;
+}
+// - ------------------------------------------------------------------------------------------ - //
+GelTime timeGetTime64() {
+	static GelTime Base = _timeGetTime64();
+	return _timeGetTime64() - Base;
 }
 // - ------------------------------------------------------------------------------------------ - //
 
