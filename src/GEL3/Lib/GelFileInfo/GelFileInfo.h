@@ -5,13 +5,14 @@
 #define __GEL_LIB_GELFILEINFO_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/GelTypes.h>
+#include <Lib/GelTime/GelTime.h>
 #include <Lib/Log/Log.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelFileInfo {
 public:
 	int		Flags;	// File Property Flags //
 	u32		Size;	// File Size //	
-	u64		Time;	// Modified Time //
+	GelTime	Time;	// Modified Time //
 
 public:
 	enum /* GelFileInfo Flags */ {
