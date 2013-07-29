@@ -58,10 +58,10 @@ void gelsTimeInit();
 inline void gelTimeInit() {
 	gelsTimeInit();	// Call the System Specific (gels) Time Init //
 	
-//	// Store a copy of the original time when the app started. We can use this to convert //
-//	//   any Start Time to Current Time. Just add StartTime to any Start Time (in seconds). //
-//	Gel::StartTime = stime_GelTime();
+	// Store a copy of the original time when the app started. We can use this to convert //
+	//   any Start Time to Current Time. Just add StartTime to any Start Time (in seconds). //
 	stime_GelTime();
+//	Gel::StartTime = get_time_GelTime();
 }
 // - ------------------------------------------------------------------------------------------ - //
 
