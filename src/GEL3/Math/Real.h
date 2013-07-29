@@ -462,7 +462,7 @@ public:
 	// I'm assuming "log10" is the faster logarithm function. If wrong, make it log. 
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real TwoLog() const {
-		return Real((float)log10( x ) * (float)log10( 2 ));
+		return Real((float)log10( x ) * (float)log10( 2.0f ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real NaturalLog() const {
@@ -470,7 +470,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real OctLog() const {
-		return Real((float)log10( x ) * (float)log10( 8 ));
+		return Real((float)log10( x ) * (float)log10( 8.0f ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real TenLog() const {
@@ -478,7 +478,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real HexLog() const {
-		return Real((float)log10( x ) * (float)log10( 16 ));
+		return Real((float)log10( x ) * (float)log10( 16.0f ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 

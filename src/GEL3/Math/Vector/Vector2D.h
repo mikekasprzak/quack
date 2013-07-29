@@ -399,35 +399,35 @@ public:
 	// General Vector vs. Vector Angle Tests //
 	// - -------------------------------------------------------------------------------------- - //
 	// If it's an Acute angle between vectors, the dot will return a positive number //
-	inline const bool IsAcuteAngle( const Vector2D& _Vs ) const {
+	inline bool IsAcuteAngle( const Vector2D& _Vs ) const {
 		return dot((*this), _Vs.Tangent()) > Real::Zero;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// If it's an obtuse angle between vectors, the dot will return a negative number //
-	inline const bool IsObtuseAngle( const Vector2D& _Vs ) const {
+	inline bool IsObtuseAngle( const Vector2D& _Vs ) const {
 		return dot((*this), _Vs.Tangent()) < Real::Zero;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// If it's a 90 degree angle between vectors, the dot will return zero (or near zero) //
-	inline const bool IsRightAngle( const Vector2D& _Vs ) const {
+	inline bool IsRightAngle( const Vector2D& _Vs ) const {
 		return dot((*this), _Vs.Tangent()).IsZero();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	
 	// - -------------------------------------------------------------------------------------- - //
-	inline const bool IsZero() const {
+	inline bool IsZero() const {
 		return x.IsZero() && y.IsZero();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation, that requires the guarentee that the number is positive. Used with magnitude. //
-	inline const bool IsZeroOrLess() const {
+	inline bool IsZeroOrLess() const {
 		return x.IsZeroOrLess() && y.IsZeroOrLess();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Returns true if this vector is axis aligned, but false if a zero vector //
-	inline const bool IsAxisAligned() const {
+	inline bool IsAxisAligned() const {
 		int Zeroes = 0;
 		if ( x.IsZero() )
 			Zeroes++;
