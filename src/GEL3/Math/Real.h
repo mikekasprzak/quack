@@ -11,7 +11,7 @@
 // TODO: Remove the sine templates. I have no qualms with realtime calculation of this.
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
-#include <cmath>
+#include <math.h>
 // - ------------------------------------------------------------------------------------------ - //
 #ifdef _MSC_VER
 #pragma warning (disable : 4305) // Truncation
@@ -76,12 +76,12 @@
 	}
 // - ------------------------------------------------------------------------------------------ - //
 #define OVERLOAD_TEST_OPERATOR( _OP_ ) \
-	inline const bool operator _OP_ ( const Real& _Vs ) const { \
+	inline bool operator _OP_ ( const Real& _Vs ) const { \
 		return x _OP_ _Vs.x; \
 	}
 // - ------------------------------------------------------------------------------------------ - //
 #define OVERLOAD_SYMBOL_OPERATOR( _OP_ ) \
-	inline const Real operator _OP_ ( const Real& _Vs ) const { \
+	inline Real operator _OP_ ( const Real& _Vs ) const { \
 		return x _OP_ _Vs.x; \
 	}
 // - ------------------------------------------------------------------------------------------ - //
@@ -156,9 +156,9 @@ public:
 	// Covert all reals into our floating point type automatically //
 	// - -------------------------------------------------------------------------------------- - //
 	// Might need a non const float returning variant //
-	inline operator const _RealType () const {
-		return x;	
-	}
+//	inline operator const _RealType () const {
+//		return x;	
+//	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
@@ -180,6 +180,8 @@ public:
 	OVERLOAD_TEST_OPERATOR( != );
 	OVERLOAD_TEST_OPERATOR( <= );
 	OVERLOAD_TEST_OPERATOR( >= );
+	OVERLOAD_TEST_OPERATOR( < );
+	OVERLOAD_TEST_OPERATOR( > );
 	
 	OVERLOAD_SYMBOLSYMBOLPREFIX_OPERATOR( ++ );
 	OVERLOAD_SYMBOLSYMBOLPREFIX_OPERATOR( -- );
@@ -199,33 +201,33 @@ public:
 	// Regular Functions //
 	// - -------------------------------------------------------------------------------------- - //
 	inline void Normalize() {
-		if ( x > Zero )
-			x = One;
-		else if ( x < Zero )
-			x = -One;
+		if ( x > Zero.x )
+			x = One.x;
+		else if ( x < Zero.x )
+			x = -One.x;
 		else
-			x = Zero;
+			x = Zero.x;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that returns the Magnitude after calculating the normalized vector //
 	inline const Real NormalizeRet() {
 		Real Temp( *this );
-		if ( x > Zero )
-			x = One;
-		else if ( x < Zero ) {
-			x = -One;
+		if ( x > Zero.x )
+			x = One.x;
+		else if ( x < Zero.x ) {
+			x = -One.x;
 			Temp = -Temp;
 		}
 		else
-			x = Zero;
+			x = Zero.x;
 		return Temp;
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that only returns the normal //
 	inline const Real Normal() const {
-		if ( x > Zero )
+		if ( x > Zero.x )
 			return One;
-		else if ( x < Zero )
+		else if ( x < Zero.x )
 			return -One;
 		else
 			return Zero;
@@ -253,14 +255,14 @@ public:
 	// Limiting Functions //
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real Min( const Real& _Vs ) const {
-		Real Number = *this;
+		const Real Number = *this;
 		if ( Number > _Vs )
 			return _Vs;
 		return Number;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real Max( const Real& _Vs ) const {
-		Real Number = *this;
+		const Real Number = *this;
 		if ( Number < _Vs )
 			return _Vs;
 		return Number;
@@ -314,7 +316,7 @@ public:
 //		return *this;
 //	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const bool InRange( const Real& _Min, const Real& _Max ) const {
+	inline bool InRange( const Real& _Min, const Real& _Max ) const {
 		// Min //
 		if ( *this < _Min )
 			return false;
@@ -329,7 +331,7 @@ public:
 	// Specific Functions that apply to this type //
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real Abs() const {
-		if ( x < Zero )
+		if ( x < Zero.x )
 			return -x;
 		else
 			return x;
@@ -340,12 +342,12 @@ public:
 		if ( IsZero() )
 			return Real::Zero;
 		else
-			return std::sqrt( *this );
+			return Real(sqrt( x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Square Root //
 	inline const Real Sqrt_() const {
-		return std::sqrt( *this );
+		return Real(sqrt( x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// TODO: Pow, Cubert (Cube Root)
@@ -436,23 +438,23 @@ public:
 	// Power functions to contrast the various logarithm bases //
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real TwoPow() const {
-		return std::pow( 2, *this );
+		return Real(pow( 2, x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real NaturalPow() const { 
-		return std::exp( *this );
+		return Real(exp( x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real OctPow() const {
-		return std::pow( 8, *this );
+		return Real(pow( 8, x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real TenPow() const {
-		return std::pow( 10, *this );
+		return Real(pow( 10, x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real HexPow() const {
-		return std::pow( 16, *this );
+		return Real(pow( 16, x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
@@ -460,23 +462,23 @@ public:
 	// I'm assuming "log10" is the faster logarithm function. If wrong, make it log. 
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real TwoLog() const {
-		return (float)std::log10( *this ) * (float)std::log10( 2 );
+		return Real((float)log10( x ) * (float)log10( 2 ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real NaturalLog() const {
-		return std::log( *this );
+		return Real(log( x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real OctLog() const {
-		return (float)std::log10( *this ) * (float)std::log10( 8 );
+		return Real((float)log10( x ) * (float)log10( 8 ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real TenLog() const {
-		return std::log10( *this );
+		return Real(log10( x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real HexLog() const {
-		return (float)std::log10( *this ) * (float)std::log10( 16 );
+		return Real((float)log10( x ) * (float)log10( 16 ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
@@ -486,12 +488,12 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Sine - Input *[0,1] -- Output *[-1,+1] //
 	inline const Real Sin() const {
-		return std::sin( *this * Real::TwoPi );
+		return Real(sin( (*this * Real::TwoPi).x ));
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Cosine - Input *[0,1] -- Output *[-1,+1] //
 	inline const Real Cos() const {
-		return std::cos( *this * Real::TwoPi );
+		return Real(cos( (*this * Real::TwoPi).x ));
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// ArcSine and ArcCosine are only partial inverses of Sine and Cosine. They are non-repeating.
@@ -500,12 +502,12 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// ArcSine - Input [-1,+1] -- Output [-.5,+.5]
 	inline const Real ArcSin() const {
-		return std::asin( *this ) * Real::InvPi;// / Real::Pi; // Optimization //
+		return Real(asin( x )) * Real::InvPi;// / Real::Pi; // Optimization //
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// ArcCosine - Input [-1,+1] -- Output [0,1]
 	inline const Real ArcCos() const {
-		return std::acos( *this ) * Real::InvPi;// / Real::Pi; // Optimization //
+		return Real(acos( x )) * Real::InvPi;// / Real::Pi; // Optimization //
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	
@@ -515,12 +517,12 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Tangent - Input *[0,1] -- Output *[-?,+?] //
 	inline const Real Tan() const {
-		return std::tan( *this * Real::TwoPi );
+		return Real(tan( (*this * Real::TwoPi).x ));
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Arc Tangent - Input *[0,1] -- Output *[-?,+?] //
 	inline const Real ArcTan() const {
-		return std::atan( *this * Real::TwoPi );
+		return Real(atan( (*this * Real::TwoPi).x ));
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// ArcTan2 (atan2) can be found outside, since it takes 2 arguments (y,x) //
@@ -1051,12 +1053,12 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Floor //
 	inline const Real Floor() const {
-		return std::floor( *this );
+		return Real(floor( x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Ceil //
 	inline const Real Ceil() const {
-		return std::ceil( *this );
+		return Real(ceil( x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Round //
@@ -1070,25 +1072,25 @@ public:
 	// Inverse Square Root ( 1 / sqrt(Value) ) //
 //	inline const Real InvSqrt() const {
 //		if ( !this->IsZero() )
-//			return std::sqrt( *this );
+//			return Real(sqrt( *this.x ));
 //		else
 //			return Real::Zero;
 //	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const bool IsZero() const {
+	inline bool IsZero() const {
 		//return *this == Real::Zero;
 		return (*this).Abs() <= Real::SmallestUnit;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation, that requires the guarentee that the number is positive. Used with magnitude. //
-	inline const bool IsZeroOrLess() const {
+	inline bool IsZeroOrLess() const {
 		//return *this == Real::Zero;
 		return *this <= Real::SmallestUnit;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	
 	// - -------------------------------------------------------------------------------------- - //
-	inline const bool Is( const Real& _Vs ) const {
+	inline bool Is( const Real& _Vs ) const {
 		//return (*this - _Vs) == Real::Zero;
 		return (*this - _Vs).Abs() <= Real::SmallestUnit;
 	}
@@ -1098,53 +1100,53 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Specific Functions that apply to this type //
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const Real Abs( _RealType Value ) {
-		if ( Real(Value) < Zero )
-			return -Real(Value);
+	inline static const Real Abs( const Real Value ) {
+		if ( Value < Zero )
+			return -Value;
 		else
-			return Real(Value);
+			return Value;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Square Root //
-	inline static const Real Sqrt( _RealType Value ) {
-		if ( IsZero( Value ) )
+	inline static const Real Sqrt( const Real Value ) {
+		if ( Value.IsZero() )
 			return Real::Zero;
 		else
-			return std::sqrt( Value );
+			return Real(sqrt( Value.x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Square Root //
-	inline static const Real Sqrt_( _RealType Value ) {
-		return std::sqrt( Value );
+	inline static const Real Sqrt_( const Real Value ) {
+		return Real(sqrt( Value.x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Sine //
-	inline static const Real Sin( _RealType Value ) {
-		return std::sin( Value * Real::TwoPi );
+	inline static const Real Sin( const Real Value ) {
+		return Real(sin( (Value * Real::TwoPi).x ));
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Cosine //
-	inline static const Real Cos( _RealType Value ) {
-		return std::cos( Value * Real::TwoPi );
+	inline static const Real Cos( const Real Value ) {
+		return Real(cos( (Value * Real::TwoPi).x ));
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Tangent //
-	inline static const Real Tan( _RealType Value ) {
-		return std::tan( Value * Real::TwoPi );
+	inline static const Real Tan( const Real Value ) {
+		return Real(tan( (Value * Real::TwoPi).x ));
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Floor //
-	inline static const Real Floor( _RealType Value ) {
-		return std::floor( Value );
+	inline static const Real Floor( const Real Value ) {
+		return Real(floor( Value.x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Ceil //
-	inline static const Real Ceil( _RealType Value ) {
-		return std::ceil( Value );
+	inline static const Real Ceil( const Real Value ) {
+		return Real(ceil( Value.x ));
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Round //
-	inline static const Real Round( _RealType Value ) {
+	inline static const Real Round( const Real Value ) {
 		if ( (Value - Floor(Value)) > Real::Half )
 			return Ceil(Value);
 		else
@@ -1154,18 +1156,18 @@ public:
 	// Inverse Square Root ( 1 / sqrt(Value) ) //
 //	inline static const Real InvSqrt( float Value ) {
 //		if ( IsZero( Value ) )
-//			return std::sqrt( Value );
+//			return Real(sqrt( Value ));
 //		else
 //			return Real::Zero;
 //	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const bool IsZero( _RealType Value ) {
+	inline static bool IsZero( const Real Value ) {
 		//return *this == Real::Zero;
 		return Abs(Value) < Real::SmallestUnit;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation, that requires the guarentee that the number is positive. Used with magnitude. //
-	inline static const bool IsZeroOrLess( _RealType Value ) {
+	inline static bool IsZeroOrLess( const Real Value ) {
 		return Value < Real::SmallestUnit;
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -1173,7 +1175,7 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Due to some signature issues, printf needs an explicit function for converting to float. //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const float ToFloat() const {
+	inline float ToFloat() const {
 		return x;
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -1195,18 +1197,18 @@ public:
 	// Swizzle //
 	// - -------------------------------------------------------------------------------------- - //
 	#define SWIZZLE2_PROTO( _TYPE, _A, _B ) \
-		inline const _TYPE _A ## _B () const;
+		inline const _TYPE _A ## _B () const
 	#define SWIZZLE3_PROTO( _TYPE, _A, _B, _C ) \
-		inline const _TYPE _A ## _B ## _C () const;
+		inline const _TYPE _A ## _B ## _C () const
 	#define SWIZZLE4_PROTO( _TYPE, _A, _B, _C, _D ) \
-		inline const _TYPE _A ## _B ## _C ## _D() const;
+		inline const _TYPE _A ## _B ## _C ## _D() const
 	// - -------------------------------------------------------------------------------------- - //
 	#define _SWIZZLE2_PROTO( _TYPE, _A, _B ) \
-		inline const _TYPE _ ## _A ## _B () const;
+		inline const _TYPE _ ## _A ## _B () const
 	#define _SWIZZLE3_PROTO( _TYPE, _A, _B, _C ) \
-		inline const _TYPE _ ## _A ## _B ## _C () const;
+		inline const _TYPE _ ## _A ## _B ## _C () const
 	#define _SWIZZLE4_PROTO( _TYPE, _A, _B, _C, _D ) \
-		inline const _TYPE _ ## _A ## _B ## _C ## _D() const;
+		inline const _TYPE _ ## _A ## _B ## _C ## _D() const
 	// - -------------------------------------------------------------------------------------- - //
 	SWIZZLE2_PROTO( class Vector2D, x,x );
 	SWIZZLE3_PROTO( class Vector3D, x,x,x );
@@ -1350,7 +1352,7 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 // Arc Tangent 2 - Input *[0,1] -- Output *[-?,+?] //
 inline const Real ArcTan2( const Real y, const Real x ) {
-	return std::atan2( y, x ) * Real::InvTwoPi; // Optimization for / TwoPi
+	return Real(atan2( y.ToFloat(), x.ToFloat() )) * Real::InvTwoPi; // Optimization for / TwoPi
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -1396,11 +1398,11 @@ inline const Real smoothstep( const Real a, const Real b, Real x ) {
 // Page 34 - Splines
 // - ------------------------------------------------------------------------------------------ - //
 inline const Real gammacorrect( const Real Gamma, const Real x ) {
-	return pow( x, Real::One/Gamma );
+	return pow( x.ToFloat(), (Real::One/Gamma).ToFloat() );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const Real bias( const Real b, const Real x ) {
-	return pow( x, log(b) / log(0.5f) );
+	return pow( x.ToFloat(), log(b.ToFloat()) / log(0.5f) );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const Real gain( const Real g, const Real x ) {

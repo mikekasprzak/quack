@@ -50,7 +50,7 @@ public: // - Static Methods ----------------------------------------------------
 	}
 
 public: // - Methods -------------------------------------------------------------------------- - //
-	const unsigned int Get() const {
+	unsigned int Get() const {
 		return Data;
 	}
 };

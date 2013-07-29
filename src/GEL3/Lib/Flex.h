@@ -60,39 +60,39 @@ private: // - Constructors and Destructors -------------------------------------
 
 public: // - Methods -------------------------------------------------------------------------- - //
 	// Type Checking -------------------------------------------------------------------------- - //
-	inline const bool IsNull() const {
+	inline bool IsNull() const {
 		return Type == FT_NULL;
 	}
-	inline const bool IsInt() const {
+	inline bool IsInt() const {
 		return Type == FT_INT;
 	}
-	inline const bool IsFloat() const {
+	inline bool IsFloat() const {
 		return Type == FT_FLOAT;
 	}
-	inline const bool IsBool() const {
+	inline bool IsBool() const {
 		return Type == FT_BOOL;
 	}
-	inline const bool IsUID() const {
+	inline bool IsUID() const {
 		return Type == FT_UID;
 	}
-	inline const bool IsString() const {
+	inline bool IsString() const {
 		return Type == FT_STRING;
 	}
 	
 	// Data Retrieval ------------------------------------------------------------------------- - //
-	inline const int GetInt() const {
+	inline int GetInt() const {
 		return *((int*)Data);
 	}
-	inline const float GetFloat() const {
+	inline float GetFloat() const {
 		return *((float*)Data);
 	}
-	inline const bool GetBool() const {
+	inline bool GetBool() const {
 		return *((bool*)Data);
 	}
-	inline const GelUID GetUID() const {
+	inline GelUID GetUID() const {
 		return *((GelUID*)Data);
 	}
-	inline const char* GetString() const {
+	inline char* GetString() const {
 		return (char*)Data;
 	}
 
@@ -233,7 +233,7 @@ public: // - Methods -----------------------------------------------------------
 	}
 
 	// Nice ----------------------------------------------------------------------------------- - //
-	inline const int ToInt() {
+	inline int ToInt() {
 		if ( Type == FT_INT ) {
 			return GetInt();
 		}
@@ -254,7 +254,7 @@ public: // - Methods -----------------------------------------------------------
 		}
 	}
 	
-	inline const float ToFloat() {
+	inline float ToFloat() {
 		if ( Type == FT_INT ) {
 			return (float)GetInt();
 		}
@@ -275,7 +275,7 @@ public: // - Methods -----------------------------------------------------------
 		}
 	}
 
-	inline const bool ToBool() {
+	inline bool ToBool() {
 		if ( Type == FT_INT ) {
 			return GetInt() != 0;
 		}
@@ -540,7 +540,7 @@ public: // - Constructors and Destructors --------------------------------------
 	}		
 
 public: // - Methods -------------------------------------------------------------------------- - //
-	inline const eFlexType GetType() const {
+	inline eFlexType GetType() const {
 		if ( Data ) {
 			return Data->Type;
 		}
@@ -549,7 +549,7 @@ public: // - Methods -----------------------------------------------------------
 		}
 	}
 
-	inline const int ToInt() const {
+	inline int ToInt() const {
 		if ( Data ) {
 			return Data->ToInt();
 		}
@@ -558,7 +558,7 @@ public: // - Methods -----------------------------------------------------------
 		}
 	}
 
-	inline const float ToFloat() const {
+	inline float ToFloat() const {
 		if ( Data ) {
 			return Data->ToFloat();
 		}
@@ -567,7 +567,7 @@ public: // - Methods -----------------------------------------------------------
 		}
 	}
 
-	inline const bool ToBool() const {
+	inline bool ToBool() const {
 		if ( Data ) {
 			return Data->ToBool();
 		}
@@ -595,40 +595,40 @@ public: // - Methods -----------------------------------------------------------
 	}
 	
 	// Type Checks //
-	inline const bool IsUndefined() {
+	inline bool IsUndefined() {
 		return Data == 0;
 	}
-	inline const bool IsNull() {
+	inline bool IsNull() {
 		if ( Data )
 			return Data->IsNull();
 		else
 			return false;
 	}
-	inline const bool IsInt() {
+	inline bool IsInt() {
 		if ( Data )
 			return Data->IsInt();
 		else
 			return false;
 	}
-	inline const bool IsFloat() {
+	inline bool IsFloat() {
 		if ( Data )
 			return Data->IsFloat();
 		else
 			return false;
 	}
-	inline const bool IsBool() {
+	inline bool IsBool() {
 		if ( Data )
 			return Data->IsBool();
 		else
 			return false;
 	}
-	inline const bool IsUID() {
+	inline bool IsUID() {
 		if ( Data )
 			return Data->IsUID();
 		else
 			return false;
 	}
-	inline const bool IsString() {
+	inline bool IsString() {
 		if ( Data )
 			return Data->IsString();
 		else
@@ -636,26 +636,26 @@ public: // - Methods -----------------------------------------------------------
 	}
 	
 	// Gets //
-	inline const int GetSize() const {
+	inline int GetSize() const {
 		return Data->Size;
 	}
-	inline const int GetInt() const {
+	inline int GetInt() const {
 		// TODO: Assert Data //
 		return Data->GetInt();
 	}
-	inline const float GetFloat() const {
+	inline float GetFloat() const {
 		// TODO: Assert Data //
 		return Data->GetFloat();
 	}
-	inline const bool GetBool() const {
+	inline bool GetBool() const {
 		// TODO: Assert Data //
 		return Data->GetBool();
 	}
-	inline const GelUID GetUID() const {
+	inline GelUID GetUID() const {
 		// TODO: Assert Data //
 		return Data->GetInt();
 	}
-	inline const char* GetString() const {
+	inline char* GetString() const {
 		// TODO: Assert Data //
 		return Data->GetString();
 	}

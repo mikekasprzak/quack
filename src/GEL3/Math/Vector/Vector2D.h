@@ -539,18 +539,18 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	#define SWIZZLE2_PROTO( _TYPE, _A, _B ) \
-		inline const _TYPE _A ## _B () const;
+		inline const _TYPE _A ## _B () const
 	#define SWIZZLE3_PROTO( _TYPE, _A, _B, _C ) \
-		inline const _TYPE _A ## _B ## _C () const;
+		inline const _TYPE _A ## _B ## _C () const
 	#define SWIZZLE4_PROTO( _TYPE, _A, _B, _C, _D ) \
-		inline const _TYPE _A ## _B ## _C ## _D() const;
+		inline const _TYPE _A ## _B ## _C ## _D() const
 	// - -------------------------------------------------------------------------------------- - //
 	#define _SWIZZLE2_PROTO( _TYPE, _A, _B ) \
-		inline const _TYPE _ ## _A ## _B () const;
+		inline const _TYPE _ ## _A ## _B () const
 	#define _SWIZZLE3_PROTO( _TYPE, _A, _B, _C ) \
-		inline const _TYPE _ ## _A ## _B ## _C () const;
+		inline const _TYPE _ ## _A ## _B ## _C () const
 	#define _SWIZZLE4_PROTO( _TYPE, _A, _B, _C, _D ) \
-		inline const _TYPE _ ## _A ## _B ## _C ## _D() const;
+		inline const _TYPE _ ## _A ## _B ## _C ## _D() const
 	// - -------------------------------------------------------------------------------------- - //
 	SWIZZLE2_PROTO( Vector2D, x,x );
 	SWIZZLE2_PROTO( Vector2D, x,y );
