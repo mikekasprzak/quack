@@ -7,10 +7,11 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "QuackVM.h"
 // - ------------------------------------------------------------------------------------------ - //
-#include <Asset/AssetPool.h>
-#include <Asset/Search.h>
+#include <Asset/GelAssetPool.h>
+#include <Asset/GelSearch.h>
 // - ------------------------------------------------------------------------------------------ - //
 void AppInit() {
+	gelTimeInit();
 	gelSystemInit();
 	Log( "" );
 	
@@ -58,13 +59,15 @@ int AppMain() {
 	
 	{
 		Log( "" );
-		Log( "** AssetPool Test:" );
+		Log( "** GelAssetPool Test:" );
+		
+		GelAsset::SetTimeStamp( 1 );
 
 		// AssetPool Test //
-		cAssetPool AssetPool;
+		GelAssetPool AssetPool;
 		
-		cAssetPool::UID MyId = AssetPool.Load( "project/main.nut" );
-		cAssetPool::UID MyOtherId = AssetPool.Load( "project/main.nut" );
+		GelAssetPool::UID MyId = AssetPool.Load( "project/main.nut" );
+		GelAssetPool::UID MyOtherId = AssetPool.Load( "project/main.nut" );
 			
 		if ( AssetPool[MyId].IsLoaded() ) {
 			Log( "Yep!" );
@@ -83,7 +86,7 @@ int AppMain() {
 			Log( "Nope!" );
 		}
 		
-		cAssetPool::UID YouId = AssetPool.Load( "project/content/C64Pro.fnt" );
+		GelAssetPool::UID YouId = AssetPool.Load( "project/content/C64Pro.fnt" );
 			
 		if ( AssetPool[YouId].IsLoaded() ) {
 			Log( "Yep2!" );
@@ -107,8 +110,6 @@ int AppMain() {
 	{
 		Log( "" );
 		Log( "** GelTime Test:" );
-		
-		gelTimeInit();
 		
 		// PRi64 is "printf integer 64" //
 		#ifdef USES_WINDOWS

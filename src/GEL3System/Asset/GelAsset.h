@@ -15,8 +15,8 @@
 //   GelAsset::SetTimeStamp( CurrentFrameTime );
 //
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_ASSET_ASSET_H__
-#define __GEL_ASSET_ASSET_H__
+#ifndef __GEL_ASSET_GELASSET_H__
+#define __GEL_ASSET_GELASSET_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Lib/DataBlock/DataBlock.h>
@@ -24,8 +24,8 @@
 #include <System/System.h>
 // - ------------------------------------------------------------------------------------------ - //
 // IMPORTANT NOTE: cAsset DOES NOT clean up after itself! Managed by cAssetPool. //
-class cAsset {
-	friend class cAssetPool;
+class GelAsset {
+	friend class GelAssetPool;
 protected:
 	DataBlock* 	Data;					// The Data //
 	std::string FileName;				// Name of the File //
@@ -58,14 +58,14 @@ protected:
 		AF_DECOMPRESSED		= 0x20000,	// The data was decompressed //
 	};
 public:
-	inline cAsset() :
+	inline GelAsset() :
 		Data( 0 ),
 		TimeStamp( 0ull ),
 		Flags( AF_NULL )
 	{
 	}
 	
-//	inline cAsset& operator = ( const cAsset& _Vs ) {
+//	inline GelAsset& operator = ( const GelAsset& _Vs ) {
 //		Data = _Vs.Data;
 //		FileName = _Vs.FileName;
 //		Flags = _Vs.Flags;
@@ -74,14 +74,14 @@ public:
 //	}
 	
 	// Disabled Constructor and Destructor. Loading/Unloading is now explicit. //
-//	inline cAsset( const char* _FileName ) :
+//	inline GelAsset( const char* _FileName ) :
 //		Data( 0 ),
 //		Flags( AF_NULL )
 //	{
 //		Load( _FileName );		
 //	}
 //	
-//	inline ~cAsset() {
+//	inline ~GelAsset() {
 //		// NOTE: Disabled cleanup. cAssetPool is going to clean-up for us. //	
 //		//Unload();
 //	}
@@ -352,5 +352,5 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_ASSET_ASSET_H__ //
+#endif // __GEL_ASSET_GELASSET_H__ //
 // - ------------------------------------------------------------------------------------------ - //

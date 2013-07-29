@@ -1,8 +1,8 @@
 // - ------------------------------------------------------------------------------------------ - //
 // AssetPools maintain a list of Assets.
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_ASSET_ASSETPOOL_H__
-#define __GEL_ASSET_ASSETPOOL_H__
+#ifndef __GEL_ASSET_GELASSETPOOL_H__
+#define __GEL_ASSET_GELASSETPOOL_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
@@ -11,21 +11,21 @@
 #include <vector>
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
-#include "Asset.h"
+#include "GelAsset.h"
 // - ------------------------------------------------------------------------------------------ - //
-class cAssetPool {
+class GelAssetPool {
 public:
 	typedef int UID;
 protected:
-	std::vector<cAsset> Assets;	
+	std::vector<GelAsset> Assets;	
 	std::map<std::string,UID> NameTable;
 public:
-	inline cAssetPool() {
+	inline GelAssetPool() {
 		// Add 1 element to the Assets array: A dummy placeholder for Id 0. //
-		Assets.push_back( cAsset() );
-		Assets.back().SetFlag( cAsset::AF_DONT_LOAD );
+		Assets.push_back( GelAsset() );
+		Assets.back().SetFlag( GelAsset::AF_DONT_LOAD );
 	}
-	inline ~cAssetPool() {
+	inline ~GelAssetPool() {
 		for ( st idx = 0; idx < Assets.size(); idx++ ) {
 			Assets[idx].Unload();
 		}
@@ -33,7 +33,7 @@ public:
 	
 public:
 	// Lookup an asset via the UID //
-	inline cAsset& operator[] ( const UID Id ) {
+	inline GelAsset& operator[] ( const UID Id ) {
 		return Assets[Id];
 	}
 	
@@ -63,7 +63,7 @@ public:
 				// Use the Back, as there are no UID's in the 'available' table //
 				UID Id = Assets.size();//Assets->Size;
 				NameTable[_FileName] = Id;
-				Assets.push_back( cAsset() );
+				Assets.push_back( GelAsset() );
 				// TODO: Add this to the Job Queue //
 				Assets.back().Load( _FileName );
 				Log( "Asset \"%s\" loaded as: %i", _FileName, Id );
@@ -108,5 +108,5 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_ASSET_ASSETPOOL_H__ //
+#endif // __GEL_ASSET_GELASSETPOOL_H__ //
 // - ------------------------------------------------------------------------------------------ - //
