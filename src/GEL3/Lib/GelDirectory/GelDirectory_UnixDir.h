@@ -30,7 +30,7 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 	// Extract the directory part, and open the directory //
 	DIR* ThisDir = opendir( SearchDirectory );
 
-	VVVLog("> %s - %s", SearchDirectory, Prefix );
+	VVLog("> %s - %s", SearchDirectory, Prefix );
 	// Read the first entry in the directory //
 	dirent* Data = readdir( ThisDir );
 	
@@ -45,7 +45,7 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 		// Get the status of the file //
 		GelFileInfo DIRStatus( CurrentFile );
 
-		VVVLog(">>> Populated: %s", CurrentFile );
+		VVLog(">>> Populated: %s", CurrentFile );
 
 		// If it's a directory //
 		if ( DIRStatus.IsDir() ) {
