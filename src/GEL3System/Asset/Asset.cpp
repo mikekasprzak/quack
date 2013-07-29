@@ -1,18 +1,10 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SYSTEM_GELSEARCH_H__
-#define __GEL_SYSTEM_GELSEARCH_H__
+#include "Asset.h"
 // - ------------------------------------------------------------------------------------------ - //
-#include <map>
-#include <vector>
-#include <string>
+namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-class GelSearch {
-public:
-	
-	inline void Add( const char* DirName ) {
-		Log( "Adding \"%s\" to Search...", DirName );
-	}
-};
+GelAssetPool 	AssetPool;
+GelSearch 		Search;
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SYSTEM_GELSEARCH_H__ //
+}; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
