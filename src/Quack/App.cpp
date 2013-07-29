@@ -35,6 +35,17 @@ int AppMain() {
 	Log( "-=- AppMain -=-" );
 	Log( "Screens: %i", (int)Gel::Screen.Count() );		
 	
+	{
+		Log( "" );
+		Log( "** Search Test:" );
+		
+		const char* Text = Gel::Search("main");
+		if ( Text ) Log( "> %s", Text );
+		Text = Gel::Search("play"); // Will Fail because it's Play not play //
+		if ( Text ) Log( "> %s", Text );
+		Text = Gel::Search("World");
+		if ( Text ) Log( "> %s", Text );
+	}
 	
 	return 0;
 }
