@@ -8,6 +8,12 @@
 // A released asset is still a usable asset.
 //
 // NOTE: VRAM should auto-release the Data after upload, as the 2nd copy isn't necessary. //
+//
+// Usage:
+//
+// Usage: Every Frame you should do a SetTimeStamp. Pass a GelTime to it.
+//   GelAsset::SetTimeStamp( CurrentFrameTime );
+//
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_ASSET_ASSET_H__
 #define __GEL_ASSET_ASSET_H__
@@ -17,18 +23,18 @@
 #include <Lib/DataBlock/DataBlock_LZMA.h>
 #include <System/System.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include <string>
-// - ------------------------------------------------------------------------------------------ - //
 // IMPORTANT NOTE: cAsset DOES NOT clean up after itself! Managed by cAssetPool. //
 class cAsset {
 	friend class cAssetPool;
 protected:
-	DataBlock* 	Data;				// The Data //
-	std::string FileName;			// Name of the File //
-	GelFileInfo FileInfo;			// Information about the file //
-	GelTime 	TimeStamp;			// When the data was last accessed using .Get() //
-	GelSignal 	ChangeCallbacks; 	// Notifications to make upon file change //
-	int Flags;
+	DataBlock* 	Data;					// The Data //
+	std::string FileName;				// Name of the File //
+	GelFileInfo FileInfo;				// Information about the file //
+	GelTime 	TimeStamp;				// When the data was last accessed using .Get() //
+	GelSignal 	ChangeCallbacks; 		// Notifications to make upon file change //
+	int 		Flags;					// Flags //
+	
+	static GelTime CurrentTimeStamp;	// What time to use when I update the TimeStamp //
 	
 	enum /* AssetFlags */ {
 		AF_NULL				= 0,
@@ -178,10 +184,17 @@ public:
 	
 	// Set the Time Stamp to the current time //
 	inline void DoTimeStamp() {
-		// TODO: Use FrameTime //
-		TimeStamp = get_s_GelTime();
+		TimeStamp = CurrentTimeStamp;
 	}
-
+	
+	// Set the default TimeStamp all DoTimeStamp() calls will use //
+	inline static void SetTimeStamp( const GelTime _CurrentTimeStamp ) {
+		CurrentTimeStamp = _CurrentTimeStamp;
+	}
+//	inline static void SetTimeStamp() {
+//		CurrentTimeStamp = get_s_GelTime();
+//	}
+	
 public:
 	// An active Asset is one that is either Loaded or Released (freed because data not needed) //
 	inline bool IsActive() {
