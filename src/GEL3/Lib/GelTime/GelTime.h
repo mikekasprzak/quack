@@ -40,11 +40,15 @@ GelTime get_time_GelTime();			// Get the current time in seconds relative the ep
 // - ------------------------------------------------------------------------------------------ - //
 // Init //
 // - ------------------------------------------------------------------------------------------ - //
+void gelsTimeInit();
+// - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 	extern GelTime StartTime;
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 inline void gelTimeInit() {
+	gelsTimeInit();	// Call the System Specific (gels) Time Init //
+	
 	// Store a copy of the original time when the app started. We can use this to convert //
 	//   any Start Time to Current Time. Just add StartTime to any Start Time (in seconds). //
 	Gel::StartTime = get_time_GelTime();
