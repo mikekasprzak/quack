@@ -48,7 +48,7 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 		VVVLog(">>> Populated: %s", CurrentFile );
 
 		// If it's a directory //
-		if ( DIRStatus.IsDirectory() ) {
+		if ( DIRStatus.IsDir() ) {
 			// Recursively do this again, if not a dot file or folder //
 			if( Data->d_name[0] != '.' ) 
 				if( Data->d_name[0] != '_' ) {
@@ -100,20 +100,20 @@ inline void populate_GelDirectory( GelDirectory* p ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline const bool haschanged_GelDirectory( const GelDirectory* p, const size_t Index ) { 
-	// Build the full path name of the file //
-	char* CurrentFile = new char[ length_String(p->BaseName) + 1 + length_String( index_GelDirectory(p,Index) ) + 1 ];
-	copy_String( p->BaseName, CurrentFile );
-	cat_String( "/", CurrentFile );
-	cat_String( index_GelDirectory(p,Index), CurrentFile );
-
-	// Get the status of the file //
-	GelFileInfo FileStatus( CurrentFile );
-	
-	// Compare the modified time //
-	return FileStatus.HasChanged( info_GelDirectory(p,Index) );
-//	return FileStatus.Status.st_mtime != info_GelDirectory(p,Index).Status.st_mtime;
-}
+//inline const bool haschanged_GelDirectory( const GelDirectory* p, const size_t Index ) { 
+//	// Build the full path name of the file //
+//	char* CurrentFile = new char[ length_String(p->BaseName) + 1 + length_String( index_GelDirectory(p,Index) ) + 1 ];
+//	copy_String( p->BaseName, CurrentFile );
+//	cat_String( "/", CurrentFile );
+//	cat_String( index_GelDirectory(p,Index), CurrentFile );
+//
+//	// Get the status of the file //
+//	GelFileInfo FileStatus( CurrentFile );
+//	
+//	// Compare the modified time //
+//	return FileStatus.HasChanged( info_GelDirectory(p,Index) );
+////	return FileStatus.Status.st_mtime != info_GelDirectory(p,Index).Status.st_mtime;
+//}
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -132,23 +132,23 @@ inline GelDirectory* new_GelDirectory( const char* _BaseName ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
-// - ------------------------------------------------------------------------------------------ - //
-inline bool is_Directory( const char* _Name ) {
-	struct stat DIRStatus;
-	stat( _Name, &DIRStatus );
-	
-	// If it's a directory //
-	return S_ISDIR( DIRStatus.st_mode );
-}
-// - ------------------------------------------------------------------------------------------ - //
-inline bool is_File( const char* _Name ) {
-	struct stat DIRStatus;
-	stat( _Name, &DIRStatus );
-	
-	// If it's a directory //
-	return S_ISREG( DIRStatus.st_mode );
-}
-// - ------------------------------------------------------------------------------------------ - //
+//// - ------------------------------------------------------------------------------------------ - //
+//inline bool is_Directory( const char* _Name ) {
+//	struct stat DIRStatus;
+//	stat( _Name, &DIRStatus );
+//	
+//	// If it's a directory //
+//	return S_ISDIR( DIRStatus.st_mode );
+//}
+//// - ------------------------------------------------------------------------------------------ - //
+//inline bool is_File( const char* _Name ) {
+//	struct stat DIRStatus;
+//	stat( _Name, &DIRStatus );
+//	
+//	// If it's a directory //
+//	return S_ISREG( DIRStatus.st_mode );
+//}
+//// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_UNIX_DIR //
