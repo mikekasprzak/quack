@@ -1,4 +1,7 @@
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: Prioritize certain file extensions
+// TODO: Add prefix ("project" is being lost)
+// - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_SYSTEM_GELSEARCH_H__
 #define __GEL_SYSTEM_GELSEARCH_H__
 // - ------------------------------------------------------------------------------------------ - //
@@ -37,7 +40,9 @@ public:
 	inline const char* operator()( const char* Pattern ) {
 		VLog( "* Searching for %s...", Pattern );
 		
-		// TODO: Build a search hash table. BaseName, ParentDir/BaseName, Parent/Parent/BaseName //
+		// TODO: Build a search hash table. //
+		//   BaseName, ParentDir/BaseName, Parent/Parent/BaseName, //
+		//   BaseName.FirstExt, etc //
 		
 		// NOTE: The other Search uses GelDirectory as only a temporary. This is a good idea //
 		//   because Windows uses a different system slash. A workaround would be to change //

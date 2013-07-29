@@ -43,7 +43,7 @@ int AppMain() {
 		if ( Text ) Log( "> %s", Text );
 		Text = Gel::Search("play"); // Will Fail because it's Play not play //
 		if ( Text ) Log( "> %s", Text );
-		Text = Gel::Search("World");
+		Text = Gel::Search("Nerf");
 		if ( Text ) Log( "> %s", Text );
 	}
 	

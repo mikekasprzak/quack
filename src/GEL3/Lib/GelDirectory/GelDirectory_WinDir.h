@@ -89,6 +89,16 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 						char* NewFile = new char[ length_String(Prefix) + length_String(Data.name) + 1 ];
 						copy_String( Prefix, NewFile );
 						cat_String( Data.name, NewFile );
+						
+						// Change Slash //
+						{
+							int Len = length_String(NewFile);
+							for ( int idx = 0; idx < Len; idx++ ) {
+								if ( NewFile[idx] == '\\' ) {
+									NewFile[idx] = '/';
+								}
+							}
+						}
 			
 						// Add the file //
 						add_GelDirectory( p, NewFile );
