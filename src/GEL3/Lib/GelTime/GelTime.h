@@ -38,22 +38,33 @@ GelTime get_time_GelTime();			// Get the current time in seconds relative the ep
 
 
 // - ------------------------------------------------------------------------------------------ - //
+// The Start Time //
+inline GelTime stime_GelTime() {
+	static GelTime StartTime = get_time_GelTime();
+	return StartTime;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
 // Init //
 // - ------------------------------------------------------------------------------------------ - //
 void gelsTimeInit();
 // - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
-	extern GelTime StartTime;
-}; // namespace Gel //
+//namespace Gel {
+//	extern GelTime StartTime;
+//}; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 inline void gelTimeInit() {
 	gelsTimeInit();	// Call the System Specific (gels) Time Init //
 	
-	// Store a copy of the original time when the app started. We can use this to convert //
-	//   any Start Time to Current Time. Just add StartTime to any Start Time (in seconds). //
-	Gel::StartTime = get_time_GelTime();
+//	// Store a copy of the original time when the app started. We can use this to convert //
+//	//   any Start Time to Current Time. Just add StartTime to any Start Time (in seconds). //
+//	Gel::StartTime = stime_GelTime();
+	stime_GelTime();
 }
 // - ------------------------------------------------------------------------------------------ - //
+
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -82,6 +93,24 @@ inline GelTime s_to_ms_GelTime( const GelTime Original ) {
 inline GelTime ms_to_us_GelTime( const GelTime Original ) {
 	return Original * 1000ull;
 }
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+// NOTE: Will be somewhat inaccurate, since sub-seconds are gone in both //
+// - ------------------------------------------------------------------------------------------ - //
+inline GelTime s_to_time_GelTime( const GelTime Original ) {
+	return stime_GelTime() + Original;
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline GelTime ms_to_time_GelTime( const GelTime Original ) {
+	return stime_GelTime() + ms_to_s_GelTime(Original);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline GelTime us_to_time_GelTime( const GelTime Original ) {
+	return stime_GelTime() + us_to_s_GelTime(Original);
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_LIB_GELTIME_H__ //
 // - ------------------------------------------------------------------------------------------ - //

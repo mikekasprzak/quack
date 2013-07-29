@@ -15,7 +15,7 @@ inline DWORD timeGetTime32() {
 	return timeGetTime();
 }
 // - ------------------------------------------------------------------------------------------ - //
-GelTime timeGetTime64() {
+GelTime _timeGetTime64() {
 	static GelTime TickBase = 0ULL;
 	static DWORD LastTick = timeGetTime32();
 	
@@ -25,6 +25,11 @@ GelTime timeGetTime64() {
 	}
 	LastTick = ThisTick;
 	return TickBase + (GelTime)ThisTick;
+}
+// - ------------------------------------------------------------------------------------------ - //
+GelTime timeGetTime64() {
+	static GelTime Base = _timeGetTime64();
+	return _timeGetTime64() - Base;
 }
 // - ------------------------------------------------------------------------------------------ - //
 
