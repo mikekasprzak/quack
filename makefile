@@ -40,5 +40,5 @@ all: $(addprefix obj/,$(SKU_ALL_FILE))
 other: $(addprefix obj/,$(filter-out $(notdir $(SKU_FILE)),$(SKU_ALL_FILE)))
 # - ------------------------------------------------------------------------ - #
 obj/%:
-	$(MAKE) -f $(BUILD_MAKEFILE) -j SKU_FILE=SKU/$(PROJECT_FILE)/$* $(target) $(action)
+	$(MAKE) -f $(BUILD_MAKEFILE) -j SKU_FILE=target/SKU/$(PROJECT_FILE)/$* $(target) $(action)
 # - ------------------------------------------------------------------------ - #

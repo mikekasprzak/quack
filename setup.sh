@@ -43,7 +43,7 @@ if [ ! -n "$1" ]; then
 		read answer
 		if [ "$answer" != "" ]; then
 			# Answer Given #
-			if [ -e "SKU/$answer" ]; then
+			if [ -e "target/SKU/$answer" ]; then
 				PROJECT="$answer"
 				break
 			else
@@ -52,7 +52,7 @@ if [ ! -n "$1" ]; then
 			fi		
 		else
 			# No Answer Given (Just pushed enter) #
-			if [ -e "SKU/$PROJECT" ]; then
+			if [ -e "target/SKU/$PROJECT" ]; then
 				break
 			else
 				echo "Error! $PROJECT not found!"
@@ -61,7 +61,7 @@ if [ ! -n "$1" ]; then
 		fi
 	done
 else
-	if [ -e "SKU/$1" ]; then
+	if [ -e "target/SKU/$1" ]; then
 		PROJECT=$1
 	else
 		echo "Error! $1 not found!"
@@ -81,10 +81,10 @@ fi
 if [ ! -n "$2" ]; then
 	if [ -e "$CONFIGDIR/.sku" ]; then
 		SKU=`cat $CONFIGDIR/.sku | awk '{print $1}'`
-	elif [ -e "SKU/$PROJECT/.default" ]; then
-		SKU=`cat SKU/$PROJECT/.default | awk '{print $1}'`
+	elif [ -e "target/SKU/$PROJECT/.default" ]; then
+		SKU=`cat target/SKU/$PROJECT/.default | awk '{print $1}'`
 	else
-		SKU="SKU/$PROJECT/`cat $DEFAULTDIR/default.sku`"
+		SKU="target/SKU/$PROJECT/`cat $DEFAULTDIR/default.sku`"
 	fi
 
 	while true; do
@@ -95,22 +95,22 @@ if [ ! -n "$2" ]; then
 			if [ -e "$answer" ]; then
 				SKU="$answer"
 				break
-			elif [ -e "SKU/$PROJECT/$answer" ]; then
-				SKU="SKU/$PROJECT/$answer"
+			elif [ -e "target/SKU/$PROJECT/$answer" ]; then
+				SKU="target/SKU/$PROJECT/$answer"
 				break
 			else
-				echo "Error! $answer and SKU/$PROJECT/$answer not found!"
+				echo "Error! $answer and target/SKU/$PROJECT/$answer not found!"
 				#exit -1
 			fi
 		else
 			# No Answer Given (Just pushed enter) #
 			if [ -e "$SKU" ]; then
 				break
-			elif [ -e "SKU/$PROJECT/$SKU" ]; then
-				SKU="SKU/$PROJECT/$SKU"
+			elif [ -e "target/SKU/$PROJECT/$SKU" ]; then
+				SKU="target/SKU/$PROJECT/$SKU"
 				break
 			else
-				echo "Error! $SKU and SKU/$PROJECT/$SKU not found!"
+				echo "Error! $SKU and target/SKU/$PROJECT/$SKU not found!"
 				#exit -1
 			fi
 		fi
@@ -118,18 +118,18 @@ if [ ! -n "$2" ]; then
 else
 	if [ -e "$2" ]; then
 		SKU="$2"
-	elif [ -e "SKU/$PROJECT/$2" ]; then
-		SKU="SKU/$PROJECT/$2"
+	elif [ -e "target/SKU/$PROJECT/$2" ]; then
+		SKU="target/SKU/$PROJECT/$2"
 	else
-		echo "Error! $2 and SKU/$PROJECT/$2 not found!"
+		echo "Error! $2 and target/SKU/$PROJECT/$2 not found!"
 		exit -1
 	fi
 fi
 
 if [ -e "$CONFIGDIR/.sku_all" ]; then
 	SKU_ALL=`cat $CONFIGDIR/.sku_all | awk '{for(idx=1;idx<=NF;idx++) print $idx;}'`
-elif [ -e "SKU/$PROJECT/.all" ]; then
-	SKU_ALL=`cat SKU/$PROJECT/.all | awk '{for(idx=1;idx<=NF;idx++) print $idx;}'`
+elif [ -e "target/SKU/$PROJECT/.all" ]; then
+	SKU_ALL=`cat target/SKU/$PROJECT/.all | awk '{for(idx=1;idx<=NF;idx++) print $idx;}'`
 else
 	SKU_ALL=$SKU
 fi
@@ -154,8 +154,8 @@ fi
 if [ ! -n "$3" ]; then
 	if [ -e "$CONFIGDIR/.target$SYSTEM_SUFFIX" ]; then
 		TARGET=`cat $CONFIGDIR/.target$SYSTEM_SUFFIX | awk '{print $1}'`
-	elif [ -e "SKU/$PROJECT/.target$SYSTEM_SUFFIX" ]; then
-		TARGET=`cat SKU/$PROJECT/.target$SYSTEM_SUFFIX | awk '{print $1}'`
+	elif [ -e "target/SKU/$PROJECT/.target$SYSTEM_SUFFIX" ]; then
+		TARGET=`cat target/SKU/$PROJECT/.target$SYSTEM_SUFFIX | awk '{print $1}'`
 	else
 		if [ "$WINDIR" != "" ]; then
 			TARGET="`cat $DEFAULTDIR/windows.target`"
