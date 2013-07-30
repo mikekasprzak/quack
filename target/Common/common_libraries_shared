@@ -42,6 +42,40 @@ endif # USES_CURSES #
 
 
 # - ------------------------------------------------------------------------ - #
+ifdef USES_SPARSEHASH
+# - ------------------------------------------------------------------------ - #
+# NOTE: I was unable to use this in MinGW. Not sure why. Therefor, I don't #
+# trust this library to be very portable. #
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/SparseHash
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_SPARSEHASH
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	
+# - ------------------------------------------------------------------------ - #
+# Other Object files you want to link against (i.e. an embedded Windows Icon) #
+OTHER_O_FILES		+=	
+# - ------------------------------------------------------------------------ - #
+ifdef USES_WINDOWS
+# - ------------------------------------------------------------------------ - #
+SRC_FOLDERS			+=	src/External/SparseHash/windows
+# - ------------------------------------------------------------------------ - #
+endif # USES_WINDOWS #
+# - ------------------------------------------------------------------------ - #
+endif # USES_SPARSEHASH #
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
 ifdef USES_STB_IMAGE
 # - ------------------------------------------------------------------------ - #
 # Places to pull code and include files from #
