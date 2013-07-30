@@ -4,10 +4,10 @@
 #ifndef __Library_Data_GelDirectory_PSPDir_H__
 #define __Library_Data_GelDirectory_PSPDir_H__
 // - ------------------------------------------------------------------------------------------ - //
-#ifdef USES_PSP
+#if defined(USES_PSP) || defined(USES_WIIU) || defined(USES_3DS)
 // - ------------------------------------------------------------------------------------------ - //
-#include <Debug/GelDebug.h>
-#include <iofilemgr.h>
+#include <Lib/Log/Log.h>
+//#include <iofilemgr.h>
 //iofilemgr_dirent.h
 //iofilemgr_stat.h
 

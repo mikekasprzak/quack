@@ -34,3 +34,4 @@ USES_CJSON			:=	true
 USES_SQUIRREL		:=	true
 #USES_SPINE			:=	true
 # - ------------------------------------------------------------------------ - #
+USES_RDESTL			:=	true

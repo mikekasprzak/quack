@@ -1,0 +1,44 @@
+
+** SNC **
+
+utility.h - #include <new.h> should be #include <new>
+
+rde_string.h - line missing 'typename':
+	for (basic_string<E, TAllocator, TStorage>::size_type p = 0; p < x.length(); ++p) 
+  should be
+    for (typename basic_string<E, TAllocator, TStorage>::size_type p = 0; p < x.length(); ++p) 
+
+
+** GHS Multi **
+
+Worked after SNC fixes.
+
+
+** ARMCC **
+
+if using <cstring> to get size_t or use memcpy, then you must include std:: in front.
+i.e. std::size_t and std::memcpy.
+
+rdestl_common.h
+intrusive_list.h
+intrusive_slist.h
+slist.h
+list.h
+
+Alternatively, use <string.h>.
+
+basic_string.h - Does not like non-static function call in initializer assignment (sadly).
+
+"src/External/rdeSTL/rde/basic_string.h", line 95: Error:  #245: a nonstatic member reference must be relative to a specific object
+    basic_string substr(size_type begin, size_type end = length()) const
+                                                         ^
+
+An ugly solution would be to comment out the assignment /*= length()*/ and create a 2nd function.
+
+	basic_string substr(size_type begin) const
+	{
+		RDE_ASSERT(end >= begin && begin >= 0);
+		return basic_string(c_str() + begin, length() - begin);
+	}
+	
+I took the liberty of removing the "&& length() <= length" part from the RDE_ASSERT line.
