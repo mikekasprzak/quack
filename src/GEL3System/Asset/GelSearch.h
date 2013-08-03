@@ -12,19 +12,25 @@
 #include <vector>
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
+// GelSearchFile's are the entries found and stored in the Search system //
+class GelSearchFile {
+public:
+	std::string Name;
+//	GelFileInfo Info;
+};
+// - ------------------------------------------------------------------------------------------ - //
 class GelSearch {
-	GelDirectory* Dir;
+	std::vector<GelSearchFile> File;
+//	GelDirectory* Dir;
 
 public:	
-	inline GelSearch() :
-		Dir( new_GelDirectory() )
-	{	
+	inline GelSearch() {	
 	}
 	
 	inline ~GelSearch() {
-		if ( Dir ) {
-			delete_GelDirectory( Dir );
-		}
+//		if ( Dir ) {
+//			delete_GelDirectory( Dir );
+//		}
 	}
 	
 //	inline void Init( const char* DirName ) {
@@ -34,7 +40,22 @@ public:
 public:	
 	inline void Add( const char* DirName ) {
 		Log( "Adding \"%s\" to Search...", DirName );
+		
+		// Create a GelDirectory, and populate it //
+		GelDirectory* Dir = new_GelDirectory();
+		// TODO: SetBasedir 
 		populate_GelDirectory( Dir, DirName, "" );
+
+		// Copy all files found to my vector of Files //
+		for( size_t idx = 0; idx < size_GelDirectory( Dir ); idx++ ) {
+			const char* Name = index_GelDirectory( Dir, idx );
+			
+			File.push_back( GelSearchFile() );
+			File.back().Name = std::string(DirName) + "/" + std::string(Name);
+		}
+		
+		// We're finished and made our own copy, so throw away the GelDirectory //
+		delete_GelDirectory( Dir );		
 	}
 	
 	inline const char* operator()( const char* Pattern ) {
@@ -50,13 +71,21 @@ public:
 		//   convert back to System slashes before attempting to read the file. //
 
 		// Linear Search (i.e. slow) //
-		for( size_t idx = 0; idx < size_GelDirectory( Dir ); idx++ ) {
-			const char* Name = index_GelDirectory( Dir, idx );
-			if ( find_String( Pattern, Name ) ) {
+		for( size_t idx = 0; idx < File.size(); idx++ ) {
+			if ( File[idx].Name.find( Pattern ) != std::string::npos ) {
+				const char* Name = File[idx].Name.c_str();
 				VLog( "* Found %s!", Name );
 				return Name;
 			}
 		}
+
+//		for( size_t idx = 0; idx < size_GelDirectory( Dir ); idx++ ) {
+//			const char* Name = index_GelDirectory( Dir, idx );
+//			if ( find_String( Pattern, Name ) ) {
+//				VLog( "* Found %s!", Name );
+//				return Name;
+//			}
+//		}
 
 		Log( "* %s NOT FOUND!!", Pattern );
 		
