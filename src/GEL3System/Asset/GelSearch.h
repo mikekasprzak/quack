@@ -67,7 +67,6 @@ public:
 		for( size_t idx = 0; idx < File.size(); idx++ ) {
 			//std::string Name = File[idx]; 							// Includes DirName //
 			std::string Name = File[idx].substr( DirNameLength + 1 );	// Ignores DirName //
-			Log( "** %s", Name.c_str() );
 			
 			// Since a linear search of the entire File list will find the first instance //
 			// of a file, then the hash tables should follow a similar behavior. //
