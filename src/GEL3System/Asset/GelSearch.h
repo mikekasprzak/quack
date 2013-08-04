@@ -48,7 +48,8 @@ public:
 			// Add this file to the File list //
 			File.push_back( FileName );
 			
-			Log( "TEST: %i %s (%s)", Gel::String::GetExtensionCount( FileName ), Gel::String::GetExtensions( FileName, 2 ).c_str(), FileName.c_str() );
+//			Log( "TEST: %i %s (%s)", Gel::String::GetExtensionCount( FileName ), Gel::String::GetLastExtensions( FileName, 2 ).c_str(), FileName.c_str() );
+//			Log( "TEST: %i %s (%s)", Gel::String::GetSubDirectoryCount( FileName ), Gel::String::GetLastSubDirectories( FileName, 1 ).c_str(), FileName.c_str() );
 				
 			// Since a linear search of the entire File list will find the first instance //
 			// of a file, then the hash tables should follow a similar behavior. //

@@ -166,7 +166,10 @@ namespace String {
 		return "";
 	}
 	// - -------------------------------------------------------------------------------------- - //
-
+	// Variation of GetLastExtension that takes an index //
+	inline std::string GetLastExtension( const std::string& _FileName, const st32 Index ) {
+		return GetExtension( _FileName, (GetExtensionCount( _FileName ) - 1) - Index );
+	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Return a specific number of Extensions //
 	inline std::string GetExtensions( const std::string& _FileName, const st32 _Count ) {
@@ -184,9 +187,60 @@ namespace String {
 		return WorkString;
 	}
 	// - -------------------------------------------------------------------------------------- - //
+	// Return a specific number of Extensions //
+	inline std::string GetLastExtensions( const std::string& _FileName, const st32 _Count ) {
+		if ( _Count == 0 )
+			return "";
+			
+		std::string WorkString = GetExtensions( _FileName );
+			
+		st32 Count = 0;
+		for ( st32 idx = WorkString.size(); idx--; ) {
+			if ( WorkString[idx] == '.' ) {
+				Count++;
+				if ( Count == _Count ) {
+					return WorkString.substr( idx );
+				}
+			}
+		}
+		return WorkString;
+	}
+	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	// Return the base name (filename without extensions) of the filename //
+	// Return the last subdirectory in the filename //
+	inline std::string GetFirstSubDirectory( const std::string& _FileName ) {
+		std::string WorkString = GetDirectorySlash( _FileName );
+			
+		// Find the first slash //
+		size_t SlashPos = WorkString.find( "/" );
+
+		if ( SlashPos == std::string::npos ) {
+			// Slash not found //
+			return "";
+		}
+
+		// Return the first Directory //
+		return WorkString.substr( 0, SlashPos );
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	// Return the last subdirectory in the filename //
+	inline std::string GetLastSubDirectory( const std::string& _FileName ) {
+		std::string WorkString = GetDirectory( _FileName );	// No Slash //
+			
+		// Find the first dot //
+		size_t DotPos = WorkString.rfind( "/" );
+
+		if ( DotPos == std::string::npos ) {
+			// Dot not found //
+			return "";
+		}
+	
+		// Return the entire string after the last period //
+		return WorkString.substr( DotPos + 1 );
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	// Return 
 	inline st32 GetSubDirectoryCount( const std::string& _FileName ) {
 		std::string WorkString = GetDirectorySlash( _FileName );
 		st32 Count = 0;
@@ -196,6 +250,72 @@ namespace String {
 			}
 		}
 		return Count;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	inline std::string GetSubDirectory( const std::string& _FileName, const st32 Index ) {
+		std::string WorkString = GetDirectorySlash( _FileName );
+			
+		st32 Count = 0;
+		st32 StrPos = 0;
+		for ( st32 idx = 0; idx < WorkString.size(); idx++ ) {
+			if ( WorkString[idx] == '/' ) {
+				if ( Count == Index ) {
+					st32 Modifier = 1;
+					if ( StrPos == 0 ) {
+						Modifier = 0;
+					}
+					st32 ToCopy = (idx-StrPos) - Modifier;
+					return WorkString.substr( StrPos + Modifier, ToCopy );
+				}
+				Count++;
+				StrPos = idx;
+			}
+		}
+		return "";
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	// Variation of GetLastSubDirectory that takes an index //
+	inline std::string GetLastSubDirectory( const std::string& _FileName, const st32 Index ) {
+		return GetSubDirectory( _FileName, (GetSubDirectoryCount( _FileName ) - 1) - Index );
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	inline std::string GetSubDirectories( const std::string& _FileName, const st32 _Count ) {
+		if ( _Count == 0 )
+			return "";
+		
+		std::string WorkString = GetDirectory( _FileName );
+			
+		st32 Count = 0;
+		for ( st32 idx = 0; idx < WorkString.size(); idx++ ) {
+			if ( WorkString[idx] == '/' ) {
+				Count++;
+				if ( Count == _Count ) {
+					return WorkString.substr( 0, idx );
+				}
+			}
+		}
+		return WorkString;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	inline std::string GetLastSubDirectories( const std::string& _FileName, const st32 _Count ) {
+		if ( _Count == 0 )
+			return "";
+		
+		std::string WorkString = GetDirectory( _FileName );
+			
+		st32 Count = 0;
+		for ( st32 idx = WorkString.size(); idx--; ) {
+			if ( WorkString[idx] == '/' ) {
+				Count++;
+				if ( Count == _Count ) {
+					st32 Modifier = 1;
+					if ( idx == 0 )
+						Modifier = 0;
+					return WorkString.substr( idx + Modifier );
+				}
+			}
+		}
+		return WorkString;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
