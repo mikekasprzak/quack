@@ -19,8 +19,10 @@ class GelSearch {
 public:
 	typedef u32 GelSearchUID;
 protected:
+	typedef std::map<std::string,GelSearchUID> HashType;
+	
 	std::vector<std::string> File;
-	std::map<std::string,GelSearchUID> Hash;		// TODO: Use a hash_map or unordered_map (C++11) //
+	HashType Hash;					// TODO: Use a hash_map or unordered_map (C++11) //
 public:	
 	inline GelSearch() {	
 	}
@@ -37,29 +39,40 @@ public:
 
 		// Copy all file names found, adding them to results and hash tables //
 		for( size_t idx = 0; idx < size_GelDirectory( Dir ); idx++ ) {
-			const char* Name = index_GelDirectory( Dir, idx );
+			std::string Name = index_GelDirectory( Dir, idx );
 			
 			// Since File is a vector (array), the current size will correctly be //
 			// the index of the next element. Therefor, store a copy as a UID. //
 			GelSearchUID ThisUID = File.size();
 			
-			std::string FileName = std::string(DirName) + "/" + std::string(Name);
+			std::string FullName = std::string(DirName) + "/" + Name;
 			
 			// Add this file to the File list //
-			File.push_back( FileName );
+			File.push_back( FullName );
 				
 			// Since a linear search of the entire File list will find the first instance //
 			// of a file, then the hash tables should follow a similar behavior. //
 			
-			// BaseName //
-			{
-				std::string Pattern = Gel::String::GetBaseName( FileName );
-				// Make sure it doesn't exist first //
-				if ( Hash.find( Pattern ) != Hash.end() ) {
-					Hash[ Pattern ] = ThisUID;
+			st32 DirCount = Gel::String::GetSubDirectoryCount( Name );
+			st32 ExtCount = Gel::String::GetExtensionCount( Name );
+			
+			for ( st Dirs = 0; Dirs < DirCount + 1; Dirs++ ) {
+				for ( st Exts = 0; Exts < ExtCount + 1; Exts++ ) {
+					std::string Pattern = Gel::String::GetSubDirectories( Name, Dirs );
+					if ( Pattern.size() > 0 )
+						Pattern += "/";
+					Pattern += Gel::String::GetBaseName( Name ) + Gel::String::GetExtensions( Name, Exts );
+
+					// Make sure it doesn't exist first //
+					if ( Hash.find( Pattern ) == Hash.end() ) {
+						VVVLog( "> %s", Pattern.c_str() );
+						Hash[ Pattern ] = ThisUID;
+					}
+					else {
+						VVVLog( "** %s exists. Ignoring...", Pattern.c_str() );
+					}
 				}
 			}
-			
 		}
 		
 		// We're finished and made our own copy, so throw away the GelDirectory //
@@ -69,10 +82,13 @@ public:
 	// Search for a Pattern //
 	inline const char* operator()( const char* Pattern ) {
 		VLog( "* Searching for %s...", Pattern );
-		
-		// TODO: Build a search hash table. //
-		//   BaseName, ParentDir/BaseName, Parent/Parent/BaseName, //
-		//   BaseName.FirstExt, etc //
+
+		// Hash Search (i.e. fast) //
+		HashType::iterator SearchIterator = Hash.find( Pattern );
+		if ( SearchIterator != Hash.end() ) {
+			VLog( "* %s found in lookup cache! (%s)", File[SearchIterator->second].c_str(), SearchIterator->first.c_str() );
+			return File[SearchIterator->second].c_str();
+		}
 		
 		// Linear Search (i.e. slow) //
 		for( size_t idx = 0; idx < File.size(); idx++ ) {
