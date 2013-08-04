@@ -14,6 +14,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <algorithm>
 // - ------------------------------------------------------------------------------------------ - //
 class GelSearch {
 public:
@@ -34,22 +35,40 @@ public:
 	inline void Add( const char* DirName ) {
 		Log( "Adding \"%s\" to Search...", DirName );
 		
-		// Create a GelDirectory, and populate it //
-		GelDirectory* Dir = new_GelDirectory( DirName );
-
-		// Copy all file names found, adding them to results and hash tables //
-		for( size_t idx = 0; idx < size_GelDirectory( Dir ); idx++ ) {
-			std::string Name = index_GelDirectory( Dir, idx );
-			
-			// Since File is a vector (array), the current size will correctly be //
-			// the index of the next element. Therefor, store a copy as a UID. //
-			GelSearchUID ThisUID = File.size();
-			
-			std::string FullName = std::string(DirName) + "/" + Name;
-			
-			// Add this file to the File list //
-			File.push_back( FullName );
+		// Store a copy of the original size //
+		st OriginalSize = File.size();
+		
+		{
+			// Create a GelDirectory, and populate it //
+			GelDirectory* Dir = new_GelDirectory( DirName );
+	
+			// Copy all file names found, adding them to results and hash tables //
+			for( size_t idx = 0; idx < size_GelDirectory( Dir ); idx++ ) {
+				// Since File is a vector (array), the current size will correctly be //
+				// the index of the next element. Therefor, store a copy as a UID. //
+				//GelSearchUID ThisUID = File.size();
 				
+				std::string FullName = std::string(DirName) + "/" + index_GelDirectory( Dir, idx );;
+				
+				// Add this file to the File list //
+				File.push_back( FullName );
+			}	
+	
+			// We're finished and made our own copy, so throw away the GelDirectory //
+			delete_GelDirectory( Dir );		
+		}
+		
+		// Sort the recently added Files //
+		std::sort( File.begin() + OriginalSize, File.end() );
+			
+		st32 DirNameLength = strlen( DirName );
+
+		// Add the recently added files to the Hash table //
+		for( size_t idx = 0; idx < File.size(); idx++ ) {
+			//std::string Name = File[idx]; 							// Includes DirName //
+			std::string Name = File[idx].substr( DirNameLength + 1 );	// Ignores DirName //
+			Log( "** %s", Name.c_str() );
+			
 			// Since a linear search of the entire File list will find the first instance //
 			// of a file, then the hash tables should follow a similar behavior. //
 			
@@ -66,7 +85,7 @@ public:
 					// Make sure it doesn't exist first //
 					if ( Hash.find( Pattern ) == Hash.end() ) {
 						VVVLog( "> %s", Pattern.c_str() );
-						Hash[ Pattern ] = ThisUID;
+						Hash[ Pattern ] = idx;//ThisUID;
 					}
 					else {
 						VVVLog( "** %s exists. Ignoring...", Pattern.c_str() );
@@ -74,9 +93,6 @@ public:
 				}
 			}
 		}
-		
-		// We're finished and made our own copy, so throw away the GelDirectory //
-		delete_GelDirectory( Dir );		
 	}
 	
 	// Search for a Pattern //
