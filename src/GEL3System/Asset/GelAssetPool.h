@@ -23,7 +23,7 @@ public:
 	inline GelAssetPool() {
 		// Add 1 element to the Assets array: A dummy placeholder for Id 0. //
 		Assets.push_back( GelAsset() );
-		Assets.back().SetFlag( GelAsset::AF_DONT_LOAD );
+		Assets.back().SetFlag( GelAsset::AF_DONT_LOAD | GelAsset::AF_BAD );
 	}
 	inline ~GelAssetPool() {
 		for ( st idx = 0; idx < Assets.size(); idx++ ) {
@@ -40,6 +40,11 @@ public:
 	// Get a UID for an Asset //
 	inline UID Load( const char* _FileName ) {
 		// NOTE: This should always return a legal UID //
+		
+		// If we got a zero (Search Failure) then return the dummy UID //
+		if ( _FileName == 0 ) {
+			return 0;
+		}
 		
 		// Step 1: Check Hash Table for a match //
 		std::map<std::string,UID>::iterator Itr = NameTable.find(_FileName);
@@ -58,6 +63,7 @@ public:
 			// TODO: Scan for a UID's in the 'available' table before deciding to use the back //
 			if ( false ) {
 				// Bleh //
+				return 0;
 			}
 			else {
 				// Use the Back, as there are no UID's in the 'available' table //

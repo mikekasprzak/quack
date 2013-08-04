@@ -185,7 +185,17 @@ void AssetPoolTest() {
 //			std::string SubName = Gel::String::GetBaseName( FileName );
 //			Log( "TEST: %i %i (%s)", Gel::String::GetSubNameCount( SubName ), Gel::String::GetSubNumber( SubName ), SubName.c_str() );
 // - ------------------------------------------------------------------------------------------ - //
-
+void SearchTest() {
+	Log( "" );
+	Log( "** Search Test:" );
+	
+	const char* Text = Gel::Search("main");
+	if ( Text ) Log( "> %s", Text );
+	Text = Gel::Search("play"); // Will Fail because it's Play not play //
+	if ( Text ) Log( "> %s", Text );
+	Text = Gel::Search("Nerf");
+	if ( Text ) Log( "> %s", Text );
+}
 
 // - ------------------------------------------------------------------------------------------ - //
 int main( int argc, char* argv[] ) {
@@ -202,6 +212,7 @@ int main( int argc, char* argv[] ) {
 	TimeTest();
 	FileInfoTest();
 	AssetPoolTest();
+	SearchTest();
 
 	// *** //
 	
