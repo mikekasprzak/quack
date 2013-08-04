@@ -23,47 +23,49 @@ namespace String {
 	// Return the File-Name part of a string //
 	inline std::string GetFileName( const std::string& _FileName ) {
 		// Find the last slash //
-		size_t SlashPos = _FileName.rfind( "/" );
+		size_t CharPos = _FileName.rfind( "/" );
 		
-		if ( SlashPos == std::string::npos ) {
+		if ( CharPos == std::string::npos ) {
 			// Slash not found //
 			return _FileName;
 		}
 		
 		// Return the entire string after the slash position //
-		return _FileName.substr( SlashPos + 1 );
+		return _FileName.substr( CharPos + 1 );
 	}
 	// - -------------------------------------------------------------------------------------- - //
+
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Return the Directory part of a string, excluding the slash //
 	inline std::string GetDirectory( const std::string& _FileName ) {
 		// Find the last slash //
-		size_t SlashPos = _FileName.rfind( "/" );
+		size_t CharPos = _FileName.rfind( "/" );
 		
-		if ( SlashPos == std::string::npos ) {
+		if ( CharPos == std::string::npos ) {
 			// Slash not found //
 			return "";
 		}
 		
 		// Return the entire string before the slash position //
-		return _FileName.substr( 0, SlashPos - 0 );
+		return _FileName.substr( 0, CharPos - 0 );
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Return the Directory part of a string, including the slash //
 	inline std::string GetDirectorySlash( const std::string& _FileName ) {
 		// Find the last slash //
-		size_t SlashPos = _FileName.rfind( "/" );
+		size_t CharPos = _FileName.rfind( "/" );
 		
-		if ( SlashPos == std::string::npos ) {
+		if ( CharPos == std::string::npos ) {
 			// Slash not found //
 			return "";
 		}
 		
 		// Return the entire string before the slash position //
-		return _FileName.substr( 0, SlashPos + 1 - 0 );
+		return _FileName.substr( 0, CharPos + 1 - 0 );
 	}	
 	// - -------------------------------------------------------------------------------------- - //
+
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Return the base name (filename without extensions) of the filename //
@@ -83,6 +85,7 @@ namespace String {
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
+
 	// - -------------------------------------------------------------------------------------- - //
 	// Return the Extensions //
 	inline std::string GetExtensions( const std::string& _FileName ) {
@@ -100,6 +103,7 @@ namespace String {
 		return WorkString.substr( DotPos );
 	}
 	// - -------------------------------------------------------------------------------------- - //
+
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Return the last extension in the filename //
@@ -207,21 +211,22 @@ namespace String {
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
+
 	// - -------------------------------------------------------------------------------------- - //
 	// Return the last subdirectory in the filename //
 	inline std::string GetFirstSubDirectory( const std::string& _FileName ) {
 		std::string WorkString = GetDirectorySlash( _FileName );
 			
 		// Find the first slash //
-		size_t SlashPos = WorkString.find( "/" );
+		size_t CharPos = WorkString.find( "/" );
 
-		if ( SlashPos == std::string::npos ) {
+		if ( CharPos == std::string::npos ) {
 			// Slash not found //
 			return "";
 		}
 
 		// Return the first Directory //
-		return WorkString.substr( 0, SlashPos );
+		return WorkString.substr( 0, CharPos );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Return the last subdirectory in the filename //
@@ -318,6 +323,120 @@ namespace String {
 		return WorkString;
 	}
 	// - -------------------------------------------------------------------------------------- - //
+
+
+	// - -------------------------------------------------------------------------------------- - //
+	// Return the last subname in the name //
+	inline std::string GetFirstSubName( const std::string& _Name ) {
+		std::string WorkString = _Name + "_";
+			
+		// Find the first underscore //
+		size_t CharPos = WorkString.find( "_" );
+
+		if ( CharPos == std::string::npos ) {
+			// Underscore not found //
+			return WorkString;
+		}
+
+		// Return the first SubName //
+		return WorkString.substr( 0, CharPos );
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	// Return the last subname in the filename //
+	inline std::string GetLastSubName( const std::string& _Name ) {
+		std::string WorkString = _Name;
+			
+		// Find the first dot //
+		size_t CharPos = WorkString.rfind( "_" );
+
+		if ( CharPos == std::string::npos ) {
+			// Underscore not found //
+			return WorkString;
+		}
+	
+		// Return the entire string after the last period //
+		return WorkString.substr( CharPos + 1 );
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	// Return 
+	inline st32 GetSubNameCount( const std::string& _Name ) {
+		std::string WorkString = _Name + "_";
+		st32 Count = 0;
+		for ( st32 idx = 0; idx < WorkString.size(); idx++ ) {
+			if ( WorkString[idx] == '_' ) {
+				Count++;
+			}
+		}
+		return Count;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	inline std::string GetSubName( const std::string& _Name, const st32 Index ) {
+		std::string WorkString = _Name + "_";
+			
+		st32 Count = 0;
+		st32 StrPos = 0;
+		for ( st32 idx = 0; idx < WorkString.size(); idx++ ) {
+			if ( WorkString[idx] == '_' ) {
+				if ( Count == Index ) {
+					st32 Modifier = 1;
+					if ( StrPos == 0 ) {
+						Modifier = 0;
+					}
+					st32 ToCopy = (idx-StrPos) - Modifier;
+					return WorkString.substr( StrPos + Modifier, ToCopy );
+				}
+				Count++;
+				StrPos = idx;
+			}
+		}
+		return "";
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	// Variation of GetLastSubName that takes an index //
+	inline std::string GetLastSubName( const std::string& _Name, const st32 Index ) {
+		return GetSubName( _Name, (GetSubNameCount( _Name ) - 1) - Index );
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	inline std::string GetSubNames( const std::string& _Name, const st32 _Count ) {
+		if ( _Count == 0 )
+			return "";
+		
+		std::string WorkString = _Name;
+			
+		st32 Count = 0;
+		for ( st32 idx = 0; idx < WorkString.size(); idx++ ) {
+			if ( WorkString[idx] == '_' ) {
+				Count++;
+				if ( Count == _Count ) {
+					return WorkString.substr( 0, idx );
+				}
+			}
+		}
+		return WorkString;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	inline std::string GetLastSubNames( const std::string& _Name, const st32 _Count ) {
+		if ( _Count == 0 )
+			return "";
+		
+		std::string WorkString = _Name;
+			
+		st32 Count = 0;
+		for ( st32 idx = WorkString.size(); idx--; ) {
+			if ( WorkString[idx] == '_' ) {
+				Count++;
+				if ( Count == _Count ) {
+					st32 Modifier = 1;
+					if ( idx == 0 )
+						Modifier = 0;
+					return WorkString.substr( idx + Modifier );
+				}
+			}
+		}
+		return WorkString;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+
 
 //	// - -------------------------------------------------------------------------------------- - //
 //	// Return the text before the first underscore "_" (ignoring the underscore) //
