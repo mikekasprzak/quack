@@ -7,7 +7,8 @@
 //   Extension    - A single file extension (dot included).
 //   SubDirectory - A single Directory (without Slash).
 //
-//   SubName      - Underscore delimited pieces of strings (typically BaseName or SubDirectory).
+//   SubName      - Underscore delimited strings (typically a BaseName or SubDirectory).
+//   SubNumber    - The number found within a string (C64Font = 64, Image_02 = 2). Searches backwards.
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_LIB_STRING_STRING_H__
 #define __GEL_LIB_STRING_STRING_H__
@@ -536,44 +537,42 @@ namespace String {
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Get the string following an extension (an extension argument) //
-	inline int GetIntArgExtension( const std::string& _FileName, const std::string& _Pattern ) {
-		// Find the Argument //
-		size_t Pos = 0;
-		if ( (Pos = _FileName.find( _Pattern )) != std::string::npos ) {
-			// Move position past the extension itself to the start of the number //
-			Pos += _Pattern.size();
-			
-			// Find the end (start at the end of the string) //
-			size_t End = _FileName.size();
-			
-			// If I have a dot or slash after me, use them as the end point //
-			size_t NewEnd = 0;
-			if ( (NewEnd = _FileName.find( ".", Pos )) != std::string::npos ) {
-				End = NewEnd;
-			}
-			if ( (NewEnd = _FileName.find( "/", Pos )) != std::string::npos ) {
-				if ( NewEnd < End )
-					End = NewEnd;
-			}
-			
-			return atoi( _FileName.substr( Pos, End - Pos ).c_str() );
-		}
-		return 0;
-	}
+//	inline int GetIntArgExtension( const std::string& _FileName, const std::string& _Pattern ) {
+//		// Find the Argument //
+//		size_t Pos = 0;
+//		if ( (Pos = _FileName.find( _Pattern )) != std::string::npos ) {
+//			// Move position past the extension itself to the start of the number //
+//			Pos += _Pattern.size();
+//			
+//			// Find the end (start at the end of the string) //
+//			size_t End = _FileName.size();
+//			
+//			// If I have a dot or slash after me, use them as the end point //
+//			size_t NewEnd = 0;
+//			if ( (NewEnd = _FileName.find( ".", Pos )) != std::string::npos ) {
+//				End = NewEnd;
+//			}
+//			if ( (NewEnd = _FileName.find( "/", Pos )) != std::string::npos ) {
+//				if ( NewEnd < End )
+//					End = NewEnd;
+//			}
+//			
+//			return atoi( _FileName.substr( Pos, End - Pos ).c_str() );
+//		}
+//		return 0;
+//	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Extract the number part from the base name (i.e. Idle05.png would return 5) //
-	inline int GetBaseNameNumber( const std::string& _FileName ) {
-		std::string Base = GetBaseName( _FileName );
+	inline int GetSubNumber( const std::string& _Name ) {
+		std::string Base = _Name;
 		
 		// Find the last number //
 		int End = -1;
 		for ( int idx = (int)Base.size() - 1; idx >= 0; idx-- ) {
-			if ( Base[ idx ] >= '0' ) {
-				if ( Base[ idx ] <= '9' ) {
-					// Last Number Found //
-					End = idx;
-					break;
-				}
+			if ( (Base[idx] >= '0') && (Base[idx] <= '9') ) {
+				// Last Number Found //
+				End = idx;
+				break;
 			}
 		}
 		
@@ -584,16 +583,16 @@ namespace String {
 		// Find the starting digit //
 		int Start = End;
 		for ( int idx = End; idx >= 0; idx-- ) {
-			if ( Base[ idx ] <= '0' ) {
-				if ( Base[ idx ] >= '9' ) {
-					// This is not a number! //
-					Start = idx + 1;
-					break;
-				}
+			if ( (Base[ idx ] >= '0') && (Base[ idx ] <= '9') ) {
+			}
+			else {
+				// This is not a number! //
+				Start = idx + 1;
+				break;
 			}
 		}
 		
-		return atoi( Base.substr( Start, End - Start ).c_str() );
+		return atoi( Base.substr( Start, (End - Start) + 1 ).c_str() );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 

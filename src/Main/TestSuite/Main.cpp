@@ -179,6 +179,13 @@ void AssetPoolTest() {
 	// Automatic Cleanup //
 }
 // - ------------------------------------------------------------------------------------------ - //
+// StdString Test Suite			
+//			Log( "TEST: %i %s (%s)", Gel::String::GetExtensionCount( FileName ), Gel::String::GetLastExtensions( FileName, 2 ).c_str(), FileName.c_str() );
+//			Log( "TEST: %i %s (%s)", Gel::String::GetSubDirectoryCount( FileName ), Gel::String::GetLastSubDirectories( FileName, 1 ).c_str(), FileName.c_str() );
+//			std::string SubName = Gel::String::GetBaseName( FileName );
+//			Log( "TEST: %i %i (%s)", Gel::String::GetSubNameCount( SubName ), Gel::String::GetSubNumber( SubName ), SubName.c_str() );
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 int main( int argc, char* argv[] ) {
