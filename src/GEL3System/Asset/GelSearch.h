@@ -9,7 +9,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Lib/GelDirectory/GelDirectory.h>
-#include <Lib/String/String.h>
+#include <Lib/StdString/StdString.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <map>
 #include <vector>

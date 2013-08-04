@@ -13,7 +13,7 @@
 #endif // WINCE //
 
 #include <string>
-#include <Lib/String/String.h>
+#include <Lib/StdString/StdString.h>
 
 #include "GelDirectory_Core.h"
 #include <Lib/GelFileInfo/GelFileInfo.h>

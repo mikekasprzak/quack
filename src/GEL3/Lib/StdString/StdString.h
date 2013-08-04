@@ -10,8 +10,8 @@
 //   SubName      - Underscore delimited strings (typically a BaseName or SubDirectory).
 //   SubNumber    - The number found within a string (C64Font = 64, Image_02 = 2). Searches backwards.
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_LIB_STRING_STRING_H__
-#define __GEL_LIB_STRING_STRING_H__
+#ifndef __GEL_LIB_STDSTRING_STDSTRING_H__
+#define __GEL_LIB_STDSTRING_STDSTRING_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <string>
 #include <stdlib.h>
@@ -717,5 +717,5 @@ namespace String {
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_LIB_STRING_STRING_H__ //
+#endif // __GEL_LIB_STDSTRING_STDSTRING_H__ //
 // - ------------------------------------------------------------------------------------------ - //
