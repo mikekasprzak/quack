@@ -6,7 +6,37 @@
 #include "QuackVM.h"
 #include <Asset/Asset.h>
 // - ------------------------------------------------------------------------------------------ - //
+#include <vector>
+// - ------------------------------------------------------------------------------------------ - //
 HSQUIRRELVM vm;
+// - ------------------------------------------------------------------------------------------ - //
+// GelScript will be the primary Script type. If I ever add Lua, call it GelLuaScript.
+// - ------------------------------------------------------------------------------------------ - //
+class GelScript {
+public:
+	
+};
+// - ------------------------------------------------------------------------------------------ - //
+class GelScriptPool {
+	std::vector<GelScript> Script;
+public:
+	
+};
+// - ------------------------------------------------------------------------------------------ - //
+GelScriptPool ScriptPool;
+// - ------------------------------------------------------------------------------------------ - //
+void CallSqFunction( HSQUIRRELVM vm, const char* fname ) {
+	sq_pushroottable(vm);
+	
+	sq_pushstring(vm,fname,-1);
+	sq_get(vm,-2);
+	sq_pushroottable(vm);			// this //
+	// Push Other Arguments Here //
+	
+	sq_call(vm,1,SQFalse,SQFalse);	// VM, Arg Count (including this), Push RetVal on Stack, On Error Call Handlers //
+	
+	sq_pop(vm,2);					// Root Table and Function //
+}
 // - ------------------------------------------------------------------------------------------ - //
 void QuackVMInit() {
 	Log( "-=- Squirrel VM -=-" );
@@ -50,17 +80,28 @@ void QuackVMInit() {
 	// Load the startup file //
 	const char* StartupFile = "main.nut";
 	Log( "Loading Startup File (%s)...", StartupFile );
-	GelAssetPool::UID MainNut = Gel::AssetPool.Load(Gel::Search(StartupFile));
+	const char* StartupFileResult = Gel::Search(StartupFile);
+	GelAssetPool::UID MainNut = Gel::AssetPool.Load(StartupFileResult);
 	if ( !Gel::AssetPool[MainNut].IsBad() ) {
-		// Do the Init function //
-		Log( "Calling User Init Function..." );
-		//Log( "%s", Gel::AssetPool[MainNut].Get() );
+		if ( SQ_SUCCEEDED( sq_compilebuffer(vm, Gel::AssetPool[MainNut].Get(), Gel::AssetPool[MainNut].GetSize(), StartupFileResult, true) ) ) {
+			sq_push(vm,-2);
+			if ( SQ_SUCCEEDED( sq_call(vm,1,false,SQTrue) ) ) {
+				Log( "Finished Running Script." );
+			}
+			sq_pop(vm,1); //removes the closure
+		}
 	}
 	else {
 		Log( "! ERROR! %s not found! No program to start!", StartupFile );
 		//TODO: Do Shutdown //
 	}
-		
+
+	{
+		// Do the Init function //
+		Log( "Calling User Init Function..." );
+		CallSqFunction( vm, "Init" );
+	}
+			
 	Log( "" );
 }
 // - ------------------------------------------------------------------------------------------ - //
