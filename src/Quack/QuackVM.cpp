@@ -84,9 +84,13 @@ void QuackVMInit() {
 	GelAssetPool::UID MainNut = Gel::AssetPool.Load(StartupFileResult);
 	if ( !Gel::AssetPool[MainNut].IsBad() ) {
 		if ( SQ_SUCCEEDED( sq_compilebuffer(vm, Gel::AssetPool[MainNut].Get(), Gel::AssetPool[MainNut].GetSize(), StartupFileResult, true) ) ) {
+			Log( "+ Script Compiled Successfully. Running Script..." );
 			sq_push(vm,-2);
 			if ( SQ_SUCCEEDED( sq_call(vm,1,false,SQTrue) ) ) {
-				Log( "Finished Running Script." );
+				Log( "- Finished Running Script." );
+			}
+			else {
+				Log( "- Error! Failed to run Script. This should not happen!" );
 			}
 			sq_pop(vm,1); //removes the closure
 		}
