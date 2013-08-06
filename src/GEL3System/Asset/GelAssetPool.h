@@ -49,13 +49,13 @@ public:
 		// Step 1: Check Hash Table for a match //
 		std::map<std::string,UID>::iterator Itr = NameTable.find(_FileName);
 		if ( Itr != NameTable.end() ) {
-			Log( "Asset \"%s\" found in Pool: %i", _FileName, Itr->second );
+			Log( "* Asset \"%s\" found in Pool: %i", _FileName, Itr->second );
 			// Found a UID match, so we're done //
 			return Itr->second;
 		}
 		// Step 2: If no match, then do a load //
 		else {
-			Log( "Asset \"%s\" not in Pool. Loading...", _FileName );
+			Log( "* Asset \"%s\" not in Pool. Loading...", _FileName );
 			// TOOD: Check if file exists (where applicible). Return 0 on fail. //
 			// UNTODO: No don't. Instead return a legal UID, but it will fail the load. //
 			// Remember: Eventually the Load will become an Async operation. //
@@ -72,7 +72,7 @@ public:
 				Assets.push_back( GelAsset() );
 				// TODO: Add this to the Job Queue //
 				Assets.back().Load( _FileName );
-				Log( "Asset \"%s\" loaded as: %i", _FileName, Id );
+				Log( "* Asset \"%s\" loaded as: %i", _FileName, Id );
 				return Id;
 			}
 		}

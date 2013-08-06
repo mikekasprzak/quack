@@ -19,6 +19,7 @@ void AppInit() {
 	gelSystemInit();
 	gelAssetInit();
 	
+	Gel::Search.Add( "src/Quack/QuackLib" );
 	Gel::Search.Add( "project" );
 
 	// **** //
