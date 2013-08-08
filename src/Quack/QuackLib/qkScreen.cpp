@@ -6,8 +6,13 @@
 #define SQ_RETURN	1
 #define SQ_VOID		0
 // - ------------------------------------------------------------------------------------------ - //
+// Check if the project is built in Development Mode (Desktop OS's Only) //
 SQInteger qkIsDevMode( HSQUIRRELVM v ) {
+#ifdef PRODUCT_DEV_MODE
+	sq_pushbool( v, SQTrue );
+#else // !PRODUCT_DEV_MODE //
 	sq_pushbool( v, SQFalse );
+#endif // PRODUCT_DEV_MODE //
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //

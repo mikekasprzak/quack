@@ -49,7 +49,9 @@ LIBRARIES			+=	-lmingw32 \
 # Release Build Only #
 ifdef NDEBUG
 LDFLAGS				+=	-mwindows
-endif
+else # !NDEBUG #
+DEFINES				+=	PRODUCT_DEV_MODE
+endif # NDEBUG #
 # -mwindows = no console
 # - ------------------------------------------------------------------------ - #
 # File extension for the Binary (.exe on Windows, .i686 .x86_64 on Linux) #
