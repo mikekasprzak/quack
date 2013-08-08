@@ -31,6 +31,9 @@ void gelSystemInit() {
 //			Rect.x, Rect.y, Rect.w, Rect.h 
 //			);
 	}
+	
+	// Clear the Screen Scalar //
+	Gel::ScreenScalar = 1.0f;
 }
 // - ------------------------------------------------------------------------------------------ - //
 

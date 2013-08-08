@@ -21,7 +21,7 @@ SQInteger qkSetScreenScalar( HSQUIRRELVM v ) {
 	if(SQ_FAILED(sq_getfloat(v,2,&Scale)))
 		return sq_throwerror(v,_SC("invalid param"));
 	
-	// TODO: Use Scale //
+	gelSetScreenScalar( Scale );
 	
 	return SQ_VOID;	
 }
