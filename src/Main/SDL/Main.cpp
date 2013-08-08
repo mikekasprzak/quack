@@ -52,35 +52,18 @@ extern "C" int main( int argc, char* argv[] ) {
 
 	// *** //
 	
+	// Initialize App //
 	AppInit();
 
-	// *** //
+	// If the Mode is AM_MAIN, then we're already done //
+	if ( App::Mode == App::AM_MAIN )
+		return 0;	// TODO: return App::Error; //
 
-//	gelLogGraphicsAPIDetails();
+	// Otherwise, we're a Game Loop //
+	//AppGameLoop();
+	
+	AppStep();
 
-	// *** //
-
-	return AppMain();
-
-//	{
-//		GelFileInfo_Core Finf;
-//		stat_GelFileInfo_Core( &Finf, "shugar" );
-//		Log("> shugar %x", Finf.Flags );
-//		stat_GelFileInfo_Core( &Finf, "output" );
-//		Log("> output %x", Finf.Flags );
-//		stat_GelFileInfo_Core( &Finf, "makefile" );
-//		Log("> makefile %x", Finf.Flags );
-//	}
-
-//	ArgInit( argc, argv );
-//
-//	// **** //
-//
-////	gelNetInit();
-//		
-//	// **** //
-//
-//	LogMemoryUsage();
 //	
 //	// **** //
 //	
@@ -173,7 +156,8 @@ extern "C" int main( int argc, char* argv[] ) {
 //	Log( "+ Shutdown Started..." );
 //	Screen::DestroyNative();
 //	Log( "- Shutdown Complete." );
-//	
+
+	return 0;
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_SDL2 //
