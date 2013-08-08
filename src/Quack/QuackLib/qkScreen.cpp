@@ -27,6 +27,7 @@ SQInteger qkSetScreenScalar( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInitScreen( HSQUIRRELVM v ) {
+	gelInitScreens();
 
 	return SQ_VOID;
 }

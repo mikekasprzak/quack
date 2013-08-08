@@ -104,7 +104,7 @@ extern "C" int main( int argc, char* argv[] ) {
 			MainInput();		// Poll Input Devices //
 			AppStep();			// *** STEP *** //
 		}
-		//flip					// *** FLIP *** //
+		gelSwapScreens();		// *** FLIP *** //
 		gelSysYield();
 	}
 	

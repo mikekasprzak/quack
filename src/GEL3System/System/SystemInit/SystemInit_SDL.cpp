@@ -4,6 +4,7 @@
 #include <API/API_SDL2.h>
 #include <Lib/Lib.h>
 #include <System/System.h>
+#include <System/GelScreen/GelScreens_Internal_SDL.h>
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -12,6 +13,7 @@ void gelSystemInit() {
 	
 	// Populate List of Screens //
 	for( int idx = 0; idx < SDL_GetNumVideoDisplays(); idx++ ) {
+		// Common Screens //
 		SDL_DisplayMode Mode;
 		SDL_GetDesktopDisplayMode( idx, &Mode );
 
@@ -24,12 +26,9 @@ void gelSystemInit() {
 		Screen.SetFlags( GelScreen::SF_TV | GelScreen::SF_WINDOW );
 		
 		Gel::Screen.Add( Screen );
-		
-//		Log( "%i - %i, %i at %i Hz [%x] -- Location: %i, %i (%i,%i)", 
-//			idx, 
-//			Mode.w, Mode.h, Mode.refresh_rate, Mode.format, 
-//			Rect.x, Rect.y, Rect.w, Rect.h 
-//			);
+
+		// Internal Screens //
+		Gel::Native.push_back( GelNativeScreen() );
 	}
 	
 	// Clear the Screen Scalar //
