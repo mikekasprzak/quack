@@ -1,16 +1,24 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SYSTEM_SYSTEM_H__
-#define __GEL_SYSTEM_SYSTEM_H__
+#ifdef USES_WINDOWS_TIME
 // - ------------------------------------------------------------------------------------------ - //
-#include "SystemInit/SystemInit.h"
+#include "SysSleep.h"
+#include <windows.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include "Log/LogSystemAPIDetails.h"
-#include "Log/LogCompilerDetails.h"
+void gelSysSleep( const int _Seconds ) {
+	Sleep( _Seconds * 1000 );
+}
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelScreen/GelScreen.h"
-#include "GelScreen/GelScreens.h"
+void gelSysMSleep( const int _Milliseconds ) {
+	Sleep( _Milliseconds );
+}
 // - ------------------------------------------------------------------------------------------ - //
-#include "SysSleep/SysSleep.h"				// System Sleep Functions. gelSysMSleep(), gelSysYield()
+void gelSysUSleep( const int _Microseconds ) {
+	Sleep( _Microseconds / 1000 );
+}
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SYSTEM_SYSTEM_H__ //
+void gelSysYield() {
+	Sleep( 0 );
+}
+// - ------------------------------------------------------------------------------------------ - //
+#endif // USES_WINDOWS_TIME //
 // - ------------------------------------------------------------------------------------------ - //

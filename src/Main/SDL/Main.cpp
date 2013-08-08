@@ -25,6 +25,33 @@ void int_func( int Signal ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
+	if ( Event->type == SDL_QUIT ) {
+		Log( "> SDL_QUIT Signal Recieved" );
+		App::Exit = true;
+		return true;
+	}
+	else if ( Event->type == SDL_KEYUP ) {
+	}
+	else if ( Event->type == SDL_KEYDOWN ) {	
+		if ( Event->key.keysym.scancode == SDL_SCANCODE_ESCAPE ) {
+			Log( "> ESC Signal Recieved" );
+		}
+		if ( Event->key.keysym.scancode == SDL_SCANCODE_F10 ) {
+			Log( "> F10 Kill Signal Recieved" );
+			App::Exit = true;
+			return true;
+		}
+	}
+	return false;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+void MainInput() {
+	// TODO: Poll Input Devices here //	
+	SDL_PumpEvents();
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 extern "C" int main( int argc, char* argv[] ) {
@@ -47,6 +74,7 @@ extern "C" int main( int argc, char* argv[] ) {
 	atexit(SDL_Quit);
 	atexit(SDL_GL_UnloadLibrary);
 	atexit(SDL_EnableScreenSaver);
+	SDL_SetEventFilter( EventHandler, 0 );
 
 	gelLogSystemAPIDetails();
 
@@ -63,9 +91,22 @@ extern "C" int main( int argc, char* argv[] ) {
 	}
 
 	// Otherwise, we're a Game Loop //
-
-	AppStep(); // Do an initial Step, beacuse we're going to do a Draw,Step,Flip loop //
+	Log( "-=- Game Loop Begins -=-" );
+	App::FrameTime = 0;
+	MainInput();	// Poll Input Devices //
+	AppStep();		// Do an initial Step, beacuse we're going to do a Draw,Step,Flip loop //
 	
+	// A Draw, Step, Flip loop. Optimal for GPUs because good GPU code executes in parallel to the CPU. //
+	while ( !App::Exit ) {
+		AppDraw();				// *** DRAW *** //
+		if ( !App::Exit ) {
+			App::FrameTime++;
+			MainInput();		// Poll Input Devices //
+			AppStep();			// *** STEP *** //
+		}
+		//flip					// *** FLIP *** //
+		gelSysYield();
+	}
 	
 
 //	

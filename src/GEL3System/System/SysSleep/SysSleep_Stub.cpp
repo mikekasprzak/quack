@@ -1,16 +1,19 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SYSTEM_SYSTEM_H__
-#define __GEL_SYSTEM_SYSTEM_H__
+#ifdef USES_STUB_TIME
 // - ------------------------------------------------------------------------------------------ - //
-#include "SystemInit/SystemInit.h"
+#include "SysSleep.h"
 // - ------------------------------------------------------------------------------------------ - //
-#include "Log/LogSystemAPIDetails.h"
-#include "Log/LogCompilerDetails.h"
+void gelSysSleep( const int _Seconds ) {
+}
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelScreen/GelScreen.h"
-#include "GelScreen/GelScreens.h"
+void gelSysMSleep( const int _Milliseconds ) {
+}
 // - ------------------------------------------------------------------------------------------ - //
-#include "SysSleep/SysSleep.h"				// System Sleep Functions. gelSysMSleep(), gelSysYield()
+void gelSysUSleep( const int _Microseconds ) {
+}
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SYSTEM_SYSTEM_H__ //
+void gelSysYeild() {
+}
+// - ------------------------------------------------------------------------------------------ - //
+#endif // USES_STUB_TIME //
 // - ------------------------------------------------------------------------------------------ - //
