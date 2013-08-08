@@ -58,11 +58,15 @@ extern "C" int main( int argc, char* argv[] ) {
 	// If the Mode is AM_MAIN, then we're already done //
 	if ( App::Mode == App::AM_MAIN )
 		return 0;	// TODO: return App::Error; //
+	else if ( App::Mode == App::AM_NULL ) {
+		return 1;	// TODO: return App::Error; //
+	}
 
 	// Otherwise, we're a Game Loop //
-	//AppGameLoop();
+
+	AppStep(); // Do an initial Step, beacuse we're going to do a Draw,Step,Flip loop //
 	
-	AppStep();
+	
 
 //	
 //	// **** //

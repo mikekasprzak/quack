@@ -5,9 +5,11 @@
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
 enum /* eAppMode */ {
-	AM_MAIN			= 0,		// Standard Main Function //
-	AM_GAMELOOP		= 1,		// Game Loop Mode (Step Draw) //
-	AM_ENGINE		= 2,		// Engine Mode (Objects) //
+	AM_NULL			= 0,		// Mode NULL (i.e. Error) //
+	AM_ERROR		= AM_NULL,	// Mode ERROR (same as Null ) //
+	AM_MAIN			= 1,		// Standard Main Function //
+	AM_GAMELOOP		= 2,		// Game Loop Mode (Step Draw) //
+	AM_ENGINE		= 3,		// Engine Mode (Objects) //
 };
 // - ------------------------------------------------------------------------------------------ - //
 extern int Mode;

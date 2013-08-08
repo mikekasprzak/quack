@@ -70,15 +70,27 @@ void QuackVMInit() {
 	Log( "" );
 
 	// Do the Init function //
-	if ( sqext_exists( vm, "Init" ) ) {
-		Log( "Calling user Init() function..." );
-		sqext_call( vm, "Init" );
-		App::SetMode( App::AM_GAMELOOP );
-	}
-	else if ( sqext_exists( vm, "main" ) ) {
+	if ( sqext_exists( vm, "main" ) ) {
 		Log( "Calling main() function..." );
 		sqext_call( vm, "main" );
 		App::SetMode( App::AM_MAIN );
+	}
+	else if ( sqext_exists( vm, "Init" ) ) {
+		// Check for Step and Draw //
+		if ( !sqext_exists( vm, "Step" ) ) {
+			Log( "! ERROR: GameLoop Mode detected, but no Step(). Aborting..." );
+			App::SetMode( App::AM_ERROR );
+			return;
+		}
+		if ( !sqext_exists( vm, "Draw" ) ) {
+			Log( "! ERROR: GameLoop Mode detected, but no Draw(). Aborting..." );
+			App::SetMode( App::AM_ERROR );
+			return;
+		}
+		
+		Log( "Calling user Init() function..." );
+		sqext_call( vm, "Init" );
+		App::SetMode( App::AM_GAMELOOP );
 	}
 	else {
 		Log( "! ERROR: No startup function found (Init or main). Aborting..." );
@@ -87,6 +99,7 @@ void QuackVMInit() {
 	// TODO: gelLogGraphicsAPIDetails();
 			
 	Log( "" );
+	return;
 }
 // - ------------------------------------------------------------------------------------------ - //
 void QuackVMExit() {

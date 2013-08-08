@@ -12,7 +12,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
-int Mode = AM_MAIN;
+int Mode = AM_NULL;
 // - ------------------------------------------------------------------------------------------ - //
 void SetMode( const int _Mode ) {
 	Log( "App::Mode set to %s (%i)", GetModeName(_Mode), _Mode );
@@ -20,6 +20,7 @@ void SetMode( const int _Mode ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 const char* const ModeName[] = {
+	"AM_NULL/AM_ERROR",
 	"AM_MAIN",
 	"AM_GAMELOOP",
 	"AM_ENGINE",
@@ -43,7 +44,7 @@ void AppInit() {
 	// **** //
 
 	LogLevel = 3;
-	App::Mode = App::AM_MAIN;
+	App::Mode = App::AM_NULL;
 
 	// **** //
 
