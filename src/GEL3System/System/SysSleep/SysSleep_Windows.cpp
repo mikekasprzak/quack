@@ -4,15 +4,15 @@
 #include "SysSleep.h"
 #include <windows.h>
 // - ------------------------------------------------------------------------------------------ - //
-void gelSysSleep( const int _Seconds ) {
+void gelSysSleep( const GelTime _Seconds ) {
 	Sleep( _Seconds * 1000 );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void gelSysMSleep( const int _Milliseconds ) {
+void gelSysMSleep( const GelTime _Milliseconds ) {
 	Sleep( _Milliseconds );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void gelSysUSleep( const int _Microseconds ) {
+void gelSysUSleep( const GelTime _Microseconds ) {
 	Sleep( _Microseconds / 1000 );
 }
 // - ------------------------------------------------------------------------------------------ - //

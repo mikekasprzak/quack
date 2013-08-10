@@ -5,6 +5,21 @@
 #include <API/API_OpenGL.h>
 #include <Graphics/Graphics.h>
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: Create a list of all extensions that match OpenGL ES 2 and 3, and do a check of the current GPU Vs. //
+//  ... though it may not be necessary, as any computer newer than this one will match the spec. //
+// - ------------------------------------------------------------------------------------------ - //
+// Extensions Found in OpenGL ES 2.0 //
+const char* const OpenGLES2Extensions[] = {
+	"",
+	0
+};
+// - ------------------------------------------------------------------------------------------ - //
+// Extensions Found in OpenGL ES 3.0 //
+const char* const OpenGLES3Extensions[] = {
+	"",
+	0
+};
+// - ------------------------------------------------------------------------------------------ - //
 void gelLogGraphicsAPIDetails() {
 	Log( "-=- Khronos Libraries -=-" );
 
@@ -266,6 +281,9 @@ void gelLogGraphicsAPIDetails() {
 //	}
 //	
 //	Log( "" );
+
+
+		// TODO: Compare versus OpenGL ES 2 and ES 3 spec, the available extensions //
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
