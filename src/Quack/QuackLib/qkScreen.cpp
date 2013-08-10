@@ -17,10 +17,9 @@ SQInteger qkSetScreenScalar( HSQUIRRELVM v ) {
 	return SQ_VOID;	
 }
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkInitScreen( HSQUIRRELVM v ) {
+SQInteger qkInitScreens( HSQUIRRELVM v ) {
 	gelInitScreens();
 
-	Log( "" );
 	gelLogGraphicsAPIDetails();
 
 	return SQ_VOID;
@@ -35,7 +34,7 @@ SQRegFunction qklib_funcs[] = {
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	_DECL_FUNC(qkSetScreenScalar,2,_SC(".n")),
-	_DECL_FUNC(qkInitScreen,1,NULL),
+	_DECL_FUNC(qkInitScreens,1,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC

@@ -39,6 +39,9 @@ const char* GetModeName() {
 bool Exit = false;
 GelTime FrameTime = 0;
 // - ------------------------------------------------------------------------------------------ - //
+GelProfiler StepProfiler;
+GelProfiler DrawProfiler;
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -63,7 +66,7 @@ void AppInit() {
 	Gel::Search.Add( "project" );
 
 	// **** //
-
+//	Log( "Screens: %i", (int)Gel::Screen.Count() );
 	Log( "" );
 	
 	// **** //
@@ -79,7 +82,8 @@ void AppExit() {
 
 // - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
-//	Log( "Screens: %i", (int)Gel::Screen.Count() );
+	App::StepProfiler.Start();	
+	// *** //
 
 	// START: Update FrameTime //
 	sq_pushroottable(vm);
@@ -92,10 +96,19 @@ void AppStep() {
 	// END: Update FrameTime //
 
 	QuackVMCallStep();
+	
+	// *** //
+	App::StepProfiler.Stop();
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppDraw() {
+	App::StepProfiler.Start();	
+	// *** //
+
 	QuackVMCallDraw();
+
+	// *** //
+	App::DrawProfiler.Stop();
 }
 // - ------------------------------------------------------------------------------------------ - //
 

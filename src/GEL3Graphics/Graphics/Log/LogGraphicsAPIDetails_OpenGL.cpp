@@ -21,6 +21,7 @@ const char* const OpenGLES3Extensions[] = {
 };
 // - ------------------------------------------------------------------------------------------ - //
 void gelLogGraphicsAPIDetails() {
+	Log( "" );
 	Log( "-=- Khronos Libraries -=-" );
 
 	#ifdef USES_GLEE

@@ -148,6 +148,18 @@ extern "C" int main( int argc, char* argv[] ) {
 		}
 		gelSwapScreens();		// *** FLIP *** //
 		gelSysYield();
+		if ( (App::FrameTime & 63) == 0 ) {
+			Log( "%i - Step: %i (%i us, %i us)\tDraw: %i (%i us, %i us)", 
+				App::FrameTime,
+				App::StepProfiler.GetAverage(),
+				App::StepProfiler.GetMin(),
+				App::StepProfiler.GetMax(),
+				App::DrawProfiler.GetAverage(),
+				App::DrawProfiler.GetMin(),
+				App::DrawProfiler.GetMax()
+			);
+				
+		}
 	}
 	
 	AppExit();		// Do Shutdown //
