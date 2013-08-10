@@ -29,8 +29,32 @@ void int_func( int Signal ) {
 int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 	if ( Event->type == SDL_QUIT ) {
 		Log( "> SDL_QUIT Signal Recieved" );
-		App::Exit = true;
+		AppRequestExit();
 		return true;
+	}
+	else if ( Event->type == SDL_WINDOWEVENT ) {
+		VVLog( "**** [%i] %s [%i,%i]", Event->window.windowID, SDL_WindowEventName( Event->window.event ), Event->window.data1, Event->window.data2 );
+
+		int WindowIndex = Event->window.windowID;// Screen::GetIndexByWindowID( Event->window.windowID );
+		if ( WindowIndex >= 0 ) {
+			if ( Event->window.event == SDL_WINDOWEVENT_FOCUS_GAINED ) {
+				AppGainFocus();
+			}
+			else if ( Event->window.event == SDL_WINDOWEVENT_FOCUS_LOST ) {
+				AppLoseFocus();
+			}
+			else if ( Event->window.event == SDL_WINDOWEVENT_MOVED ) {
+//				Screen::Update( WindowIndex );
+			}
+			else if ( Event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED ) {	// Preferred //
+//				Screen::Update( WindowIndex );
+			}
+			else if ( Event->window.event == SDL_WINDOWEVENT_CLOSE )  {
+				Log( "> SDL_WINDOWEVENT_CLOSE Signal Recieved from Window %i", Event->window.windowID );
+				AppRequestExit();
+				return true;		
+			}
+		}
 	}
 	else if ( Event->type == SDL_KEYUP ) {
 	}
@@ -39,8 +63,13 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 			Log( "> ESC Signal Recieved" );
 		}
 		if ( Event->key.keysym.scancode == SDL_SCANCODE_F10 ) {
-			Log( "> F10 Kill Signal Recieved" );
-			App::Exit = true;
+			#ifdef PRODUCT_DEV_MODE
+				// This *ALWAYS* kills the app if available, without bothering with a request. //
+				// After all, it's for debugging anyways, and only in the Windows/Linux Builds. //
+				Log( "> F10 Kill Signal Recieved. Forcing Exit." );
+				AppRequestExit();	// Do this anyway, just in case we can exit. //
+				App::Exit = true;	// Always forcefully exit. //
+			#endif // PRODUCT_DEV_MODE //
 			return true;
 		}
 	}
@@ -107,6 +136,8 @@ extern "C" int main( int argc, char* argv[] ) {
 		gelSwapScreens();		// *** FLIP *** //
 		gelSysYield();
 	}
+	
+	AppExit();		// Do Shutdown //
 	
 
 //	

@@ -7,8 +7,15 @@ extern HSQUIRRELVM vm;
 void QuackVMInit();
 void QuackVMExit(); // Queued for atexit //
 
-void QuackVMCallStep();
-void QuackVMCallDraw();
+bool QuackVMCallInit();
+bool QuackVMCallExit();
+bool QuackVMCallStep();
+bool QuackVMCallDraw();
+
+bool QuackVMCallGainFocus();
+bool QuackVMCallLoseFocus();
+
+bool QuackVMCallRequestExit();
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_QUACKVM_H__ //
 // - ------------------------------------------------------------------------------------------ - //

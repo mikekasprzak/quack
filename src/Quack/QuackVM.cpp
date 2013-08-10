@@ -66,13 +66,20 @@ void QuackVMInit() {
 	sq_pop( vm, 1 );
 	Log( "" );
 
-	
 	// Load the startup file //
 	const char* StartupFile = "main.nut";
 	Log( "Loading Startup File (%s)...", StartupFile );
 	sqext_load_nut( vm, StartupFile );
 	Log( "" );
-
+}
+// - ------------------------------------------------------------------------------------------ - //
+void QuackVMExit() {
+	sq_close( vm );		// Shutdown VM //
+}
+// - ------------------------------------------------------------------------------------------ - //
+	
+// - ------------------------------------------------------------------------------------------ - //
+bool QuackVMCallInit() {
 	// Do the Init function //
 	if ( sqext_exists( vm, "main" ) ) {
 		Log( "Calling main() function..." );
@@ -84,12 +91,12 @@ void QuackVMInit() {
 		if ( !sqext_exists( vm, "Step" ) ) {
 			Log( "! ERROR: GameLoop Mode detected, but no Step(). Aborting..." );
 			App::SetMode( App::AM_ERROR );
-			return;
+			return false;
 		}
 		if ( !sqext_exists( vm, "Draw" ) ) {
 			Log( "! ERROR: GameLoop Mode detected, but no Draw(). Aborting..." );
 			App::SetMode( App::AM_ERROR );
-			return;
+			return false;
 		}
 		
 		Log( "Calling user Init() function..." );
@@ -98,25 +105,41 @@ void QuackVMInit() {
 	}
 	else {
 		Log( "! ERROR: No startup function found (Init or main). Aborting..." );
+		App::SetMode( App::AM_ERROR );
+		return false;
 	}
-	
-	// TODO: gelLogGraphicsAPIDetails();
-			
 	Log( "" );
-	return;
+	
+	return true;			
 }
 // - ------------------------------------------------------------------------------------------ - //
-void QuackVMExit() {
-	sq_close( vm );		// Shutdown VM //
+bool QuackVMCallExit() {
+	return sqext_call( vm, "Exit" );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-void QuackVMCallStep() {
-	sqext_call( vm, "Step" );
+bool QuackVMCallStep() {
+	return sqext_call( vm, "Step" );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void QuackVMCallDraw() {
-	sqext_call( vm, "Draw" );
+bool QuackVMCallDraw() {
+	return sqext_call( vm, "Draw" );
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+bool QuackVMCallGainFocus() {
+	return sqext_call( vm, "GainFocus" );
+}
+// - ------------------------------------------------------------------------------------------ - //
+bool QuackVMCallLoseFocus() {
+	return sqext_call( vm, "LoseFocus" );
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+bool QuackVMCallRequestExit() {
+	return sqext_call( vm, "RequestExit" );
 }
 // - ------------------------------------------------------------------------------------------ - //

@@ -1,7 +1,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
+#include <Graphics/Graphics.h>
 #include <API/API_Squirrel.h>
+#include <App.h>
 // - ------------------------------------------------------------------------------------------ - //
 #define SQ_RETURN	1
 #define SQ_VOID		0
@@ -29,6 +31,15 @@ SQInteger qkSetScreenScalar( HSQUIRRELVM v ) {
 SQInteger qkInitScreen( HSQUIRRELVM v ) {
 	gelInitScreens();
 
+	Log( "" );
+	gelLogGraphicsAPIDetails();
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkRequestExit( HSQUIRRELVM v ) {
+	App::Exit = true;
+
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -42,6 +53,7 @@ SQRegFunction qklib_funcs[] = {
 	_DECL_FUNC(qkIsDevMode,1,NULL),
 	_DECL_FUNC(qkSetScreenScalar,2,_SC(".n")),
 	_DECL_FUNC(qkInitScreen,1,NULL),
+	_DECL_FUNC(qkRequestExit,1,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
