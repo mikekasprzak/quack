@@ -31,7 +31,7 @@ protected:
 	std::string FileName;				// Name of the File //
 	GelFileInfo FileInfo;				// Information about the file //
 	GelTime 	TimeStamp;				// When the data was last accessed using .Get() //
-	GelSignal 	ChangeCallbacks; 		// Notifications to make upon file change //
+	GelSignal 	OnReloadCallbacks; 		// Notifications to make upon file change //
 	int 		Flags;					// Flags //
 	
 	static GelTime CurrentTimeStamp;	// What time to use when I update the TimeStamp //
@@ -97,7 +97,7 @@ protected:
 		if ( Data ) {
 			delete_DataBlock( Data );
 			Data = 0;
-			ChangeCallbacks.Clear();	// Clear the list of callbacks to call upon change //
+			OnReloadCallbacks.Clear();	// Clear the list of callbacks to call upon change //
 			FileName = "";				// Clear the FileName too. No reminants! //
 			TimeStamp = 0ull;			// Clear the TimeStamp //
 			SetState( AF_UNLOADED );
@@ -166,20 +166,21 @@ public:
 	}
 	// When a file has changed, this is how we reload. //
 	inline void Reload() {
+		Log( "* Reloading Asset (%s)", FileName.c_str() );
 		Release();				// Release instead of Unload, as we want to keep the File Name //
 		DoLoad();				// Explicitly reload //
-		ChangeCallbacks();		// Notify the subscribers that this file was changed //
+		OnReloadCallbacks();	// Notify the subscribers that this file was changed //
 	}
 	
 	// Attach a function that is notified whenever an asset is reloaded //
 	template< class T >
 	inline void SubscribeToChanges( T Callback ) {
-		ChangeCallbacks.Connect( Callback );
+		OnReloadCallbacks.Connect( Callback );
 	}
 	// Remove a function that was added to monitor for changes //
 	template< class T >
 	inline void UnsubscribeFromChanges( T Callback ) {
-		ChangeCallbacks.Disconnect( Callback );
+		OnReloadCallbacks.Disconnect( Callback );
 	}
 	
 	// Set the Time Stamp to the current time //

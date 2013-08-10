@@ -25,6 +25,7 @@ void int_func( int Signal ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+bool ___keyESC = false;
 // - ------------------------------------------------------------------------------------------ - //
 int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 	if ( Event->type == SDL_QUIT ) {
@@ -57,6 +58,9 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 		}
 	}
 	else if ( Event->type == SDL_KEYUP ) {
+		if ( Event->key.keysym.scancode == SDL_SCANCODE_ESCAPE ) {
+			___keyESC = false;
+		}
 	}
 	else if ( Event->type == SDL_KEYDOWN ) {
 		if ( (Event->key.keysym.scancode == SDL_SCANCODE_F4) && (Event->key.keysym.mod & (KMOD_LALT | KMOD_RALT)) ) {
@@ -67,6 +71,7 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 		
 		if ( Event->key.keysym.scancode == SDL_SCANCODE_ESCAPE ) {
 			Log( "> ESC Signal Recieved" );
+			___keyESC = true;
 		}
 		if ( Event->key.keysym.scancode == SDL_SCANCODE_F10 ) {
 			#ifdef PRODUCT_DEV_MODE

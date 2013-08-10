@@ -100,6 +100,7 @@ public:
 	}
 	
 	inline bool ScanForChanges() {
+		Log( "+ Scanning for Asset Changes..." );
 		bool Changes = false;
 		for ( st idx = 0; idx < Assets.size(); idx++ ) {
 			if ( Assets[idx].IsActive() ) {
@@ -109,6 +110,7 @@ public:
 				}
 			}
 		}
+		Log( "- Scan complete. %s", Changes ? "Changes found." : "No changes." );
 		return Changes;
 	}
 
