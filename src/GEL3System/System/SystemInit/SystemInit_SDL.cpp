@@ -12,7 +12,8 @@ void gelSystemInit() {
 	Log( "* SDL GelSystem Init()..." );
 	
 	// Populate List of Screens //
-	for( int idx = 0; idx < SDL_GetNumVideoDisplays(); idx++ ) {
+	int NumDisplays = SDL_GetNumVideoDisplays();
+	for( int idx = 0; idx < NumDisplays; idx++ ) {
 		// Common Screens //
 		SDL_DisplayMode Mode;
 		SDL_GetDesktopDisplayMode( idx, &Mode );
@@ -23,8 +24,39 @@ void gelSystemInit() {
 		GelScreen Screen;
 		Screen.w = Mode.w;
 		Screen.h = Mode.h;
-		Screen.SetFlags( GelScreen::SF_TV | GelScreen::SF_WINDOW );
+
+		int Flags = 0;
+
+		#ifdef PRODUCT_DESKTOP
+		Flags |= GelScreen::SF_WINDOW | GelScreen::SF_VARIABLE;
+		#endif // PRODUCT_DESKTOP //
 		
+		#ifdef PRODUCT_CONSOLE
+		Flags |= GelScreen::SF_TV | GelScreen::SF_VARIABLE | GelScreen::SF_OVERSCAN;
+		#endif // PRODUCT_DESKTOP //
+
+		#ifdef PRODUCT_MOBILE
+		Flags |= 0;
+		#endif // PRODUCT_DESKTOP //
+		
+		// In the case of Development Mode, if there's a 2nd screen, make it the default //
+//		#ifdef PRODUCT_DEV_MODE
+//		if ( NumDisplays > 1 ) {
+//			if ( idx == 1 ) {
+//				Flags |= GelScreen::SF_REQUIRED;
+//			}
+//		}
+//		else
+//		#endif // PRODUCT_DEV_MODE //
+
+		if ( idx == 0 ) {
+			Log( "%i Zero", idx );
+			Flags |= GelScreen::SF_REQUIRED;
+		}
+
+		Screen.SetFlags( Flags );
+
+		// Finally, add the screen //
 		Gel::Screen.Add( Screen );
 
 		// Internal Screens //

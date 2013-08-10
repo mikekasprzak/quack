@@ -27,6 +27,14 @@ void gelInitScreen( const st Index ) {
 // - ------------------------------------------------------------------------------------------ - //
 void gelInitScreens() {
 	for ( st idx = 0; idx < Gel::Screen.Count(); idx++ ) {
+		if ( Gel::Screen[idx].IsRequired() ) {
+			gelInitScreen( idx );
+		}
+	}
+}
+// - ------------------------------------------------------------------------------------------ - //
+void gelInitAllScreens() {
+	for ( st idx = 0; idx < Gel::Screen.Count(); idx++ ) {
 		gelInitScreen( idx );
 	}
 }

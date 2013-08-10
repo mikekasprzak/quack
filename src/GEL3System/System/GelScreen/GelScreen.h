@@ -19,7 +19,9 @@ public:
 		SF_TV				= 0x4,		// This screen is a television/monitor attached to a Console/PC.
 		SF_WINDOW			= 0x8,		// This screen is a window (PC, Web).
 		
-		SF_SCREEN_TYPE		= 0xF,		// Screen Types. TV, LCD, etc //
+		SF_SCREEN_TYPE		= 0xFF,		// Screen Types. TV, LCD, etc //
+		
+		SF_REQUIRED			= 0x100,	// This screen is required (i.e. #0 on PC, #0 & #1 on 3DS)
 	};
 public:
 	inline bool IsVariable() const {
@@ -34,9 +36,15 @@ public:
 	inline bool IsWindow() const {
 		return Flags & SF_WINDOW;
 	}
+	inline bool IsRequired() const {
+		return Flags & SF_REQUIRED;
+	}
 
 public:
 	inline void SetFlags( const int _Flags ) {
+		Flags = _Flags;
+	}
+	inline void SetFlag( const int _Flags ) {
 		Flags |= _Flags;
 	}
 };

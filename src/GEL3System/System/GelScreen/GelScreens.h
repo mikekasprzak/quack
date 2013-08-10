@@ -40,7 +40,8 @@ extern float ScreenScalar;
 void gelSetScreenScalar( const float _Scalar );
 // - ------------------------------------------------------------------------------------------ - //
 void gelInitScreen( const st Index );
-void gelInitScreens();
+void gelInitScreens();		// Required Screens Only //
+void gelInitAllScreens();	// All Screens, Required or not //
 // - ------------------------------------------------------------------------------------------ - //
 void gelSwapScreen( const st Index );
 void gelSwapScreens();

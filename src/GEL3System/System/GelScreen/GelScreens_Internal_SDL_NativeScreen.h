@@ -102,7 +102,9 @@ public:
 	}
 
 	inline GelError Swap() { // const?
-		SDL_GL_SwapWindow( pWindow );
+		if ( pWindow ) {
+			SDL_GL_SwapWindow( pWindow );
+		}
 		return GEL_OK;
 	}
 	
