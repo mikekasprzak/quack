@@ -1,9 +1,32 @@
 // - -------------------------------------------------------------------------------------------------------------- - //
+// Create Qk namespace (for global Quack variable) //
+Qk <- {};
+// - -------------------------------------------------------------------------------------------------------------- - //
+
+// - -------------------------------------------------------------------------------------------------------------- - //
+// Logs to the console (can also use print, but this is more Gel consistent) //
 function Log(...) {
 	//print( format(str,vargv) );		// This does not work //
 	for ( local idx = 0; idx < vargv.len(); idx++ ) {
 		print(vargv[idx]);
 	}
+}
+// - -------------------------------------------------------------------------------------------------------------- - //
+// 
+function require( ... ) {
+	// CLEVER: Will recursively iterate through all arrays deep in arguments to find files to require. //
+	function recursive( files ) {
+		for ( local idx = 0; idx < files.len(); idx++ ) {
+			if ( typeof files[idx] == "array" ) {
+				recursive( files[idx] );
+			}
+			else if ( typeof files[idx] == "string" ) {
+				qkRequireFile( files[idx] );
+			}
+		}
+	};
+
+	recursive( vargv );
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
 function gen_string( char, count ) {
@@ -26,29 +49,6 @@ function print_table( table, level = 0 ) {
 		}
 	}
 	print( Prefix + "- " + typeof(table) + " ends." );
-}
-// - -------------------------------------------------------------------------------------------------------------- - //
-// In documentation, talk about "Reload Scope", which is anything defined globally. //
-//   Creating class instances for a game should be in the Init function. //
-//   If they are ever defined in the global (Reload) scope, then they will be trashed on file change. //
-
-function require( ... ) {
-	// TODO: Support wildcards (*.nut) (**.nut for all recursively) //
-	// TODO: Track dependencies (which files requested a file, which files a file requseted).
-	//       Note in the logs if a refcount ever becomes zero. //
-	
-	function recursive( files ) {
-		for ( local idx = 0; idx < files.len(); idx++ ) {
-			if ( typeof files[idx] == "array" ) {
-				recursive( files[idx] );
-			}
-			else if ( typeof files[idx] == "string" ) {
-				qkRequireFile( files[idx] );
-			}
-		}
-	};
-	
-	recursive( vargv );
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
 function RGBA( r, g, b, a ) {

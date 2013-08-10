@@ -80,6 +80,17 @@ void AppExit() {
 // - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
 //	Log( "Screens: %i", (int)Gel::Screen.Count() );
+
+	// START: Update FrameTime //
+	sq_pushroottable(vm);
+	sq_pushstring(vm,_SC("Qk"),-1);
+	sq_get(vm,-2);
+	sq_pushstring(vm,_SC("FrameTime"),-1);
+	sq_pushinteger(vm,App::FrameTime);
+	sq_newslot(vm,-3,SQFalse);
+	sq_pop(vm,1);
+	// END: Update FrameTime //
+
 	QuackVMCallStep();
 }
 // - ------------------------------------------------------------------------------------------ - //

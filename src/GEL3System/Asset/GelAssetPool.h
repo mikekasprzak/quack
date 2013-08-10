@@ -78,6 +78,27 @@ public:
 		}
 	}
 	
+	// Find a UID for an Asset //
+	inline UID Find( const char* _FileName ) {
+		// NOTE: This should always return a legal UID //
+		
+		// If we got a zero (Search Failure) then return the dummy UID //
+		if ( _FileName == 0 ) {
+			return 0;
+		}
+		
+		// Check Hash Table for a match //
+		std::map<std::string,UID>::iterator Itr = NameTable.find(_FileName);
+		if ( Itr != NameTable.end() ) {
+			Log( "* Asset \"%s\" found in Pool: %i", _FileName, Itr->second );
+			// Found a UID match, so we're done //
+			return Itr->second;
+		}
+		
+		// Otherwise there's no such thing //
+		return 0;
+	}
+	
 	inline bool ScanForChanges() {
 		bool Changes = false;
 		for ( st idx = 0; idx < Assets.size(); idx++ ) {

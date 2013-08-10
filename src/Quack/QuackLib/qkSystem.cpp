@@ -1,12 +1,16 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
+#include <Asset/Asset.h>
 #include <API/API_Squirrel.h>
+#include "sqext.h"
+#include "sqgelext.h"
+// - ------------------------------------------------------------------------------------------ - //
 #include <App.h>
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-// Check if the project is built in Development Mode (Desktop OS's Only) //
+// Check if the project is built in Development Mode (Desktop OS's Only... Please) //
 SQInteger qkIsDevMode( HSQUIRRELVM v ) {
 	#ifdef PRODUCT_DEV_MODE
 		sq_pushbool( v, SQTrue );
@@ -31,15 +35,47 @@ SQInteger qkRequireFile( HSQUIRRELVM v ) {
 		return sq_throwerror(v,_SC("invalid param"));
 	}
 	
-	Log( "> %s", File );
+	// * * * //
+	// NOTE: Old Suggestions //
+	// TODO: Support wildcards (*.nut) (**.nut for all recursively) //
+	// TODO: Track dependencies (which files requested a file, which files a file requseted).
+	//       Note in the logs if a refcount ever becomes zero. //
+	// * * * //
 	
-	bool Success = true;
+	Log( "+ Requirement Found: %s", File );
+	
+	bool Success = false;
+	const char* Requirement = Gel::Search( File );
+		
+	if ( Requirement ) {
+		GelAssetPool::UID ReqUID = Gel::AssetPool.Find(Requirement);
+		if ( !ReqUID ) {
+			// Asset was not found in the Pool, lets load it //
+			ReqUID = Gel::AssetPool.Load(Requirement);
+			GelAsset& MyAsset = Gel::AssetPool[ReqUID];
+			
+			// Compile //
+			if ( !MyAsset.IsBad() ) {
+				sqext_compile_nut( v, MyAsset.Get(), MyAsset.GetSize(), Requirement );
+			}
+		}		
+		else {
+			Log( "** Requirement already loaded (%s)", Requirement );
+		}
+			
+//		Log( "> %s (%s)", Requirement, File );
+		
+		Success = true;
+	}
 	
 	sq_pushbool( v, Success ? SQTrue : SQFalse );
+
+	Log( "- Done with Requirement (%s).", File );
 	
 	return SQ_RETURN;	
 }
 // - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}

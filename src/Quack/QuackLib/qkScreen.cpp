@@ -27,6 +27,7 @@ SQInteger qkInitScreen( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
 SQRegFunction qklib_funcs[] = {
