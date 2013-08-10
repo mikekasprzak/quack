@@ -125,6 +125,8 @@ extern "C" int main( int argc, char* argv[] ) {
 		return 1;	// TODO: return App::Error; //
 	}
 
+	// *** //
+
 	// Otherwise, we're a Game Loop //
 	Log( "-=- Game Loop Begins -=-" );
 	App::FrameTime = 0;

@@ -6,8 +6,10 @@
 #include "sqext.h"
 #include "sqgelext.h"
 // - ------------------------------------------------------------------------------------------ - //
-#include "QuackVM.h"
 #include "App.h"
+#include "QuackVM.h"
+// - ------------------------------------------------------------------------------------------ - //
+#include "QuackLib/qkSystem.h"
 #include "QuackLib/qkScreen.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
@@ -61,8 +63,9 @@ void QuackVMInit() {
 	Log( "Loading Quack Libraries..." );
 	sq_pushroottable( vm );
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
-		//Log("* qkJson"); register_qkJson( vm );
+		Log("* qkSystem"); register_qkSystem( vm );
 		Log("* qkScreen"); register_qkScreen( vm );
+		//Log("* qkJson"); register_qkJson( vm );
 	sq_pop( vm, 1 );
 	Log( "" );
 
