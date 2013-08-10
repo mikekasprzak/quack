@@ -31,7 +31,9 @@ LIBRARIES			+=
 # Release Build Only #
 ifdef NDEBUG
 LDFLAGS				+=	
-endif
+else # !NDEBUG #
+DEFINES				+=	PRODUCT_DEV_MODE
+endif # NDEBUG #
 # - ------------------------------------------------------------------------ - #
 # File extension for the Binary (.exe on Windows, .i686 .x86_64 on Linux) #
 BINARY_SUFFIX		:=	.$(shell uname -p)
