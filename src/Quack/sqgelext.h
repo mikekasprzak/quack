@@ -7,6 +7,9 @@
 #include <Asset/Asset.h>
 #include <API/API_Squirrel.h>
 // - ------------------------------------------------------------------------------------------ - //
+// The function we use to subscribe to AssetPool changes //
+void sqext_reload_subscriber( const st UserData );
+// - ------------------------------------------------------------------------------------------ - //
 inline void sqext_log( HSQUIRRELVM v ) {
 	Log( "! STACK: %i", sq_gettop(v) );	
 }
@@ -40,9 +43,12 @@ inline SQBool sqext_load_nut( HSQUIRRELVM v, const char* NutFile ) {
 	GelAsset& MyAsset = Gel::AssetPool[Nut];
 
 	if ( !MyAsset.IsBad() ) {
+		MyAsset.SubscribeToChanges( sqext_reload_subscriber, Nut );
+		
 		return_if_Log( 
 			sqext_compile_nut( v, MyAsset.Get(), MyAsset.GetSize(), NutFileResult ), 
-			"- Script File Loaded Successfully (%s).", NutFile );
+			"- Script File Loaded Successfully (%s).", NutFile 
+		);
 	}
 	
 	Log( "- Unable to load Script File (%s).", NutFile );

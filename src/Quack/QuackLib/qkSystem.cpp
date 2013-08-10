@@ -64,6 +64,8 @@ SQInteger qkRequireFile( HSQUIRRELVM v ) {
 			
 			// Compile //
 			if ( !MyAsset.IsBad() ) {
+				MyAsset.SubscribeToChanges( sqext_reload_subscriber, ReqUID );
+				
 				sqext_compile_nut( v, MyAsset.Get(), MyAsset.GetSize(), Requirement );
 			}
 		}		

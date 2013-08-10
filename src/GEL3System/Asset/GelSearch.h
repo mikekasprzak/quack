@@ -114,7 +114,7 @@ public:
 			}
 		}
 
-		Log( "* %s NOT FOUND!!", Pattern );
+		Log( "! %s NOT FOUND!!", Pattern );
 		
 		// Otherwise, no file was found.  Return the dummy Id (0). //
 		return 0;		

@@ -102,7 +102,8 @@ public:
 	inline bool ScanForChanges() {
 		Log( "+ Scanning for Asset Changes..." );
 		bool Changes = false;
-		for ( st idx = 0; idx < Assets.size(); idx++ ) {
+		// Assets.size() may change during this loop //
+		for ( st idx = 1; idx < Assets.size(); idx++ ) {
 			if ( Assets[idx].IsActive() ) {
 				if ( Assets[idx].HasChanged() ) {
 					Assets[idx].Reload();

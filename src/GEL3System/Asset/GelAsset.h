@@ -106,12 +106,12 @@ protected:
 	
 	// Like Load, but used on Released data (i.e. I still have the filename) //
 	inline void DoLoad() {
-		FileInfo.Load( FileName.c_str() );	// Get Information about the File //
+		FileInfo.Load( GetFileName() );	// Get Information about the File //
 		
 		if ( FileInfo.Exists() ) {
 			// Using the Null Terminator version of new_read, so the loaded data can //
 			// safely be used as strings. //
-			Data = new_read_nullterminate_DataBlock( FileName.c_str() );
+			Data = new_read_nullterminate_DataBlock( GetFileName() );
 			if ( Data ) {
 				// TODO: Detect (.lzma, .gz, etc) //
 				if ( false ) {
@@ -161,12 +161,12 @@ public:
 
 	// Check if the file has since changed //
 	inline bool HasChanged() {
-		GelFileInfo NewFileInfo( FileName.c_str() );
+		GelFileInfo NewFileInfo( GetFileName() );
 		return FileInfo != NewFileInfo;
 	}
 	// When a file has changed, this is how we reload. //
 	inline void Reload() {
-		Log( "* Reloading Asset (%s)", FileName.c_str() );
+		Log( "* Reloading Asset (%s)", GetFileName() );
 		Release();				// Release instead of Unload, as we want to keep the File Name //
 		DoLoad();				// Explicitly reload //
 		OnReloadCallbacks();	// Notify the subscribers that this file was changed //
@@ -174,8 +174,8 @@ public:
 	
 	// Attach a function that is notified whenever an asset is reloaded //
 	template< class T >
-	inline void SubscribeToChanges( T Callback ) {
-		OnReloadCallbacks.Connect( Callback );
+	inline void SubscribeToChanges( T Callback, st UserData = 0 ) {
+		OnReloadCallbacks.Connect( Callback, UserData );
 	}
 	// Remove a function that was added to monitor for changes //
 	template< class T >

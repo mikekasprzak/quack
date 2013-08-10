@@ -147,6 +147,7 @@ public:
 		void* Ret = 0;
 		if ( Funcs ) {
 			for ( size_t idx = 0; idx < Funcs->Size; idx++ ) {
+//				Log("** Signal: %i (%i)", idx, Funcs->Size );
 				FuncType& Func = Funcs->Data[idx];
 				// NOTE: Cleverness! If the FF_BLOCKED flag is set, then none of these functions //
 				//   below will be called, because the bitmask will be incorrect. //
