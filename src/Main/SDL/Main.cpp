@@ -149,7 +149,7 @@ extern "C" int main( int argc, char* argv[] ) {
 		gelSwapScreens();		// *** FLIP *** //
 		gelSysYield();
 		if ( (App::FrameTime & 63) == 0 ) {
-			Log( "%i - Step: %i 탎 (%i 탎, %i 탎)\tDraw: %i 탎 (%i 탎, %i 탎)", 
+			Log( "%05i - Step: %i us (%i us, %i us)\tDraw: %i us (%i us, %i us)", 
 				App::FrameTime,
 				App::StepProfiler.GetAverage(),
 				App::StepProfiler.GetMin(),
