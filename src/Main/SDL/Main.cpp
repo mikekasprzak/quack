@@ -58,7 +58,13 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 	}
 	else if ( Event->type == SDL_KEYUP ) {
 	}
-	else if ( Event->type == SDL_KEYDOWN ) {	
+	else if ( Event->type == SDL_KEYDOWN ) {
+		if ( (Event->key.keysym.scancode == SDL_SCANCODE_F4) && (Event->key.keysym.mod & (KMOD_LALT | KMOD_RALT)) ) {
+			Log( "> ALT+F4 Kill Signal Recieved" );
+			AppRequestExit();
+			return true;
+		}
+		
 		if ( Event->key.keysym.scancode == SDL_SCANCODE_ESCAPE ) {
 			Log( "> ESC Signal Recieved" );
 		}
