@@ -102,7 +102,7 @@ void AppStep() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppDraw() {
-	App::StepProfiler.Start();	
+	App::DrawProfiler.Start();	
 	// *** //
 
 	QuackVMCallDraw();
