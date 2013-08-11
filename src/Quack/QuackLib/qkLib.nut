@@ -12,7 +12,7 @@ function Log(...) {
 	}
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
-// 
+// Recursively request all files passed to this //
 function require( ... ) {
 	// CLEVER: Will recursively iterate through all arrays deep in arguments to find files to require. //
 	function recursive( files ) {

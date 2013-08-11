@@ -7,7 +7,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 class GelProfiler {
 protected:
-	int CurrentProfile;
+	st CurrentProfile;
 	std::vector<GelTime> Profile;
 	
 	// Results //

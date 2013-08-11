@@ -110,5 +110,29 @@ inline bool sqext_call( HSQUIRRELVM v, const char* name ) {
 	return SQTrue;
 }
 // - ------------------------------------------------------------------------------------------ - //
+inline void sqslot_bool(HSQUIRRELVM vm, const char* name, SQBool value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushbool(vm,value);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline void sqslot_int(HSQUIRRELVM vm, const char* name, SQInteger value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushinteger(vm,value);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline void sqslot_float(HSQUIRRELVM vm, const char* name, SQFloat value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushfloat(vm,value);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline void sqslot_string(HSQUIRRELVM vm, const char* name, const char* value ) {
+	sq_pushstring(vm,name,-1); // VM, Text, Length (-1 for auto) //
+	sq_pushstring(vm,value,-1);
+	sq_newslot(vm,-3,SQFalse);
+}
+// - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_WTF_SQEXT_H__ //
 // - ------------------------------------------------------------------------------------------ - //

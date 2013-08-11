@@ -27,6 +27,10 @@ extern GelTime FrameTime;		// Current Frame Executed (according to GameLoop Step
 extern GelProfiler StepProfiler;
 extern GelProfiler DrawProfiler;
 // - ------------------------------------------------------------------------------------------ - //
+// Signals for triggering things on focus gain and lose //
+extern GelSignal GainFocus;
+extern GelSignal LoseFocus;
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
 void AppInit();

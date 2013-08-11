@@ -11,6 +11,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "QuackLib/qkSystem.h"
 #include "QuackLib/qkScreen.h"
+#include "QuackLib/qkInput.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -65,6 +66,7 @@ void QuackVMInit() {
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
 		Log("* qkSystem"); register_qkSystem( vm );
 		Log("* qkScreen"); register_qkScreen( vm );
+		Log("* qkInput"); register_qkInput( vm );
 		//Log("* qkJson"); register_qkJson( vm );
 	sq_pop( vm, 1 );
 	Log( "" );

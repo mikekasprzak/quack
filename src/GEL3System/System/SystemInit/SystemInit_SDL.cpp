@@ -50,7 +50,6 @@ void gelSystemInit() {
 //		#endif // PRODUCT_DEV_MODE //
 
 		if ( idx == 0 ) {
-			Log( "%i Zero", idx );
 			Flags |= GelScreen::SF_REQUIRED;
 		}
 

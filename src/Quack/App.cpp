@@ -3,6 +3,8 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
+#include <Input/Input.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <API/API_Squirrel.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include "QuackVM.h"
@@ -42,6 +44,9 @@ GelTime FrameTime = 0;
 GelProfiler StepProfiler;
 GelProfiler DrawProfiler;
 // - ------------------------------------------------------------------------------------------ - //
+GelSignal GainFocus;
+GelSignal LoseFocus;
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -61,6 +66,7 @@ void AppInit() {
 	gelTimeInit();
 	gelSystemInit();
 	gelAssetInit();
+	Gel::Input::Init();
 	
 	Gel::Search.Add( "src/Quack/QuackLib" );
 	Gel::Search.Add( "project" );
@@ -84,6 +90,8 @@ void AppExit() {
 void AppStep() {
 	App::StepProfiler.Start();	
 	// *** //
+	
+	Gel::Input::Poll();
 
 	// START: Update FrameTime //
 	sq_pushroottable(vm);
@@ -114,12 +122,14 @@ void AppDraw() {
 
 // - ------------------------------------------------------------------------------------------ - //
 void AppGainFocus() {
+	App::GainFocus();
 	Gel::AssetPool.ScanForChanges();
 	QuackVMCallGainFocus();
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppLoseFocus() {
 	QuackVMCallLoseFocus();
+	App::LoseFocus();
 }
 // - ------------------------------------------------------------------------------------------ - //
 

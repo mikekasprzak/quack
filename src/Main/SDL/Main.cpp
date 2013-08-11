@@ -147,19 +147,19 @@ extern "C" int main( int argc, char* argv[] ) {
 			AppStep();			// *** STEP *** //
 		}
 		gelSwapScreens();		// *** FLIP *** //
-		gelSysYield();
-		if ( (App::FrameTime & 63) == 0 ) {
-			Log( "%05i - Step: %i us (%i us, %i us)\tDraw: %i us (%i us, %i us)", 
-				App::FrameTime,
-				App::StepProfiler.GetAverage(),
-				App::StepProfiler.GetMin(),
-				App::StepProfiler.GetMax(),
-				App::DrawProfiler.GetAverage(),
-				App::DrawProfiler.GetMin(),
-				App::DrawProfiler.GetMax()
-			);
-				
-		}
+		//gelSysYield();
+		gelSysMSleep(5);
+//		if ( (App::FrameTime & 63) == 0 ) {
+//			Log( "%05i - Step: %i us (%i us, %i us)\tDraw: %i us (%i us, %i us)", 
+//				App::FrameTime,
+//				App::StepProfiler.GetAverage(),
+//				App::StepProfiler.GetMin(),
+//				App::StepProfiler.GetMax(),
+//				App::DrawProfiler.GetAverage(),
+//				App::DrawProfiler.GetMin(),
+//				App::DrawProfiler.GetMax()
+//			);
+//		}
 	}
 	
 	AppExit();		// Do Shutdown //
