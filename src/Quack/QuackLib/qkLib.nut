@@ -37,18 +37,18 @@ function gen_string( char, count ) {
 	return Ret;
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
-function print_table( table, level = 0 ) {
+function print_table( table, level = 0, name = "" ) {
 	local Prefix = gen_string("  ",level);
-	print( Prefix + "+ " + typeof(table) + ": " + table.len() + " elements." );
+	print( Prefix + "+ " + name + "[" + typeof(table) + "]: " + table.len() + " elements" );
 	foreach ( idx, val in table ) {
 		if ( typeof(val) == "table" ) {
-			print_table( val, level+1 );
+			print_table( val, level+1, idx + " " );
 		}
 		else {
 			print( Prefix + "  * " + idx + " [" + typeof(val) + "]: " + val );
 		}
 	}
-	print( Prefix + "- " + typeof(table) + " ends." );
+	print( Prefix + "- " + name + "[" + typeof(table) + "] ends." );
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
 function RGBA( r, g, b, a ) {

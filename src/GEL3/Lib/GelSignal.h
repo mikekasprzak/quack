@@ -48,7 +48,8 @@
 #ifndef __GEL_LIB_GELSIGNAL_H__
 #define __GEL_LIB_GELSIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <Lib/GelArray/GelArray_Core.h>
+//#include <Lib/GelArray/GelArray_Core.h>
+#include <vector>
 // - ------------------------------------------------------------------------------------------ - //
 class GelSignal {
 public:
@@ -120,72 +121,62 @@ public:
 		}
 	};
 protected:
-	GelArray<FuncType>*	Funcs;
+	std::vector<FuncType>	Funcs;
 public:
-	inline GelSignal() :
-		Funcs( 0 )
-	{
+	inline GelSignal() {
 	}
 	
 	inline ~GelSignal() {
-		if ( Funcs ) {
-			delete_GelArray<FuncType>( Funcs );
-		}
 	}
 	
 	inline void Clear() {
-		if ( Funcs ) {
-			delete_GelArray<FuncType>( Funcs );
-			Funcs = 0;
-		}
+		Funcs.clear();
 	}
 	
 public:
 	// Call the function chain //
 	// NOTE: The Return is only ever changed by 3 argument functions! //
-	inline void* operator () ( void* ArgsPtr ) const {
+	inline void* operator () ( void* ArgsPtr ) {
 		void* Ret = 0;
-		if ( Funcs ) {
-			for ( size_t idx = 0; idx < Funcs->Size; idx++ ) {
-//				Log("** Signal: %i (%i)", idx, Funcs->Size );
-				FuncType& Func = Funcs->Data[idx];
-				// NOTE: Cleverness! If the FF_BLOCKED flag is set, then none of these functions //
-				//   below will be called, because the bitmask will be incorrect. //
-				switch( Func.Flags & FF_MODE_OR_BLOCKED_MASK ) {
-					case FF_MODE_0: {
-						F0VoidPtr FunctionToCall = (F0VoidPtr)Func.Function;
-						FunctionToCall();
-						break;
-					}
-					case FF_MODE_1: {
-						// Use only the User Pointer //
-						F1VoidPtr FunctionToCall = (F1VoidPtr)Func.Function;
-						FunctionToCall( Func.UserPtr );
-						break;
-					}
-					case FF_MODE_2: {
-						// Use the Arguments Poiter too //
-						F2VoidPtr FunctionToCall = (F2VoidPtr)Func.Function;
-						FunctionToCall( Func.UserPtr, ArgsPtr );
-						break;
-					}
-					case FF_MODE_3: {
-						// NOTE: The only variation that changes (and uses) Ret //
-						F3VoidPtr FunctionToCall = (F3VoidPtr)Func.Function;
-						Ret = FunctionToCall( Func.UserPtr, ArgsPtr, Ret );
-						break;
-					}
-				};
-				// If the "Block me after a call" flag is set, set the blocking state //
-				if ( Func.IsBlockedAfterCall() ) {
-					Func.SetBlocked();
+		for ( size_t idx = 0; idx < Funcs.size(); idx++ ) {
+//			Log("** Signal: %i (%i)", idx, Funcs->Size );
+			FuncType* Func = &(Funcs[idx]);
+			// NOTE: Cleverness! If the FF_BLOCKED flag is set, then none of these functions //
+			//   below will be called, because the bitmask will be incorrect. //
+			switch( Func->Flags & FF_MODE_OR_BLOCKED_MASK ) {
+				case FF_MODE_0: {
+					F0VoidPtr FunctionToCall = (F0VoidPtr)Func->Function;
+					FunctionToCall();
+					break;
 				}
+				case FF_MODE_1: {
+					// Use only the User Pointer //
+					F1VoidPtr FunctionToCall = (F1VoidPtr)Func->Function;
+					FunctionToCall( Func->UserPtr );
+					break;
+				}
+				case FF_MODE_2: {
+					// Use the Arguments Poiter too //
+					F2VoidPtr FunctionToCall = (F2VoidPtr)Func->Function;
+					FunctionToCall( Func->UserPtr, ArgsPtr );
+					break;
+				}
+				case FF_MODE_3: {
+					// NOTE: The only variation that changes (and uses) Ret //
+					F3VoidPtr FunctionToCall = (F3VoidPtr)Func->Function;
+					Ret = FunctionToCall( Func->UserPtr, ArgsPtr, Ret );
+					break;
+				}
+			};
+			// If the "Block me after a call" flag is set, set the blocking state //
+			if ( Func->IsBlockedAfterCall() ) {
+				Func->SetBlocked();
 			}
 		}
 		return Ret;
 	}
 	// size_t version of calling //
-	inline void* operator () ( const size_t Args = 0 ) const {
+	inline void* operator () ( const size_t Args = 0 ) {
 		return operator()( (void*)Args );
 	}
 	
@@ -193,100 +184,100 @@ public:
 	template<class T1>
 	inline void Connect( void (*_Func)(void), T1* = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, 0, FF_MODE_0 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	inline void Connect( void (*_Func)(void), size_t = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, 0, FF_MODE_0 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	
 	// One Argument Version (Pointer) //
 	template<class T1>
 	inline void Connect( void (*_Func)(T1*), T1* UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_1 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	// One Argument Version (size_t) //
 	inline void Connect( void (*_Func)(size_t), size_t UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_1 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 
 	// Two Argument Version (Pointer,Pointer) //
 	template<class T1, class T2>
 	inline void Connect( void (*_Func)(T1*,T2*), T1* UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	// Two Argument Version (size_t,size_t) //
 	inline void Connect( void (*_Func)(size_t,size_t), size_t UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	// Two Argument Version (size_t,Pointer) //
 	template<class T2>
 	inline void Connect( void (*_Func)(size_t,T2*), size_t UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	// Two Argument Version (Pointer,size_t) //
 	template<class T1>
 	inline void Connect( void (*_Func)(T1*,size_t), T1* UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_2 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 
 	// Three Argument Version (Pointer,Pointer,Pointer) //
 	template<class T1, class T2, class T3>
 	inline void Connect( T3* (*_Func)(T1*,T2*,T3*), T1* UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	template<class T1, class T2>
 	inline void Connect( size_t (*_Func)(T1*,T2*,size_t), T1* UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	template<class T1, class T3>
 	inline void Connect( T3* (*_Func)(T1*,size_t,T3*), T1* UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	template<class T1>
 	inline void Connect( size_t (*_Func)(T1*,size_t,size_t), T1* UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	// Three Argument Version (size_t,size_t,size_t) //
 	inline void Connect( size_t (*_Func)(size_t,size_t,size_t), size_t UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	template<class T2>
 	inline void Connect( size_t (*_Func)(size_t,T2*,size_t), size_t UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	template<class T3>
 	inline void Connect( T3* (*_Func)(size_t,size_t,T3*), size_t UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 	template<class T2, class T3>
 	inline void Connect( T3* (*_Func)(size_t,T2*,T3*), size_t UserData = 0, const int _Flags = FF_NULL ) {
 		FuncType MyFunc( (F3VoidPtr)_Func, (void*)UserData, FF_MODE_3 | _Flags );
-		pushback_GelArray<FuncType>( &Funcs, MyFunc );
+		Funcs.push_back( MyFunc );
 	}
 
 
 	// Remove Functions //
 	// TODO: this //
 	inline void Disconnect( FuncType _Func ) {
-		// findlast, to allow us to correctly nest a scoped connection //
-		int Index = findlast_GelArray<FuncType>( &Funcs, _Func );
-		if ( Index > 0 ) {
-			erase_GelArray<FuncType>( &Funcs, Index );
-		}
+//		// findlast, to allow us to correctly nest a scoped connection //
+//		int Index = findlast_GelArray<FuncType>( &Funcs, _Func );
+//		if ( Index > 0 ) {
+//			erase_GelArray<FuncType>( &Funcs, Index );
+//		}
 	}
 	// TODO: all variations of the above //
 	

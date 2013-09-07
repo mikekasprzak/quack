@@ -4,6 +4,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <math.h>
 #include <Lib/Lib.h>
+#include <Lib/Data/Data.h>
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: Math Functions, Insert (creating rows and columns to fit, X/YAxis Only)
 //   Rename Resize to Canvas and/or Clip. 

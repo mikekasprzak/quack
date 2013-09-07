@@ -175,6 +175,7 @@ public:
 	// Attach a function that is notified whenever an asset is reloaded //
 	template< class T >
 	inline void SubscribeToChanges( T Callback, st UserData = 0 ) {
+		Log("* SUB NUT: %i", UserData );
 		OnReloadCallbacks.Connect( Callback, UserData );
 	}
 	// Remove a function that was added to monitor for changes //

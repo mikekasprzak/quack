@@ -41,6 +41,7 @@ inline SQBool sqext_load_nut( HSQUIRRELVM v, const char* NutFile ) {
 	GelAssetPool::UID Nut = Gel::AssetPool.Load(NutFileResult);
 		
 	GelAsset& MyAsset = Gel::AssetPool[Nut];
+	Log( "* NUT: %i", Nut );
 
 	if ( !MyAsset.IsBad() ) {
 		MyAsset.SubscribeToChanges( sqext_reload_subscriber, Nut );

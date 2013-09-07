@@ -6,7 +6,7 @@ void sqext_reload_subscriber( const st UserData ) {
 	GelAsset& MyAsset = Gel::AssetPool[UserData];
 	const char* NutFile = MyAsset.GetFileName();
 
-	Log( "+ Reloading Script File (%s)...", NutFile );
+	Log( "+ Reloading Script File (%s) [%i]...", NutFile, UserData );
 
 	if ( !MyAsset.IsBad() ) {
 		return_if_void_Log( 
