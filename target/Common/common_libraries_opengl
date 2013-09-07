@@ -77,7 +77,7 @@ endif # USES_OPENGL1
 # - ------------------------------------------------------------------------ - #
 ifdef USES_OPENGL3
 # - ------------------------------------------------------------------------ - #
-DEFINES				+=	USES_OPENGL3
+DEFINES				+=	USES_OPENGL3 USES_MRT
 USES_OPENGL2		:=	true
 # - ------------------------------------------------------------------------ - #
 endif # USES_OPENGL3 #
@@ -184,7 +184,7 @@ ifdef USES_OPENGL_ES3
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
 DEFINES				+=	USES_OPENGL_ES USES_OPENGL_ES2 USES_OPENGL_ES3 \
-						USES_FBO USES_GL_SHADERS
+						USES_FBO USES_GL_SHADERS USES_MRT
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	-lEGL -lGLESv3

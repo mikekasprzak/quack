@@ -38,14 +38,15 @@ function gen_string( char, count ) {
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
 function print_table( table, level = 0, name = "" ) {
-	local Prefix = gen_string("  ",level);
+	const Indent = "  ";
+	local Prefix = gen_string(Indent,level);
 	print( Prefix + "+ " + name + "[" + typeof(table) + "]: " + table.len() + " elements" );
 	foreach ( idx, val in table ) {
 		if ( typeof(val) == "table" ) {
 			print_table( val, level+1, idx + " " );
 		}
 		else {
-			print( Prefix + "  * " + idx + " [" + typeof(val) + "]: " + val );
+			print( Prefix + Indent + "* " + idx + " [" + typeof(val) + "]: " + val );
 		}
 	}
 	print( Prefix + "- " + name + "[" + typeof(table) + "] ends." );
