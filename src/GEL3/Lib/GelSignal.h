@@ -50,6 +50,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 //#include <Lib/GelArray/GelArray_Core.h>
 #include <vector>
+#include <algorithm>
 // - ------------------------------------------------------------------------------------------ - //
 class GelSignal {
 public:
@@ -273,6 +274,10 @@ public:
 	// Remove Functions //
 	// TODO: this //
 	inline void Disconnect( FuncType _Func ) {
+		std::vector<FuncType>::reverse_iterator itr = std::find( Funcs.rbegin(), Funcs.rend(), _Func );
+		if ( itr != Funcs.rend() ) {
+			Funcs.erase( itr.base() );
+		}
 //		// findlast, to allow us to correctly nest a scoped connection //
 //		int Index = findlast_GelArray<FuncType>( &Funcs, _Func );
 //		if ( Index > 0 ) {
