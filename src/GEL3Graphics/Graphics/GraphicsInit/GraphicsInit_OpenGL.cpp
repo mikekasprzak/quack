@@ -4,6 +4,8 @@
 #include "GraphicsInit.h"
 #include <API/API_OpenGL.h>
 #include <Lib/Lib.h>
+
+#include <Render/Shader.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
@@ -31,6 +33,8 @@ void gelGraphicsInit() {
 	
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&Gel::MaxTextureSize );
 	Log( "GL_MAX_TEXTURE_SIZE: %i", Gel::MaxTextureSize );
+		
+	Gel::InitShader();
 }
 // - ------------------------------------------------------------------------------------------ - //
 

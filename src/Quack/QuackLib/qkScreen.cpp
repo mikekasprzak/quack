@@ -33,7 +33,19 @@ SQInteger qkInitScreens( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkAspectRatio(HSQUIRRELVM vm) {
+	sq_pushfloat( vm, (float)Gel::Native[0].GetWidth() / (float)Gel::Native[0].GetHeight() );
 
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkClear(HSQUIRRELVM vm) {
+	//gelClear( true, true );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	return SQ_VOID;
+}
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	float Radius = 10.0f;
@@ -96,6 +108,60 @@ SQInteger qkMatrixIdentity(HSQUIRRELVM vm) {
 
 	return SQ_RETURN;
 }
+
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkScalarMatrix(HSQUIRRELVM vm) {
+	float x = 1.0f;
+	float y = 1.0f;
+	float z = 1.0f;
+	float w = 1.0f;
+	
+	int NumArgs = sq_gettop(vm);
+
+	if ( NumArgs >= 2 ) {
+		sq_getfloat(vm,2,&x);
+	}
+	if ( NumArgs >= 3 ) {
+		sq_getfloat(vm,3,&y);
+	}
+	if ( NumArgs >= 4 ) {
+		sq_getfloat(vm,4,&z);
+	}
+	if ( NumArgs >= 5 ) {
+		sq_getfloat(vm,5,&w);
+	}
+
+	Matrix4x4 rMatrix = Matrix4x4::Identity;
+	rMatrix(0,0) = x;
+	rMatrix(1,1) = y;
+	rMatrix(2,2) = z;
+	rMatrix(3,3) = w;
+	
+	// Also pushes the UserPointer on the Stack //
+	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
+	copy_Data( (void*)&rMatrix, (void*)Mat, sizeof( Matrix4x4 ) );
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkMultMatrix(HSQUIRRELVM vm) {
+	SQUserPointer aMatrix = 0;
+	SQUserPointer bMatrix = 0;
+	
+	sq_getuserdata(vm,2,&aMatrix,NULL);	
+	sq_getuserdata(vm,3,&bMatrix,NULL);	
+	
+	Matrix4x4* paMatrix = (Matrix4x4*)aMatrix;
+	Matrix4x4* pbMatrix = (Matrix4x4*)bMatrix;
+	
+	Matrix4x4 rMatrix = (*paMatrix) * (*pbMatrix);
+	
+	// Also pushes the UserPointer on the Stack //
+	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
+	copy_Data( (void*)&rMatrix, (void*)Mat, sizeof( Matrix4x4 ) );
+
+	return SQ_RETURN;
+}
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkDoMatrix(HSQUIRRELVM vm) {
 	SQUserPointer uMatrix = 0;
@@ -125,8 +191,12 @@ SQRegFunction qklib_funcs[] = {
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	_DECL_FUNC(qkSetScreenScalar,2,_SC(".n")),
 	_DECL_FUNC(qkInitScreens,1,NULL),
+	_DECL_FUNC(qkAspectRatio,1,NULL),
+	_DECL_FUNC(qkClear,1,NULL),
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
 	_DECL_FUNC(qkMatrixIdentity,1,NULL),
+	_DECL_FUNC(qkScalarMatrix,-2,NULL),
+	_DECL_FUNC(qkMultMatrix,3,NULL), // TODO ARG3
 	_DECL_FUNC(qkDoMatrix,2,NULL),
 	{0,0,0,0}
 };
