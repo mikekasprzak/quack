@@ -10,7 +10,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "UV.h"
 #include <Texture/Texture.h>
-#include <Search/Search.h>
+#include <Asset/Asset.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <Graphics/Allocator/Allocator.h>
 #include <Graphics/Allocator/Vector3DAllocator.h>
@@ -20,35 +20,35 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <Util/String/String.h>
+#include <Lib/StdString/StdString.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 class cFont {
 public:
 	BMFont* Font;
-	std::vector< Texture::TextureHandle > TexturePage;
+	std::vector< Gel::TextureHandle > TexturePage;
 	
 public:
 	cFont( const char* InFile ) :
 		Font( new_read_BMFont( InFile ) )
 	{
 		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-			const char* File = Search::Search( Font->PageName->Data[idx] );			
+			const char* File = Gel::Search( Font->PageName->Data[idx] );			
 			DataBlock* Data = new_read_DataBlock( File );
-			Texture::STBTexture Tex = Texture::new_STBTexture( Data->Data, Data->Size );
+			Gel::STBTexture Tex = Gel::new_STBTexture( Data->Data, Data->Size );
 			delete_DataBlock( Data );
 
 			// HACK: Don't Flip. Need to sort out the flip order in my brain //
-			TexturePage.push_back( Texture::upload_STBTexture( Tex, false, false ) );
+			TexturePage.push_back( Gel::upload_STBTexture( Tex, false, false ) );
 				
-			Texture::delete_STBTexture( Tex );
+			Gel::delete_STBTexture( Tex );
 		}
 	}
 	
 	~cFont() {
 		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-			Texture::delete_TextureHandle( TexturePage[idx] );
+			Gel::delete_TextureHandle( TexturePage[idx] );
 		}		
 		delete_BMFont( Font );
 	}
@@ -71,20 +71,20 @@ public:
 				
 		// Alignment //
 		if ( (Align & GEL_ALIGN_FONT_HBITS) == GEL_ALIGN_CENTER ) {
-			Pos.x -= (Width>>1) * Scalar * ScaleW_R_F;
+			Pos.x -= Real((Width>>1) * Scalar.ToFloat() * ScaleW_R_F);
 		}
 		else if ( (Align & GEL_ALIGN_FONT_HBITS) == GEL_ALIGN_RIGHT ) {
-			Pos.x -= Width * Scalar * ScaleW_R_F;
+			Pos.x -= Real(Width * Scalar.ToFloat() * ScaleW_R_F);
 		}
 		
 		if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_MIDDLE ) {
-			Pos.y -= (Height>>1) * Scalar * ScaleH_R_F;
+			Pos.y -= Real((Height>>1) * Scalar.ToFloat() * ScaleH_R_F);
 		}
 		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_TOP ) {
-			Pos.y -= Height * Scalar * ScaleH_R_F;
+			Pos.y -= Real(Height * Scalar.ToFloat() * ScaleH_R_F);
 		}
 		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_BASELINE ) {
-			Pos.y -= BaseLine * Scalar * ScaleH_R_F;
+			Pos.y -= Real(BaseLine * Scalar.ToFloat() * ScaleH_R_F);
 		}
 
 		Vector3DAllocator Vert( Length * 6 );
@@ -111,10 +111,10 @@ public:
 					V2 *= Scalar;
 
 					// NOTE: FORMER HACK: I (used to) CHANGED THE Y's AROUND! I DUNNO WHY THEY WERE UPSIDE DOWN! //
-					int UV1_x = Glyph[Ch]->x * GEL_UV_ONE / ScaleW;
-					int UV1_y = Glyph[Ch]->y * GEL_UV_ONE / ScaleH;
-					int UV2_x = (Glyph[Ch]->x + Glyph[Ch]->Width) * GEL_UV_ONE / ScaleW;
-					int UV2_y = (Glyph[Ch]->y + Glyph[Ch]->Height) * GEL_UV_ONE / ScaleH;
+					int UV1_x = Glyph[Ch]->x * UV_ONE / ScaleW;
+					int UV1_y = Glyph[Ch]->y * UV_ONE / ScaleH;
+					int UV2_x = (Glyph[Ch]->x + Glyph[Ch]->Width) * UV_ONE / ScaleW;
+					int UV2_y = (Glyph[Ch]->y + Glyph[Ch]->Height) * UV_ONE / ScaleH;
 					
 					Vert.Add( Vector3D( V1.x, V1.y, 0) + CurPos );
 					Vert.Add( Vector3D( V2.x, V1.y, 0) + CurPos );
@@ -123,17 +123,17 @@ public:
 					Vert.Add( Vector3D( V1.x, V2.y, 0) + CurPos );
 					Vert.Add( Vector3D( V1.x, V1.y, 0) + CurPos );
 					 					
-					UV.Add( UVSet<GelUV>( UV1_x, UV1_y ) );
-					UV.Add( UVSet<GelUV>( UV2_x, UV1_y ) );
-					UV.Add( UVSet<GelUV>( UV2_x, UV2_y ) );
-					UV.Add( UVSet<GelUV>( UV2_x, UV2_y ) );
-					UV.Add( UVSet<GelUV>( UV1_x, UV2_y ) );
-					UV.Add( UVSet<GelUV>( UV1_x, UV1_y ) );
+					UV.Add( UVSet<Gel::UVType>( UV1_x, UV1_y ) );
+					UV.Add( UVSet<Gel::UVType>( UV2_x, UV1_y ) );
+					UV.Add( UVSet<Gel::UVType>( UV2_x, UV2_y ) );
+					UV.Add( UVSet<Gel::UVType>( UV2_x, UV2_y ) );
+					UV.Add( UVSet<Gel::UVType>( UV1_x, UV2_y ) );
+					UV.Add( UVSet<Gel::UVType>( UV1_x, UV1_y ) );
 				
 					CharsDrawn++;
 				}
 				
-				CurPos.x += Glyph[Ch]->AdvanceX * Scalar * ScaleW_R_F;
+				CurPos.x += Glyph[Ch]->AdvanceX * Scalar.ToFloat() * ScaleW_R_F;
 			}
 
 			// Draw! //
@@ -148,7 +148,7 @@ public:
 			Default->UniformColor( 1, GEL_RGB_WHITE ); // GlobalColor //
 			Default->Uniform1i( 2, 0 ); // "TexImage0" //
 			Default->BindUniforms();
-			Texture::Bind( TexturePage[Tex], 0 );
+			Gel::Bind( TexturePage[Tex], 0 );
 			Default->Attrib( 0, Vert.Get() );
 			Default->Attrib( 1, UV.Get() );
 			Default->DrawArrays( GL_TRIANGLES, Vert.Size() );

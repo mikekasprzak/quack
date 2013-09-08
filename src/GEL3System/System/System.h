@@ -9,6 +9,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "GelScreen/GelScreen.h"
 #include "GelScreen/GelScreens.h"
+#include "GelScreen/GelScreens_Internal.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "SysSleep/SysSleep.h"				// System Sleep Functions. gelSysMSleep(), gelSysYield()
 // - ------------------------------------------------------------------------------------------ - //

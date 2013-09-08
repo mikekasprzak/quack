@@ -1,12 +1,16 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SYSTEM_GELSCREEN_GELSCREENS_INTERNAL_H__
-#define __GEL_SYSTEM_GELSCREEN_GELSCREENS_INTERNAL_H__
+// DataArray - A typed Datablock.  A C implementation, and a lightweight STL vector. //
 // - ------------------------------------------------------------------------------------------ - //
-#include <Lib/Lib.h>
-#include "GelScreens_Internal_SDL.h"
+#ifndef __Library_Data_DataArray_H__
+#define __Library_Data_DataArray_H__
 // - ------------------------------------------------------------------------------------------ - //
-GelError gelsInitScreen( const st Index );
-GelError gelsSwapScreen( const st Index );
+
+#include "DataArray_Core.h"
+//#include "DataArray_Hash32.h"
+//#include "DataArray_File.h"
+
+//#include "DataArray_Class.h"
+
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SYSTEM_GELSCREEN_GELSCREENS_INTERNAL_H__ //
+#endif // __Library_Data_DataArray_H__ //
 // - ------------------------------------------------------------------------------------------ - //

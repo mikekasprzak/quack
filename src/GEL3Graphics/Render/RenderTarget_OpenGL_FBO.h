@@ -54,7 +54,6 @@
 #include <vector>
 #include <Lib/Lib.h>
 #include <System/System.h>
-//#include <Graphics/Graphics.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include "RenderTarget_OpenGL_FBO_GLDefines.h"
 // - ------------------------------------------------------------------------------------------ - //
