@@ -78,6 +78,7 @@ void AppInit() {
 	// **** //
 	
 	QuackVMInit();
+	QuackVMCallSetup();
 	QuackVMCallInit();
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -88,10 +89,16 @@ void AppExit() {
 
 // - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
-	App::StepProfiler.Start();	
+	App::StepProfiler.Start();
 	// *** //
 	
 	Gel::Input::Poll();
+	
+	// If the Refresh key is pressed (NOTE: this should be 'just pressed' state) //
+	extern bool ___keyRefresh;
+	if ( ___keyRefresh ) {
+		QuackVMCallInit();
+	}
 
 	// START: Update FrameTime //
 	sq_pushroottable(vm);

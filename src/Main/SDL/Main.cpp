@@ -25,7 +25,9 @@ void int_func( int Signal ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
 bool ___keyESC = false;
+bool ___keyRefresh = false;
 // - ------------------------------------------------------------------------------------------ - //
 int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 	if ( Event->type == SDL_QUIT ) {
@@ -61,6 +63,9 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 		if ( Event->key.keysym.scancode == SDL_SCANCODE_ESCAPE ) {
 			___keyESC = false;
 		}
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F2 ) {
+			___keyRefresh = false;
+		}
 	}
 	else if ( Event->type == SDL_KEYDOWN ) {
 		if ( (Event->key.keysym.scancode == SDL_SCANCODE_F4) && (Event->key.keysym.mod & (KMOD_LALT | KMOD_RALT)) ) {
@@ -73,7 +78,11 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 			Log( "> ESC Signal Recieved" );
 			___keyESC = true;
 		}
-		if ( Event->key.keysym.scancode == SDL_SCANCODE_F10 ) {
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F2 ) {
+			Log( "> Refresh Signal Recieved (F2)" );
+			___keyRefresh = true;
+		}
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F10 ) {
 			#ifdef PRODUCT_DEV_MODE
 				// This *ALWAYS* kills the app if available, without bothering with a request. //
 				// After all, it's for debugging anyways, and only in the Windows/Linux Builds. //

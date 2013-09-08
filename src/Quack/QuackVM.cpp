@@ -84,14 +84,14 @@ void QuackVMExit() {
 // - ------------------------------------------------------------------------------------------ - //
 	
 // - ------------------------------------------------------------------------------------------ - //
-bool QuackVMCallInit() {
+bool QuackVMCallSetup() {
 	// Do the Init function //
 	if ( sqext_exists( vm, "main" ) ) {
 		Log( "Calling main() function..." );
 		sqext_call( vm, "main" );
 		App::SetMode( App::AM_MAIN );
 	}
-	else if ( sqext_exists( vm, "Init" ) ) {
+	else if ( sqext_exists( vm, "Init" ) || sqext_exists( vm, "Setup" ) || sqext_exists( vm, "Step" ) || sqext_exists( vm, "Draw" ) ) {
 		// Check for Step and Draw //
 		if ( !sqext_exists( vm, "Step" ) ) {
 			Log( "! ERROR: GameLoop Mode detected, but no Step(). Aborting..." );
@@ -103,13 +103,20 @@ bool QuackVMCallInit() {
 			App::SetMode( App::AM_ERROR );
 			return false;
 		}
-		
-		Log( "Calling user Init() function..." );
-		sqext_call( vm, "Init" );
+
 		App::SetMode( App::AM_GAMELOOP );
+
+		if ( sqext_exists( vm, "Setup" ) ) {
+			Log( "Calling user Setup() function..." );
+			sqext_call( vm, "Setup" );
+		}
+		else if ( sqext_exists( vm, "_DefaultSetup" ) ) {
+			Log( "Calling _DefaultSetup() function..." );
+			sqext_call( vm, "_DefaultSetup" );
+		}
 	}
 	else {
-		Log( "! ERROR: No startup function found (Init or main). Aborting..." );
+		Log( "! ERROR: No startup function found (Init, Setup or main). Aborting..." );
 		App::SetMode( App::AM_ERROR );
 		return false;
 	}
@@ -118,8 +125,18 @@ bool QuackVMCallInit() {
 	return true;			
 }
 // - ------------------------------------------------------------------------------------------ - //
+bool QuackVMCallInit() {
+	if ( sqext_exists( vm, "Init" ) ) {
+		return sqext_call( vm, "Init" );
+	}
+	return false;
+}
+// - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallExit() {
-	return sqext_call( vm, "Exit" );
+	if ( sqext_exists( vm, "Exit" ) ) {
+		return sqext_call( vm, "Exit" );
+	}
+	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 

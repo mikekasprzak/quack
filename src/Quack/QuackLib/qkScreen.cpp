@@ -92,7 +92,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 		Vector3D Verts[ VertCount ];
 		generate_Vertex3D_Circle( Verts, Vector3D(x,y,z), Real(Radius) );
 	
-		Gel::Flat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), Color, Verts, VertCount );
+		Gel::RenderFlat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), Color, Verts, VertCount );
 	}
 	else {
 		Log("! qkDrawCircle -- Not enough arguments");
