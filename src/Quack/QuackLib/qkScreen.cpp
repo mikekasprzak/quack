@@ -86,10 +86,36 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 		Log("! qkDrawCircle -- Not enough arguments");
 	}
 	
-	return 0;	
+	return SQ_VOID;	
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkMatrixIdentity(HSQUIRRELVM vm) {
+	// Also pushes the UserPointer on the Stack //
+	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
+	copy_Data( (void*)&Matrix4x4::Identity, (void*)Mat, sizeof( Matrix4x4 ) );
 
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkDoMatrix(HSQUIRRELVM vm) {
+	SQUserPointer uMatrix = 0;
+	
+	int NumArgs = sq_gettop(vm);
+	if ( NumArgs >= 2 ) {
+		sq_getuserdata(vm,2,&uMatrix,NULL);	
+	}
+	
+	Matrix4x4* pMatrix = (Matrix4x4*)uMatrix;
+	
+	Log( "[%f %f %f %f]", (*pMatrix)(0,0).ToFloat(),(*pMatrix)(1,0).ToFloat(),(*pMatrix)(2,0).ToFloat(),(*pMatrix)(3,0).ToFloat() );
+	Log( "[%f %f %f %f]", (*pMatrix)(0,1).ToFloat(),(*pMatrix)(1,1).ToFloat(),(*pMatrix)(2,1).ToFloat(),(*pMatrix)(3,1).ToFloat() );
+	Log( "[%f %f %f %f]", (*pMatrix)(0,2).ToFloat(),(*pMatrix)(1,2).ToFloat(),(*pMatrix)(2,2).ToFloat(),(*pMatrix)(3,2).ToFloat() );
+	Log( "[%f %f %f %f]", (*pMatrix)(0,3).ToFloat(),(*pMatrix)(1,3).ToFloat(),(*pMatrix)(2,3).ToFloat(),(*pMatrix)(3,3).ToFloat() );
+	Log( "" );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -100,6 +126,8 @@ SQRegFunction qklib_funcs[] = {
 	_DECL_FUNC(qkSetScreenScalar,2,_SC(".n")),
 	_DECL_FUNC(qkInitScreens,1,NULL),
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
+	_DECL_FUNC(qkMatrixIdentity,1,NULL),
+	_DECL_FUNC(qkDoMatrix,2,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
