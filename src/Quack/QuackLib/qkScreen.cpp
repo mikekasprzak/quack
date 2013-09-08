@@ -21,6 +21,7 @@ SQInteger qkInitScreens( HSQUIRRELVM v ) {
 	gelInitScreens();
 
 	gelLogGraphicsAPIDetails();
+	gelGraphicsInit();
 
 	return SQ_VOID;
 }

@@ -1,9 +1,13 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_GRAPHICS_GRAPHICS_H__
-#define __GEL_GRAPHICS_GRAPHICS_H__
+#ifndef __GEL_TEXTURE_TEXTURE_H__
+#define __GEL_TEXTURE_TEXTURE_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "Log/LogGraphicsAPIDetails.h"
-#include "GraphicsInit/GraphicsInit.h"
+// Complete set of libraries for reading and using Texture data //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_GRAPHICS_GRAPHICS_H__ //
+#include "TextureHandle.h"
+
+#include "Texture_STB.h"
+#include "Texture_PVR3.h"
+// - ------------------------------------------------------------------------------------------ - //
+#endif // __GEL_TEXTURE_TEXTURE_H__ //
 // - ------------------------------------------------------------------------------------------ - //
