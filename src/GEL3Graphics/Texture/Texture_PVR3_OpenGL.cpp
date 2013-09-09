@@ -8,11 +8,11 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <System/System.h>
 #include <Graphics/Graphics.h>
-#include <Texture/TextureHandle.h>
+#include <Texture/GelTextureHandle.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-TextureHandle upload_PVR3Texture( PVR3Texture* Texture ) {
+GelTextureHandle upload_PVR3Texture( PVR3Texture* Texture ) {
 	// Texture ID we'll be returning //
 //	unsigned int TextureID;
 
@@ -22,8 +22,8 @@ TextureHandle upload_PVR3Texture( PVR3Texture* Texture ) {
 
 	// Generate a GL Texture //
 //	glGenTextures( 1, (GLuint*)&TextureID );
-	TextureHandle TextureID = new_TextureHandle();
-	bind_TextureHandle( TextureID );
+	GelTextureHandle TextureID = new_GelTextureHandle();
+	bind_GelTextureHandle( TextureID );
 //	glBindTexture( GL_TEXTURE_2D, TextureID );
 //	VLog("* GL Texture ID: %i (IsTexture: %i)", TextureID, glIsTexture(TextureID) );
 	

@@ -17,7 +17,7 @@ using namespace Gel;
 using namespace Texture;
 using namespace Render;
 // - ------------------------------------------------------------------------------------------ - //
-//TextureHandle Texas;
+//GelTextureHandle Texas;
 extern cFont* MyFont;
 cFont* MyFont;
 
@@ -305,7 +305,7 @@ cApp::~cApp() {
 	
 	delete MyFont;
 	
-//	delete_TextureHandle( Texas );
+//	delete_GelTextureHandle( Texas );
 }
 // - ------------------------------------------------------------------------------------------ - //
 

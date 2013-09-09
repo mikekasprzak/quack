@@ -3,7 +3,7 @@
 #define __GEL_TEXTURE_TEXTURE_STB_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <string.h>
-#include <Texture/TextureHandle.h>
+#include <Texture/GelTextureHandle.h>
 #include <Grid/Grid2D.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
@@ -22,7 +22,7 @@ STBTexture new_STBTexture( const void* Data, const size_t Size );
 void delete_STBTexture( STBTexture& Image );
 
 // Load an STBTexture in to VRAM //
-TextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth = true, const bool Flip = true, const bool PreMultiplyAlpha = true );
+GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth = true, const bool Flip = true, const bool PreMultiplyAlpha = true );
 // NOTE: If you want Width, Height, or Info, you should retrieve it directly from //
 //   the STBTexture type, before deleting the STBTexture (i.e. Texture.Width, etc) //
 // - ------------------------------------------------------------------------------------------ - //

@@ -1,16 +1,16 @@
 // - ------------------------------------------------------------------------------------------ - //
+#ifndef __GEL_TEXTURE_GELTEXTUREHANDLE_STUB_H__
+#define __GEL_TEXTURE_GELTEXTUREHANDLE_STUB_H__
+// - ------------------------------------------------------------------------------------------ - //
 #if defined(USES_STUB_GRAPHICS)
 // - ------------------------------------------------------------------------------------------ - //
-#include "Texture_STB.h"
-#include <Texture/GelTextureHandle.h>
+typedef unsigned int		GelTextureHandle;
 // - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
-// - ------------------------------------------------------------------------------------------ - //
-GelTextureHandle upload_STBTexture( STBTexture& Texture ) {
-	return 0;
-}
-// - ------------------------------------------------------------------------------------------ - //
-}; // namespace Gel //
+inline GelTextureHandle new_GelTextureHandle() { return 0; }
+inline void delete_GelTextureHandle( GelTextureHandle Handle ) { }
+inline void bind_GelTextureHandle( GelTextureHandle Handle ) { }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // defined(USES_STUB_GRAPHICS) //
+// - ------------------------------------------------------------------------------------------ - //
+#endif // __GEL_TEXTURE_GELTEXTUREHANDLE_STUB_H__ //
 // - ------------------------------------------------------------------------------------------ - //

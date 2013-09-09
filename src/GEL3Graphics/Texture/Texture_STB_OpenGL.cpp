@@ -10,21 +10,21 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <System/System.h>
 #include <Graphics/Graphics.h>
-#include <Texture/TextureHandle.h>
+#include <Texture/GelTextureHandle.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-TextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, const bool Flip, const bool PreMultiplyAlpha ) {
+GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, const bool Flip, const bool PreMultiplyAlpha ) {
 	// Texture ID we'll be returning //
-//	TextureHandle TextureID;
+//	GelTextureHandle TextureID;
 
 	Log("+ Loading Texture (STB Loader)..." );
 
 	VLog("* Allocating GL Texture ID..." );
 	// Generate a GL Texture //
 	//glGenTextures( 1, (GLuint*)&TextureID );
-	TextureHandle TextureID = new_TextureHandle();
-	bind_TextureHandle( TextureID );
+	GelTextureHandle TextureID = new_GelTextureHandle();
+	bind_GelTextureHandle( TextureID );
 //	VVLog("* GL Texture ID: %i (IsTexture: %i)", TextureID, glIsTexture(TextureID) );	
 //	glBindTexture( GL_TEXTURE_2D, TextureID );
 //	VLog("* GL Texture ID: %i (IsTexture: %i)", TextureID, glIsTexture(TextureID) );

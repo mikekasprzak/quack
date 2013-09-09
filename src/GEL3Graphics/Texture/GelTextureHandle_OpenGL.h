@@ -1,20 +1,24 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_TEXTURE_TEXTUREHANDLE_STUB_H__
-#define __GEL_TEXTURE_TEXTUREHANDLE_STUB_H__
+#ifndef __GEL_TEXTURE_GELTEXTUREHANDLE_OPENGL_H__
+#define __GEL_TEXTURE_GELTEXTUREHANDLE_OPENGL_H__
 // - ------------------------------------------------------------------------------------------ - //
-#if defined(USES_STUB_GRAPHICS)
+#if defined(USES_OPENGL2) || defined(USES_OPENGL_ES2)
 // - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
+#include <Lib/Lib.h>
 // - ------------------------------------------------------------------------------------------ - //
-typedef unsigned int		TextureHandle;
+typedef unsigned int		GelTextureHandle;
 // - ------------------------------------------------------------------------------------------ - //
-inline TextureHandle new_TextureHandle() { return 0; }
-inline void delete_TextureHandle( TextureHandle Handle ) { }
-inline void bind_TextureHandle( TextureHandle Handle ) { }
+GelTextureHandle new_GelTextureHandle();
+void delete_GelTextureHandle( GelTextureHandle Handle );
+
+void bind_GelTextureHandle( GelTextureHandle Handle, const st32 TextureUnit = 0 );
+void unbind_GelTextureHandle( GelTextureHandle = 0, const st32 TextureUnit = 0 );
 // - ------------------------------------------------------------------------------------------ - //
-}; // namespace Gel //
+inline void Bind( GelTextureHandle Handle, const st32 TextureUnit = 0 ) {
+	bind_GelTextureHandle( Handle, TextureUnit );
+}
 // - ------------------------------------------------------------------------------------------ - //
-#endif // defined(USES_STUB_GRAPHICS) //
+#endif // defined(USES_OPENGL2) || defined(USES_OPENGL_ES2) //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_TEXTURE_TEXTUREHANDLE_STUB_H__ //
+#endif // __GEL_TEXTURE_GELTEXTUREHANDLE_OPENGL_H__ //
 // - ------------------------------------------------------------------------------------------ - //
