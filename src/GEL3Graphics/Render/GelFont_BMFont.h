@@ -1,6 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_RENDER_FONT_BMFONT_H__
-#define __GEL_RENDER_FONT_BMFONT_H__
+#ifndef __GEL_RENDER_GELFONT_BMFONT_H__
+#define __GEL_RENDER_GELFONT_BMFONT_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 
@@ -400,5 +400,5 @@ inline BMFont_Kerning** kerning_BMFont( BMFont* FontData ) {
 		return 0;
 }
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_RENDER_FONT_BMFONT_H__ //
+#endif // __GEL_RENDER_GELFONT_BMFONT_H__ //
 // - ------------------------------------------------------------------------------------------ - //

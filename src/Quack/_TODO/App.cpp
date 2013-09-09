@@ -18,8 +18,8 @@ using namespace Texture;
 using namespace Render;
 // - ------------------------------------------------------------------------------------------ - //
 //GelTextureHandle Texas;
-extern cFont* MyFont;
-cFont* MyFont;
+extern GelFont* MyFont;
+GelFont* MyFont;
 
 DataBlock* NutFile;
 //cRenderTarget* RT_Main;
@@ -216,7 +216,7 @@ void CallSqMatrixFunction( HSQUIRRELVM vm, const char* fname, const Matrix4x4& M
 cApp::cApp() {
 	Search::AddDirectory( "project/" );
 	
-	MyFont = new cFont( Search::Search( "C64Pro.fnt" ) );
+	MyFont = new GelFont( Search::Search( "C64Pro.fnt" ) );
 
 	// TODO: On some sort of resize event, trigger a delete and recreation of the RenderTargets.		
 	int Width = Screen::Native[0].GetWidth();
@@ -334,7 +334,7 @@ void cApp::Draw( Screen::cNative& Native ) {
 
 	Render::EnableAlphaBlending();
 
-	extern cFont* MyFont;
+	extern GelFont* MyFont;
 	MyFont->printf( Vector3D(0,0,0), 32.0f, GEL_ALIGN_MIDDLE_CENTER, "I want bacon" );
 
 	CallSqMatrixFunction( vm, "Draw", ViewMatrix );

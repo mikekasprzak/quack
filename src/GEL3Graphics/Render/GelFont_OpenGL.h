@@ -1,12 +1,12 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_RENDER_FONT_OPENGL_H__
-#define __GEL_RENDER_FONT_OPENGL_H__
+#ifndef __GEL_RENDER_GELFONT_OPENGL_H__
+#define __GEL_RENDER_GELFONT_OPENGL_H__
 // - ------------------------------------------------------------------------------------------ - //
 #if defined(USES_OPENGL2) || defined(USES_OPENGL_ES2)
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include "Font_BMFont.h"
+#include "GelFont_BMFont.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "UV.h"
 #include <Texture/Texture.h>
@@ -22,15 +22,13 @@
 
 #include <Lib/StdString/StdString.h>
 // - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
-// - ------------------------------------------------------------------------------------------ - //
-class cFont {
+class GelFont {
 public:
 	BMFont* Font;
 	std::vector< GelTextureHandle > TexturePage;
 	
 public:
-	cFont( const char* InFile ) :
+	GelFont( const char* InFile ) :
 		Font( new_read_BMFont( InFile ) )
 	{
 		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
@@ -46,7 +44,7 @@ public:
 		}
 	}
 	
-	~cFont() {
+	~GelFont() {
 		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
 			delete_GelTextureHandle( TexturePage[idx] );
 		}		
@@ -143,15 +141,15 @@ public:
 //				Vert.Size()
 //				);
 			
-			Default->Bind( TextureShader );
-			Default->UniformMatrix4x4( 0, ViewMatrix );
-			Default->UniformColor( 1, GEL_RGB_WHITE ); // GlobalColor //
-			Default->Uniform1i( 2, 0 ); // "TexImage0" //
-			Default->BindUniforms();
+			Gel::Default->Bind( Gel::TextureShader );
+			Gel::Default->UniformMatrix4x4( 0, Gel::ViewMatrix );
+			Gel::Default->UniformColor( 1, GEL_RGB_WHITE ); // GlobalColor //
+			Gel::Default->Uniform1i( 2, 0 ); // "TexImage0" //
+			Gel::Default->BindUniforms();
 			Bind( TexturePage[Tex], 0 );
-			Default->Attrib( 0, Vert.Get() );
-			Default->Attrib( 1, UV.Get() );
-			Default->DrawArrays( GL_TRIANGLES, Vert.Size() );
+			Gel::Default->Attrib( 0, Vert.Get() );
+			Gel::Default->Attrib( 1, UV.Get() );
+			Gel::Default->DrawArrays( GL_TRIANGLES, Vert.Size() );
 			
 			if ( Length == CharsDrawn )
 				break;
@@ -181,9 +179,7 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-}; // namespace Render //
-// - ------------------------------------------------------------------------------------------ - //
 #endif // defined(USES_OPENGL2) || defined(USES_OPENGL_ES2) //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_RENDER_FONT_OPENGL_H__ //
+#endif // __GEL_RENDER_GELFONT_OPENGL_H__ //
 // - ------------------------------------------------------------------------------------------ - //
