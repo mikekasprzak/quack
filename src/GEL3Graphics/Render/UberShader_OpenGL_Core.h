@@ -1,6 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SHADER_UBERSHADER_OPENGL_CORE_H__
-#define __GEL_SHADER_UBERSHADER_OPENGL_CORE_H__
+#ifndef __GEL_RENDER_UBERSHADER_OPENGL_CORE_H__
+#define __GEL_RENDER_UBERSHADER_OPENGL_CORE_H__
 // - ------------------------------------------------------------------------------------------ - //
 #if defined(USES_OPENGL2) || defined(USES_OPENGL_ES2)
 // - ------------------------------------------------------------------------------------------ - //
@@ -508,9 +508,9 @@ public:
 	inline int BindUniformSColor( const char* Name, const GelSColor Color );	// 16 bit signed color  (255=1.0) //
 };
 // - ------------------------------------------------------------------------------------------ - //
-}; // namespace Render //
+}; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // defined(USES_OPENGL2) || defined(USES_OPENGL_ES2) //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SHADER_UBERSHADER_OPENGL_CORE_H__ //
+#endif // __GEL_RENDER_UBERSHADER_OPENGL_CORE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

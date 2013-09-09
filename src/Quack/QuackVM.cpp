@@ -142,11 +142,17 @@ bool QuackVMCallExit() {
 
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallStep() {
-	return sqext_call( vm, "Step" );
+	if ( sqext_exists( vm, "Step" ) ) {
+		return sqext_call( vm, "Step" );
+	}
+	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallDraw() {
-	return sqext_call( vm, "Draw" );
+	if ( sqext_exists( vm, "Draw" ) ) {
+		return sqext_call( vm, "Draw" );
+	}
+	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 
