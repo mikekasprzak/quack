@@ -89,12 +89,14 @@
 	#define BYTE unsigned char
 	#define WORD unsigned short
 	#define DWORD unsigned int
+#if !defined(POWERVR_SDK_ONLY)
 	typedef struct tagRGBQUAD {
 	BYTE    rgbBlue;
 	BYTE    rgbGreen;
 	BYTE    rgbRed;
 	BYTE    rgbReserved;
 	} RGBQUAD;
+#endif // defined(POWERVR_SDK_ONLY) //
 	#define BOOL int
 #if !defined(TRUE)
 	#define TRUE 1

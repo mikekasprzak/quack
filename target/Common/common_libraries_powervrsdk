@@ -6,15 +6,15 @@ ifdef USES_POWERVR_SDK
 SRC_FOLDERS			+=	src/External/PowerVRSDK
 # - ------------------------------------------------------------------------ - #
 # Places to ONLY include from #
-INCLUDE_FOLDERS		+=	src/External/PowerVRSDK/PowerVR/OGLES_STUB
+INCLUDE_FOLDERS		+=	src/External/PowerVRSDK/OGLES_STUB
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
 # Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
-IGNORE_LIST			+=	src/External/PowerVRSDK/PowerVR/PVRTPrint3D.cpp \
-						src/External/PowerVRSDK/PowerVR/OGLES/%.cpp \
-						src/External/PowerVRSDK/PowerVR/OGLES2/%.cpp \
-						src/External/PowerVRSDK/PowerVR/OGLES3/%.cpp
+IGNORE_LIST			+=	src/External/PowerVRSDK/PVRTPrint3D.cpp \
+						src/External/PowerVRSDK/OGLES/%.cpp \
+						src/External/PowerVRSDK/OGLES2/%.cpp \
+						src/External/PowerVRSDK/OGLES3/%.cpp
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #

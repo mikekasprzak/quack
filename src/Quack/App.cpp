@@ -11,6 +11,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Asset/Asset.h>
 //#include <rde/rdestl.h>
+#include <PVRTModelPOD.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -80,6 +81,26 @@ void AppInit() {
 	QuackVMInit();
 	QuackVMCallSetup();
 	QuackVMCallInit();
+	
+	{	
+		Log("**** LOADING MONKEY POD");
+		CPVRTModelPOD Scene;
+		EPVRTError Error = Scene.ReadFromFile("project/content/Monkey.pod");
+		//ReadFromMemory(pData,Size);
+		
+		if ( Error == PVR_SUCCESS ) {
+			Log("Success!");
+			
+			Log("Nodes: %i  MeshNodes: %i  Meshes: %i  AnimationFrames: %i (Lights: %i  Cameras: %i  Materials: %i  Textures: %i)", 
+				Scene.nNumNode, Scene.nNumMeshNode, Scene.nNumMesh, Scene.nNumFrame,
+				Scene.nNumLight, Scene.nNumCamera, Scene.nNumMaterial, Scene.nNumTexture );
+				
+			Log("Verts: %i  Faces: %i  UVW: %i",
+				Scene.pMesh[0].nNumVertex, Scene.pMesh[0].nNumFaces, Scene.pMesh[0].nNumUVW );
+		}
+		
+		Log("**** DONE");
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
