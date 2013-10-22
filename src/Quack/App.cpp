@@ -85,7 +85,7 @@ void AppInit() {
 	{	
 		Log("**** LOADING MONKEY POD");
 		CPVRTModelPOD Scene;
-		EPVRTError Error = Scene.ReadFromFile("project/content/Monkey.pod");
+		EPVRTError Error = Scene.ReadFromFile("project/content/Cube.pod");
 		//ReadFromMemory(pData,Size);
 		
 		if ( Error == PVR_SUCCESS ) {
@@ -97,6 +97,10 @@ void AppInit() {
 				
 			Log("Verts: %i  Faces: %i  UVW: %i",
 				Scene.pMesh[0].nNumVertex, Scene.pMesh[0].nNumFaces, Scene.pMesh[0].nNumUVW );
+				
+			for ( int idx = 0; idx < Scene.nNumTexture; idx++ ) {
+				Log("%i T: %s", idx, Scene.pTexture[idx].pszName );
+			}
 		}
 		
 		Log("**** DONE");
