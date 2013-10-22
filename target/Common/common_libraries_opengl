@@ -41,9 +41,10 @@ ifdef USES_OPENGL1
 # NOTE: Only reference files here suitable for OPENGL scope (no game/platform) #
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	USES_OPENGL USES_OPENGL1
+DEFINES				+=	USES_OPENGL USES_OPENGL1 USES_OPENGL_1_FAMILY
 # - ------------------------------------------------------------------------ - #
 # Force these settings on #
+USES_OPENGL_1_FAMILY:=	true
 USES_GLEE			:=	true
 # - ------------------------------------------------------------------------ - #
 
@@ -77,15 +78,23 @@ endif # USES_OPENGL1
 # - ------------------------------------------------------------------------ - #
 ifdef USES_OPENGL3
 # - ------------------------------------------------------------------------ - #
-DEFINES				+=	USES_OPENGL3 USES_MRT
+DEFINES				+=	USES_OPENGL3 USES_OPENGL_3_FAMILY \
+						USES_MRT
+# - ------------------------------------------------------------------------ - #
+# Force these settings on #
 USES_OPENGL2		:=	true
+USES_OPENGL_3_FAMILY:=	true
 # - ------------------------------------------------------------------------ - #
 endif # USES_OPENGL3 #
 # - ------------------------------------------------------------------------ - #
 ifdef USES_OPENGL4
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_OPENGL4
+# - ------------------------------------------------------------------------ - #
+# Force these settings on #
 USES_OPENGL2		:=	true
+USES_OPENGL_4_FAMILY:=	true
+USES_OPENGL_3_FAMILY:=	true
 # - ------------------------------------------------------------------------ - #
 endif # USES_OPENGL4 #
 # - ------------------------------------------------------------------------ - #
@@ -97,10 +106,12 @@ ifdef USES_OPENGL2
 # NOTE: Only reference files here suitable for OPENGL scope (no game/platform) #
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	USES_OPENGL USES_OPENGL2 USES_FBO USES_SHADERS
+DEFINES				+=	USES_OPENGL USES_OPENGL2 USES_OPENGL_2_FAMILY \
+						USES_FBO USES_SHADERS
 # - ------------------------------------------------------------------------ - #
 # Force these settings on #
 USES_GLEE			:=	true
+USES_OPENGL_2_FAMILY:=	true
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #
@@ -149,7 +160,7 @@ ifdef USES_OPENGL_ES1
 # NOTE: Only reference files here suitable for OPENGL scope (no game/platform) #
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	USES_OPENGL_ES USES_OPENGL_ES1
+DEFINES				+=	USES_OPENGL_ES USES_OPENGL_ES1 USES_OPENGL_1_FAMILY
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	-lEGL -lGLES_CM
@@ -163,7 +174,7 @@ ifdef USES_OPENGL_ES2
 # NOTE: Only reference files here suitable for OPENGL scope (no game/platform) #
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	USES_OPENGL_ES USES_OPENGL_ES2 \
+DEFINES				+=	USES_OPENGL_ES USES_OPENGL_ES2 USES_OPENGL_2_FAMILY \
 						USES_FBO USES_GL_SHADERS
 # - ------------------------------------------------------------------------ - #
 ifndef USES_3DS
@@ -183,7 +194,7 @@ ifdef USES_OPENGL_ES3
 # NOTE: Only reference files here suitable for OPENGL scope (no game/platform) #
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	USES_OPENGL_ES USES_OPENGL_ES2 USES_OPENGL_ES3 \
+DEFINES				+=	USES_OPENGL_ES USES_OPENGL_ES2 USES_OPENGL_ES3 USES_OPENGL_2_FAMILY USES_OPENGL_3_FAMILY \
 						USES_FBO USES_GL_SHADERS USES_MRT
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #

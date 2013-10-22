@@ -1,0 +1,31 @@
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_POWERVR_SDK
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	src/External/PowerVRSDK
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/PowerVRSDK/PowerVR/OGLES_STUB
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+# Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
+IGNORE_LIST			+=	src/External/PowerVRSDK/PowerVR/PVRTPrint3D.cpp \
+						src/External/PowerVRSDK/PowerVR/OGLES/%.cpp \
+						src/External/PowerVRSDK/PowerVR/OGLES2/%.cpp \
+						src/External/PowerVRSDK/PowerVR/OGLES3/%.cpp
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_POWERVR_SDK \
+						EGL_NOT_PRESENT _PVRTPRINT3D_H_ POWERVR_SDK_ONLY
+# NOTE:	Removed the PVRPrint stuff because it's GL Dependent.
+#		Also added "POWERVR_SDK_ONLY" to PVRTGlobal.h as a bypass of everything.
+#		I had to hunt down many _WIN32 defines and add !defined(POWERVR_SDK_ONLY) 
+#		checks. PVRTModelPOD, PVRTGlobal, PVRTError. Most errors were Windows
+#		Resource and text related (TCHAR).
+# - ------------------------------------------------------------------------ - #
+endif # USES_POWERVR_SDK #
+# - ------------------------------------------------------------------------ - #
