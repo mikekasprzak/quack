@@ -9,7 +9,7 @@ namespace Input {
 // - ------------------------------------------------------------------------------------------ - //
 void Init();
 
-extern GelSignal Poll;	// Was void Poll(), but a Signal is a cleaner idea //
+extern GelSignal Poll;	// Was void Poll(), but a Signal is cleaner //
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Input //
 }; // namespace Gel //

@@ -17,6 +17,7 @@ struct XGamePad {
 	Vector2D RStick;
 	Real LTrigger;
 	Real RTrigger;
+	Vector2D DPad;
 };
 // - ------------------------------------------------------------------------------------------ - //
 extern XGamePad GamePad[4];

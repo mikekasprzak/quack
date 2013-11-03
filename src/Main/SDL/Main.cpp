@@ -117,7 +117,7 @@ extern "C" int main( int argc, char* argv[] ) {
 	// **** //
 	
 	// Initialize System //
-	SDL_Init( SDL_INIT_VIDEO /*| SDL_INIT_JOYSTICK*/ );
+	SDL_Init( SDL_INIT_VIDEO );
 	SDL_GL_LoadLibrary( NULL );
 	SDL_DisableScreenSaver();
 	atexit(SDL_Quit);

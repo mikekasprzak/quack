@@ -80,6 +80,22 @@ void Poll() {
 			GamePad[idx].LStick.y = State[idx].Gamepad.sThumbLY / 32768.0f;
 			GamePad[idx].RStick.x = State[idx].Gamepad.sThumbRX / 32768.0f;
 			GamePad[idx].RStick.y = State[idx].Gamepad.sThumbRY / 32768.0f;
+			
+			GamePad[idx].DPad.x = 0.0f;
+			GamePad[idx].DPad.y = 0.0f;
+			if ( State[idx].Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT ) {
+				GamePad[idx].DPad.x = -1.0f;
+			}
+			else if ( State[idx].Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT ) {
+				GamePad[idx].DPad.x = +1.0f;
+			}
+
+			if ( State[idx].Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP ) {
+				GamePad[idx].DPad.y = +1.0f;
+			}
+			else if ( State[idx].Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN ) {
+				GamePad[idx].DPad.y = -1.0f;
+			}			
 		}
 	}
 	

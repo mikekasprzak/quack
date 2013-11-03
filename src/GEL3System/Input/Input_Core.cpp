@@ -10,6 +10,10 @@ void Init() {
 	#ifdef USES_XINPUT
 	XInput::InitEvent();
 	#endif // USES_XINPUT //
+	
+	#ifdef USES_SDL2
+	SDLInput::InitEvent();
+	#endif // USES_SDL2 //
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Input //
