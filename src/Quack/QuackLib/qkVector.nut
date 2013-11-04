@@ -33,6 +33,10 @@ class vec2 {
 	function _tostring() {
 		return "(" + x + "," + y + ")";
 	}
+	
+	function ToArray() {
+		return [x,y];
+	}
 
 	function dot(vs) {
 		return (x*vs.x) + (y*vs.y);
@@ -122,6 +126,10 @@ class vec3 {
 
 	function _tostring() {
 		return "(" + x + "," + y + "," + z + ")";
+	}
+
+	function ToArray() {
+		return [x,y,z];
 	}
 
 	function dot(vs) {
@@ -224,6 +232,10 @@ class vec4 {
 	
 	function _tostring() {
 		return "(" + x + "," + y + "," + z + "," + w + ")";
+	}
+
+	function ToArray() {
+		return [x,y,z,w];
 	}
 	
 	function dot(vs) {

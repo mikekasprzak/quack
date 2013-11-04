@@ -82,31 +82,6 @@ void AppInit() {
 	QuackVMCallSetup();
 	QuackVMCallInit();
 	
-	{
-		Log("**** SDL JOYSTICK");
-		int NumJoysticks = SDL_NumJoysticks();
-		Log("Num Joysticks: %i", NumJoysticks );
-		for ( int idx = 0; idx < NumJoysticks; ++idx) {
-			SDL_Joystick* Joy = SDL_JoystickOpen(idx);
-			SDL_JoystickGUID JoyGUID = SDL_JoystickGetGUID(Joy);
-			char GUID[48];
-			SDL_JoystickGetGUIDString( JoyGUID, GUID, sizeof(GUID) );
-			
-			SDL_JoystickID JoyID = SDL_JoystickInstanceID(Joy);
-
-			
-			Log("%i [%s] - (%i) (%i) %s", idx, GUID, SDL_IsGameController(idx), JoyID, SDL_JoystickNameForIndex(idx));
-			Log("Axes: %i  Balls: %i  Buttons: %i  Hats: %i",
-				SDL_JoystickNumAxes(Joy),
-				SDL_JoystickNumBalls(Joy),
-				SDL_JoystickNumButtons(Joy),
-				SDL_JoystickNumHats(Joy)
-				);
-			
-			SDL_JoystickClose(Joy);
-		}
-	}
-	
 	{	
 		Log("**** LOADING MONKEY POD");
 		CPVRTModelPOD Scene;
@@ -134,6 +109,8 @@ void AppInit() {
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
 	QuackVMCallExit();
+	
+	Gel::Input::Exit();
 }
 // - ------------------------------------------------------------------------------------------ - //
 

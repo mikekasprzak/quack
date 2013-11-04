@@ -18,6 +18,8 @@ struct SDLGamePad {
 	//Vector2D Ball;
 	
 	Vector2D DPad;	// Hat in a more usable form //
+	
+	st32 NumAxis;	// An Axis Count //
 };
 // - ------------------------------------------------------------------------------------------ - //
 enum { 

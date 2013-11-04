@@ -40,16 +40,21 @@ function gen_string( char, count ) {
 function print_table( table, level = 0, name = "" ) {
 	const Indent = "  ";
 	local Prefix = gen_string(Indent,level);
-	print( Prefix + "+ " + name + "[" + typeof(table) + "]: " + table.len() + " elements" );
-	foreach ( idx, val in table ) {
-		if ( typeof(val) == "table" ) {
-			print_table( val, level+1, idx + " " );
+	if ( typeof(table) == "table" ) {
+		print( Prefix + "+ " + name + "[" + typeof(table) + "]: " + table.len() + " elements" );
+		foreach ( idx, val in table ) {
+			if ( typeof(val) == "table" ) {
+				print_table( val, level+1, idx + " " );
+			}
+			else {
+				print( Prefix + Indent + "* " + idx + " [" + typeof(val) + "]: " + val );
+			}
 		}
-		else {
-			print( Prefix + Indent + "* " + idx + " [" + typeof(val) + "]: " + val );
-		}
+		print( Prefix + "- " + name + "[" + typeof(table) + "] ends." );
 	}
-	print( Prefix + "- " + name + "[" + typeof(table) + "] ends." );
+	else {
+		print( Prefix + "* [" + typeof(table) + "]: " + table );
+	}
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
 function RGBA( r, g, b, a ) {

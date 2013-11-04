@@ -25,12 +25,19 @@ void Exit() {
 	SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
 }
 // - ------------------------------------------------------------------------------------------ - //
+void ExitEvent( void* ) {
+	Exit();
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 void Init() {
 	SDL_InitSubSystem( SDL_INIT_JOYSTICK );
 	
 	// Open All Joysticks //
 	for ( size_t idx = 0; idx < DevicesConnected(); idx++ ) {
 		State[idx] = SDL_JoystickOpen( idx );
+		GamePad[idx].NumAxis = SDL_JoystickNumAxes(State[idx]);
 	}
 	
 	// Connect Signals (Functions to be called) //		

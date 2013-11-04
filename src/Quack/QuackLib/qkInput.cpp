@@ -219,6 +219,37 @@ SQInteger qkGetPad( HSQUIRRELVM v ) {
 		}
 		else {
 			// a Normal controller //
+			sqslot_int(v,"Index", Index);
+			sqslot_bool(v,"Connected", true); // Not Optional //
+			
+			// Buttons //
+			sqslot_int(v,"Button", Gel::Input::SDLInput::GamePad[Index].Button);
+	
+			Vector2D LStick;
+			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 0 )
+				LStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[0];
+			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 1 )
+				LStick.y = Gel::Input::SDLInput::GamePad[Index].Axis[1];
+
+			Vector2D RStick;
+			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 2 )
+				RStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[2];
+			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 3 )
+				RStick.y = Gel::Input::SDLInput::GamePad[Index].Axis[3];
+	
+			// LStick //			
+			sq_pushstring(v,"LStick",-1);
+			sq_newtable(v);
+			sqslot_float(v,"x", LStick.x.ToFloat());
+			sqslot_float(v,"y", LStick.y.ToFloat());		
+			sq_newslot(v,-3,SQFalse);
+	
+			// RStick //			
+			sq_pushstring(v,"RStick",-1);
+			sq_newtable(v);
+			sqslot_float(v,"x", RStick.x.ToFloat());
+			sqslot_float(v,"y", RStick.y.ToFloat());		
+			sq_newslot(v,-3,SQFalse);			
 		}
 	}
 //	else if ( true ) {
