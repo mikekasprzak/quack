@@ -1,5 +1,5 @@
 /L20"Squirrel" Line Comment = // Block Comment On = /* Block Comment Off = */ File Extensions = NUT 
-/Delimiters = ~!@%^&*()-+=|\/{}[]:;"'<> , .? 
+/Delimiters = ~!@%^&*()-+=|\/{}[]:;"'<> ,	.? 
 /Function String = "%[ ^t]++function^(*(*)^)" 
 /Function String 1 = "%[ ^t]++^(*^)=[ ^t]++function*(*)" 
 /Indent Strings = "{" 
