@@ -1608,10 +1608,12 @@ bool SQVM::EnterFrame(SQInteger newbase, SQInteger newtop, bool tailcall)
 	_top = newtop;
 	if(newtop + MIN_STACK_OVERHEAD > (SQInteger)_stack.size()) {
 		if(_nmetamethodscall) {
-			Raise_Error(_SC("stack overflow, cannot resize stack while in  a metamethod"));
+			Raise_Error(_SC("stack overflow, cannot resize stack while in a metamethod (%i)"),_stack.size()); // MK //
 			return false;
 		}
+		SQInteger oldstacksize = _stack.size(); // MK //
 		_stack.resize(_stack.size() + (MIN_STACK_OVERHEAD << 2));
+		_sharedstate->_printfunc(this,_SC("stack resized. Was %i, now %i."),oldstacksize,_stack.size()); // MK //
 		RelocateOuters();
 	}
 	return true;

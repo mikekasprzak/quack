@@ -9,14 +9,16 @@ void sq_PrintFunc( HSQUIRRELVM v, const SQChar *s, ... ) {
 	va_list arglist; 
 	va_start(arglist, s); 
 	vLogAlways(s,arglist);
-	va_end(arglist); 
+	va_end(arglist);
+	LogFlush();
 } 
 // - ------------------------------------------------------------------------------------------ - //
 void sq_ErrorFunc( HSQUIRRELVM v, const SQChar *s, ... ) {
 	va_list arglist; 
 	va_start(arglist, s); 
-	vLogAlways(s,arglist);
-	va_end(arglist); 
+	_vLogAlways(s,arglist);
+	va_end(arglist);
+	LogFlush();
 }
 // - ------------------------------------------------------------------------------------------ - //
 
