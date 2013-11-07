@@ -10,6 +10,13 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getfloatdelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_FLOAT );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 // Check if the project is built in Development Mode (Desktop OS's Only... Please) //
 SQInteger qkIsDevMode( HSQUIRRELVM v ) {
 	#ifdef PRODUCT_DEV_MODE
@@ -105,6 +112,8 @@ SQRegFunction qkSystem_funcs[] = {
 	_DECL_FUNC(qkRequireFile,2,_SC(".s")),
 	_DECL_FUNC(qkOnKey,1,NULL),
 	_DECL_FUNC(qkGetTop,1,NULL),
+	
+	_DECL_FUNC(sqext_getfloatdelegate,1,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC

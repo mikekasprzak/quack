@@ -34,7 +34,7 @@ class vec2 {
 		return "(" + x + "," + y + ")";
 	}
 	
-	function ToArray() {
+	function toarray() {
 		return [x,y];
 	}
 
@@ -42,41 +42,41 @@ class vec2 {
 		return (x*vs.x) + (y*vs.y);
 	}
 	
-	function Magnitude() {
+	function magnitude() {
 		return sqrt((x*x) + (y*y));
 	}
-	function MagnitudeSquared() {
+	function magnitudesquared() {
 		return (x*x) + (y*y);
 	}
-	function Manhattan() {
+	function manhattan() {
 		return abs(x) + abs(y);
 	}
-	function SumOf() {
+	function sumof() {
 		return x+y;
 	}
-	function ProductOf() {
+	function productof() {
 		return x*y;
 	}
 
-	function Normal() {
-		local Mag = Magnitude();
+	function normal() {
+		local Mag = magnitude();
 		local Mag2 = ::vec2(Mag,Mag);
 		return this / Mag2;
 	}
-	function Normalize() {
-		local Mag = Magnitude();
+	function normalize() {
+		local Mag = magnitude();
 		local Mag2 = ::vec2(Mag,Mag);
 		this /= Mag2;
 		return this;
 	}
-	function NormalizeRet() {
-		local Mag = Magnitude();
+	function normalizeret() {
+		local Mag = magnitude();
 		local Mag2 = ::vec2(Mag,Mag);
 		this /= Mag2;
 		return Mag;
 	}
 		
-	function Tangent() {
+	function tangent() {
 		return ::vec2( y, -x );
 	}
 	
@@ -128,7 +128,7 @@ class vec3 {
 		return "(" + x + "," + y + "," + z + ")";
 	}
 
-	function ToArray() {
+	function toarray() {
 		return [x,y,z];
 	}
 
@@ -143,35 +143,35 @@ class vec3 {
 			);
 	}
 
-	function Magnitude() {
+	function magnitude() {
 		return sqrt((x*x) + (y*y) + (z*z));
 	}
-	function MagnitudeSquared() {
+	function magnitudesquared() {
 		return (x*x) + (y*y) + (z*z);
 	}
-	function Manhattan() {
+	function manhattan() {
 		return abs(x) + abs(y) + abs(z);
 	}
-	function SumOf() {
+	function sumof() {
 		return x+y+z;
 	}
-	function ProductOf() {
+	function productof() {
 		return x*y*z;
 	}
 
-	function Normal() {
-		local Mag = Magnitude();
+	function normal() {
+		local Mag = magnitude();
 		local Mag3 = ::vec3(Mag,Mag,Mag);
 		return this / Mag3;
 	}
-	function Normalize() {
-		local Mag = Magnitude();
+	function normalize() {
+		local Mag = magnitude();
 		local Mag3 = ::vec3(Mag,Mag,Mag);
 		this /= Mag3;
 		return this;
 	}
-	function NormalizeRet() {
-		local Mag = Magnitude();
+	function normalizeret() {
+		local Mag = magnitude();
 		local Mag3 = ::vec3(Mag,Mag,Mag);
 		this /= Mag3;
 		return Mag;
@@ -234,7 +234,7 @@ class vec4 {
 		return "(" + x + "," + y + "," + z + "," + w + ")";
 	}
 
-	function ToArray() {
+	function toarray() {
 		return [x,y,z,w];
 	}
 	
@@ -242,35 +242,35 @@ class vec4 {
 		return (x*vs.x) + (y*vs.y) + (z*vs.z) + (w*vs.w);
 	}
 	
-	function Magnitude() {
+	function magnitude() {
 		return sqrt((x*x) + (y*y) + (z*z) + (w*w));
 	}
-	function MagnitudeSquared() {
+	function magnitudeSquared() {
 		return (x*x) + (y*y) + (z*z) + (w*w);
 	}
-	function Manhattan() {
+	function manhattan() {
 		return abs(x) + abs(y) + abs(z) + abs(w);
 	}
-	function SumOf() {
+	function sumof() {
 		return x+y+z+w;
 	}
-	function ProductOf() {
+	function productof() {
 		return x*y*z*w;
 	}
 	
-	function Normal() {
-		local Mag = Magnitude();
+	function normal() {
+		local Mag = magnitude();
 		local Mag4 = ::vec4(Mag,Mag,Mag,Mag);
 		return this / Mag4;
 	}
-	function Normalize() {
-		local Mag = Magnitude();
+	function normalize() {
+		local Mag = magnitude();
 		local Mag4 = ::vec4(Mag,Mag,Mag,Mag);
 		this /= Mag4;
 		return this;
 	}
-	function NormalizeRet() {
-		local Mag = Magnitude();
+	function normalizeRet() {
+		local Mag = magnitude();
 		local Mag4 = ::vec4(Mag,Mag,Mag,Mag);
 		this /= Mag4;
 		return Mag;
@@ -283,6 +283,58 @@ class vec4 {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+
+// - ------------------------------------------------------------------------------------------ - //
+// 1D Vector (i.e. float, so we don't use a class, but instead set delegates) //
+// - ------------------------------------------------------------------------------------------ - //
+{
+	// - -------------------------------------------------------------------------------------- - //
+	local fd = sqext_getfloatdelegate();
+	// - -------------------------------------------------------------------------------------- - //
+	fd.magnitude <- function() {
+		return abs(this);
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	fd.magnitudesquared <- function() {
+		return this*this;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	fd.manhattan <- function() {
+		return abs(this);
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	fd.normal <- function() {
+		if ( this > 0.0 )
+			return 1.0;
+		else if ( this < 0.0 )
+			return -1.0;
+		else
+			return 0.0;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	fd.normalize <- function() {
+		if ( this > 0.0 )
+			this = 1.0;
+		else if ( this < 0.0 )
+			this = -1.0;
+		else
+			this = 0.0;
+		return this;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	fd.normalizeret <- function() {
+		local Ret = this.magnitude();
+		if ( this > 0.0 )
+			this = 1.0;
+		else if ( this < 0.0 )
+			this = -1.0;
+		else
+			this = 0.0;
+		return Ret;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 // Dot Product - Call the internal Dot Product function //

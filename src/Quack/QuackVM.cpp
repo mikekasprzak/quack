@@ -63,15 +63,15 @@ void QuackVMInit() {
 	// Load My Libraries //
 	Log( "Loading Quack Libraries..." );
 	sq_pushroottable( vm );
+		Log("* qkSystem"); register_qkSystem( vm );
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
 		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
-		Log("* qkSystem"); register_qkSystem( vm );
 		Log("* qkScreen"); register_qkScreen( vm );
 		Log("* qkInput"); register_qkInput( vm );
 		//Log("* qkJson"); register_qkJson( vm );
 	sq_pop( vm, 1 );
 	Log( "" );
-
+	
 	// Load the startup file //
 	const char* StartupFile = "main.nut";
 	Log( "Loading Startup File (%s)...", StartupFile );
