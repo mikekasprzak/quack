@@ -10,8 +10,57 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+// We needed these because getting access to the default delegates isn't exposed to Squirrel. //
+// - ------------------------------------------------------------------------------------------ - //
+// NOTE: The Float and Integer delegates are the same //
 SQInteger sqext_getfloatdelegate( HSQUIRRELVM v ) {
 	sq_getdefaultdelegate( v, OT_FLOAT );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getstringdelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_STRING );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_gettabledelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_TABLE );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getarraydelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_ARRAY );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// NOTE: The Closure and NativeClosure delegates are the same //
+SQInteger sqext_getclosuredelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_CLOSURE );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getgeneratordelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_GENERATOR );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getthreaddelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_THREAD );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getclassdelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_CLASS );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getinstancedelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_INSTANCE );
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger sqext_getweakrefdelegate( HSQUIRRELVM v ) {
+	sq_getdefaultdelegate( v, OT_WEAKREF );
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -114,6 +163,15 @@ SQRegFunction qkSystem_funcs[] = {
 	_DECL_FUNC(qkGetTop,1,NULL),
 	
 	_DECL_FUNC(sqext_getfloatdelegate,1,NULL),
+	_DECL_FUNC(sqext_getstringdelegate,1,NULL),
+	_DECL_FUNC(sqext_gettabledelegate,1,NULL),
+	_DECL_FUNC(sqext_getarraydelegate,1,NULL),
+	_DECL_FUNC(sqext_getclosuredelegate,1,NULL),
+	_DECL_FUNC(sqext_getgeneratordelegate,1,NULL),
+	_DECL_FUNC(sqext_getthreaddelegate,1,NULL),
+	_DECL_FUNC(sqext_getclassdelegate,1,NULL),
+	_DECL_FUNC(sqext_getinstancedelegate,1,NULL),
+	_DECL_FUNC(sqext_getweakrefdelegate,1,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
