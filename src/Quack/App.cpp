@@ -134,7 +134,7 @@ void AppStep() {
 	sq_pushstring(vm,_SC("FrameTime"),-1);
 	sq_pushinteger(vm,App::FrameTime);
 	sq_newslot(vm,-3,SQFalse);
-	sq_pop(vm,1);
+	sq_pop(vm,1+1); // Slot and Root Table //
 	// END: Update FrameTime //
 
 	QuackVMCallStep();

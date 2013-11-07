@@ -42,7 +42,7 @@ void QuackVMInit() {
 	
 	// Initialize VM //
 	Log( "Creating VM..." );
-	vm = sq_open( 1024 );		// Start VM (Stack Size) //
+	vm = sq_open( 32 );		// Start VM (Stack Size) //
 	sq_setprintfunc_Log( vm );	// Set 'Log' to be the print function //
 
 	atexit( QuackVMExit );

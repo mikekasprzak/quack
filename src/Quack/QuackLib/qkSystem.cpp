@@ -36,6 +36,13 @@ SQInteger qkOnKey( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkGetTop( HSQUIRRELVM v ) {
+	extern bool ___keyESC;
+	sq_pushinteger( v, sq_gettop(v) );
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
 // Queue up a file for the Asset Pool //
 SQInteger qkRequireFile( HSQUIRRELVM v ) {
 	const char* File;
@@ -97,6 +104,7 @@ SQRegFunction qkSystem_funcs[] = {
 	_DECL_FUNC(qkRequestExit,1,NULL),
 	_DECL_FUNC(qkRequireFile,2,_SC(".s")),
 	_DECL_FUNC(qkOnKey,1,NULL),
+	_DECL_FUNC(qkGetTop,1,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
