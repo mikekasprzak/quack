@@ -4,8 +4,10 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <API/API_Squirrel.h>
 // - ------------------------------------------------------------------------------------------ - //
-inline const char* sqext_gettypename( HSQUIRRELVM v, SQInteger Index ) {
-	switch( sq_gettype(v,Index) ) {
+//inline const char* sqext_gettypename( HSQUIRRELVM v, SQInteger Index ) {
+//	switch( sq_gettype(v,Index) ) {
+inline const char* sqext_gettypename( SQInteger Index ) {
+	switch( Index ) {
 		case OT_NULL:
 			return "null";
 			break;

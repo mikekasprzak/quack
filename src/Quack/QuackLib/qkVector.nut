@@ -6,7 +6,7 @@ class vec2 {
 		if ( vargv.len() >= 2 ) {
 			x = vargv[0];
 			y = vargv[1];
-		}	
+		}
 	}
 	
 	function _add(vs) {
@@ -100,8 +100,23 @@ class vec3 {
 			x = vargv[0];
 			y = vargv[1];
 			z = 0.0;
-		}	
+		}
 	}
+	
+//	function _cloned(original) {
+//		Log("I was cloned! " + original);
+//	}
+	
+//	function _get(idx) {
+//		print_table( vargv );
+//		if ( idx == 0 )
+//			return x;
+//		else if ( idx == 1 )
+//			return y;
+//		else if ( idx == 2 )
+//			return z;
+//		throw null;
+//	}
 	
 	function _add(vs) {
 		return ::vec3( x+vs.x, y+vs.y, z+vs.z );

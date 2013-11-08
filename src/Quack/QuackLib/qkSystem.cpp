@@ -66,6 +66,35 @@ SQInteger sqext_getweakrefdelegate( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+// This doesn't seem to work, yet it sort-of does. Returned refcount is incorrect. //
+SQInteger sqext_getrefcount( HSQUIRRELVM v ) {
+	HSQOBJECT obj;
+	sq_resetobject(&obj);	// Initialize the Handle //
+		
+//	Log( "type: %s", sqext_gettypename(sq_gettype(v,2)) );
+
+//	SQObjectType Tag;
+//	sq_gettypetag(v,2,(void**)&Tag);
+//	Log( "type: %s", sqext_gettypename(Tag) );
+
+	sq_getstackobj(v,2,&obj);
+	sq_addref(v,&obj);
+	
+//	sq_getobjtypetag( &obj, (void**)&Tag );
+//	Log( "Type: %s", sqext_gettypename(obj._type) );
+	
+	SQUnsignedInteger Refs = sq_getrefcount(v,&obj);
+//	Log( "Refs: %i", Refs );
+	
+	sq_pushinteger(v, Refs);
+	
+	sq_release(v,&obj);
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 // Check if the project is built in Development Mode (Desktop OS's Only... Please) //
 SQInteger qkIsDevMode( HSQUIRRELVM v ) {
 	#ifdef PRODUCT_DEV_MODE
@@ -172,6 +201,8 @@ SQRegFunction qkSystem_funcs[] = {
 	_DECL_FUNC(sqext_getclassdelegate,1,NULL),
 	_DECL_FUNC(sqext_getinstancedelegate,1,NULL),
 	_DECL_FUNC(sqext_getweakrefdelegate,1,NULL),
+	
+	_DECL_FUNC(sqext_getrefcount,2,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
