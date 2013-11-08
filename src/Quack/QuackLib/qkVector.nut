@@ -8,17 +8,41 @@ class vec2 {
 			y = vargv[1];
 		}
 	}
+
+	function _get(idx) {
+		if ( idx == 0 )
+			return x;
+		else if ( idx == 1 )
+			return y;
+		throw null;
+	}
 	
 	function _add(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec2( x+vs, y+vs );
 		return ::vec2( x+vs.x, y+vs.y );
 	}
 	function _sub(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec2( x-vs, y-vs );
 		return ::vec2( x-vs.x, y-vs.y );
 	}
 	function _mul(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec2( x*vs, y*vs );
 		return ::vec2( x*vs.x, y*vs.y );
 	}
 	function _div(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec2( x/vs, y/vs );
 		return ::vec2( x/vs.x, y/vs.y );
 	}
 	
@@ -103,31 +127,42 @@ class vec3 {
 		}
 	}
 	
-//	function _cloned(original) {
-//		Log("I was cloned! " + original);
-//	}
-	
-//	function _get(idx) {
-//		print_table( vargv );
-//		if ( idx == 0 )
-//			return x;
-//		else if ( idx == 1 )
-//			return y;
-//		else if ( idx == 2 )
-//			return z;
-//		throw null;
-//	}
+	function _get(idx) {
+		if ( idx == 0 )
+			return x;
+		else if ( idx == 1 )
+			return y;
+		else if ( idx == 2 )
+			return z;
+		throw null;
+	}
 	
 	function _add(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec3( x+vs, y+vs, z+vs );
 		return ::vec3( x+vs.x, y+vs.y, z+vs.z );
 	}
 	function _sub(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec3( x-vs, y-vs, z-vs );
 		return ::vec3( x-vs.x, y-vs.y, z-vs.z );
 	}
 	function _mul(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec3( x*vs, y*vs, z*vs );
 		return ::vec3( x*vs.x, y*vs.y, z*vs.z );
 	}
 	function _div(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec3( x/vs, y/vs, z/vs );
 		return ::vec3( x/vs.x, y/vs.y, z/vs.z );
 	}
 	
@@ -224,16 +259,44 @@ class vec4 {
 		}	
 	}
 	
+	function _get(idx) {
+		if ( idx == 0 )
+			return x;
+		else if ( idx == 1 )
+			return y;
+		else if ( idx == 2 )
+			return z;
+		else if ( idx == 3 )
+			return w;
+		throw null;
+	}
+		
 	function _add(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec4( x+vs, y+vs, z+vs, w+vs );
 		return ::vec4( x+vs.x, y+vs.y, z+vs.z, w+vs.w );
 	}	
 	function _sub(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec4( x-vs, y-vs, z-vs, w-vs );
 		return ::vec4( x-vs.x, y-vs.y, z-vs.z, w-vs.w );
 	}
 	function _mul(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec4( x*vs, y*vs, z*vs, w*vs );
 		return ::vec4( x*vs.x, y*vs.y, z*vs.z, w*vs.w );
 	}
 	function _div(vs) {
+		if ( typeof vs == "integer" )
+			vs = vs.tofloat();
+		if ( typeof vs == "float" )
+			return ::vec4( x/vs, y/vs, z/vs, w/vs );
 		return ::vec4( x/vs.x, y/vs.y, z/vs.z, w/vs.w );
 	}
 
