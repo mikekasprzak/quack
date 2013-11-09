@@ -6,16 +6,49 @@
 #include "sqgelext.h"
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_CONSTRUCTOR_START(_TYPE_) \
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,1,(void**)&Vec,0);
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_CONSTRUCTOR_END(_TYPE_) \
+	return SQ_VOID;
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_GET_START(_TYPE_) \
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,1,(void**)&Vec,0); \
+	\
+	const char* MemberName; \
+	sq_getstring(v,2,&MemberName);
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_GET_END(_TYPE_) \
+	sq_pushnull(v);		/* +1 */ \
+	sq_throwobject(v);	/* -1 */ \
+	\
+	return SQ_VOID;
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_SET_START(_TYPE_) \
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,1,(void**)&Vec,0); \
+	\
+	const char* MemberName; \
+	sq_getstring(v,2,&MemberName); \
+	\
+	float Value; \
+	sq_getfloat(v,3,&Value);
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_SET_END(_TYPE_) \
+	sq_pushnull(v);		/* +1 */ \
+	sq_throwobject(v);	/* -1 */ \
+	\
+	return SQ_VOID;
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 // the constructor //
 SQInteger qk_vec2_constructor( HSQUIRRELVM v ) {
-	// Retrieve Data (Pointer) //
-	Vector2D* Vec;
-	sq_getinstanceup(v,1,(void**)&Vec,0);
-	
-	// Check the number of arguments //
-//	int Top = sq_gettop(v);
+	_VEC_CONSTRUCTOR_START(Vector2D);
 	
 	float x,y;
 	sq_getfloat(v,2,&x);
@@ -24,19 +57,12 @@ SQInteger qk_vec2_constructor( HSQUIRRELVM v ) {
 	// Write Data //
 	*Vec = Vector2D(x,y);
 
-	// Finished //
-	return SQ_VOID;
+	_VEC_CONSTRUCTOR_END(Vector2D);
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _get metamethod //
 SQInteger qk_vec2_get( HSQUIRRELVM v ) {
-	// Retrieve Data (Pointer) //
-	Vector2D* Vec;
-	sq_getinstanceup(v,1,(void**)&Vec,0);
-	
-	// Get the requested member //
-	const char* MemberName;
-	sq_getstring(v,2,&MemberName);
+	_VEC_GET_START(Vector2D);
 	
 	// Return different data depending on requested member //
 	if ( MemberName[0] == 'x' ) {
@@ -48,26 +74,12 @@ SQInteger qk_vec2_get( HSQUIRRELVM v ) {
 		return SQ_RETURN;
 	}
 
-	// Throw null on member not found //
-	sq_pushnull(v);		// +1 //
-	sq_throwobject(v);	// -1 //
-	
-	return SQ_VOID;
+	_VEC_GET_END(Vector2D);
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _set metamethod //
 SQInteger qk_vec2_set( HSQUIRRELVM v ) {
-	// Retrieve Data (Pointer) //
-	Vector2D* Vec;
-	sq_getinstanceup(v,1,(void**)&Vec,0);
-	
-	// Get the requested member //
-	const char* MemberName;
-	sq_getstring(v,2,&MemberName);
-
-	// Get the value //
-	float Value;
-	sq_getfloat(v,3,&Value);
+	_VEC_SET_START(Vector2D);
 	
 	// Return different data depending on requested member //
 	if ( MemberName[0] == 'x' ) {
@@ -81,18 +93,14 @@ SQInteger qk_vec2_set( HSQUIRRELVM v ) {
 		return SQ_RETURN;
 	}
 
-	// Throw null on member not found //
-	sq_pushnull(v);		// +1 //
-	sq_throwobject(v);	// -1 //
-	
-	return SQ_VOID;
+	_VEC_SET_END(Vector2D);
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _typeof metamethod //
-SQInteger qk_vec2_typeof( HSQUIRRELVM v ) {
-	sq_pushstring(v,"vec2",4); // 4 characters long //
-	return SQ_RETURN;
-}
+//SQInteger qk_vec2_typeof( HSQUIRRELVM v ) {
+//	sq_pushstring(v,"vec2",4); // 4 characters long //
+//	return SQ_RETURN;
+//}
 // - ------------------------------------------------------------------------------------------ - //
 //// _tostring metamethod //
 //SQInteger qk_vec2_tostring( HSQUIRRELVM v ) {
@@ -108,89 +116,70 @@ SQInteger qk_vec2_typeof( HSQUIRRELVM v ) {
 //	
 //	return SQ_RETURN;
 //}
+
 // - ------------------------------------------------------------------------------------------ - //
-// _cloned metamethod //
-SQInteger qk_vec2_cloned( HSQUIRRELVM v ) {
-	// Retrieve Data (Pointer) //
-	Vector2D* Vec;
-	sq_getinstanceup(v,1,(void**)&Vec,0);
-
-	// Retrieve Other Data (Pointer) //
-	Vector2D* Vs;
-	sq_getinstanceup(v,2,(void**)&Vs,0);
-	
-	*Vec = *Vs;
-
-	return SQ_VOID;
+#define _VEC_TYPEOF_METAMETHOD(_TYPE_,_NAME_,_TYPENAME_,_STRLEN_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_pushstring(v,#_TYPENAME_,_STRLEN_); \
+	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
-// _add metamethod //
-SQInteger qk_vec2_add( HSQUIRRELVM v ) {
-	sq_clone(v,1);
-	
-	// Retrieve Clone Data (Pointer) //
-	Vector2D* Vec;
-	sq_getinstanceup(v,-1,(void**)&Vec,0);
-
-	// Retrieve Other Data (Pointer) //
-	Vector2D* Vs;
-	sq_getinstanceup(v,2,(void**)&Vs,0);
-	
-	*Vec += *Vs;
-
-	return SQ_RETURN;
+// _cloned //
+#define _VEC_CLONED_METAMETHOD(_TYPE_,_NAME_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	_TYPE_* Vec; /* +1 */ \
+	sq_getinstanceup(v,1,(void**)&Vec,0); \
+	\
+	_TYPE_* Vs; \
+	sq_getinstanceup(v,2,(void**)&Vs,0); \
+	\
+	*Vec = *Vs; \
+	\
+	return SQ_VOID; \
 }
 // - ------------------------------------------------------------------------------------------ - //
-// _sub metamethod //
-SQInteger qk_vec2_sub( HSQUIRRELVM v ) {
-	sq_clone(v,1);
-	
-	// Retrieve Clone Data (Pointer) //
-	Vector2D* Vec;
-	sq_getinstanceup(v,-1,(void**)&Vec,0);
-
-	// Retrieve Other Data (Pointer) //
-	Vector2D* Vs;
-	sq_getinstanceup(v,2,(void**)&Vs,0);
-	
-	*Vec -= *Vs;
-
-	return SQ_RETURN;
+// _add, _sub, _mul, _div //
+#define _VEC_MATH_METAMETHOD(_TYPE_,_NAME_,_OP_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_clone(v,1); /* +1 */ \
+	\
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,-1,(void**)&Vec,0); \
+	\
+	_TYPE_* Vs; \
+	sq_getinstanceup(v,2,(void**)&Vs,0); \
+	\
+	*Vec = (*Vec) _OP_ (*Vs); \
+	\
+	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
-// _mul metamethod //
-//SQInteger qk_vec2_mul( HSQUIRRELVM v ) {
-//	sq_clone(v,1);
-//	
-//	// Retrieve Clone Data (Pointer) //
-//	Vector2D* Vec;
-//	sq_getinstanceup(v,-1,(void**)&Vec,0);
-//
-//	// Retrieve Other Data (Pointer) //
-//	Vector2D* Vs;
-//	sq_getinstanceup(v,2,(void**)&Vs,0);
-//	
-//	(*Vec) *= (*Vs);
-//
-//	return SQ_RETURN;
-//}
+// _unm (i.e. negative) //
+#define _VEC_UNM_METAMETHOD(_TYPE_,_NAME_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_clone(v,1); /* +1 */ \
+	\
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,-1,(void**)&Vec,0); \
+	\
+	*Vec = -(*Vec);\
+	\
+	return SQ_RETURN; \
+}
 // - ------------------------------------------------------------------------------------------ - //
-// _div metamethod //
-//SQInteger qk_vec2_div( HSQUIRRELVM v ) {
-//	sq_clone(v,1);
-//	
-//	// Retrieve Clone Data (Pointer) //
-//	Vector2D* Vec;
-//	sq_getinstanceup(v,-1,(void**)&Vec,0);
-//
-//	// Retrieve Other Data (Pointer) //
-//	Vector2D* Vs;
-//	sq_getinstanceup(v,2,(void**)&Vs,0);
-//	
-//	*Vec /= *Vs;
-//
-//	return SQ_RETURN;
-//}
+#define _CLASS_ADDFUNC(_FUNC_,_METHOD_) \
+	sq_pushstring(v,#_METHOD_,-1);				/* +1 */ \
+	sq_pushstring(v,#_FUNC_,-1);				/* +1 */ \
+	sq_get(v,Root); /* lookup function */		/* =0 */ \
+	sq_newslot(v,CPos,false);					/* -2 */
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+_VEC_TYPEOF_METAMETHOD(Vector2D,qk_vec2_typeof,vec2,4);
+_VEC_CLONED_METAMETHOD(Vector2D,qk_vec2_cloned);
+_VEC_MATH_METAMETHOD(Vector2D,qk_vec2_add,+);
+_VEC_MATH_METAMETHOD(Vector2D,qk_vec2_sub,-);
+_VEC_UNM_METAMETHOD(Vector2D,qk_vec2_unm);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -210,6 +199,8 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_sub,2,NULL),
 //	_DECL_FUNC(qk_vec2_mul,2,NULL),
 //	_DECL_FUNC(qk_vec2_div,2,NULL),
+
+	_DECL_FUNC(qk_vec2_unm,1,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
@@ -233,66 +224,14 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	int CPos = sq_gettop(v); // class pos
 	sq_setclassudsize(v,CPos,sizeof(Vector2D));
 
-	// constructor //
-	sq_pushstring(v,"constructor",-1);					// +1 //
-	sq_pushstring(v,"qk_vec2_constructor",-1);			// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
+	_CLASS_ADDFUNC(qk_vec2_constructor,constructor);
+	_CLASS_ADDFUNC(qk_vec2_get,_get);
+	_CLASS_ADDFUNC(qk_vec2_set,_set);
+	_CLASS_ADDFUNC(qk_vec2_typeof,_typeof);
+	_CLASS_ADDFUNC(qk_vec2_cloned,_cloned);
+	_CLASS_ADDFUNC(qk_vec2_add,_add);
+	_CLASS_ADDFUNC(qk_vec2_sub,_sub);
 
-	// get metamethod //
-	sq_pushstring(v,"_get",-1);							// +1 //
-	sq_pushstring(v,"qk_vec2_get",-1);					// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// set metamethod //
-	sq_pushstring(v,"_set",-1);							// +1 //
-	sq_pushstring(v,"qk_vec2_set",-1);					// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// typeof metamethod //
-	sq_pushstring(v,"_typeof",-1);						// +1 //
-	sq_pushstring(v,"qk_vec2_typeof",-1);				// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-//	// tostring metamethod //
-//	sq_pushstring(v,"_tostring",-1);					// +1 //
-//	sq_pushstring(v,"qk_vec2_tostring",-1);			// +1 //
-//	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-//	sq_newslot(v,CPos,false);							// -2 //
-
-	// cloned metamethod //
-	sq_pushstring(v,"_cloned",-1);						// +1 //
-	sq_pushstring(v,"qk_vec2_cloned",-1);				// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// add metamethod //
-	sq_pushstring(v,"_add",-1);							// +1 //
-	sq_pushstring(v,"qk_vec2_add",-1);					// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// sub metamethod //
-	sq_pushstring(v,"_sub",-1);							// +1 //
-	sq_pushstring(v,"qk_vec2_sub",-1);					// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-//	// mul metamethod //
-//	sq_pushstring(v,"_mul",-1);							// +1 //
-//	sq_pushstring(v,"qk_vec2_mul",-1);					// +1 //
-//	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-//	sq_newslot(v,CPos,false);							// -2 //
-//
-//	// div metamethod //
-//	sq_pushstring(v,"_div",-1);							// +1 //
-//	sq_pushstring(v,"qk_vec2_div",-1);					// +1 //
-//	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-//	sq_newslot(v,CPos,false);							// -2 //
-	
 	sq_newslot(v,Root,false); // Add Class to Root		// -2 //
 	
 	return SQ_OK;
