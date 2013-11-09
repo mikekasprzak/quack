@@ -3,6 +3,7 @@
 #define __GEL_WTF_SQEXT_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <API/API_Squirrel.h>
+#include <Lib/Lib.h>
 // - ------------------------------------------------------------------------------------------ - //
 //inline const char* sqext_gettypename( HSQUIRRELVM v, SQInteger Index ) {
 //	switch( sq_gettype(v,Index) ) {
@@ -65,6 +66,25 @@ inline const char* sqext_gettypename( SQInteger Index ) {
 	};
 
 	return "invalid type";
+}
+
+// - ------------------------------------------------------------------------------------------ - //
+inline void sqext_stackdump( HSQUIRRELVM v ) {
+	SQInteger Top = sq_gettop(v);
+	
+	Log("Stack Dump (%i):", Top);
+	for ( int idx = Top; idx > 0; --idx ) {
+		const char* ToString;
+		sq_tostring(v,idx); 				// +1 //
+		sq_getstring(v,-1,&ToString);
+		sq_poptop(v);						// -1 //
+		const char* TypeOf;
+		sq_typeof(v,idx);					// +1 //
+		sq_getstring(v,-1,&TypeOf);
+		sq_poptop(v);						// -1 //
+		Log( "%i - [size: %04i] %s: %s", idx, sq_getsize(v,idx), TypeOf, ToString );
+	}
+	Log("End of Stack Dump (%i).", sq_gettop(v));
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Whether an object exists or not in the root table //

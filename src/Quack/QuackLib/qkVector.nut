@@ -2,10 +2,20 @@
 // 2D Vector //
 // - ------------------------------------------------------------------------------------------ - //
 class vec2 {
+	x = 0.0;
+	y = 0.0;
+
 	constructor (...) {
 		if ( vargv.len() >= 2 ) {
 			x = vargv[0];
 			y = vargv[1];
+		}
+		else if ( vargv.len() >= 1 ) {
+			if ( typeof vargv[0] == "vec2" ) {
+				x = vargv[0].x;
+				y = vargv[0].y;
+//				this = clone vargv[0];
+			}
 		}
 	}
 
@@ -103,9 +113,6 @@ class vec2 {
 	function tangent() {
 		return ::vec2( y, -x );
 	}
-	
-	x = 0.0;
-	y = 0.0;	
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -114,6 +121,10 @@ class vec2 {
 // 3D Vector //
 // - ------------------------------------------------------------------------------------------ - //
 class vec3 {
+	x = 0.0;
+	y = 0.0;
+	z = 0.0;
+	
 	constructor (...) {
 		if ( vargv.len() >= 3 ) {
 			x = vargv[0];
@@ -125,6 +136,19 @@ class vec3 {
 			y = vargv[1];
 			z = 0.0;
 		}
+		else if ( vargv.len() >= 1 ) {
+			if ( typeof vargv[0] == "vec3" ) {
+				x = vargv[0].x;
+				y = vargv[0].y;
+				z = vargv[0].z;
+				
+//				this = clone vargv[0];
+			}
+		}
+	}
+	
+	function _clone(orig) {
+		Log("IMA CLONE");
 	}
 	
 	function _get(idx) {
@@ -226,10 +250,6 @@ class vec3 {
 		this /= Mag3;
 		return Mag;
 	}
-			
-	x = 0.0;
-	y = 0.0;
-	z = 0.0;
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -238,6 +258,11 @@ class vec3 {
 // 4D Vector //
 // - ------------------------------------------------------------------------------------------ - //
 class vec4 {
+	x = 0.0;
+	y = 0.0;
+	z = 0.0;
+	w = 0.0;
+
 	constructor (...) {
 		if ( vargv.len() >= 4 ) {
 			x = vargv[0];
@@ -257,6 +282,15 @@ class vec4 {
 			z = 0.0;
 			w = 0.0;
 		}	
+		else if ( vargv.len() >= 1 ) {
+			if ( typeof vargv[0] == "vec4" ) {
+				x = vargv[0].x;
+				y = vargv[0].y;
+				z = vargv[0].z;
+				w = vargv[0].w;
+//				this = clone vargv[0];
+			}
+		}
 	}
 	
 	function _get(idx) {
@@ -353,11 +387,6 @@ class vec4 {
 		this /= Mag4;
 		return Mag;
 	}
-	
-	x = 0.0;
-	y = 0.0;
-	z = 0.0;
-	w = 0.0;
 }
 // - ------------------------------------------------------------------------------------------ - //
 

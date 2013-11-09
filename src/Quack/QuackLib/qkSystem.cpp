@@ -122,7 +122,6 @@ SQInteger qkOnKey( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkGetTop( HSQUIRRELVM v ) {
-	extern bool ___keyESC;
 	sq_pushinteger( v, sq_gettop(v) );
 
 	return SQ_RETURN;
