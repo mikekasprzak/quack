@@ -166,7 +166,7 @@ public:
 	}
 	// When a file has changed, this is how we reload. //
 	inline void Reload() {
-		Log( "* Reloading Asset (%s)", GetFileName() );
+		VLog( "* Reloading Asset (%s)", GetFileName() );
 		Release();				// Release instead of Unload, as we want to keep the File Name //
 		DoLoad();				// Explicitly reload //
 		OnReloadCallbacks();	// Notify the subscribers that this file was changed //
@@ -175,7 +175,7 @@ public:
 	// Attach a function that is notified whenever an asset is reloaded //
 	template< class T >
 	inline void SubscribeToChanges( T Callback, st UserData = 0 ) {
-		Log("* SUB NUT: %i", UserData );
+		VVVLog("* SUB NUT: %i", UserData );
 		OnReloadCallbacks.Connect( Callback, UserData );
 	}
 	// Remove a function that was added to monitor for changes //

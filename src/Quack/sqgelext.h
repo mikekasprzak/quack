@@ -15,44 +15,44 @@ inline void sqext_log( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline SQBool sqext_compile_nut( HSQUIRRELVM v, const char* Text, const st TextSize, const char* Name = "?" ) {
-	VLog( "+ Compiling Script File (%s)...", Name );
+	VVLog( "+ Compiling Script File (%s)...", Name );
 
 	// Compile and push a closure on to the stack //
 	if ( SQ_SUCCEEDED( sq_compilebuffer(v, Text, TextSize, Name, true) ) ) {
-		VLog( "* Executing Script File (%s)...", Name );
+		VVVLog( "* Executing Script File (%s)...", Name );
 		sq_pushroottable(v);	// Push the root table (first argument) //
 		if ( SQ_SUCCEEDED( sq_call(v,1,false,SQTrue) ) ) {
 			sq_remove(v,-1); 	// Remove the closure
-			VLog( "- Script File Compiled and Executed successfully (%s).", Name );
+			VVLog( "- Script File Compiled and Executed successfully (%s).", Name );
 			return SQTrue;
 		}
 		sq_pop(v,1);			// Pop the root table //
 	}
 	
-	VLog( "- Error using Script File (%s).", Name );
+	VVLog( "- Error using Script File (%s).", Name );
 	
 	return SQFalse;
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline SQBool sqext_load_nut( HSQUIRRELVM v, const char* NutFile ) {
-	Log( "+ Loading Script File (%s)...", NutFile );
+	VLog( "+ Loading Script File (%s)...", NutFile );
 
 	const char* NutFileResult = Gel::Search(NutFile);
 	GelAssetPool::UID Nut = Gel::AssetPool.Load(NutFileResult);
 		
 	GelAsset& MyAsset = Gel::AssetPool[Nut];
-	Log( "* NUT: %i", Nut );
+	VVVLog( "* NUT: %i", Nut );
 
 	if ( !MyAsset.IsBad() ) {
 		MyAsset.SubscribeToChanges( sqext_reload_subscriber, Nut );
 		
-		return_if_Log( 
+		return_if_VLog( 
 			sqext_compile_nut( v, MyAsset.Get(), MyAsset.GetSize(), NutFileResult ), 
 			"- Script File Loaded Successfully (%s).", NutFile 
 		);
 	}
 	
-	Log( "- Unable to load Script File (%s).", NutFile );
+	VLog( "- Unable to load Script File (%s).", NutFile );
 	
 	return SQFalse;
 }

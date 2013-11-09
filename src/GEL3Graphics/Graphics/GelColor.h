@@ -12,6 +12,8 @@ typedef int GelColor;
 #define GEL_GET_B(c)			(((c)>>16)&255)
 #define GEL_GET_A(c)			(((c)>>24)&255)
 // - ------------------------------------------------------------------------------------------ - //
+#define GEL_CLAMP_COLOR_COMPONENT(c) ((c>255)?255:((c<0)?0:c))
+// - ------------------------------------------------------------------------------------------ - //
 #define GEL_RGB_BLACK			GEL_RGB(0,0,0)
 #define GEL_RGB_GREY			GEL_RGB(127,127,127)
 #define GEL_RGB_WHITE			GEL_RGB(255,255,255)

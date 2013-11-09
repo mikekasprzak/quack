@@ -26,7 +26,11 @@ SQInteger qk_color_constructor( HSQUIRRELVM v ) {
 	if ( Top > 4 )
 		sq_getinteger(v,5,&a);
 	
-	// TODO: Clamp //
+	// Clamp Colors to 0-255 range //
+	r = GEL_CLAMP_COLOR_COMPONENT(r);
+	g = GEL_CLAMP_COLOR_COMPONENT(g);
+	b = GEL_CLAMP_COLOR_COMPONENT(b);
+	a = GEL_CLAMP_COLOR_COMPONENT(a);
 	
 	// Write Data //
 	*Color = GEL_RGBA(r,g,b,a);
@@ -69,6 +73,41 @@ SQInteger qk_color_get( HSQUIRRELVM v ) {
 	
 	return SQ_VOID;
 }
+// - ------------------------------------------------------------------------------------------ - //
+// _set metamethod //
+//SQInteger qk_color_set( HSQUIRRELVM v ) {
+//	// Retrieve Data (Pointer) //
+//	GelColor* Color;
+//	sq_getinstanceup(v,1,(void**)&Color,0);
+//	
+//	// Get the requested member //
+//	const char* MemberName;
+//	sq_getstring(v,2,&MemberName);
+//	
+//	// Return different data depending on requested member //
+//	if ( MemberName[0] == 'r' ) {
+//		GEL_SET_R(*Color));	// +1 //
+//		return SQ_RETURN;
+//	}
+//	else if ( MemberName[0] == 'g' ) {
+//		sq_pushinteger(v,GEL_GET_G(*Color));	// +1 //
+//		return SQ_RETURN;
+//	}
+//	else if ( MemberName[0] == 'b' ) {
+//		sq_pushinteger(v,GEL_GET_B(*Color));	// +1 //
+//		return SQ_RETURN;
+//	}
+//	else if ( MemberName[0] == 'a' ) {
+//		sq_pushinteger(v,GEL_GET_A(*Color));	// +1 //
+//		return SQ_RETURN;
+//	}
+//
+//	// Throw null on member not found //
+//	sq_pushnull(v);		// +1 //
+//	sq_throwobject(v);	// -1 //
+//	
+//	return SQ_VOID;
+//}
 // - ------------------------------------------------------------------------------------------ - //
 // _typeof metamethod //
 SQInteger qk_color_typeof( HSQUIRRELVM v ) {
