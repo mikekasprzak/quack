@@ -95,6 +95,55 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
+// cross //
+#define _VEC_VS_RETURNS_VEC(_TYPE_,_NAME_,_OP_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_clone(v,1); /* +1 */ \
+	\
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,-1,(void**)&Vec,0); \
+	\
+	_TYPE_* Vs; \
+	sq_getinstanceup(v,2,(void**)&Vs,0); \
+	\
+	*Vec = (*Vec)._OP_(*Vs); \
+	\
+	return SQ_RETURN; \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// mix //
+#define _VEC_VS_ALPHA_RETURNS_VEC(_TYPE_,_NAME_,_OP_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_clone(v,1); /* +1 */ \
+	\
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,-1,(void**)&Vec,0); \
+	\
+	_TYPE_* Vs; \
+	sq_getinstanceup(v,2,(void**)&Vs,0); \
+	\
+	float Alpha; \
+	sq_getfloat(v,3,&Alpha); \
+	\
+	*Vec = (*Vec)._OP_(*Vs,Alpha); \
+	\
+	return SQ_RETURN; \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// dot //
+#define _VEC_VS_RETURNS_FLOAT(_TYPE_,_NAME_,_OP_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,1,(void**)&Vec,0); \
+	\
+	_TYPE_* Vs; \
+	sq_getinstanceup(v,2,(void**)&Vs,0); \
+	\
+	sq_pushfloat( v, (*Vec)._OP_(*Vs).ToFloat() ); \
+	\
+	return SQ_RETURN; \
+}
+// - ------------------------------------------------------------------------------------------ - //
 // _unm (i.e. negative) //
 #define _VEC_UNM(_TYPE_,_NAME_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
@@ -212,9 +261,6 @@ _VEC_MATH(Vector2D,qk_vec2_sub,-);
 //_VEC_MATH(Vector2D,qk_vec2_mul,*);
 //_VEC_MATH(Vector2D,qk_vec2_div,/);
 _VEC_UNM(Vector2D,qk_vec2_unm);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_tangent,Tangent);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotate45,Rotate45);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotatenegative45,RotateNegative45);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipy,FlipY);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_xaxis,XAxis);
@@ -227,6 +273,13 @@ _VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_magnitudesquared,MagnitudeSquared);
 _VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_manhattan,Manhattan);
 _VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_minitude,Minitude);
 _VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_maxitude,Maxitude);
+_VEC_VS_RETURNS_FLOAT(Vector2D,qk_vec2_dot,dot);
+_VEC_VS_ALPHA_RETURNS_VEC(Vector2D,qk_vec2_mix,mix);
+
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_tangent,Tangent);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotate45,Rotate45);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotatenegative45,RotateNegative45);
+//_VEC_VS_RETURNS_VEC(Vector2D,qk_vec2_cross,cross);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -241,29 +294,31 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_typeof,1,NULL),
 	_DECL_FUNC(qk_vec2_tostring,1,NULL),
 	_DECL_FUNC(qk_vec2_cloned,2,NULL),
-
 	_DECL_FUNC(qk_vec2_add,2,NULL),
 	_DECL_FUNC(qk_vec2_sub,2,NULL),
 //	_DECL_FUNC(qk_vec2_mul,2,NULL),
 //	_DECL_FUNC(qk_vec2_div,2,NULL),
-
 	_DECL_FUNC(qk_vec2_unm,1,NULL),
-
-	_DECL_FUNC(qk_vec2_normal,1,NULL),
-	_DECL_FUNC(qk_vec2_normalize,1,NULL),
-	_DECL_FUNC(qk_vec2_tangent,1,NULL),
-	_DECL_FUNC(qk_vec2_rotate45,1,NULL),
-	_DECL_FUNC(qk_vec2_rotatenegative45,1,NULL),
 	_DECL_FUNC(qk_vec2_flipx,1,NULL),
 	_DECL_FUNC(qk_vec2_flipy,1,NULL),
 	_DECL_FUNC(qk_vec2_xaxis,1,NULL),
 	_DECL_FUNC(qk_vec2_yaxis,1,NULL),
+	_DECL_FUNC(qk_vec2_normal,1,NULL),
+	_DECL_FUNC(qk_vec2_normalize,1,NULL),
 	_DECL_FUNC(qk_vec2_normalizeret,1,NULL),
 	_DECL_FUNC(qk_vec2_magnitude,1,NULL),
 	_DECL_FUNC(qk_vec2_magnitudesquared,1,NULL),
 	_DECL_FUNC(qk_vec2_manhattan,1,NULL),
 	_DECL_FUNC(qk_vec2_minitude,1,NULL),
 	_DECL_FUNC(qk_vec2_maxitude,1,NULL),
+	_DECL_FUNC(qk_vec2_dot,2,NULL),
+	_DECL_FUNC(qk_vec2_mix,3,NULL),
+	// 2D Only //
+	_DECL_FUNC(qk_vec2_tangent,1,NULL),
+	_DECL_FUNC(qk_vec2_rotate45,1,NULL),
+	_DECL_FUNC(qk_vec2_rotatenegative45,1,NULL),
+	// 3D Only //
+//	_DECL_FUNC(qk_vec2_cross,1,NULL),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
@@ -298,21 +353,26 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 //	_CLASS_ADDFUNC(qk_vec2_mul,_mul);
 //	_CLASS_ADDFUNC(qk_vec2_div,_div);
 	_CLASS_ADDFUNC(qk_vec2_unm,_unm);
-	_CLASS_ADDFUNC(qk_vec2_normal,normal);
-	_CLASS_ADDFUNC(qk_vec2_normalize,normalize);
-	_CLASS_ADDFUNC(qk_vec2_tangent,tangent);
-	_CLASS_ADDFUNC(qk_vec2_rotate45,rotate45);
-	_CLASS_ADDFUNC(qk_vec2_rotatenegative45,rotatenegative45);
 	_CLASS_ADDFUNC(qk_vec2_flipx,flipx);
 	_CLASS_ADDFUNC(qk_vec2_flipy,flipy);
 	_CLASS_ADDFUNC(qk_vec2_xaxis,xaxis);
 	_CLASS_ADDFUNC(qk_vec2_yaxis,yaxis);
+	_CLASS_ADDFUNC(qk_vec2_normal,normal);
+	_CLASS_ADDFUNC(qk_vec2_normalize,normalize);
 	_CLASS_ADDFUNC(qk_vec2_normalizeret,normalizeret);
 	_CLASS_ADDFUNC(qk_vec2_magnitude,magnitude);
 	_CLASS_ADDFUNC(qk_vec2_magnitudesquared,magnitudesquared);
 	_CLASS_ADDFUNC(qk_vec2_manhattan,manhattan);
 	_CLASS_ADDFUNC(qk_vec2_minitude,minitude);
 	_CLASS_ADDFUNC(qk_vec2_maxitude,maxitude);
+	_CLASS_ADDFUNC(qk_vec2_dot,dot);
+	_CLASS_ADDFUNC(qk_vec2_mix,mix);
+	// 2D Only //
+	_CLASS_ADDFUNC(qk_vec2_tangent,tangent);
+	_CLASS_ADDFUNC(qk_vec2_rotate45,rotate45);
+	_CLASS_ADDFUNC(qk_vec2_rotatenegative45,rotatenegative45);
+	// 3D Only //
+//	_CLASS_ADDFUNC(qk_vec2_cross,cross);
 
 	sq_newslot(v,Root,false); // Add Class to Root		// -2 //
 	
