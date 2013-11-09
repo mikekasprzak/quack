@@ -7,10 +7,20 @@ typedef int GelColor;
 #define GEL_RGB(_r,_g,_b)		((_r)|((_g)<<8)|((_b)<<16)|((255)<<24))
 #define GEL_RGBA(_r,_g,_b,_a)	((_r)|((_g)<<8)|((_b)<<16)|((_a)<<24))
 // - ------------------------------------------------------------------------------------------ - //
-#define GEL_GET_R(c)			(((c))&255)
+#define GEL_GET_R(c)			(((c)>>0)&255)
 #define GEL_GET_G(c)			(((c)>>8)&255)
 #define GEL_GET_B(c)			(((c)>>16)&255)
 #define GEL_GET_A(c)			(((c)>>24)&255)
+// - ------------------------------------------------------------------------------------------ - //
+#define GEL_GET_NO_R(c)			((c)&0xFFFFFF00)
+#define GEL_GET_NO_G(c)			((c)&0xFFFF00FF)
+#define GEL_GET_NO_B(c)			((c)&0xFF00FFFF)
+#define GEL_GET_NO_A(c)			((c)&0x00FFFFFF)
+// - ------------------------------------------------------------------------------------------ - //
+#define GEL_SET_R(col,c)		(GEL_GET_NO_R(col)|(((c)&255)<<0))
+#define GEL_SET_G(col,c)		(GEL_GET_NO_G(col)|(((c)&255)<<8))
+#define GEL_SET_B(col,c)		(GEL_GET_NO_B(col)|(((c)&255)<<16))
+#define GEL_SET_A(col,c)		(GEL_GET_NO_A(col)|(((c)&255)<<24))
 // - ------------------------------------------------------------------------------------------ - //
 #define GEL_CLAMP_COLOR_COMPONENT(c) ((c>255)?255:((c<0)?0:c))
 // - ------------------------------------------------------------------------------------------ - //

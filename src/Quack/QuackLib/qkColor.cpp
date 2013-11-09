@@ -75,39 +75,47 @@ SQInteger qk_color_get( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _set metamethod //
-//SQInteger qk_color_set( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// Get the requested member //
-//	const char* MemberName;
-//	sq_getstring(v,2,&MemberName);
-//	
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		GEL_SET_R(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'g' ) {
-//		sq_pushinteger(v,GEL_GET_G(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		sq_pushinteger(v,GEL_GET_B(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		sq_pushinteger(v,GEL_GET_A(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//
-//	// Throw null on member not found //
-//	sq_pushnull(v);		// +1 //
-//	sq_throwobject(v);	// -1 //
-//	
-//	return SQ_VOID;
-//}
+SQInteger qk_color_set( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelColor* Color;
+	sq_getinstanceup(v,1,(void**)&Color,0);
+	
+	// Get the requested member //
+	const char* MemberName;
+	sq_getstring(v,2,&MemberName);
+
+	// Get the value //
+	int Value;
+	sq_getinteger(v,3,&Value);
+	
+	// Return different data depending on requested member //
+	if ( MemberName[0] == 'r' ) {
+		*Color = GEL_SET_R( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
+		sq_pushinteger( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'g' ) {
+		*Color = GEL_SET_G( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
+		sq_pushinteger( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'b' ) {
+		*Color = GEL_SET_B( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
+		sq_pushinteger( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'a' ) {
+		*Color = GEL_SET_A( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
+		sq_pushinteger( v, Value );
+		return SQ_RETURN;
+	}
+
+	// Throw null on member not found //
+	sq_pushnull(v);		// +1 //
+	sq_throwobject(v);	// -1 //
+	
+	return SQ_VOID;
+}
 // - ------------------------------------------------------------------------------------------ - //
 // _typeof metamethod //
 SQInteger qk_color_typeof( HSQUIRRELVM v ) {
@@ -154,6 +162,7 @@ SQRegFunction qkColor_funcs[] = {
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	_DECL_FUNC(qk_color_constructor,-1,NULL),
 	_DECL_FUNC(qk_color_get,2,NULL),
+	_DECL_FUNC(qk_color_set,3,NULL),
 	_DECL_FUNC(qk_color_typeof,1,NULL),
 	_DECL_FUNC(qk_color_tostring,1,NULL),
 	_DECL_FUNC(qk_color_cloned,2,NULL),	
@@ -191,6 +200,12 @@ SQInteger register_qkColor(HSQUIRRELVM v) {
 	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
 	sq_newslot(v,CPos,false);							// -2 //
 
+	// set metamethod //
+	sq_pushstring(v,"_set",-1);							// +1 //
+	sq_pushstring(v,"qk_color_set",-1);					// +1 //
+	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
+	sq_newslot(v,CPos,false);							// -2 //
+
 	// typeof metamethod //
 	sq_pushstring(v,"_typeof",-1);						// +1 //
 	sq_pushstring(v,"qk_color_typeof",-1);				// +1 //
@@ -210,7 +225,6 @@ SQInteger register_qkColor(HSQUIRRELVM v) {
 	sq_newslot(v,CPos,false);							// -2 //
 	
 	sq_newslot(v,Root,false); // Add Class to Root		// -2 //
-	sqext_stackdump(v);
 	
 	return SQ_OK;
 }
