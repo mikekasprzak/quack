@@ -13,6 +13,7 @@
 #include "QuackLib/qkScreen.h"
 #include "QuackLib/qkInput.h"
 #include "QuackLib/qkColor.h"
+#include "QuackLib/qkVector.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -71,7 +72,7 @@ void QuackVMInit() {
 		Log("* qkInput"); register_qkInput( vm );
 		//Log("* qkJson"); register_qkJson( vm );
 		Log("* qkColor"); register_qkColor( vm );
-//		Log("* qkVector"); register_qkVector( vm );
+		Log("* qkVector"); register_qkVector( vm );
 //		Log("* qkMatrix"); register_qkMatrix( vm );
 	sq_pop( vm, 1 );
 	Log( "" );

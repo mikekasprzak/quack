@@ -49,9 +49,7 @@ SQInteger qkClear(HSQUIRRELVM vm) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	float Radius = 10.0f;
-	float x = 0.0f;
-	float y = 0.0f;
-	float z = 0.0f;
+	Vector3D Pos;
 	
 	SQUserPointer uMatrix = 0;
 	
@@ -61,24 +59,34 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	if ( NumArgs >= 2 ) {
 		sq_getuserdata(vm,2,&uMatrix,NULL);
 
-		int Elements = sq_getsize(vm,3);
-		if ( Elements >= 1 ) {
-			sq_pushinteger(vm,0);	// Push the desired array Index //
-			sq_get(vm,3);			// Get the value from an array found at stack pos //
-			sq_getfloat(vm,-1,&x);
-			sq_pop(vm,1);
-		}
-		if ( Elements >= 2 ) {
-			sq_pushinteger(vm,1);	// Push the desired array Index //
-			sq_get(vm,3);			// Get the value from an array found at stack pos //
-			sq_getfloat(vm,-1,&y);
-			sq_pop(vm,1);
-		}
-		if ( Elements >= 3 ) {
-			sq_pushinteger(vm,2);	// Push the desired array Index //
-			sq_get(vm,3);			// Get the value from an array found at stack pos //
-			sq_getfloat(vm,-1,&z);
-			sq_pop(vm,1);
+//		int Elements = sq_getsize(vm,3);
+//		if ( Elements >= 1 ) {
+//			sq_pushinteger(vm,0);	// Push the desired array Index //
+//			sq_get(vm,3);			// Get the value from an array found at stack pos //
+//			sq_getfloat(vm,-1,&x);
+//			sq_pop(vm,1);
+//		}
+//		if ( Elements >= 2 ) {
+//			sq_pushinteger(vm,1);	// Push the desired array Index //
+//			sq_get(vm,3);			// Get the value from an array found at stack pos //
+//			sq_getfloat(vm,-1,&y);
+//			sq_pop(vm,1);
+//		}
+//		if ( Elements >= 3 ) {
+//			sq_pushinteger(vm,2);	// Push the desired array Index //
+//			sq_get(vm,3);			// Get the value from an array found at stack pos //
+//			sq_getfloat(vm,-1,&z);
+//			sq_pop(vm,1);
+//		}
+
+		if ( NumArgs >= 3 ) {
+			void* UserPointer;
+			sq_getinstanceup(vm,3,(void**)&UserPointer,NULL);
+
+			// TODO: Check type (vec2, vec3) //
+
+			Vector2D* Vec = (Vector2D*)UserPointer;
+			Pos = Vec->ToVector3D();
 		}
 		
 		if ( NumArgs >= 4 ) {
@@ -93,7 +101,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	
 		const st32 VertCount = size_Vertex3D_Circle();
 		Vector3D Verts[ VertCount ];
-		generate_Vertex3D_Circle( Verts, Vector3D(x,y,z), Real(Radius) );
+		generate_Vertex3D_Circle( Verts, Pos, Real(Radius) );
 	
 		Gel::RenderFlat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), Color, Verts, VertCount );
 	}
