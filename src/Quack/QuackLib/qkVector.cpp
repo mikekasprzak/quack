@@ -44,88 +44,29 @@
 	return SQ_VOID;
 // - ------------------------------------------------------------------------------------------ - //
 
-
 // - ------------------------------------------------------------------------------------------ - //
-// the constructor //
-SQInteger qk_vec2_constructor( HSQUIRRELVM v ) {
-	_VEC_CONSTRUCTOR_START(Vector2D);
-	
-	float x,y;
-	sq_getfloat(v,2,&x);
-	sq_getfloat(v,3,&y);
-		
-	// Write Data //
-	*Vec = Vector2D(x,y);
-
-	_VEC_CONSTRUCTOR_END(Vector2D);
+// _tostring //
+#define _VEC_TOSTRING(_TYPE_,_NAME_,...) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	_TYPE_* Vec; \
+	sq_getinstanceup(v,1,(void**)&Vec,0); \
+	\
+	char Text[32]; \
+	sprintf(Text, __VA_ARGS__ ); \
+	\
+	sq_pushstring(v,Text,-1); \
+	\
+	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
-// _get metamethod //
-SQInteger qk_vec2_get( HSQUIRRELVM v ) {
-	_VEC_GET_START(Vector2D);
-	
-	// Return different data depending on requested member //
-	if ( MemberName[0] == 'x' ) {
-		sq_pushfloat(v,Vec->x.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'y' ) {
-		sq_pushfloat(v,Vec->y.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-
-	_VEC_GET_END(Vector2D);
-}
-// - ------------------------------------------------------------------------------------------ - //
-// _set metamethod //
-SQInteger qk_vec2_set( HSQUIRRELVM v ) {
-	_VEC_SET_START(Vector2D);
-	
-	// Return different data depending on requested member //
-	if ( MemberName[0] == 'x' ) {
-		Vec->x = Value;
-		sq_pushfloat( v, Value );
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'y' ) {
-		Vec->y = Value;
-		sq_pushfloat( v, Value );
-		return SQ_RETURN;
-	}
-
-	_VEC_SET_END(Vector2D);
-}
-// - ------------------------------------------------------------------------------------------ - //
-// _typeof metamethod //
-//SQInteger qk_vec2_typeof( HSQUIRRELVM v ) {
-//	sq_pushstring(v,"vec2",4); // 4 characters long //
-//	return SQ_RETURN;
-//}
-// - ------------------------------------------------------------------------------------------ - //
-//// _tostring metamethod //
-//SQInteger qk_vec2_tostring( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// (RRR,GGG,BBB,AAA) //
-//	char Text[2 + 3+1 + 3+1 + 3+1 + 3 + 1];
-//	sprintf(Text,"(%i,%i,%i,%i)", GEL_GET_R(*Color), GEL_GET_G(*Color), GEL_GET_B(*Color), GEL_GET_A(*Color) );
-//	
-//	sq_pushstring(v,Text,-1);
-//	
-//	return SQ_RETURN;
-//}
-
-// - ------------------------------------------------------------------------------------------ - //
-#define _VEC_TYPEOF_METAMETHOD(_TYPE_,_NAME_,_TYPENAME_,_STRLEN_) \
+#define _VEC_TYPEOF(_TYPE_,_NAME_,_TYPENAME_,_STRLEN_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_pushstring(v,#_TYPENAME_,_STRLEN_); \
 	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _cloned //
-#define _VEC_CLONED_METAMETHOD(_TYPE_,_NAME_) \
+#define _VEC_CLONED(_TYPE_,_NAME_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
 	_TYPE_* Vec; /* +1 */ \
 	sq_getinstanceup(v,1,(void**)&Vec,0); \
@@ -139,7 +80,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _add, _sub, _mul, _div //
-#define _VEC_MATH_METAMETHOD(_TYPE_,_NAME_,_OP_) \
+#define _VEC_MATH(_TYPE_,_NAME_,_OP_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_clone(v,1); /* +1 */ \
 	\
@@ -155,7 +96,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _unm (i.e. negative) //
-#define _VEC_UNM_METAMETHOD(_TYPE_,_NAME_) \
+#define _VEC_UNM(_TYPE_,_NAME_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_clone(v,1); /* +1 */ \
 	\
@@ -174,12 +115,64 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_newslot(v,CPos,false);					/* -2 */
 // - ------------------------------------------------------------------------------------------ - //
 
+
 // - ------------------------------------------------------------------------------------------ - //
-_VEC_TYPEOF_METAMETHOD(Vector2D,qk_vec2_typeof,vec2,4);
-_VEC_CLONED_METAMETHOD(Vector2D,qk_vec2_cloned);
-_VEC_MATH_METAMETHOD(Vector2D,qk_vec2_add,+);
-_VEC_MATH_METAMETHOD(Vector2D,qk_vec2_sub,-);
-_VEC_UNM_METAMETHOD(Vector2D,qk_vec2_unm);
+// vec2 --------------------------------------------------------------------------------------- - //
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec2_constructor( HSQUIRRELVM v ) {
+	_VEC_CONSTRUCTOR_START(Vector2D);
+	
+	float x,y;
+	sq_getfloat(v,2,&x);
+	sq_getfloat(v,3,&y);
+		
+	// Write Data //
+	*Vec = Vector2D(x,y);
+
+	_VEC_CONSTRUCTOR_END(Vector2D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec2_get( HSQUIRRELVM v ) {
+	_VEC_GET_START(Vector2D);
+	
+	// Return different data depending on requested member //
+	if ( MemberName[0] == 'x' ) {
+		sq_pushfloat(v,Vec->x.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'y' ) {
+		sq_pushfloat(v,Vec->y.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+
+	_VEC_GET_END(Vector2D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec2_set( HSQUIRRELVM v ) {
+	_VEC_SET_START(Vector2D);
+	
+	if ( MemberName[0] == 'x' ) {
+		Vec->x = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'y' ) {
+		Vec->y = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+
+	_VEC_SET_END(Vector2D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+_VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%f,%f)",Vec->x.ToFloat(),Vec->y.ToFloat());
+_VEC_TYPEOF(Vector2D,qk_vec2_typeof,vec2,4);
+_VEC_CLONED(Vector2D,qk_vec2_cloned);
+_VEC_MATH(Vector2D,qk_vec2_add,+);
+_VEC_MATH(Vector2D,qk_vec2_sub,-);
+//_VEC_MATH(Vector2D,qk_vec2_mul,*);
+//_VEC_MATH(Vector2D,qk_vec2_div,/);
+_VEC_UNM(Vector2D,qk_vec2_unm);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -192,7 +185,7 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_get,2,NULL),
 	_DECL_FUNC(qk_vec2_set,3,NULL),
 	_DECL_FUNC(qk_vec2_typeof,1,NULL),
-//	_DECL_FUNC(qk_vec2_tostring,1,NULL),
+	_DECL_FUNC(qk_vec2_tostring,1,NULL),
 	_DECL_FUNC(qk_vec2_cloned,2,NULL),
 
 	_DECL_FUNC(qk_vec2_add,2,NULL),
@@ -227,10 +220,14 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	_CLASS_ADDFUNC(qk_vec2_constructor,constructor);
 	_CLASS_ADDFUNC(qk_vec2_get,_get);
 	_CLASS_ADDFUNC(qk_vec2_set,_set);
+	_CLASS_ADDFUNC(qk_vec2_tostring,_tostring);
 	_CLASS_ADDFUNC(qk_vec2_typeof,_typeof);
 	_CLASS_ADDFUNC(qk_vec2_cloned,_cloned);
 	_CLASS_ADDFUNC(qk_vec2_add,_add);
 	_CLASS_ADDFUNC(qk_vec2_sub,_sub);
+//	_CLASS_ADDFUNC(qk_vec2_mul,_mul);
+//	_CLASS_ADDFUNC(qk_vec2_div,_div);
+	_CLASS_ADDFUNC(qk_vec2_unm,_unm);
 
 	sq_newslot(v,Root,false); // Add Class to Root		// -2 //
 	
