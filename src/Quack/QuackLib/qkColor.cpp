@@ -91,6 +91,21 @@ SQInteger qk_color_tostring( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// _cloned metamethod //
+SQInteger qk_color_cloned( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelColor* Color;
+	sq_getinstanceup(v,1,(void**)&Color,0);
+
+	// Retrieve Other Data (Pointer) //
+	GelColor* OtherColor;
+	sq_getinstanceup(v,2,(void**)&OtherColor,0);
+	
+	*Color = *OtherColor;
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -102,6 +117,7 @@ SQRegFunction qkColor_funcs[] = {
 	_DECL_FUNC(qk_color_get,2,NULL),
 	_DECL_FUNC(qk_color_typeof,1,NULL),
 	_DECL_FUNC(qk_color_tostring,1,NULL),
+	_DECL_FUNC(qk_color_cloned,2,NULL),	
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
@@ -145,6 +161,12 @@ SQInteger register_qkColor(HSQUIRRELVM v) {
 	// tostring metamethod //
 	sq_pushstring(v,"_tostring",-1);					// +1 //
 	sq_pushstring(v,"qk_color_tostring",-1);			// +1 //
+	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
+	sq_newslot(v,CPos,false);							// -2 //
+
+	// cloned metamethod //
+	sq_pushstring(v,"_cloned",-1);						// +1 //
+	sq_pushstring(v,"qk_color_cloned",-1);				// +1 //
 	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
 	sq_newslot(v,CPos,false);							// -2 //
 	
