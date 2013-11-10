@@ -73,3 +73,24 @@ function mix(a,b,alpha) {
 	return a.mix(b,alpha);
 }
 // - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+// Smart vector function that constructs the appropriate vector type depending on number of args. //
+// - ------------------------------------------------------------------------------------------ - //
+function vec(...) {
+	local Len = vargv.len();
+	
+	if ( Len == 1 )
+		return scalar(vargv);
+	else if ( Len == 2 )
+		return vec2(vargv);
+	else if ( Len == 3 )
+		return vec3(vargv);
+	else if ( Len == 4 )
+		return vec4(vargv);
+
+	error( "Invalid vec type: vec" + Len );
+
+	return null;
+}
+// - ------------------------------------------------------------------------------------------ - //

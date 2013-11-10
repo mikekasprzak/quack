@@ -47,6 +47,21 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 				(*Mat)[MatIndex] = Real(Value);
 				MatIndex++;
 			}
+			else if ( Type == OT_ARRAY ) {
+				int Size = sq_getsize(v,idx);
+				if ( Size > MatSize-MatIndex )
+					Size = MatSize-MatIndex;
+				
+				for ( int idx2 = 0; idx2 < Size; idx2++ ) {
+					sq_pushinteger(v,idx2); 	// +1 //
+					sq_get(v,idx); 				// -1 then +1 //
+					float Value;
+					sq_getfloat(v,-1,&Value);	// -1 //
+					(*Mat)[MatIndex] = Real(Value);
+					sq_poptop(v);
+					MatIndex++;
+				}
+			}
 			else if ( Type == OT_INSTANCE ) {
 				int Tag;			
 				sq_gettypetag(v,idx,(SQUserPointer*)&Tag);
@@ -56,7 +71,8 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 					sq_getinstanceup(v,idx,(void**)&Vec,0);				
 					
 					(*Mat)[MatIndex+0] = Vec->x;
-					(*Mat)[MatIndex+1] = Vec->y;
+					if ( MatIndex+1 < MatSize )
+						(*Mat)[MatIndex+1] = Vec->y;
 
 					MatIndex+=2;
 				}
@@ -66,8 +82,10 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 					sq_getinstanceup(v,idx,(void**)&Vec,0);				
 					
 					(*Mat)[MatIndex+0] = Vec->x;
-					(*Mat)[MatIndex+1] = Vec->y;
-					(*Mat)[MatIndex+2] = Vec->z;
+					if ( MatIndex+1 < MatSize )
+						(*Mat)[MatIndex+1] = Vec->y;
+					if ( MatIndex+2 < MatSize )
+						(*Mat)[MatIndex+2] = Vec->z;
 
 					MatIndex+=3;
 				}
@@ -77,9 +95,12 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 					sq_getinstanceup(v,idx,(void**)&Vec,0);				
 					
 					(*Mat)[MatIndex+0] = Vec->x;
-					(*Mat)[MatIndex+1] = Vec->y;
-					(*Mat)[MatIndex+2] = Vec->z;
-					(*Mat)[MatIndex+3] = Vec->w;
+					if ( MatIndex+1 < MatSize )
+						(*Mat)[MatIndex+1] = Vec->y;
+					if ( MatIndex+2 < MatSize )
+						(*Mat)[MatIndex+2] = Vec->z;
+					if ( MatIndex+2 < MatSize )
+						(*Mat)[MatIndex+3] = Vec->w;
 
 					MatIndex+=4;
 				}
@@ -94,9 +115,10 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 			}
 		}
 		
-		// If we didn't put enough data in //
-		if ( MatIndex < MatSize ) {
-			// TODO: Pad with 0's //
+		// If we didn't put enough data in, pad with zeros //
+		while ( MatIndex < MatSize ) {
+			(*Mat)[MatIndex] = Real::Zero;
+			MatIndex++;
 		}
 	}
 	else {
