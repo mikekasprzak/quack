@@ -69,10 +69,8 @@ SQInteger qk_color_get( HSQUIRRELVM v ) {
 	}
 
 	// Throw null on member not found //
-	sq_pushnull(v);		// +1 //
-	sq_throwobject(v);	// -1 //
-	
-	return SQ_VOID;
+	sq_pushnull(v);				// +1 //
+	return sq_throwobject(v);	// -1 //
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _set metamethod //
@@ -112,10 +110,8 @@ SQInteger qk_color_set( HSQUIRRELVM v ) {
 	}
 
 	// Throw null on member not found //
-	sq_pushnull(v);		// +1 //
-	sq_throwobject(v);	// -1 //
-	
-	return SQ_VOID;
+	sq_pushnull(v);				// +1 //
+	return sq_throwobject(v);	// -1 //
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _typeof metamethod //

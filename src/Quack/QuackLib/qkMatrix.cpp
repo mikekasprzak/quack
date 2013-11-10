@@ -122,7 +122,45 @@ inline void qk_mat_constructor_body( HSQUIRRELVM v, float* Mat, const int MatSiz
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
+inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize ) {	
+	if ( sq_gettype(v,2) == OT_INTEGER ) {
+		int Index;
+		sq_getinteger(v,2,&Index);
 
+		if ( Index < MatSize ) {
+			sq_pushfloat(v,Mat[Index]);
+			return SQ_RETURN;
+		}
+	}
+
+	sq_pushnull(v);				/* +1 */
+	return sq_throwobject(v);	/* -1 */
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize ) {
+	if ( sq_gettype(v,3) & (OT_FLOAT|OT_INTEGER) ) {
+		float Value;
+		sq_getfloat(v,3,&Value);
+	
+		if ( sq_gettype(v,2) == OT_INTEGER ) {
+			int Index;
+			sq_getinteger(v,2,&Index);
+	
+			if ( Index < MatSize ) {
+				Mat[Index] = Value;
+				sq_pushfloat(v,Value);
+				return SQ_RETURN;
+			}
+		}
+	}
+	else {
+		// TODO: Log Errer: Attempted to set a non-number //	
+	}
+
+	sq_pushnull(v);				/* +1 */
+	return sq_throwobject(v);	/* -1 */
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 // mat2 --------------------------------------------------------------------------------------- - //
@@ -137,8 +175,25 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat2_get( HSQUIRRELVM v ) {
+	float* Mat;
+	sq_getinstanceup(v,1,(void**)&Mat,0);
+	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
+	
+	return qk_mat_get(v,Mat,MatSize);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat2_set( HSQUIRRELVM v ) {
+	float* Mat;
+	sq_getinstanceup(v,1,(void**)&Mat,0);
+	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
+		
+	return qk_mat_set(v,Mat,MatSize);
+}
+// - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
 // - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 // mat3 --------------------------------------------------------------------------------------- - //
@@ -151,6 +206,22 @@ SQInteger qk_mat3_constructor( HSQUIRRELVM v ) {
 	qk_mat_constructor_body(v,Mat,MatSize);
 
 	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat3_get( HSQUIRRELVM v ) {
+	float* Mat;
+	sq_getinstanceup(v,1,(void**)&Mat,0);
+	const int MatSize = sizeof(Matrix3x3) / sizeof(Real);
+	
+	return qk_mat_get(v,Mat,MatSize);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat3_set( HSQUIRRELVM v ) {
+	float* Mat;
+	sq_getinstanceup(v,1,(void**)&Mat,0);
+	const int MatSize = sizeof(Matrix3x3) / sizeof(Real);
+		
+	return qk_mat_set(v,Mat,MatSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
@@ -169,6 +240,22 @@ SQInteger qk_mat4_constructor( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat4_get( HSQUIRRELVM v ) {
+	float* Mat;
+	sq_getinstanceup(v,1,(void**)&Mat,0);
+	const int MatSize = sizeof(Matrix4x4) / sizeof(Real);
+	
+	return qk_mat_get(v,Mat,MatSize);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat4_set( HSQUIRRELVM v ) {
+	float* Mat;
+	sq_getinstanceup(v,1,(void**)&Mat,0);
+	const int MatSize = sizeof(Matrix4x4) / sizeof(Real);
+		
+	return qk_mat_set(v,Mat,MatSize);
+}
+// - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -181,12 +268,18 @@ SQRegFunction qkMatrix_funcs[] = {
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	_DECL_FUNC(qk_mat2_constructor,-1,NULL),
+	_DECL_FUNC(qk_mat2_get,2,NULL),
+	_DECL_FUNC(qk_mat2_set,3,NULL),
 	_DECL_FUNC(qk_mat2_tostring,1,NULL),
 
 	_DECL_FUNC(qk_mat3_constructor,-1,NULL),
+	_DECL_FUNC(qk_mat3_get,2,NULL),
+	_DECL_FUNC(qk_mat3_set,3,NULL),
 	_DECL_FUNC(qk_mat3_tostring,1,NULL),
 
 	_DECL_FUNC(qk_mat4_constructor,-1,NULL),
+	_DECL_FUNC(qk_mat4_get,2,NULL),
+	_DECL_FUNC(qk_mat4_set,3,NULL),
 	_DECL_FUNC(qk_mat4_tostring,1,NULL),
 	
 	{0,0,0,0}
@@ -232,18 +325,24 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 	{
 		_ADD_CLASS_START(Matrix2x2,"mat2",QK_TAG_MAT2);
 		_CLASS_ADDFUNC(qk_mat2_constructor,constructor);
+		_CLASS_ADDFUNC(qk_mat2_get,_get);
+		_CLASS_ADDFUNC(qk_mat2_set,_set);
 		_CLASS_ADDFUNC(qk_mat2_tostring,_tostring);
 		_ADD_CLASS_END(Matrix2x2);
 	}
 	{
 		_ADD_CLASS_START(Matrix3x3,"mat3",QK_TAG_MAT3);
 		_CLASS_ADDFUNC(qk_mat3_constructor,constructor);
+		_CLASS_ADDFUNC(qk_mat3_get,_get);
+		_CLASS_ADDFUNC(qk_mat3_set,_set);
 		_CLASS_ADDFUNC(qk_mat3_tostring,_tostring);
 		_ADD_CLASS_END(Matrix3x3);
 	}
 	{
 		_ADD_CLASS_START(Matrix4x4,"mat4",QK_TAG_MAT4);
 		_CLASS_ADDFUNC(qk_mat4_constructor,constructor);
+		_CLASS_ADDFUNC(qk_mat4_get,_get);
+		_CLASS_ADDFUNC(qk_mat4_set,_set);
 		_CLASS_ADDFUNC(qk_mat4_tostring,_tostring);
 		_ADD_CLASS_END(Matrix4x4);
 	}
