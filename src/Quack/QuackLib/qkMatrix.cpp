@@ -154,7 +154,7 @@ inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 		}
 	}
 	else {
-		// TODO: Log Errer: Attempted to set a non-number //	
+		return sq_throwerror(v,"cannot assign specified type to a matrix element");
 	}
 
 	sq_pushnull(v);				/* +1 */
