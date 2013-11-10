@@ -21,6 +21,14 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	\
 	return SQ_RETURN; \
 }
+// TODO: safe_sprintf. need a consistent version that either always prints, or notes a size error //
+//       that I can in-turn write a "ERROR: not enough room to sprintf" to it (if it fits). //
+// - ------------------------------------------------------------------------------------------ - //
+#define _MAT_LEN(_TYPE_,_NAME_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_pushinteger(v, sizeof(_TYPE_) / sizeof(Real) ); \
+	return SQ_RETURN; \
+}
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -157,7 +165,7 @@ inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 			unsigned int Index;
 			sq_getinteger(v,2,(int*)&Index);
 	
-			if ( Index < MatSize ) {
+			if ( Index < (unsigned int)MatSize ) {
 				Mat[Index] = Value;
 				sq_pushfloat(v,Value);
 				return SQ_RETURN;
@@ -204,6 +212,7 @@ SQInteger qk_mat2_set( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
+_MAT_LEN(Matrix2x2,qk_mat2_len);
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -235,6 +244,7 @@ SQInteger qk_mat3_set( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
+_MAT_LEN(Matrix3x3,qk_mat3_len);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -265,6 +275,7 @@ SQInteger qk_mat4_set( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
+_MAT_LEN(Matrix4x4,qk_mat4_len);
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -279,16 +290,19 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat2_get,2,NULL),
 	_DECL_FUNC(qk_mat2_set,3,NULL),
 	_DECL_FUNC(qk_mat2_tostring,1,NULL),
+	_DECL_FUNC(qk_mat2_len,1,NULL),
 
 	_DECL_FUNC(qk_mat3_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat3_get,2,NULL),
 	_DECL_FUNC(qk_mat3_set,3,NULL),
 	_DECL_FUNC(qk_mat3_tostring,1,NULL),
+	_DECL_FUNC(qk_mat3_len,1,NULL),
 
 	_DECL_FUNC(qk_mat4_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat4_get,2,NULL),
 	_DECL_FUNC(qk_mat4_set,3,NULL),
 	_DECL_FUNC(qk_mat4_tostring,1,NULL),
+	_DECL_FUNC(qk_mat4_len,1,NULL),
 	
 	{0,0,0,0}
 };
@@ -336,6 +350,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat2_get,_get);
 		_CLASS_ADDFUNC(qk_mat2_set,_set);
 		_CLASS_ADDFUNC(qk_mat2_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_mat2_len,len);
 		_ADD_CLASS_END(Matrix2x2);
 	}
 	{
@@ -344,6 +359,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat3_get,_get);
 		_CLASS_ADDFUNC(qk_mat3_set,_set);
 		_CLASS_ADDFUNC(qk_mat3_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_mat3_len,len);
 		_ADD_CLASS_END(Matrix3x3);
 	}
 	{
@@ -352,6 +368,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat4_get,_get);
 		_CLASS_ADDFUNC(qk_mat4_set,_set);
 		_CLASS_ADDFUNC(qk_mat4_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_mat4_len,len);
 		_ADD_CLASS_END(Matrix4x4);
 	}
 	
