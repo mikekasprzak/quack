@@ -51,7 +51,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	_TYPE_* Vec; \
 	sq_getinstanceup(v,1,(void**)&Vec,0); \
 	\
-	char Text[32]; \
+	char Text[(24*3)+4+1]; \
 	sprintf(Text, __VA_ARGS__ ); \
 	\
 	sq_pushstring(v,Text,-1); \
@@ -202,6 +202,15 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_get(v,Root); /* lookup function */		/* =0 */ \
 	sq_newslot(v,CPos,false);					/* -2 */
 // - ------------------------------------------------------------------------------------------ - //
+#define _ADD_CLASS_START(_TYPE_,_TYPENAME_) \
+	sq_pushstring(v,_TYPENAME_,-1);				/* +1 */ \
+	sq_newclass(v,false); 						/* +1 */ \
+	int CPos = sq_gettop(v); /* class pos */ \
+	sq_setclassudsize(v,CPos,sizeof(_TYPE_));
+// - ------------------------------------------------------------------------------------------ - //
+#define _ADD_CLASS_END(_TYPE_) \
+	sq_newslot(v,Root,false); /* Add to Root */	/* -2 */
+// - ------------------------------------------------------------------------------------------ - //
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -253,7 +262,7 @@ SQInteger qk_vec2_set( HSQUIRRELVM v ) {
 	_VEC_SET_END(Vector2D);
 }
 // - ------------------------------------------------------------------------------------------ - //
-_VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%f,%f)",Vec->x.ToFloat(),Vec->y.ToFloat());
+_VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat());
 _VEC_TYPEOF(Vector2D,qk_vec2_typeof,"vec2",4);
 _VEC_CLONED(Vector2D,qk_vec2_cloned);
 _VEC_MATH(Vector2D,qk_vec2_add,+);
@@ -281,6 +290,200 @@ _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotate45,Rotate45);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotatenegative45,RotateNegative45);
 //_VEC_VS_RETURNS_VEC(Vector2D,qk_vec2_cross,cross);
 // - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
+// vec3 --------------------------------------------------------------------------------------- - //
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec3_constructor( HSQUIRRELVM v ) {
+	_VEC_CONSTRUCTOR_START(Vector3D);
+	
+	float x,y,z;
+	sq_getfloat(v,2,&x);
+	sq_getfloat(v,3,&y);
+	sq_getfloat(v,4,&z);
+		
+	// Write Data //
+	*Vec = Vector3D(x,y,z);
+
+	_VEC_CONSTRUCTOR_END(Vector3D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec3_get( HSQUIRRELVM v ) {
+	_VEC_GET_START(Vector3D);
+	
+	// Return different data depending on requested member //
+	if ( MemberName[0] == 'x' ) {
+		sq_pushfloat(v,Vec->x.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'y' ) {
+		sq_pushfloat(v,Vec->y.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'z' ) {
+		sq_pushfloat(v,Vec->z.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+
+	_VEC_GET_END(Vector3D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec3_set( HSQUIRRELVM v ) {
+	_VEC_SET_START(Vector3D);
+	
+	if ( MemberName[0] == 'x' ) {
+		Vec->x = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'y' ) {
+		Vec->y = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'z' ) {
+		Vec->z = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+
+	_VEC_SET_END(Vector3D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+_VEC_TOSTRING(Vector3D,qk_vec3_tostring,"(%0.03f,%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat(),Vec->z.ToFloat());
+_VEC_TYPEOF(Vector3D,qk_vec3_typeof,"vec3",4);
+_VEC_CLONED(Vector3D,qk_vec3_cloned);
+_VEC_MATH(Vector3D,qk_vec3_add,+);
+_VEC_MATH(Vector3D,qk_vec3_sub,-);
+//_VEC_MATH(Vector3D,qk_vec3_mul,*);
+//_VEC_MATH(Vector3D,qk_vec3_div,/);
+_VEC_UNM(Vector3D,qk_vec3_unm);
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_flipx,FlipX);
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_flipy,FlipY);
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_flipz,FlipZ); // * //
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_xaxis,XAxis);
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_yaxis,YAxis);
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_zaxis,ZAxis); // * //
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_normal,Normal);
+_VEC_FUNC_SELF_RETURNS_VEC(Vector3D,qk_vec3_normalize,Normalize);
+_VEC_FUNC_RETURNS_FLOAT(Vector3D,qk_vec3_normalizeret,NormalizeRet);
+_VEC_FUNC_RETURNS_FLOAT(Vector3D,qk_vec3_magnitude,Magnitude);
+_VEC_FUNC_RETURNS_FLOAT(Vector3D,qk_vec3_magnitudesquared,MagnitudeSquared);
+_VEC_FUNC_RETURNS_FLOAT(Vector3D,qk_vec3_manhattan,Manhattan);
+//_VEC_FUNC_RETURNS_FLOAT(Vector3D,qk_vec3_minitude,Minitude);
+//_VEC_FUNC_RETURNS_FLOAT(Vector3D,qk_vec3_maxitude,Maxitude);
+_VEC_VS_RETURNS_FLOAT(Vector3D,qk_vec3_dot,dot);
+_VEC_VS_ALPHA_RETURNS_VEC(Vector3D,qk_vec3_mix,mix);
+_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_tangent,Tangent);
+//_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_rotate45,Rotate45);
+//_VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_rotatenegative45,RotateNegative45);
+_VEC_VS_RETURNS_VEC(Vector3D,qk_vec3_cross,cross);
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
+// vec4 --------------------------------------------------------------------------------------- - //
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec4_constructor( HSQUIRRELVM v ) {
+	_VEC_CONSTRUCTOR_START(Vector4D);
+	
+	float x,y,z,w;
+	sq_getfloat(v,2,&x);
+	sq_getfloat(v,3,&y);
+	sq_getfloat(v,4,&z);
+	sq_getfloat(v,5,&w);
+		
+	// Write Data //
+	*Vec = Vector4D(x,y,z,w);
+
+	_VEC_CONSTRUCTOR_END(Vector4D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec4_get( HSQUIRRELVM v ) {
+	_VEC_GET_START(Vector4D);
+	
+	// Return different data depending on requested member //
+	if ( MemberName[0] == 'x' ) {
+		sq_pushfloat(v,Vec->x.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'y' ) {
+		sq_pushfloat(v,Vec->y.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'z' ) {
+		sq_pushfloat(v,Vec->z.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'w' ) {
+		sq_pushfloat(v,Vec->w.ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+
+	_VEC_GET_END(Vector4D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec4_set( HSQUIRRELVM v ) {
+	_VEC_SET_START(Vector4D);
+	
+	if ( MemberName[0] == 'x' ) {
+		Vec->x = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'y' ) {
+		Vec->y = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'z' ) {
+		Vec->z = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'w' ) {
+		Vec->w = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+
+	_VEC_SET_END(Vector4D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+_VEC_TOSTRING(Vector4D,qk_vec4_tostring,"(%0.03f,%0.03f,%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat(),Vec->z.ToFloat(),Vec->w.ToFloat());
+_VEC_TYPEOF(Vector4D,qk_vec4_typeof,"vec4",4);
+_VEC_CLONED(Vector4D,qk_vec4_cloned);
+_VEC_MATH(Vector4D,qk_vec4_add,+);
+_VEC_MATH(Vector4D,qk_vec4_sub,-);
+//_VEC_MATH(Vector4D,qk_vec4_mul,*);
+//_VEC_MATH(Vector4D,qk_vec4_div,/);
+_VEC_UNM(Vector4D,qk_vec4_unm);
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipx,FlipX);
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipy,FlipY);
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipz,FlipZ); // * //
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipw,FlipW); // * //
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_xaxis,XAxis);
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_yaxis,YAxis);
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_zaxis,ZAxis); // * //
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_waxis,WAxis); // * //
+_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_normal,Normal);
+_VEC_FUNC_SELF_RETURNS_VEC(Vector4D,qk_vec4_normalize,Normalize);
+_VEC_FUNC_RETURNS_FLOAT(Vector4D,qk_vec4_normalizeret,NormalizeRet);
+_VEC_FUNC_RETURNS_FLOAT(Vector4D,qk_vec4_magnitude,Magnitude);
+_VEC_FUNC_RETURNS_FLOAT(Vector4D,qk_vec4_magnitudesquared,MagnitudeSquared);
+_VEC_FUNC_RETURNS_FLOAT(Vector4D,qk_vec4_manhattan,Manhattan);
+//_VEC_FUNC_RETURNS_FLOAT(Vector4D,qk_vec4_minitude,Minitude);
+//_VEC_FUNC_RETURNS_FLOAT(Vector4D,qk_vec4_maxitude,Maxitude);
+_VEC_VS_RETURNS_FLOAT(Vector4D,qk_vec4_dot,dot);
+_VEC_VS_ALPHA_RETURNS_VEC(Vector4D,qk_vec4_mix,mix);
+//_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_tangent,Tangent);
+//_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_rotate45,Rotate45);
+//_VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_rotatenegative45,RotateNegative45);
+//_VEC_VS_RETURNS_VEC(Vector4D,qk_vec4_cross,cross);
+// - ------------------------------------------------------------------------------------------ - //
+
+
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -313,12 +516,77 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_maxitude,1,NULL),
 	_DECL_FUNC(qk_vec2_dot,2,NULL),
 	_DECL_FUNC(qk_vec2_mix,3,NULL),
-	// 2D Only //
 	_DECL_FUNC(qk_vec2_tangent,1,NULL),
 	_DECL_FUNC(qk_vec2_rotate45,1,NULL),
 	_DECL_FUNC(qk_vec2_rotatenegative45,1,NULL),
-	// 3D Only //
-//	_DECL_FUNC(qk_vec2_cross,1,NULL),
+//	_DECL_FUNC(qk_vec2_cross,2,NULL),
+
+	_DECL_FUNC(qk_vec3_constructor,4,NULL),
+	_DECL_FUNC(qk_vec3_get,2,NULL),
+	_DECL_FUNC(qk_vec3_set,3,NULL),
+	_DECL_FUNC(qk_vec3_typeof,1,NULL),
+	_DECL_FUNC(qk_vec3_tostring,1,NULL),
+	_DECL_FUNC(qk_vec3_cloned,2,NULL),
+	_DECL_FUNC(qk_vec3_add,2,NULL),
+	_DECL_FUNC(qk_vec3_sub,2,NULL),
+//	_DECL_FUNC(qk_vec3_mul,2,NULL),
+//	_DECL_FUNC(qk_vec3_div,2,NULL),
+	_DECL_FUNC(qk_vec3_unm,1,NULL),
+	_DECL_FUNC(qk_vec3_flipx,1,NULL),
+	_DECL_FUNC(qk_vec3_flipy,1,NULL),
+	_DECL_FUNC(qk_vec3_flipz,1,NULL),
+	_DECL_FUNC(qk_vec3_xaxis,1,NULL),
+	_DECL_FUNC(qk_vec3_yaxis,1,NULL),
+	_DECL_FUNC(qk_vec3_zaxis,1,NULL),
+	_DECL_FUNC(qk_vec3_normal,1,NULL),
+	_DECL_FUNC(qk_vec3_normalize,1,NULL),
+	_DECL_FUNC(qk_vec3_normalizeret,1,NULL),
+	_DECL_FUNC(qk_vec3_magnitude,1,NULL),
+	_DECL_FUNC(qk_vec3_magnitudesquared,1,NULL),
+	_DECL_FUNC(qk_vec3_manhattan,1,NULL),
+//	_DECL_FUNC(qk_vec3_minitude,1,NULL),
+//	_DECL_FUNC(qk_vec3_maxitude,1,NULL),
+	_DECL_FUNC(qk_vec3_dot,2,NULL),
+	_DECL_FUNC(qk_vec3_mix,3,NULL),
+	_DECL_FUNC(qk_vec3_tangent,1,NULL),
+//	_DECL_FUNC(qk_vec3_rotate45,1,NULL),
+//	_DECL_FUNC(qk_vec3_rotatenegative45,1,NULL),
+	_DECL_FUNC(qk_vec3_cross,2,NULL),
+
+	_DECL_FUNC(qk_vec4_constructor,5,NULL),
+	_DECL_FUNC(qk_vec4_get,2,NULL),
+	_DECL_FUNC(qk_vec4_set,3,NULL),
+	_DECL_FUNC(qk_vec4_typeof,1,NULL),
+	_DECL_FUNC(qk_vec4_tostring,1,NULL),
+	_DECL_FUNC(qk_vec4_cloned,2,NULL),
+	_DECL_FUNC(qk_vec4_add,2,NULL),
+	_DECL_FUNC(qk_vec4_sub,2,NULL),
+//	_DECL_FUNC(qk_vec4_mul,2,NULL),
+//	_DECL_FUNC(qk_vec4_div,2,NULL),
+	_DECL_FUNC(qk_vec4_unm,1,NULL),
+	_DECL_FUNC(qk_vec4_flipx,1,NULL),
+	_DECL_FUNC(qk_vec4_flipy,1,NULL),
+	_DECL_FUNC(qk_vec4_flipz,1,NULL),
+	_DECL_FUNC(qk_vec4_flipw,1,NULL),
+	_DECL_FUNC(qk_vec4_xaxis,1,NULL),
+	_DECL_FUNC(qk_vec4_yaxis,1,NULL),
+	_DECL_FUNC(qk_vec4_zaxis,1,NULL),
+	_DECL_FUNC(qk_vec4_waxis,1,NULL),
+	_DECL_FUNC(qk_vec4_normal,1,NULL),
+	_DECL_FUNC(qk_vec4_normalize,1,NULL),
+	_DECL_FUNC(qk_vec4_normalizeret,1,NULL),
+	_DECL_FUNC(qk_vec4_magnitude,1,NULL),
+	_DECL_FUNC(qk_vec4_magnitudesquared,1,NULL),
+	_DECL_FUNC(qk_vec4_manhattan,1,NULL),
+//	_DECL_FUNC(qk_vec4_minitude,1,NULL),
+//	_DECL_FUNC(qk_vec4_maxitude,1,NULL),
+	_DECL_FUNC(qk_vec4_dot,2,NULL),
+	_DECL_FUNC(qk_vec4_mix,3,NULL),
+//	_DECL_FUNC(qk_vec4_tangent,1,NULL),
+//	_DECL_FUNC(qk_vec4_rotate45,1,NULL),
+//	_DECL_FUNC(qk_vec4_rotatenegative45,1,NULL),
+//	_DECL_FUNC(qk_vec4_cross,2,NULL),
+	
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
@@ -335,46 +603,116 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 		i++;
 	}
 	
-	int Root = sq_gettop(v); // root table pos	
-	
-	sq_pushstring(v,"vec2",-1);							// +1 //
-	sq_newclass(v,false); 								// +1 //
-	int CPos = sq_gettop(v); // class pos
-	sq_setclassudsize(v,CPos,sizeof(Vector2D));
+	int Root = sq_gettop(v); // root table pos //
 
-	_CLASS_ADDFUNC(qk_vec2_constructor,constructor);
-	_CLASS_ADDFUNC(qk_vec2_get,_get);
-	_CLASS_ADDFUNC(qk_vec2_set,_set);
-	_CLASS_ADDFUNC(qk_vec2_tostring,_tostring);
-	_CLASS_ADDFUNC(qk_vec2_typeof,_typeof);
-	_CLASS_ADDFUNC(qk_vec2_cloned,_cloned);
-	_CLASS_ADDFUNC(qk_vec2_add,_add);
-	_CLASS_ADDFUNC(qk_vec2_sub,_sub);
-//	_CLASS_ADDFUNC(qk_vec2_mul,_mul);
-//	_CLASS_ADDFUNC(qk_vec2_div,_div);
-	_CLASS_ADDFUNC(qk_vec2_unm,_unm);
-	_CLASS_ADDFUNC(qk_vec2_flipx,flipx);
-	_CLASS_ADDFUNC(qk_vec2_flipy,flipy);
-	_CLASS_ADDFUNC(qk_vec2_xaxis,xaxis);
-	_CLASS_ADDFUNC(qk_vec2_yaxis,yaxis);
-	_CLASS_ADDFUNC(qk_vec2_normal,normal);
-	_CLASS_ADDFUNC(qk_vec2_normalize,normalize);
-	_CLASS_ADDFUNC(qk_vec2_normalizeret,normalizeret);
-	_CLASS_ADDFUNC(qk_vec2_magnitude,magnitude);
-	_CLASS_ADDFUNC(qk_vec2_magnitudesquared,magnitudesquared);
-	_CLASS_ADDFUNC(qk_vec2_manhattan,manhattan);
-	_CLASS_ADDFUNC(qk_vec2_minitude,minitude);
-	_CLASS_ADDFUNC(qk_vec2_maxitude,maxitude);
-	_CLASS_ADDFUNC(qk_vec2_dot,dot);
-	_CLASS_ADDFUNC(qk_vec2_mix,mix);
-	// 2D Only //
-	_CLASS_ADDFUNC(qk_vec2_tangent,tangent);
-	_CLASS_ADDFUNC(qk_vec2_rotate45,rotate45);
-	_CLASS_ADDFUNC(qk_vec2_rotatenegative45,rotatenegative45);
-	// 3D Only //
-//	_CLASS_ADDFUNC(qk_vec2_cross,cross);
+	{
+		_ADD_CLASS_START(Vector2D,"vec2");
+		_CLASS_ADDFUNC(qk_vec2_constructor,constructor);
+		_CLASS_ADDFUNC(qk_vec2_get,_get);
+		_CLASS_ADDFUNC(qk_vec2_set,_set);
+		_CLASS_ADDFUNC(qk_vec2_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_vec2_typeof,_typeof);
+		_CLASS_ADDFUNC(qk_vec2_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_vec2_add,_add);
+		_CLASS_ADDFUNC(qk_vec2_sub,_sub);
+//		_CLASS_ADDFUNC(qk_vec2_mul,_mul);
+//		_CLASS_ADDFUNC(qk_vec2_div,_div);
+		_CLASS_ADDFUNC(qk_vec2_unm,_unm);
+		_CLASS_ADDFUNC(qk_vec2_flipx,flipx);
+		_CLASS_ADDFUNC(qk_vec2_flipy,flipy);
+		_CLASS_ADDFUNC(qk_vec2_xaxis,xaxis);
+		_CLASS_ADDFUNC(qk_vec2_yaxis,yaxis);
+		_CLASS_ADDFUNC(qk_vec2_normal,normal);
+		_CLASS_ADDFUNC(qk_vec2_normalize,normalize);
+		_CLASS_ADDFUNC(qk_vec2_normalizeret,normalizeret);
+		_CLASS_ADDFUNC(qk_vec2_magnitude,magnitude);
+		_CLASS_ADDFUNC(qk_vec2_magnitudesquared,magnitudesquared);
+		_CLASS_ADDFUNC(qk_vec2_manhattan,manhattan);
+		_CLASS_ADDFUNC(qk_vec2_minitude,minitude);
+		_CLASS_ADDFUNC(qk_vec2_maxitude,maxitude);
+		_CLASS_ADDFUNC(qk_vec2_dot,dot);
+		_CLASS_ADDFUNC(qk_vec2_mix,mix);
+		_CLASS_ADDFUNC(qk_vec2_tangent,tangent);
+		_CLASS_ADDFUNC(qk_vec2_rotate45,rotate45);
+		_CLASS_ADDFUNC(qk_vec2_rotatenegative45,rotatenegative45);
+//		_CLASS_ADDFUNC(qk_vec2_cross,cross);
+		_ADD_CLASS_END(Vector2D);
+	}
 
-	sq_newslot(v,Root,false); // Add Class to Root		// -2 //
+	{
+		_ADD_CLASS_START(Vector3D,"vec3");
+		_CLASS_ADDFUNC(qk_vec3_constructor,constructor);
+		_CLASS_ADDFUNC(qk_vec3_get,_get);
+		_CLASS_ADDFUNC(qk_vec3_set,_set);
+		_CLASS_ADDFUNC(qk_vec3_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_vec3_typeof,_typeof);
+		_CLASS_ADDFUNC(qk_vec3_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_vec3_add,_add);
+		_CLASS_ADDFUNC(qk_vec3_sub,_sub);
+//		_CLASS_ADDFUNC(qk_vec3_mul,_mul);
+//		_CLASS_ADDFUNC(qk_vec3_div,_div);
+		_CLASS_ADDFUNC(qk_vec3_unm,_unm);
+		_CLASS_ADDFUNC(qk_vec3_flipx,flipx);
+		_CLASS_ADDFUNC(qk_vec3_flipy,flipy);
+		_CLASS_ADDFUNC(qk_vec3_flipz,flipz);
+		_CLASS_ADDFUNC(qk_vec3_xaxis,xaxis);
+		_CLASS_ADDFUNC(qk_vec3_yaxis,yaxis);
+		_CLASS_ADDFUNC(qk_vec3_zaxis,zaxis);
+		_CLASS_ADDFUNC(qk_vec3_normal,normal);
+		_CLASS_ADDFUNC(qk_vec3_normalize,normalize);
+		_CLASS_ADDFUNC(qk_vec3_normalizeret,normalizeret);
+		_CLASS_ADDFUNC(qk_vec3_magnitude,magnitude);
+		_CLASS_ADDFUNC(qk_vec3_magnitudesquared,magnitudesquared);
+		_CLASS_ADDFUNC(qk_vec3_manhattan,manhattan);
+//		_CLASS_ADDFUNC(qk_vec3_minitude,minitude);
+//		_CLASS_ADDFUNC(qk_vec3_maxitude,maxitude);
+		_CLASS_ADDFUNC(qk_vec3_dot,dot);
+		_CLASS_ADDFUNC(qk_vec3_mix,mix);
+		_CLASS_ADDFUNC(qk_vec3_tangent,tangent);
+//		_CLASS_ADDFUNC(qk_vec3_rotate45,rotate45);
+//		_CLASS_ADDFUNC(qk_vec3_rotatenegative45,rotatenegative45);
+		_CLASS_ADDFUNC(qk_vec3_cross,cross);
+		_ADD_CLASS_END(Vector3D);
+	}
+
+	{
+		_ADD_CLASS_START(Vector4D,"vec4");
+		_CLASS_ADDFUNC(qk_vec4_constructor,constructor);
+		_CLASS_ADDFUNC(qk_vec4_get,_get);
+		_CLASS_ADDFUNC(qk_vec4_set,_set);
+		_CLASS_ADDFUNC(qk_vec4_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_vec4_typeof,_typeof);
+		_CLASS_ADDFUNC(qk_vec4_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_vec4_add,_add);
+		_CLASS_ADDFUNC(qk_vec4_sub,_sub);
+//		_CLASS_ADDFUNC(qk_vec4_mul,_mul);
+//		_CLASS_ADDFUNC(qk_vec4_div,_div);
+		_CLASS_ADDFUNC(qk_vec4_unm,_unm);
+		_CLASS_ADDFUNC(qk_vec4_flipx,flipx);
+		_CLASS_ADDFUNC(qk_vec4_flipy,flipy);
+		_CLASS_ADDFUNC(qk_vec4_flipz,flipz);
+		_CLASS_ADDFUNC(qk_vec4_flipw,flipw);
+		_CLASS_ADDFUNC(qk_vec4_xaxis,xaxis);
+		_CLASS_ADDFUNC(qk_vec4_yaxis,yaxis);
+		_CLASS_ADDFUNC(qk_vec4_zaxis,zaxis);
+		_CLASS_ADDFUNC(qk_vec4_waxis,waxis);
+		_CLASS_ADDFUNC(qk_vec4_normal,normal);
+		_CLASS_ADDFUNC(qk_vec4_normalize,normalize);
+		_CLASS_ADDFUNC(qk_vec4_normalizeret,normalizeret);
+		_CLASS_ADDFUNC(qk_vec4_magnitude,magnitude);
+		_CLASS_ADDFUNC(qk_vec4_magnitudesquared,magnitudesquared);
+		_CLASS_ADDFUNC(qk_vec4_manhattan,manhattan);
+//		_CLASS_ADDFUNC(qk_vec4_minitude,minitude);
+//		_CLASS_ADDFUNC(qk_vec4_maxitude,maxitude);
+		_CLASS_ADDFUNC(qk_vec4_dot,dot);
+		_CLASS_ADDFUNC(qk_vec4_mix,mix);
+//		_CLASS_ADDFUNC(qk_vec4_tangent,tangent);
+//		_CLASS_ADDFUNC(qk_vec4_rotate45,rotate45);
+//		_CLASS_ADDFUNC(qk_vec4_rotatenegative45,rotatenegative45);
+//		_CLASS_ADDFUNC(qk_vec4_cross,cross);
+		_ADD_CLASS_END(Vector4D);
+	}
+
 	
 	return SQ_OK;
 }
