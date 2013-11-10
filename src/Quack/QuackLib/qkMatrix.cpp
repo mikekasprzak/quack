@@ -137,7 +137,7 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-_MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[%0.03f %0.03f]\n[%0.03f %0.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
+_MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -153,7 +153,7 @@ SQInteger qk_mat3_constructor( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-_MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[%0.03f %0.03f %0.03f]\n[%0.03f %0.03f %0.03f]\n[%0.03f %0.03f %0.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
+_MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -169,7 +169,7 @@ SQInteger qk_mat4_constructor( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-_MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[%0.03f %0.03f %0.03f %0.03f]\n[%0.03f %0.03f %0.03f %0.03f]\n[%0.03f %0.03f %0.03f %0.03f]\n[%0.03f %0.03f %0.03f %0.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
+_MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
 // - ------------------------------------------------------------------------------------------ - //
 
 

@@ -15,7 +15,7 @@ function Log(...) {
 // Recursively request all files passed to this //
 function require( ... ) {
 	// CLEVER: Will recursively iterate through all arrays deep in arguments to find files to require. //
-	function recursive( files ) {
+	local recursive = function( files ) {
 		for ( local idx = 0; idx < files.len(); idx++ ) {
 			if ( typeof files[idx] == "array" ) {
 				recursive( files[idx] );
@@ -69,14 +69,6 @@ function print_table( table, level = 0, name = "" ) {
 	else {
 		print( Prefix + "* [" + typeof(table) + "]: " + table );
 	}
-}
-// - -------------------------------------------------------------------------------------------------------------- - //
-function RGBA( r, g, b, a ) {
-	return ((r<<0) & 0xff) | ((g<<8) & 0xff00) | ((b<<16) & 0xff0000) | ((a<<24) & 0xff000000);
-}
-// - -------------------------------------------------------------------------------------------------------------- - //
-function RGB( r, g, b ) {
-	return ((r<<0) & 0xff) | ((g<<8) & 0xff00) | ((b<<16) & 0xff0000) | (0xff000000);
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
 
