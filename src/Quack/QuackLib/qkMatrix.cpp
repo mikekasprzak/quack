@@ -29,10 +29,10 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 	Matrix2x2* Mat;
 	sq_getinstanceup(v,1,(void**)&Mat,0);
+
 	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
 	
 	int Args = sq_gettop(v);
-	
 	if ( Args > 1 ) {
 		int MatIndex = 0; // Which Cell of the Matrix we are writing to. //
 		

@@ -216,16 +216,64 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 
 
 // - ------------------------------------------------------------------------------------------ - //
+inline void qk_vec_constructor_body( HSQUIRRELVM v, float* Arr, const int ArrSize ) {
+	int Args = sq_gettop(v);
+	if ( Args > 1 ) {
+		int ArrIndex = 0;
+		
+		// Iterate through all arguments //
+		for ( int idx = 1; (idx <= Args) && (ArrIndex < ArrSize); idx++ ) {
+			int Type = sq_gettype(v,idx);
+			if ( Type & (OT_FLOAT|OT_INTEGER) ) {
+				sq_getfloat(v,idx,&Arr[ArrIndex]);
+				ArrIndex++;
+			}
+			else if ( Type == OT_ARRAY ) {
+				int Size = sq_getsize(v,idx);
+				if ( Size > ArrSize-ArrIndex ) {
+					// TODO: Log an error that array attempting to use is too big //
+					Size = ArrSize-ArrIndex;
+				}
+	
+				for ( int idx2 = 0; idx2 < Size; idx2++ ) {
+					sq_pushinteger(v,idx2); 	// +1 //
+					sq_get(v,idx); 				// =0 (-1 then +1) //
+					sq_getfloat(v,-1,&(Arr[ArrIndex]));
+					sq_poptop(v);				// -1 //
+					
+					ArrIndex++;
+				}
+			}
+			else {
+				// TODO: Log Bad Matrix Init Type //
+			}
+		}
+		
+		// If we didn't put enough data in, pad with zeros //
+		while ( ArrIndex < ArrSize ) {
+			Arr[ArrIndex] = 0;
+			ArrIndex++;
+		}
+	}
+	else {
+		// TODO: No Arguments //
+	}	
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
 // scalar --------------------------------------------------------------------------------------- - //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_scalar_constructor( HSQUIRRELVM v ) {
 	_VEC_CONSTRUCTOR_START(Real);
 	
-	float x;
-	sq_getfloat(v,2,&x);
-		
-	// Write Data //
-	*Vec = Real(x);
+	const int ArrSize = 1;
+	float Arr[ArrSize];
+	
+	qk_vec_constructor_body(v,Arr,ArrSize);
+	
+	*Vec = Real(Arr[0]);
 
 	_VEC_CONSTRUCTOR_END(Real);
 }
@@ -287,12 +335,12 @@ _VEC_VS_ALPHA_RETURNS_VEC(Real,qk_scalar_mix,mix);
 SQInteger qk_vec2_constructor( HSQUIRRELVM v ) {
 	_VEC_CONSTRUCTOR_START(Vector2D);
 	
-	float x,y;
-	sq_getfloat(v,2,&x);
-	sq_getfloat(v,3,&y);
-		
-	// Write Data //
-	*Vec = Vector2D(x,y);
+	const int ArrSize = 2;
+	float Arr[ArrSize];
+	
+	qk_vec_constructor_body(v,Arr,ArrSize);
+	
+	*Vec = Vector2D(Arr[0],Arr[1]);
 
 	_VEC_CONSTRUCTOR_END(Vector2D);
 }
@@ -366,13 +414,12 @@ _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotatenegative45,RotateNegative45);
 SQInteger qk_vec3_constructor( HSQUIRRELVM v ) {
 	_VEC_CONSTRUCTOR_START(Vector3D);
 	
-	float x,y,z;
-	sq_getfloat(v,2,&x);
-	sq_getfloat(v,3,&y);
-	sq_getfloat(v,4,&z);
-		
-	// Write Data //
-	*Vec = Vector3D(x,y,z);
+	const int ArrSize = 3;
+	float Arr[ArrSize];
+	
+	qk_vec_constructor_body(v,Arr,ArrSize);
+	
+	*Vec = Vector3D(Arr[0],Arr[1],Arr[2]);
 
 	_VEC_CONSTRUCTOR_END(Vector3D);
 }
@@ -456,14 +503,12 @@ _VEC_VS_RETURNS_VEC(Vector3D,qk_vec3_cross,cross);
 SQInteger qk_vec4_constructor( HSQUIRRELVM v ) {
 	_VEC_CONSTRUCTOR_START(Vector4D);
 	
-	float x,y,z,w;
-	sq_getfloat(v,2,&x);
-	sq_getfloat(v,3,&y);
-	sq_getfloat(v,4,&z);
-	sq_getfloat(v,5,&w);
-		
-	// Write Data //
-	*Vec = Vector4D(x,y,z,w);
+	const int ArrSize = 4;
+	float Arr[ArrSize];
+	
+	qk_vec_constructor_body(v,Arr,ArrSize);
+	
+	*Vec = Vector4D(Arr[0],Arr[1],Arr[2],Arr[3]);
 
 	_VEC_CONSTRUCTOR_END(Vector4D);
 }
@@ -560,7 +605,7 @@ SQRegFunction qkVector_funcs[] = {
 	// 1: Function Name.
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
-	_DECL_FUNC(qk_scalar_constructor,2,NULL),
+	_DECL_FUNC(qk_scalar_constructor,-1,NULL),
 	_DECL_FUNC(qk_scalar_get,2,NULL),
 	_DECL_FUNC(qk_scalar_set,3,NULL),
 	_DECL_FUNC(qk_scalar_typeof,1,NULL),
@@ -588,7 +633,7 @@ SQRegFunction qkVector_funcs[] = {
 //	_DECL_FUNC(qk_scalar_rotatenegative45,1,NULL),
 //	_DECL_FUNC(qk_scalar_cross,2,NULL),
 	
-	_DECL_FUNC(qk_vec2_constructor,3,NULL),
+	_DECL_FUNC(qk_vec2_constructor,-1,NULL),
 	_DECL_FUNC(qk_vec2_get,2,NULL),
 	_DECL_FUNC(qk_vec2_set,3,NULL),
 	_DECL_FUNC(qk_vec2_typeof,1,NULL),
@@ -618,7 +663,7 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_rotatenegative45,1,NULL),
 //	_DECL_FUNC(qk_vec2_cross,2,NULL),
 
-	_DECL_FUNC(qk_vec3_constructor,4,NULL),
+	_DECL_FUNC(qk_vec3_constructor,-1,NULL),
 	_DECL_FUNC(qk_vec3_get,2,NULL),
 	_DECL_FUNC(qk_vec3_set,3,NULL),
 	_DECL_FUNC(qk_vec3_typeof,1,NULL),
@@ -650,7 +695,7 @@ SQRegFunction qkVector_funcs[] = {
 //	_DECL_FUNC(qk_vec3_rotatenegative45,1,NULL),
 	_DECL_FUNC(qk_vec3_cross,2,NULL),
 
-	_DECL_FUNC(qk_vec4_constructor,5,NULL),
+	_DECL_FUNC(qk_vec4_constructor,-1,NULL),
 	_DECL_FUNC(qk_vec4_get,2,NULL),
 	_DECL_FUNC(qk_vec4_set,3,NULL),
 	_DECL_FUNC(qk_vec4_typeof,1,NULL),
