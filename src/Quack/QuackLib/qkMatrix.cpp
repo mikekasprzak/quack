@@ -29,7 +29,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 	Matrix2x2* Mat;
 	sq_getinstanceup(v,1,(void**)&Mat,0);
-	const int MatSize = sizeof(Matrix2x2) / sizeof(float);
+	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
 	
 	int Args = sq_gettop(v);
 	
@@ -49,16 +49,18 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 			}
 			else if ( Type == OT_ARRAY ) {
 				int Size = sq_getsize(v,idx);
-				if ( Size > MatSize-MatIndex )
+				if ( Size > MatSize-MatIndex ) {
+					// TODO: Log an error that array attempting to use is too big //
 					Size = MatSize-MatIndex;
+				}
 				
 				for ( int idx2 = 0; idx2 < Size; idx2++ ) {
 					sq_pushinteger(v,idx2); 	// +1 //
-					sq_get(v,idx); 				// -1 then +1 //
+					sq_get(v,idx); 				// =0 (-1 then +1) //
 					float Value;
-					sq_getfloat(v,-1,&Value);	// -1 //
+					sq_getfloat(v,-1,&Value);
 					(*Mat)[MatIndex] = Real(Value);
-					sq_poptop(v);
+					sq_poptop(v);				// -1 //
 					MatIndex++;
 				}
 			}
@@ -112,6 +114,12 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 
 					MatIndex++;
 				}
+				else {
+					// TODO: Log Bad Matrix Init Type //
+				}
+			}
+			else {
+				// TODO: Log Bad Matrix Init Type //
 			}
 		}
 		
@@ -122,7 +130,9 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 		}
 	}
 	else {
+		// On no Arguments: Identity Matrix //
 		*Mat = Matrix2x2::Identity;
+		// NOTE: This is a nice idea, but uncommon so maybe not the best idea. //
 	}
 
 	return SQ_VOID;
