@@ -218,7 +218,7 @@ inline void qk_vec_constructor_body( HSQUIRRELVM v, float* Arr, const int ArrSiz
 		int ArrIndex = 0;
 		
 		// Iterate through all arguments //
-		for ( int idx = 1; (idx <= Args) && (ArrIndex < ArrSize); idx++ ) {
+		for ( int idx = 2; (idx <= Args) && (ArrIndex < ArrSize); idx++ ) {
 			int Type = sq_gettype(v,idx);
 			if ( Type & (OT_FLOAT|OT_INTEGER) ) {
 				sq_getfloat(v,idx,&Arr[ArrIndex]);
