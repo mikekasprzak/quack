@@ -131,6 +131,9 @@ inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 			sq_pushfloat(v,Mat[Index]);
 			return SQ_RETURN;
 		}
+		else {
+			return sq_throwerror(v,"matrix element index is out of range");
+		}
 	}
 
 	sq_pushnull(v);				/* +1 */
@@ -143,13 +146,16 @@ inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 		sq_getfloat(v,3,&Value);
 	
 		if ( sq_gettype(v,2) == OT_INTEGER ) {
-			int Index;
-			sq_getinteger(v,2,&Index);
+			unsigned int Index;
+			sq_getinteger(v,2,(int*)&Index);
 	
 			if ( Index < MatSize ) {
 				Mat[Index] = Value;
 				sq_pushfloat(v,Value);
 				return SQ_RETURN;
+			}
+			else {
+				return sq_throwerror(v,"matrix element index is out of range");
 			}
 		}
 	}
