@@ -24,14 +24,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-// mat2 --------------------------------------------------------------------------------------- - //
-// - ------------------------------------------------------------------------------------------ - //
-SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
-	Matrix2x2* Mat;
-	sq_getinstanceup(v,1,(void**)&Mat,0);
-
-	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
-	
+inline void qk_mat_constructor_body( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 	int Args = sq_gettop(v);
 	if ( Args > 1 ) {
 		int MatIndex = 0; // Which Cell of the Matrix we are writing to. //
@@ -40,11 +33,8 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 		for ( int idx = 1; (idx <= Args) && (MatIndex < MatSize); idx++ ) {
 			int Type = sq_gettype(v,idx);
 			if ( Type & (OT_FLOAT|OT_INTEGER) ) {
-				// Write as a Float //
-				float Value;
-				sq_getfloat(v,idx,&Value);
+				sq_getfloat(v,idx,&(Mat[MatIndex]));
 				
-				(*Mat)[MatIndex] = Real(Value);
 				MatIndex++;
 			}
 			else if ( Type == OT_ARRAY ) {
@@ -57,9 +47,7 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 				for ( int idx2 = 0; idx2 < Size; idx2++ ) {
 					sq_pushinteger(v,idx2); 	// +1 //
 					sq_get(v,idx); 				// =0 (-1 then +1) //
-					float Value;
-					sq_getfloat(v,-1,&Value);
-					(*Mat)[MatIndex] = Real(Value);
+					sq_getfloat(v,-1,&(Mat[MatIndex]));
 					sq_poptop(v);				// -1 //
 					MatIndex++;
 				}
@@ -72,9 +60,9 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 					Vector2D* Vec;
 					sq_getinstanceup(v,idx,(void**)&Vec,0);				
 					
-					(*Mat)[MatIndex+0] = Vec->x;
+					Mat[MatIndex+0] = Vec->x.ToFloat();
 					if ( MatIndex+1 < MatSize )
-						(*Mat)[MatIndex+1] = Vec->y;
+						Mat[MatIndex+1] = Vec->y.ToFloat();
 
 					MatIndex+=2;
 				}
@@ -83,11 +71,11 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 					Vector3D* Vec;
 					sq_getinstanceup(v,idx,(void**)&Vec,0);				
 					
-					(*Mat)[MatIndex+0] = Vec->x;
+					Mat[MatIndex+0] = Vec->x.ToFloat();
 					if ( MatIndex+1 < MatSize )
-						(*Mat)[MatIndex+1] = Vec->y;
+						Mat[MatIndex+1] = Vec->y.ToFloat();
 					if ( MatIndex+2 < MatSize )
-						(*Mat)[MatIndex+2] = Vec->z;
+						Mat[MatIndex+2] = Vec->z.ToFloat();
 
 					MatIndex+=3;
 				}
@@ -96,13 +84,13 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 					Vector4D* Vec;
 					sq_getinstanceup(v,idx,(void**)&Vec,0);				
 					
-					(*Mat)[MatIndex+0] = Vec->x;
+					Mat[MatIndex+0] = Vec->x.ToFloat();
 					if ( MatIndex+1 < MatSize )
-						(*Mat)[MatIndex+1] = Vec->y;
+						Mat[MatIndex+1] = Vec->y.ToFloat();
 					if ( MatIndex+2 < MatSize )
-						(*Mat)[MatIndex+2] = Vec->z;
-					if ( MatIndex+2 < MatSize )
-						(*Mat)[MatIndex+3] = Vec->w;
+						Mat[MatIndex+2] = Vec->z.ToFloat();
+					if ( MatIndex+3 < MatSize )
+						Mat[MatIndex+3] = Vec->w.ToFloat();
 
 					MatIndex+=4;
 				}
@@ -110,7 +98,7 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 					Real* Vec;
 					sq_getinstanceup(v,idx,(void**)&Vec,0);				
 					
-					(*Mat)[MatIndex+0] = *Vec;
+					Mat[MatIndex] = Vec->ToFloat();
 
 					MatIndex++;
 				}
@@ -125,15 +113,26 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 		
 		// If we didn't put enough data in, pad with zeros //
 		while ( MatIndex < MatSize ) {
-			(*Mat)[MatIndex] = Real::Zero;
+			Mat[MatIndex] = 0.0f;
 			MatIndex++;
 		}
 	}
 	else {
-		// On no Arguments: Identity Matrix //
-		*Mat = Matrix2x2::Identity;
-		// NOTE: This is a nice idea, but uncommon so maybe not the best idea. //
+		// TODO: No Arguments //
 	}
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
+// mat2 --------------------------------------------------------------------------------------- - //
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
+	float* Mat;
+	sq_getinstanceup(v,1,(void**)&Mat,0);
+	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
+	
+	qk_mat_constructor_body(v,Mat,MatSize);
 
 	return SQ_VOID;
 }

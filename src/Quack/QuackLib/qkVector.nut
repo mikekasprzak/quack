@@ -89,7 +89,7 @@ function vec(...) {
 	else if ( Len == 4 )
 		return vec4(vargv);
 
-	error( "Invalid vec type: vec" + Len );
+	error( "Invalid vec type: vec\n" + Len );
 
 	return null;
 }
