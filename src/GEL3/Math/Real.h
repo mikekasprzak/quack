@@ -189,6 +189,15 @@ public:
 	OVERLOAD_SYMBOLSYMBOLSUFFIX_OPERATOR( ++ );
 	OVERLOAD_SYMBOLSYMBOLSUFFIX_OPERATOR( -- );
 	// - -------------------------------------------------------------------------------------- - //
+	// Like the GLSL parallel, blends between two vectors by alpha (0 = a returned, 1 = b returned) //
+	inline const Real mix( const Real& _Vs, const Real Alpha ) const {
+		return ((*this) * (Real::One - Alpha)) + (_Vs * Alpha);
+	}
+	// - -------------------------------------------------------------------------------------- - //
+	inline static const Real mix( const Real& a, const Real& b, const Real Alpha ) {
+		return (a * (Real::One - Alpha)) + (b * Alpha);
+	}
+	// - -------------------------------------------------------------------------------------- - //
 	// Negative //
 	inline const Real operator - ( ) const {
 		return -x;
@@ -203,13 +212,15 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Regular Functions //
 	// - -------------------------------------------------------------------------------------- - //
-	inline void Normalize() {
+	inline Real& Normalize() {
 		if ( x > Zero.x )
 			x = One.x;
 		else if ( x < Zero.x )
 			x = -One.x;
 		else
 			x = Zero.x;
+			
+		return *this;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that returns the Magnitude after calculating the normalized vector //
@@ -1174,6 +1185,12 @@ public:
 		return Value < Real::SmallestUnit;
 	}
 	// - -------------------------------------------------------------------------------------- - //
+
+	// - -------------------------------------------------------------------------------------- - //
+	inline const Real FlipX() {
+		return -(*this);
+	}
+	// - -------------------------------------------------------------------------------------- - //
 	
 	// - -------------------------------------------------------------------------------------- - //
 	// Due to some signature issues, printf needs an explicit function for converting to float. //
@@ -1193,6 +1210,12 @@ public:
 		
 		safe_sprintf( Text[CurrentText], sizeof(Text[CurrentText]), "%f", x );
 		return Text[CurrentText];
+	}
+	// - -------------------------------------------------------------------------------------- - //
+
+	// - -------------------------------------------------------------------------------------- - //
+	inline const Real XAxis() const {
+		return *this;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 

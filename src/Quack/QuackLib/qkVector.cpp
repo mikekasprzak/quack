@@ -4,6 +4,7 @@
 #include <API/API_Squirrel.h>
 #include "sqext.h"
 #include "sqgelext.h"
+#include "QuackLib.h"
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -202,14 +203,81 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_get(v,Root); /* lookup function */		/* =0 */ \
 	sq_newslot(v,CPos,false);					/* -2 */
 // - ------------------------------------------------------------------------------------------ - //
-#define _ADD_CLASS_START(_TYPE_,_TYPENAME_) \
+#define _ADD_CLASS_START(_TYPE_,_TYPENAME_,_TYPETAG_) \
 	sq_pushstring(v,_TYPENAME_,-1);				/* +1 */ \
 	sq_newclass(v,false); 						/* +1 */ \
 	int CPos = sq_gettop(v); /* class pos */ \
-	sq_setclassudsize(v,CPos,sizeof(_TYPE_));
+	sq_setclassudsize(v,CPos,sizeof(_TYPE_)); \
+	sq_settypetag(v,CPos,(void*)_TYPETAG_);
 // - ------------------------------------------------------------------------------------------ - //
 #define _ADD_CLASS_END(_TYPE_) \
 	sq_newslot(v,Root,false); /* Add to Root */	/* -2 */
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
+// scalar --------------------------------------------------------------------------------------- - //
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_scalar_constructor( HSQUIRRELVM v ) {
+	_VEC_CONSTRUCTOR_START(Real);
+	
+	float x;
+	sq_getfloat(v,2,&x);
+		
+	// Write Data //
+	*Vec = Real(x);
+
+	_VEC_CONSTRUCTOR_END(Real);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_scalar_get( HSQUIRRELVM v ) {
+	_VEC_GET_START(Real);
+	
+	// Return different data depending on requested member //
+	if ( MemberName[0] == 'x' ) {
+		sq_pushfloat(v,Vec->ToFloat());	// +1 //
+		return SQ_RETURN;
+	}
+	
+	_VEC_GET_END(Real);
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_scalar_set( HSQUIRRELVM v ) {
+	_VEC_SET_START(Real);
+	
+	if ( MemberName[0] == 'x' ) {
+		*Vec = Value;
+		sq_pushfloat( v, Value );
+		return SQ_RETURN;
+	}
+
+	_VEC_SET_END(Real);
+}
+// - ------------------------------------------------------------------------------------------ - //
+_VEC_TOSTRING(Real,qk_scalar_tostring,"(%0.03f)",Vec->ToFloat());
+_VEC_TYPEOF(Real,qk_scalar_typeof,"scalar",6);
+_VEC_CLONED(Real,qk_scalar_cloned);
+_VEC_MATH(Real,qk_scalar_add,+);
+_VEC_MATH(Real,qk_scalar_sub,-);
+_VEC_MATH(Real,qk_scalar_mul,*);
+_VEC_MATH(Real,qk_scalar_div,/);
+_VEC_UNM(Real,qk_scalar_unm);
+_VEC_FUNC_RETURNS_VEC(Real,qk_scalar_flipx,FlipX);
+_VEC_FUNC_RETURNS_VEC(Real,qk_scalar_xaxis,XAxis);
+_VEC_FUNC_RETURNS_VEC(Real,qk_scalar_normal,Normal);
+_VEC_FUNC_SELF_RETURNS_VEC(Real,qk_scalar_normalize,Normalize);
+_VEC_FUNC_RETURNS_FLOAT(Real,qk_scalar_normalizeret,NormalizeRet);
+_VEC_FUNC_RETURNS_FLOAT(Real,qk_scalar_magnitude,Magnitude);
+_VEC_FUNC_RETURNS_FLOAT(Real,qk_scalar_magnitudesquared,MagnitudeSquared);
+_VEC_FUNC_RETURNS_FLOAT(Real,qk_scalar_manhattan,Manhattan);
+//_VEC_FUNC_RETURNS_FLOAT(Real,qk_scalar_minitude,Minitude);
+//_VEC_FUNC_RETURNS_FLOAT(Real,qk_scalar_maxitude,Maxitude);
+//_VEC_VS_RETURNS_FLOAT(Real,qk_scalar_dot,dot);
+_VEC_VS_ALPHA_RETURNS_VEC(Real,qk_scalar_mix,mix);
+//_VEC_FUNC_RETURNS_VEC(Real,qk_scalar_tangent,Tangent);
+//_VEC_FUNC_RETURNS_VEC(Real,qk_scalar_rotate45,Rotate45);
+//_VEC_FUNC_RETURNS_VEC(Real,qk_scalar_rotatenegative45,RotateNegative45);
+//_VEC_VS_RETURNS_VEC(Real,qk_scalar_cross,cross);
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -486,11 +554,40 @@ _VEC_VS_ALPHA_RETURNS_VEC(Vector4D,qk_vec4_mix,mix);
 
 
 // - ------------------------------------------------------------------------------------------ - //
+// - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
 SQRegFunction qkVector_funcs[] = {
 	// 1: Function Name.
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
+	_DECL_FUNC(qk_scalar_constructor,2,NULL),
+	_DECL_FUNC(qk_scalar_get,2,NULL),
+	_DECL_FUNC(qk_scalar_set,3,NULL),
+	_DECL_FUNC(qk_scalar_typeof,1,NULL),
+	_DECL_FUNC(qk_scalar_tostring,1,NULL),
+	_DECL_FUNC(qk_scalar_cloned,2,NULL),
+	_DECL_FUNC(qk_scalar_add,2,NULL),
+	_DECL_FUNC(qk_scalar_sub,2,NULL),
+	_DECL_FUNC(qk_scalar_mul,2,NULL),
+	_DECL_FUNC(qk_scalar_div,2,NULL),
+	_DECL_FUNC(qk_scalar_unm,1,NULL),
+	_DECL_FUNC(qk_scalar_flipx,1,NULL),
+	_DECL_FUNC(qk_scalar_xaxis,1,NULL),
+	_DECL_FUNC(qk_scalar_normal,1,NULL),
+	_DECL_FUNC(qk_scalar_normalize,1,NULL),
+	_DECL_FUNC(qk_scalar_normalizeret,1,NULL),
+	_DECL_FUNC(qk_scalar_magnitude,1,NULL),
+	_DECL_FUNC(qk_scalar_magnitudesquared,1,NULL),
+	_DECL_FUNC(qk_scalar_manhattan,1,NULL),
+//	_DECL_FUNC(qk_scalar_minitude,1,NULL),
+//	_DECL_FUNC(qk_scalar_maxitude,1,NULL),
+//	_DECL_FUNC(qk_scalar_dot,2,NULL),
+	_DECL_FUNC(qk_scalar_mix,3,NULL),
+//	_DECL_FUNC(qk_scalar_tangent,1,NULL),
+//	_DECL_FUNC(qk_scalar_rotate45,1,NULL),
+//	_DECL_FUNC(qk_scalar_rotatenegative45,1,NULL),
+//	_DECL_FUNC(qk_scalar_cross,2,NULL),
+	
 	_DECL_FUNC(qk_vec2_constructor,3,NULL),
 	_DECL_FUNC(qk_vec2_get,2,NULL),
 	_DECL_FUNC(qk_vec2_set,3,NULL),
@@ -591,6 +688,9 @@ SQRegFunction qkVector_funcs[] = {
 };
 #undef _DECL_FUNC
 // - ------------------------------------------------------------------------------------------ - //
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkVector(HSQUIRRELVM v) {
 	SQInteger i=0;
 	SQRegFunction* funcs = qkVector_funcs;
@@ -606,7 +706,39 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	int Root = sq_gettop(v); // root table pos //
 
 	{
-		_ADD_CLASS_START(Vector2D,"vec2");
+		_ADD_CLASS_START(Real,"scalar",QK_TAG_SCALAR);
+		_CLASS_ADDFUNC(qk_scalar_constructor,constructor);
+		_CLASS_ADDFUNC(qk_scalar_get,_get);
+		_CLASS_ADDFUNC(qk_scalar_set,_set);
+		_CLASS_ADDFUNC(qk_scalar_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_scalar_typeof,_typeof);
+		_CLASS_ADDFUNC(qk_scalar_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_scalar_add,_add);
+		_CLASS_ADDFUNC(qk_scalar_sub,_sub);
+		_CLASS_ADDFUNC(qk_scalar_mul,_mul);
+		_CLASS_ADDFUNC(qk_scalar_div,_div);
+		_CLASS_ADDFUNC(qk_scalar_unm,_unm);
+		_CLASS_ADDFUNC(qk_scalar_flipx,flipx);
+		_CLASS_ADDFUNC(qk_scalar_xaxis,xaxis);
+		_CLASS_ADDFUNC(qk_scalar_normal,normal);
+		_CLASS_ADDFUNC(qk_scalar_normalize,normalize);
+		_CLASS_ADDFUNC(qk_scalar_normalizeret,normalizeret);
+		_CLASS_ADDFUNC(qk_scalar_magnitude,magnitude);
+		_CLASS_ADDFUNC(qk_scalar_magnitudesquared,magnitudesquared);
+		_CLASS_ADDFUNC(qk_scalar_manhattan,manhattan);
+//		_CLASS_ADDFUNC(qk_scalar_minitude,minitude);
+//		_CLASS_ADDFUNC(qk_scalar_maxitude,maxitude);
+//		_CLASS_ADDFUNC(qk_scalar_dot,dot);
+		_CLASS_ADDFUNC(qk_scalar_mix,mix);
+//		_CLASS_ADDFUNC(qk_scalar_tangent,tangent);
+//		_CLASS_ADDFUNC(qk_scalar_rotate45,rotate45);
+//		_CLASS_ADDFUNC(qk_scalar_rotatenegative45,rotatenegative45);
+//		_CLASS_ADDFUNC(qk_scalar_cross,cross);
+		_ADD_CLASS_END(Real);
+	}
+
+	{
+		_ADD_CLASS_START(Vector2D,"vec2",QK_TAG_VEC2);
 		_CLASS_ADDFUNC(qk_vec2_constructor,constructor);
 		_CLASS_ADDFUNC(qk_vec2_get,_get);
 		_CLASS_ADDFUNC(qk_vec2_set,_set);
@@ -640,7 +772,7 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	}
 
 	{
-		_ADD_CLASS_START(Vector3D,"vec3");
+		_ADD_CLASS_START(Vector3D,"vec3",QK_TAG_VEC3);
 		_CLASS_ADDFUNC(qk_vec3_constructor,constructor);
 		_CLASS_ADDFUNC(qk_vec3_get,_get);
 		_CLASS_ADDFUNC(qk_vec3_set,_set);
@@ -676,7 +808,7 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	}
 
 	{
-		_ADD_CLASS_START(Vector4D,"vec4");
+		_ADD_CLASS_START(Vector4D,"vec4",QK_TAG_VEC4);
 		_CLASS_ADDFUNC(qk_vec4_constructor,constructor);
 		_CLASS_ADDFUNC(qk_vec4_get,_get);
 		_CLASS_ADDFUNC(qk_vec4_set,_set);

@@ -12,8 +12,10 @@
 #include "QuackLib/qkSystem.h"
 #include "QuackLib/qkScreen.h"
 #include "QuackLib/qkInput.h"
-#include "QuackLib/qkColor.h"
-#include "QuackLib/qkVector.h"
+// - ------------------------------------------------------------------------------------------ - //
+#include "QuackLib/qkColor.h"	// color
+#include "QuackLib/qkVector.h"	// vec2, vec3, vec4, scalar
+#include "QuackLib/qkMatrix.h"	// mat2, mat3, mat4
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -53,18 +55,18 @@ void QuackVMInit() {
 	
 	// Load Standard Libraries //
 	Log( "Loading System Libraries..." );
-	sq_pushroottable( vm );
+	sq_pushroottable( vm );	// +1 //
 		//Log("* sqIO"); sqstd_register_iolib( vm );			// FileIO (dofile, loadfile, writeclosuretofile)
 		//Log("* sqBlob"); sqstd_register_bloblib( vm );		// Binary File Blobs (unnecessary?)
 		Log("* sqMath"); sqstd_register_mathlib( vm );			// Math (abs, fabs, sin, cos, log, rand, srand, sqrt, PI, ...)
 		//Log("* sqSystem"); sqstd_register_systemlib( vm );	// System (clock [time], getenv, remove [file], system [cmd], ...)
 		Log("* sqString"); sqstd_register_stringlib( vm );		// String (format [sprintf], regexp, l/r/strip, split [tokens])
-	sq_pop( vm, 1 );
+	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	
 	// Load My Libraries //
 	Log( "Loading Quack Libraries..." );
-	sq_pushroottable( vm );
+	sq_pushroottable( vm );	// +1 //
 		Log("* qkSystem"); register_qkSystem( vm );
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
 		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
@@ -73,8 +75,8 @@ void QuackVMInit() {
 		//Log("* qkJson"); register_qkJson( vm );
 		Log("* qkColor"); register_qkColor( vm );
 		Log("* qkVector"); register_qkVector( vm );
-//		Log("* qkMatrix"); register_qkMatrix( vm );
-	sq_pop( vm, 1 );
+		Log("* qkMatrix"); register_qkMatrix( vm );
+	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	
 	// Load the startup file //

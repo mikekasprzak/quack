@@ -9,7 +9,7 @@ void sqext_reload_subscriber( const st UserData ) {
 	VLog( "+ Reloading Script File (%s) [%i]...", NutFile, UserData );
 
 	if ( !MyAsset.IsBad() ) {
-		return_if_void_Log( 
+		return_if_void_VLog( 
 			sqext_compile_nut( vm, MyAsset.Get(), MyAsset.GetSize(), NutFile ), 
 			"- Script File Reloaded Successfully (%s).", NutFile 
 		);

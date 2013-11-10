@@ -4,6 +4,7 @@
 #include <API/API_Squirrel.h>
 #include "sqext.h"
 #include "sqgelext.h"
+#include "QuackLib.h"
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -187,7 +188,8 @@ SQInteger register_qkColor(HSQUIRRELVM v) {
 	sq_newclass(v,false); 								// +1 //
 	int CPos = sq_gettop(v); // class pos
 	sq_setclassudsize(v,CPos,sizeof(GelColor));
-
+	sq_settypetag(v,CPos,(void*)QK_TAG_COLOR);
+	
 	// constructor //
 	sq_pushstring(v,"constructor",-1);					// +1 //
 	sq_pushstring(v,"qk_color_constructor",-1);			// +1 //

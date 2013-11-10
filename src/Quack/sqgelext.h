@@ -10,10 +10,6 @@
 // The function we use to subscribe to AssetPool changes //
 void sqext_reload_subscriber( const st UserData );
 // - ------------------------------------------------------------------------------------------ - //
-inline void sqext_log( HSQUIRRELVM v ) {
-	Log( "! STACK: %i", sq_gettop(v) );	
-}
-// - ------------------------------------------------------------------------------------------ - //
 inline SQBool sqext_compile_nut( HSQUIRRELVM v, const char* Text, const st TextSize, const char* Name = "?" ) {
 	VVLog( "+ Compiling Script File (%s)...", Name );
 
