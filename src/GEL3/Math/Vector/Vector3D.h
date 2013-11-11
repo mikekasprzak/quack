@@ -36,7 +36,7 @@
 // A two part Vector class //
 // - ------------------------------------------------------------------------------------------ - //
 class Vector3D : 
-	boost::additive< Vector3D,
+	boost::arithmetic< Vector3D,
 	boost::arithmetic2< Vector3D, Real
 	> >
 {
@@ -86,8 +86,8 @@ public:
 	// Vector //
 	OVERLOAD_SYMBOLEQUALS_OPERATOR( += );
 	OVERLOAD_SYMBOLEQUALS_OPERATOR( -= );
-	// OVERLOAD_SYMBOLEQUALS_OPERATOR( *= );
-	// OVERLOAD_SYMBOLEQUALS_OPERATOR( /= );
+	OVERLOAD_SYMBOLEQUALS_OPERATOR( *= );
+	OVERLOAD_SYMBOLEQUALS_OPERATOR( /= );
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //

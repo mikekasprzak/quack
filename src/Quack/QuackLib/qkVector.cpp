@@ -388,8 +388,8 @@ _VEC_TYPEOF(Vector2D,qk_vec2_typeof,"vec2",4);
 _VEC_CLONED(Vector2D,qk_vec2_cloned);
 _VEC_MATH(Vector2D,qk_vec2_add,+);
 _VEC_MATH(Vector2D,qk_vec2_sub,-);
-//_VEC_MATH(Vector2D,qk_vec2_mul,*);
-//_VEC_MATH(Vector2D,qk_vec2_div,/);
+_VEC_MATH(Vector2D,qk_vec2_mul,*);
+_VEC_MATH(Vector2D,qk_vec2_div,/);
 _VEC_UNM(Vector2D,qk_vec2_unm);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipy,FlipY);
@@ -476,8 +476,8 @@ _VEC_TYPEOF(Vector3D,qk_vec3_typeof,"vec3",4);
 _VEC_CLONED(Vector3D,qk_vec3_cloned);
 _VEC_MATH(Vector3D,qk_vec3_add,+);
 _VEC_MATH(Vector3D,qk_vec3_sub,-);
-//_VEC_MATH(Vector3D,qk_vec3_mul,*);
-//_VEC_MATH(Vector3D,qk_vec3_div,/);
+_VEC_MATH(Vector3D,qk_vec3_mul,*);
+_VEC_MATH(Vector3D,qk_vec3_div,/);
 _VEC_UNM(Vector3D,qk_vec3_unm);
 _VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_flipy,FlipY);
@@ -574,8 +574,8 @@ _VEC_TYPEOF(Vector4D,qk_vec4_typeof,"vec4",4);
 _VEC_CLONED(Vector4D,qk_vec4_cloned);
 _VEC_MATH(Vector4D,qk_vec4_add,+);
 _VEC_MATH(Vector4D,qk_vec4_sub,-);
-//_VEC_MATH(Vector4D,qk_vec4_mul,*);
-//_VEC_MATH(Vector4D,qk_vec4_div,/);
+_VEC_MATH(Vector4D,qk_vec4_mul,*);
+_VEC_MATH(Vector4D,qk_vec4_div,/);
 _VEC_UNM(Vector4D,qk_vec4_unm);
 _VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipy,FlipY);
@@ -647,8 +647,8 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_cloned,2,NULL),
 	_DECL_FUNC(qk_vec2_add,2,NULL),
 	_DECL_FUNC(qk_vec2_sub,2,NULL),
-//	_DECL_FUNC(qk_vec2_mul,2,NULL),
-//	_DECL_FUNC(qk_vec2_div,2,NULL),
+	_DECL_FUNC(qk_vec2_mul,2,NULL),
+	_DECL_FUNC(qk_vec2_div,2,NULL),
 	_DECL_FUNC(qk_vec2_unm,1,NULL),
 	_DECL_FUNC(qk_vec2_flipx,1,NULL),
 	_DECL_FUNC(qk_vec2_flipy,1,NULL),
@@ -677,8 +677,8 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec3_cloned,2,NULL),
 	_DECL_FUNC(qk_vec3_add,2,NULL),
 	_DECL_FUNC(qk_vec3_sub,2,NULL),
-//	_DECL_FUNC(qk_vec3_mul,2,NULL),
-//	_DECL_FUNC(qk_vec3_div,2,NULL),
+	_DECL_FUNC(qk_vec3_mul,2,NULL),
+	_DECL_FUNC(qk_vec3_div,2,NULL),
 	_DECL_FUNC(qk_vec3_unm,1,NULL),
 	_DECL_FUNC(qk_vec3_flipx,1,NULL),
 	_DECL_FUNC(qk_vec3_flipy,1,NULL),
@@ -709,8 +709,8 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec4_cloned,2,NULL),
 	_DECL_FUNC(qk_vec4_add,2,NULL),
 	_DECL_FUNC(qk_vec4_sub,2,NULL),
-//	_DECL_FUNC(qk_vec4_mul,2,NULL),
-//	_DECL_FUNC(qk_vec4_div,2,NULL),
+	_DECL_FUNC(qk_vec4_mul,2,NULL),
+	_DECL_FUNC(qk_vec4_div,2,NULL),
 	_DECL_FUNC(qk_vec4_unm,1,NULL),
 	_DECL_FUNC(qk_vec4_flipx,1,NULL),
 	_DECL_FUNC(qk_vec4_flipy,1,NULL),
@@ -755,7 +755,6 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	}
 	
 	int Root = sq_gettop(v); // root table pos //
-
 	{
 		_ADD_CLASS_START(Real,"scalar",QK_TAG_SCALAR);
 		_CLASS_ADDFUNC(qk_scalar_constructor,constructor);
@@ -799,8 +798,8 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_vec2_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_vec2_add,_add);
 		_CLASS_ADDFUNC(qk_vec2_sub,_sub);
-//		_CLASS_ADDFUNC(qk_vec2_mul,_mul);
-//		_CLASS_ADDFUNC(qk_vec2_div,_div);
+		_CLASS_ADDFUNC(qk_vec2_mul,_mul);
+		_CLASS_ADDFUNC(qk_vec2_div,_div);
 		_CLASS_ADDFUNC(qk_vec2_unm,_unm);
 		_CLASS_ADDFUNC(qk_vec2_flipx,flipx);
 		_CLASS_ADDFUNC(qk_vec2_flipy,flipy);
@@ -833,8 +832,8 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_vec3_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_vec3_add,_add);
 		_CLASS_ADDFUNC(qk_vec3_sub,_sub);
-//		_CLASS_ADDFUNC(qk_vec3_mul,_mul);
-//		_CLASS_ADDFUNC(qk_vec3_div,_div);
+		_CLASS_ADDFUNC(qk_vec3_mul,_mul);
+		_CLASS_ADDFUNC(qk_vec3_div,_div);
 		_CLASS_ADDFUNC(qk_vec3_unm,_unm);
 		_CLASS_ADDFUNC(qk_vec3_flipx,flipx);
 		_CLASS_ADDFUNC(qk_vec3_flipy,flipy);
@@ -869,8 +868,8 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_vec4_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_vec4_add,_add);
 		_CLASS_ADDFUNC(qk_vec4_sub,_sub);
-//		_CLASS_ADDFUNC(qk_vec4_mul,_mul);
-//		_CLASS_ADDFUNC(qk_vec4_div,_div);
+		_CLASS_ADDFUNC(qk_vec4_mul,_mul);
+		_CLASS_ADDFUNC(qk_vec4_div,_div);
 		_CLASS_ADDFUNC(qk_vec4_unm,_unm);
 		_CLASS_ADDFUNC(qk_vec4_flipx,flipx);
 		_CLASS_ADDFUNC(qk_vec4_flipy,flipy);
@@ -896,7 +895,6 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_vec4_cross,cross);
 		_ADD_CLASS_END(Vector4D);
 	}
-
 	
 	return SQ_OK;
 }

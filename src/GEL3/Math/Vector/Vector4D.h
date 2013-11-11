@@ -38,7 +38,7 @@
 // A two part Vector class //
 // - ------------------------------------------------------------------------------------------ - //
 class Vector4D : 
-	boost::additive< Vector4D,
+	boost::arithmetic< Vector4D,
 	boost::arithmetic2< Vector4D, Real
 	> >
 {
@@ -90,8 +90,8 @@ public:
 	// Vector //
 	OVERLOAD_SYMBOLEQUALS_OPERATOR( += );
 	OVERLOAD_SYMBOLEQUALS_OPERATOR( -= );
-	// OVERLOAD_SYMBOLEQUALS_OPERATOR( *= );
-	// OVERLOAD_SYMBOLEQUALS_OPERATOR( /= );
+	OVERLOAD_SYMBOLEQUALS_OPERATOR( *= );
+	OVERLOAD_SYMBOLEQUALS_OPERATOR( /= );
 	// - -------------------------------------------------------------------------------------- - //
 	inline bool operator == ( const Vector4D& _Vs ) const {
 		if ( (x - _Vs.x).IsZero() )

@@ -34,7 +34,7 @@
 // A two part Vector class //
 // - ------------------------------------------------------------------------------------------ - //
 class Vector2D : 
-	boost::additive<Vector2D,
+	boost::arithmetic<Vector2D,
 	boost::arithmetic2<Vector2D, Real
 	> >
 {
@@ -89,8 +89,8 @@ public:
 	// Vector //
 	OVERLOAD_SYMBOLEQUALS_OPERATOR( += );
 	OVERLOAD_SYMBOLEQUALS_OPERATOR( -= );
-	// OVERLOAD_SYMBOLEQUALS_OPERATOR( *= );
-	// OVERLOAD_SYMBOLEQUALS_OPERATOR( /= );
+	OVERLOAD_SYMBOLEQUALS_OPERATOR( *= );
+	OVERLOAD_SYMBOLEQUALS_OPERATOR( /= );
 	// - -------------------------------------------------------------------------------------- - //
 	// Dot Product //
 	inline const Real dot( const Vector2D& _Vs ) const {
