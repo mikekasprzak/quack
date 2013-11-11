@@ -138,8 +138,9 @@ inline SQInteger qk_mat_constructor_body( HSQUIRRELVM v, float* Mat, const int M
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize ) {	
-	if ( sq_gettype(v,2) == OT_INTEGER ) {
+inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize, const unsigned int MatWidth ) {
+	int Type = sq_gettype(v,2);
+	if ( Type == OT_INTEGER ) {
 		int Index;
 		sq_getinteger(v,2,&Index);
 
@@ -151,17 +152,40 @@ inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 			return sq_throwerror(v,"matrix element index is out of range");
 		}
 	}
-
+	else if ( Type == OT_STRING ) {
+		const char* Text;
+		sq_getstring(v,2,&Text);
+		
+		if ( Text[0] == 'e' ) {
+			if ( Text[1] != 0 ) { // if true, it means Text[2] is safe to read (trailing zero) //
+				unsigned int x = Text[1] - '0';
+				unsigned int y = Text[2] - '0';
+				
+				if ( x >= MatWidth )
+					return sq_throwerror(v,"x is out of range in matrix eXY expression");
+				if ( y >= MatWidth )
+					return sq_throwerror(v,"y is out of range in matrix eXY expression");
+				
+				sq_pushfloat(v,Mat[x+(y*MatWidth)]);
+				return SQ_RETURN;
+			}
+			else {
+				return sq_throwerror(v,"incomplete matrix eXY expression");
+			}
+		}
+	}
+	
 	sq_pushnull(v);				/* +1 */
 	return sq_throwobject(v);	/* -1 */
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize ) {
+inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize, const unsigned int MatWidth ) {
 	if ( sq_gettype(v,3) & (OT_FLOAT|OT_INTEGER) ) {
 		float Value;
 		sq_getfloat(v,3,&Value);
 	
-		if ( sq_gettype(v,2) == OT_INTEGER ) {
+		int Type = sq_gettype(v,2);
+		if ( Type == OT_INTEGER ) {
 			unsigned int Index;
 			sq_getinteger(v,2,(int*)&Index);
 	
@@ -172,6 +196,30 @@ inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 			}
 			else {
 				return sq_throwerror(v,"matrix element index is out of range");
+			}
+		}
+		else if ( Type == OT_STRING ) {
+			const char* Text;
+			sq_getstring(v,2,&Text);
+			
+			if ( Text[0] == 'e' ) {
+				if ( Text[1] != 0 ) { // if true, it means Text[2] is safe to read (trailing zero) //
+					unsigned int x = Text[1] - '0';
+					unsigned int y = Text[2] - '0';
+					
+					if ( x >= MatWidth )
+						return sq_throwerror(v,"x is out of range in matrix eXY expression");
+					if ( y >= MatWidth )
+						return sq_throwerror(v,"y is out of range in matrix eXY expression");
+					
+					Mat[x+(y*MatWidth)] = Value;
+					sq_pushfloat(v,Value);
+					
+					return SQ_RETURN;
+				}
+				else {
+					return sq_throwerror(v,"incomplete matrix eXY expression");
+				}
 			}
 		}
 	}
@@ -200,7 +248,7 @@ SQInteger qk_mat2_get( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
 	
-	return qk_mat_get(v,Mat,MatSize);
+	return qk_mat_get(v,Mat,MatSize,2);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat2_set( HSQUIRRELVM v ) {
@@ -208,7 +256,7 @@ SQInteger qk_mat2_set( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
 		
-	return qk_mat_set(v,Mat,MatSize);
+	return qk_mat_set(v,Mat,MatSize,2);
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
@@ -232,7 +280,7 @@ SQInteger qk_mat3_get( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix3x3) / sizeof(Real);
 	
-	return qk_mat_get(v,Mat,MatSize);
+	return qk_mat_get(v,Mat,MatSize,3);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat3_set( HSQUIRRELVM v ) {
@@ -240,7 +288,7 @@ SQInteger qk_mat3_set( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix3x3) / sizeof(Real);
 		
-	return qk_mat_set(v,Mat,MatSize);
+	return qk_mat_set(v,Mat,MatSize,3);
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
@@ -263,7 +311,7 @@ SQInteger qk_mat4_get( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix4x4) / sizeof(Real);
 	
-	return qk_mat_get(v,Mat,MatSize);
+	return qk_mat_get(v,Mat,MatSize,4);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat4_set( HSQUIRRELVM v ) {
@@ -271,7 +319,7 @@ SQInteger qk_mat4_set( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix4x4) / sizeof(Real);
 		
-	return qk_mat_set(v,Mat,MatSize);
+	return qk_mat_set(v,Mat,MatSize,4);
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
