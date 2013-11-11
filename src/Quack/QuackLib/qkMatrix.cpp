@@ -6,6 +6,9 @@
 #include "sqgelext.h"
 #include "QuackLib.h"
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: .row0(), .column2() functions might be nice, for getting vectors of the data.
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 // _tostring //
@@ -27,6 +30,51 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 #define _MAT_LEN(_TYPE_,_NAME_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_pushinteger(v, sizeof(_TYPE_) / sizeof(Real) ); \
+	return SQ_RETURN; \
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+// _cloned //
+#define _MAT_CLONED(_TYPE_,_NAME_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	_TYPE_* Mat; /* +1 */ \
+	sq_getinstanceup(v,1,(void**)&Mat,0); \
+	\
+	_TYPE_* Vs; \
+	sq_getinstanceup(v,2,(void**)&Vs,0); \
+	\
+	*Mat = *Vs; \
+	\
+	return SQ_VOID; \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// _add, _sub, _mul, _div //
+#define _MAT_MATH(_TYPE_,_NAME_,_OP_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_clone(v,1); /* +1 */ \
+	\
+	_TYPE_* Mat; \
+	sq_getinstanceup(v,-1,(void**)&Mat,0); \
+	\
+	_TYPE_* Vs; \
+	sq_getinstanceup(v,2,(void**)&Vs,0); \
+	\
+	*Mat = (*Mat) _OP_ (*Vs); \
+	\
+	return SQ_RETURN; \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// _unm (i.e. negative) //
+#define _MAT_UNM(_TYPE_,_NAME_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_clone(v,1); /* +1 */ \
+	\
+	_TYPE_* Mat; \
+	sq_getinstanceup(v,-1,(void**)&Mat,0); \
+	\
+	*Mat = -(*Mat);\
+	\
 	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -261,6 +309,12 @@ SQInteger qk_mat2_set( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
 _MAT_LEN(Matrix2x2,qk_mat2_len);
+_MAT_CLONED(Matrix2x2,qk_mat2_cloned);
+_MAT_UNM(Matrix2x2,qk_mat2_unm);
+//_MAT_MATH(Matrix2x2,qk_mat2_add,+);
+//_MAT_MATH(Matrix2x2,qk_mat2_sub,-);
+_MAT_MATH(Matrix2x2,qk_mat2_mul,*);
+//_MAT_MATH(Matrix2x2,qk_mat2_div,/);
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -293,6 +347,12 @@ SQInteger qk_mat3_set( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
 _MAT_LEN(Matrix3x3,qk_mat3_len);
+_MAT_CLONED(Matrix3x3,qk_mat3_cloned);
+_MAT_UNM(Matrix3x3,qk_mat3_unm);
+//_MAT_MATH(Matrix3x3,qk_mat3_add,+);
+//_MAT_MATH(Matrix3x3,qk_mat3_sub,-);
+_MAT_MATH(Matrix3x3,qk_mat3_mul,*);
+//_MAT_MATH(Matrix3x3,qk_mat3_div,/);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -324,6 +384,13 @@ SQInteger qk_mat4_set( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
 _MAT_LEN(Matrix4x4,qk_mat4_len);
+_MAT_CLONED(Matrix4x4,qk_mat4_cloned);
+_MAT_UNM(Matrix4x4,qk_mat4_unm);
+//_MAT_MATH(Matrix4x4,qk_mat4_add,+);
+//_MAT_MATH(Matrix4x4,qk_mat4_sub,-);
+_MAT_MATH(Matrix4x4,qk_mat4_mul,*);
+//_MAT_MATH(Matrix4x4,qk_mat4_div,/);
+
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -339,18 +406,36 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat2_set,3,NULL),
 	_DECL_FUNC(qk_mat2_tostring,1,NULL),
 	_DECL_FUNC(qk_mat2_len,1,NULL),
+	_DECL_FUNC(qk_mat2_cloned,2,NULL),
+	_DECL_FUNC(qk_mat2_unm,1,NULL),
+//	_DECL_FUNC(qk_mat2_add,2,NULL),
+//	_DECL_FUNC(qk_mat2_sub,2,NULL),
+	_DECL_FUNC(qk_mat2_mul,2,NULL),
+//	_DECL_FUNC(qk_mat2_div,2,NULL),
 
 	_DECL_FUNC(qk_mat3_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat3_get,2,NULL),
 	_DECL_FUNC(qk_mat3_set,3,NULL),
 	_DECL_FUNC(qk_mat3_tostring,1,NULL),
 	_DECL_FUNC(qk_mat3_len,1,NULL),
+	_DECL_FUNC(qk_mat3_cloned,2,NULL),
+	_DECL_FUNC(qk_mat3_unm,1,NULL),
+//	_DECL_FUNC(qk_mat3_add,2,NULL),
+//	_DECL_FUNC(qk_mat3_sub,2,NULL),
+	_DECL_FUNC(qk_mat3_mul,2,NULL),
+//	_DECL_FUNC(qk_mat3_div,2,NULL),
 
 	_DECL_FUNC(qk_mat4_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat4_get,2,NULL),
 	_DECL_FUNC(qk_mat4_set,3,NULL),
 	_DECL_FUNC(qk_mat4_tostring,1,NULL),
 	_DECL_FUNC(qk_mat4_len,1,NULL),
+	_DECL_FUNC(qk_mat4_cloned,2,NULL),
+	_DECL_FUNC(qk_mat4_unm,1,NULL),
+//	_DECL_FUNC(qk_mat4_add,2,NULL),
+//	_DECL_FUNC(qk_mat4_sub,2,NULL),
+	_DECL_FUNC(qk_mat4_mul,2,NULL),
+//	_DECL_FUNC(qk_mat4_div,2,NULL),
 	
 	{0,0,0,0}
 };
@@ -399,6 +484,12 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat2_set,_set);
 		_CLASS_ADDFUNC(qk_mat2_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_mat2_len,len);
+		_CLASS_ADDFUNC(qk_mat2_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_mat2_unm,_unm);
+//		_CLASS_ADDFUNC(qk_mat2_add,_add);
+//		_CLASS_ADDFUNC(qk_mat2_sub,_sub);
+		_CLASS_ADDFUNC(qk_mat2_mul,_mul);
+//		_CLASS_ADDFUNC(qk_mat2_div,_div);
 		_ADD_CLASS_END(Matrix2x2);
 	}
 	{
@@ -408,6 +499,12 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat3_set,_set);
 		_CLASS_ADDFUNC(qk_mat3_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_mat3_len,len);
+		_CLASS_ADDFUNC(qk_mat3_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_mat3_unm,_unm);
+//		_CLASS_ADDFUNC(qk_mat3_add,_add);
+//		_CLASS_ADDFUNC(qk_mat3_sub,_sub);
+		_CLASS_ADDFUNC(qk_mat3_mul,_mul);
+//		_CLASS_ADDFUNC(qk_mat3_div,_div);
 		_ADD_CLASS_END(Matrix3x3);
 	}
 	{
@@ -417,6 +514,12 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat4_set,_set);
 		_CLASS_ADDFUNC(qk_mat4_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_mat4_len,len);
+		_CLASS_ADDFUNC(qk_mat4_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_mat4_unm,_unm);
+//		_CLASS_ADDFUNC(qk_mat4_add,_add);
+//		_CLASS_ADDFUNC(qk_mat4_sub,_sub);
+		_CLASS_ADDFUNC(qk_mat4_mul,_mul);
+//		_CLASS_ADDFUNC(qk_mat4_div,_div);
 		_ADD_CLASS_END(Matrix4x4);
 	}
 	

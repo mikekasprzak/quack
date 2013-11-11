@@ -145,8 +145,8 @@ public:
 		Temp.Array[ 0 ] = (Array[ 0 ] * _Vs.Array[ 0 ]) + (Array[ 1 ] * _Vs.Array[ 2 ]);
 		Temp.Array[ 1 ] = (Array[ 0 ] * _Vs.Array[ 1 ]) + (Array[ 1 ] * _Vs.Array[ 3 ]);
 		// Bottom Row //
-		Temp.Array[ 2 ] = (Array[ 3 ] * _Vs.Array[ 0 ]) + (Array[ 4 ] * _Vs.Array[ 2 ]);
-		Temp.Array[ 3 ] = (Array[ 3 ] * _Vs.Array[ 1 ]) + (Array[ 4 ] * _Vs.Array[ 3 ]);
+		Temp.Array[ 2 ] = (Array[ 2 ] * _Vs.Array[ 0 ]) + (Array[ 3 ] * _Vs.Array[ 2 ]);
+		Temp.Array[ 3 ] = (Array[ 2 ] * _Vs.Array[ 1 ]) + (Array[ 3 ] * _Vs.Array[ 3 ]);
 		
 		return *this = Temp;
 	}
