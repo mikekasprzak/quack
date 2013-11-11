@@ -323,6 +323,15 @@ _VEC_VS_ALPHA_RETURNS_VEC(Real,qk_scalar_mix,mix);
 //_VEC_FUNC_RETURNS_VEC(Real,qk_scalar_rotatenegative45,RotateNegative45);
 //_VEC_VS_RETURNS_VEC(Real,qk_scalar_cross,cross);
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_scalar_tofloat( HSQUIRRELVM v ) {
+	Real* Vec;
+	sq_getinstanceup(v,1,(void**)&Vec,0);
+
+	sq_pushfloat(v,Vec->ToFloat()); // +1 //
+
+	return SQ_RETURN;	
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -628,6 +637,7 @@ SQRegFunction qkVector_funcs[] = {
 //	_DECL_FUNC(qk_scalar_rotate45,1,NULL),
 //	_DECL_FUNC(qk_scalar_rotatenegative45,1,NULL),
 //	_DECL_FUNC(qk_scalar_cross,2,NULL),
+	_DECL_FUNC(qk_scalar_tofloat,1,NULL),
 	
 	_DECL_FUNC(qk_vec2_constructor,-1,NULL),
 	_DECL_FUNC(qk_vec2_get,2,NULL),
@@ -775,6 +785,7 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_scalar_rotate45,rotate45);
 //		_CLASS_ADDFUNC(qk_scalar_rotatenegative45,rotatenegative45);
 //		_CLASS_ADDFUNC(qk_scalar_cross,cross);
+		_CLASS_ADDFUNC(qk_scalar_tofloat,tofloat);
 		_ADD_CLASS_END(Real);
 	}
 
