@@ -77,19 +77,38 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 }
 // - ------------------------------------------------------------------------------------------ - //
 // _add, _sub, _mul, _div //
-#define _VEC_MATH(_TYPE_,_NAME_,_OP_) \
+#define _VEC_MATH(_TYPE_,_NAME_,_TYPECONSTANT_,_OP_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
-	sq_clone(v,1); /* +1 */ \
-	\
-	_TYPE_* Vec; \
-	sq_getinstanceup(v,-1,(void**)&Vec,0); \
-	\
-	_TYPE_* Vs; \
-	sq_getinstanceup(v,2,(void**)&Vs,0); \
-	\
-	*Vec = (*Vec) _OP_ (*Vs); \
-	\
-	return SQ_RETURN; \
+	int VsType = sq_gettype(v,2); \
+	if ( VsType == OT_INSTANCE ) { \
+		int VsTag; \
+		sq_gettypetag(v,2,(SQUserPointer*)&VsTag); \
+		if ( VsTag == _TYPECONSTANT_ ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,-1,(void**)&Vec,0); \
+			\
+			_TYPE_* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_SCALAR ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,-1,(void**)&Vec,0); \
+			\
+			Real* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+	} \
+	return sq_throwerror(v,"Cannot " #_OP_ " type versus vector. Types must be same vector type, or vector and scalar."); \
 }
 // - ------------------------------------------------------------------------------------------ - //
 // cross //
@@ -301,10 +320,10 @@ SQInteger qk_scalar_set( HSQUIRRELVM v ) {
 _VEC_TOSTRING(Real,qk_scalar_tostring,"(%0.03f)",Vec->ToFloat());
 _VEC_TYPEOF(Real,qk_scalar_typeof,"scalar",6);
 _VEC_CLONED(Real,qk_scalar_cloned);
-_VEC_MATH(Real,qk_scalar_add,+);
-_VEC_MATH(Real,qk_scalar_sub,-);
-_VEC_MATH(Real,qk_scalar_mul,*);
-_VEC_MATH(Real,qk_scalar_div,/);
+_VEC_MATH(Real,qk_scalar_add,QK_TAG_SCALAR,+);
+_VEC_MATH(Real,qk_scalar_sub,QK_TAG_SCALAR,-);
+_VEC_MATH(Real,qk_scalar_mul,QK_TAG_SCALAR,*);
+_VEC_MATH(Real,qk_scalar_div,QK_TAG_SCALAR,/);
 _VEC_UNM(Real,qk_scalar_unm);
 _VEC_FUNC_RETURNS_VEC(Real,qk_scalar_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Real,qk_scalar_xaxis,XAxis);
@@ -386,10 +405,10 @@ SQInteger qk_vec2_set( HSQUIRRELVM v ) {
 _VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat());
 _VEC_TYPEOF(Vector2D,qk_vec2_typeof,"vec2",4);
 _VEC_CLONED(Vector2D,qk_vec2_cloned);
-_VEC_MATH(Vector2D,qk_vec2_add,+);
-_VEC_MATH(Vector2D,qk_vec2_sub,-);
-_VEC_MATH(Vector2D,qk_vec2_mul,*);
-_VEC_MATH(Vector2D,qk_vec2_div,/);
+_VEC_MATH(Vector2D,qk_vec2_add,QK_TAG_VEC2,+);
+_VEC_MATH(Vector2D,qk_vec2_sub,QK_TAG_VEC2,-);
+_VEC_MATH(Vector2D,qk_vec2_mul,QK_TAG_VEC2,*);
+_VEC_MATH(Vector2D,qk_vec2_div,QK_TAG_VEC2,/);
 _VEC_UNM(Vector2D,qk_vec2_unm);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipy,FlipY);
@@ -474,10 +493,10 @@ SQInteger qk_vec3_set( HSQUIRRELVM v ) {
 _VEC_TOSTRING(Vector3D,qk_vec3_tostring,"(%0.03f,%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat(),Vec->z.ToFloat());
 _VEC_TYPEOF(Vector3D,qk_vec3_typeof,"vec3",4);
 _VEC_CLONED(Vector3D,qk_vec3_cloned);
-_VEC_MATH(Vector3D,qk_vec3_add,+);
-_VEC_MATH(Vector3D,qk_vec3_sub,-);
-_VEC_MATH(Vector3D,qk_vec3_mul,*);
-_VEC_MATH(Vector3D,qk_vec3_div,/);
+_VEC_MATH(Vector3D,qk_vec3_add,QK_TAG_VEC3,+);
+_VEC_MATH(Vector3D,qk_vec3_sub,QK_TAG_VEC3,-);
+_VEC_MATH(Vector3D,qk_vec3_mul,QK_TAG_VEC3,*);
+_VEC_MATH(Vector3D,qk_vec3_div,QK_TAG_VEC3,/);
 _VEC_UNM(Vector3D,qk_vec3_unm);
 _VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector3D,qk_vec3_flipy,FlipY);
@@ -572,10 +591,10 @@ SQInteger qk_vec4_set( HSQUIRRELVM v ) {
 _VEC_TOSTRING(Vector4D,qk_vec4_tostring,"(%0.03f,%0.03f,%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat(),Vec->z.ToFloat(),Vec->w.ToFloat());
 _VEC_TYPEOF(Vector4D,qk_vec4_typeof,"vec4",4);
 _VEC_CLONED(Vector4D,qk_vec4_cloned);
-_VEC_MATH(Vector4D,qk_vec4_add,+);
-_VEC_MATH(Vector4D,qk_vec4_sub,-);
-_VEC_MATH(Vector4D,qk_vec4_mul,*);
-_VEC_MATH(Vector4D,qk_vec4_div,/);
+_VEC_MATH(Vector4D,qk_vec4_add,QK_TAG_VEC4,+);
+_VEC_MATH(Vector4D,qk_vec4_sub,QK_TAG_VEC4,-);
+_VEC_MATH(Vector4D,qk_vec4_mul,QK_TAG_VEC4,*);
+_VEC_MATH(Vector4D,qk_vec4_div,QK_TAG_VEC4,/);
 _VEC_UNM(Vector4D,qk_vec4_unm);
 _VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector4D,qk_vec4_flipy,FlipY);
