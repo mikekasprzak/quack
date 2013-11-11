@@ -48,7 +48,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	_TYPE_* Vec; \
 	sq_getinstanceup(v,1,(void**)&Vec,0); \
 	\
-	char Text[(24*3)+4+1]; \
+	char Text[(24*4)+2+3+1]; \
 	sprintf(Text, __VA_ARGS__ ); \
 	\
 	sq_pushstring(v,Text,-1); \
@@ -109,6 +109,65 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 		} \
 	} \
 	return sq_throwerror(v,"Cannot " #_OP_ " type versus vector. Types must be same vector type, or vector and scalar."); \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// _add, _sub, _mul, _div //
+#define _SCALAR_MATH(_TYPE_,_NAME_,_TYPECONSTANT_,_OP_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	int VsType = sq_gettype(v,2); \
+	if ( VsType == OT_INSTANCE ) { \
+		int VsTag; \
+		sq_gettypetag(v,2,(SQUserPointer*)&VsTag); \
+		if ( VsTag == _TYPECONSTANT_ ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,-1,(void**)&Vec,0); \
+			\
+			_TYPE_* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_VEC2 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Vector2D* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_VEC3 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Vector3D* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_VEC4 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Vector4D* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+	} \
+	return sq_throwerror(v,"Cannot " #_OP_ " type versus scalar. Types must be same vector type, or vector and scalar."); \
 }
 // - ------------------------------------------------------------------------------------------ - //
 // cross //
@@ -320,10 +379,10 @@ SQInteger qk_scalar_set( HSQUIRRELVM v ) {
 _VEC_TOSTRING(Real,qk_scalar_tostring,"(%0.03f)",Vec->ToFloat());
 _VEC_TYPEOF(Real,qk_scalar_typeof,"scalar",6);
 _VEC_CLONED(Real,qk_scalar_cloned);
-_VEC_MATH(Real,qk_scalar_add,QK_TAG_SCALAR,+);
-_VEC_MATH(Real,qk_scalar_sub,QK_TAG_SCALAR,-);
-_VEC_MATH(Real,qk_scalar_mul,QK_TAG_SCALAR,*);
-_VEC_MATH(Real,qk_scalar_div,QK_TAG_SCALAR,/);
+_SCALAR_MATH(Real,qk_scalar_add,QK_TAG_SCALAR,+);
+_SCALAR_MATH(Real,qk_scalar_sub,QK_TAG_SCALAR,-);
+_SCALAR_MATH(Real,qk_scalar_mul,QK_TAG_SCALAR,*);
+_SCALAR_MATH(Real,qk_scalar_div,QK_TAG_SCALAR,/);
 _VEC_UNM(Real,qk_scalar_unm);
 _VEC_FUNC_RETURNS_VEC(Real,qk_scalar_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Real,qk_scalar_xaxis,XAxis);
