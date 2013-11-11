@@ -78,6 +78,19 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
+// Functions Returning a Vector //
+#define _MAT_FUNC(_TYPE_,_NAME_,_FUNC_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	sq_clone(v,1); /* +1 */ \
+	\
+	_TYPE_* Mat; \
+	sq_getinstanceup(v,-1,(void**)&Mat,0); \
+	\
+	*Mat = Mat->_FUNC_();\
+	\
+	return SQ_RETURN; \
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 inline SQInteger qk_mat_constructor_body( HSQUIRRELVM v, float* Mat, const int MatSize ) {
@@ -315,6 +328,7 @@ _MAT_UNM(Matrix2x2,qk_mat2_unm);
 //_MAT_MATH(Matrix2x2,qk_mat2_sub,-);
 _MAT_MATH(Matrix2x2,qk_mat2_mul,*);
 //_MAT_MATH(Matrix2x2,qk_mat2_div,/);
+_MAT_FUNC(Matrix2x2,qk_mat2_transpose,Transpose);
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -353,6 +367,7 @@ _MAT_UNM(Matrix3x3,qk_mat3_unm);
 //_MAT_MATH(Matrix3x3,qk_mat3_sub,-);
 _MAT_MATH(Matrix3x3,qk_mat3_mul,*);
 //_MAT_MATH(Matrix3x3,qk_mat3_div,/);
+_MAT_FUNC(Matrix3x3,qk_mat3_transpose,Transpose);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -390,7 +405,7 @@ _MAT_UNM(Matrix4x4,qk_mat4_unm);
 //_MAT_MATH(Matrix4x4,qk_mat4_sub,-);
 _MAT_MATH(Matrix4x4,qk_mat4_mul,*);
 //_MAT_MATH(Matrix4x4,qk_mat4_div,/);
-
+_MAT_FUNC(Matrix4x4,qk_mat4_transpose,Transpose);
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -412,6 +427,7 @@ SQRegFunction qkMatrix_funcs[] = {
 //	_DECL_FUNC(qk_mat2_sub,2,NULL),
 	_DECL_FUNC(qk_mat2_mul,2,NULL),
 //	_DECL_FUNC(qk_mat2_div,2,NULL),
+	_DECL_FUNC(qk_mat2_transpose,1,NULL),
 
 	_DECL_FUNC(qk_mat3_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat3_get,2,NULL),
@@ -424,6 +440,7 @@ SQRegFunction qkMatrix_funcs[] = {
 //	_DECL_FUNC(qk_mat3_sub,2,NULL),
 	_DECL_FUNC(qk_mat3_mul,2,NULL),
 //	_DECL_FUNC(qk_mat3_div,2,NULL),
+	_DECL_FUNC(qk_mat3_transpose,1,NULL),
 
 	_DECL_FUNC(qk_mat4_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat4_get,2,NULL),
@@ -436,6 +453,7 @@ SQRegFunction qkMatrix_funcs[] = {
 //	_DECL_FUNC(qk_mat4_sub,2,NULL),
 	_DECL_FUNC(qk_mat4_mul,2,NULL),
 //	_DECL_FUNC(qk_mat4_div,2,NULL),
+	_DECL_FUNC(qk_mat4_transpose,1,NULL),
 	
 	{0,0,0,0}
 };
@@ -490,6 +508,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_mat2_sub,_sub);
 		_CLASS_ADDFUNC(qk_mat2_mul,_mul);
 //		_CLASS_ADDFUNC(qk_mat2_div,_div);
+		_CLASS_ADDFUNC(qk_mat2_transpose,transpose);
 		_ADD_CLASS_END(Matrix2x2);
 	}
 	{
@@ -505,6 +524,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_mat3_sub,_sub);
 		_CLASS_ADDFUNC(qk_mat3_mul,_mul);
 //		_CLASS_ADDFUNC(qk_mat3_div,_div);
+		_CLASS_ADDFUNC(qk_mat3_transpose,transpose);
 		_ADD_CLASS_END(Matrix3x3);
 	}
 	{
@@ -520,6 +540,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_mat4_sub,_sub);
 		_CLASS_ADDFUNC(qk_mat4_mul,_mul);
 //		_CLASS_ADDFUNC(qk_mat4_div,_div);
+		_CLASS_ADDFUNC(qk_mat4_transpose,transpose);
 		_ADD_CLASS_END(Matrix4x4);
 	}
 	

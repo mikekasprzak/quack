@@ -151,6 +151,14 @@ public:
 		return *this = Temp;
 	}
 	// - -------------------------------------------------------------------------------------- - //
+	// Calculate Transpose of Matrix //
+	inline const Matrix2x2 Transpose() {
+		return Matrix2x2(
+			Array[0], Array[2],
+			Array[1], Array[3]
+			);
+	}
+	// - -------------------------------------------------------------------------------------- - //
 	// Calculate Adjoint of Matrix //
 	inline const Matrix2x2 Adjoint() {
 		return Matrix2x2( Array[3], -Array[1], -Array[2], Array[0] );
