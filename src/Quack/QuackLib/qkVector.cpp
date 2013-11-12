@@ -334,8 +334,7 @@ inline void qk_vec_constructor_body( HSQUIRRELVM v, float* Arr, const int ArrSiz
 	}	
 }
 // - ------------------------------------------------------------------------------------------ - //
-const char qk_vec_element_table[] = { 'x','y','z','w' };
-const int qk_vec_offset_table[] = { 0, 1, 2, -1 }; // Offset from the letter x //
+//const char qk_vec_element_table[] = { 'x','y','z','w' };
 SQInteger qk_vec_get_body( HSQUIRRELVM v, const unsigned int VecSize ) {
 	const int Type = sq_gettype(v,2);
 	if ( Type == OT_STRING ) {
@@ -349,31 +348,30 @@ SQInteger qk_vec_get_body( HSQUIRRELVM v, const unsigned int VecSize ) {
 				float* Vec;
 				sq_getinstanceup(v,1,(void**)&Vec,0);
 
-//				unsigned int Index = MemberName[0] - 'x';
-//				if ( Index < VecSize ) {
-//					sq_pushfloat(v,Vec[Index]);
-//					SQ_RETURN;
-//				}
-//				else if ( MemberName[0] == 'w' && (VecSize == 4) ) {
-//					sq_pushfloat(v,Vec[3]);
-//					SQ_RETURN;
-//				}
-//				else
-				// TODO: Replace this with cleverness, calculating exactly what index it is subtracting 
-				for ( int idx = 0; idx < VecSize; idx++ ) {
-					// Return different data depending on requested member //
-					if ( MemberName[0] == qk_vec_element_table[idx] ) {
-						sq_pushfloat(v,Vec[idx]);	// +1 //
-						return SQ_RETURN;
-					}
+				unsigned int Index = MemberName[0] - 'x';
+				if ( Index < VecSize ) {
+					sq_pushfloat(v,Vec[Index]);
+					return SQ_RETURN;
 				}
+				else if ( MemberName[0] == 'w' && (VecSize >= 4) ) {
+					sq_pushfloat(v,Vec[3]);
+					return SQ_RETURN;
+				}
+				else
+//				// TODO: Replace this with cleverness, calculating exactly what index it is subtracting 
+//				for ( int idx = 0; idx < VecSize; idx++ ) {
+//					// Return different data depending on requested member //
+//					if ( MemberName[0] == qk_vec_element_table[idx] ) {
+//						sq_pushfloat(v,Vec[idx]);	// +1 //
+//						return SQ_RETURN;
+//					}
+//				}
 				if ( MemberName[0] == '_' ) {
-					return sq_throwerror(v,"Vcetor swizzle operator _ without any swizzle mask.");
+					return sq_throwerror(v,"Vector swizzle operator _ without any swizzle mask.");
 				}
 			}
 			// Swizzle //
 			else {
-//				Log( "Swizzle" );
 				int Len = strlen( MemberName );
 				const char* Str = MemberName;
 				unsigned int StrSize = Len;
@@ -381,31 +379,26 @@ SQInteger qk_vec_get_body( HSQUIRRELVM v, const unsigned int VecSize ) {
 					Str = &MemberName[1];
 					StrSize--;
 				}
-//				Log( "LEN: %i (%i)", StrSize, Len );
 				
 				if ( StrSize <= 4 ) {
 					sq_pushroottable(v);
-					// NOTE: Zero size already handled //
+					// NOTE: Zero size (_) already handled //
 					if ( StrSize == 1 ) {
-//						Log("scalar");
 						sq_pushstring(v,"scalar",6);	// +1 //
 						sq_get(v,-2);					// =0 //
 						sq_createinstance(v,-1);		// +1 //
 					}
 					else if ( StrSize == 2 ) {
-//						Log("vec2");
 						sq_pushstring(v,"vec2",4);		// +1 //
 						sq_get(v,-2);					// =0 //
 						sq_createinstance(v,-1);		// +1 //
 					}
 					else if ( StrSize == 3 ) {
-//						Log("vec3");
 						sq_pushstring(v,"vec3",4);		// +1 //
 						sq_get(v,-2);					// =0 //
 						sq_createinstance(v,-1);		// +1 //
 					}
 					else {
-//						Log("vec4");
 						sq_pushstring(v,"vec4",4);		// +1 //
 						sq_get(v,-2);					// =0 //
 						sq_createinstance(v,-1);		// +1 //
@@ -419,13 +412,21 @@ SQInteger qk_vec_get_body( HSQUIRRELVM v, const unsigned int VecSize ) {
 					
 					unsigned int Index = 0;
 					while ( Index != StrSize ) {
-						// For all parts of the current vector //
-						for ( int idx = 0; idx < VecSize; idx++ ) {
-							if ( Str[Index] == qk_vec_element_table[idx] ) {
-								Ret[Index] = Vec[idx];
-								break;
-							}
+						unsigned int ArgIndex = Str[Index] - 'x';
+						if ( ArgIndex < StrSize ) {
+							Ret[Index] = Vec[ArgIndex];
 						}
+						else if ( Str[Index] == 'w' && (StrSize >= 4) ) {
+							Ret[Index] = Vec[3];
+						}
+						else
+//						// For all parts of the current vector //
+//						for ( unsigned int idx = 0; idx < VecSize; idx++ ) {
+//							if ( Str[Index] == qk_vec_element_table[idx] ) {
+//								Ret[Index] = Vec[idx];
+//								break;
+//							}
+//						}
 						if ( Str[Index] == '0' ) {
 							Ret[Index] = 0.0f;
 						}
@@ -443,7 +444,7 @@ SQInteger qk_vec_get_body( HSQUIRRELVM v, const unsigned int VecSize ) {
 			}
 		}
 	}
-	// Indexing. I.e. MyVec[0] for x.
+	// Array Style Indexing. I.e. MyVec[0] for x.
 	else if ( Type == OT_INTEGER ) {
 		float* Vec;
 		sq_getinstanceup(v,1,(void**)&Vec,0);
@@ -482,115 +483,9 @@ SQInteger qk_scalar_constructor( HSQUIRRELVM v ) {
 	_VEC_CONSTRUCTOR_END(Real);
 }
 // - ------------------------------------------------------------------------------------------ - //
-//const char qk_vec_element_table[] = { 'x','y','z','w' };
 SQInteger qk_scalar_get( HSQUIRRELVM v ) {
 	const int VecSize = sizeof(Real) / sizeof(Real);
 	return qk_vec_get_body( v, VecSize );
-//	const int Type = sq_gettype(v,2);
-//	if ( Type == OT_STRING ) {
-//		const char* MemberName;
-//		sq_getstring(v,2,&MemberName);
-//	
-//		if ( MemberName[0] != 0 ) {	// Just to make sure some doofas didn't do MyVec[""].
-//			// Indexing //
-//			if ( MemberName[1] == 0 ) {	// One character, zero terminated.
-//				float* Vec;
-//				sq_getinstanceup(v,1,(void**)&Vec,0);
-//				
-//				for ( int idx = 0; idx < VecSize; idx++ ) {
-//					// Return different data depending on requested member //
-//					if ( MemberName[0] == qk_vec_element_table[idx] ) {
-//						sq_pushfloat(v,Vec[idx]);	// +1 //
-//						return SQ_RETURN;
-//					}
-//				}
-//				if ( MemberName[0] == '_' ) {
-//					return sq_throwerror(v,"Vcetor swizzle operator _ without any swizzle mask.");
-//				}
-//			}
-//			// Swizzle //
-//			else {
-//				// TODO: Swizzle //
-//				int Len = strlen( MemberName );
-//				const char* Str = MemberName;
-//				unsigned int StrSize = Len;
-//				if ( MemberName[0] == '_' ) {
-//					Str = &MemberName[1];
-//					StrSize--;
-//				}
-//				
-//				if ( StrSize <= 4 ) {
-//					// NOTE: Zero size already handled //
-//					if ( StrSize == 1 ) {
-//						sq_pushstring(v,"scalar",6);	// +1 //
-//						sq_get(v,-1);					// =0 //
-//						sq_createinstance(v,-1);		// =0 //
-//					}
-//					else if ( StrSize == 2 ) {
-//						sq_pushstring(v,"vec2",4);		// +1 //
-//						sq_get(v,-1);					// =0 //
-//						sq_createinstance(v,-1);		// =0 //
-//					}
-//					else if ( StrSize == 3 ) {
-//						sq_pushstring(v,"vec3",4);		// +1 //
-//						sq_get(v,-1);					// =0 //
-//						sq_createinstance(v,-1);		// =0 //
-//					}
-//					else {
-//						sq_pushstring(v,"vec4",4);		// +1 //
-//						sq_get(v,-1);					// =0 //
-//						sq_createinstance(v,-1);		// =0 //
-//					}
-//
-//					float* Vec;
-//					sq_getinstanceup(v,1,(void**)&Vec,0);
-//					
-//					float* Ret;
-//					sq_getinstanceup(v,-1,(void**)&Ret,0);
-//					
-//					unsigned int Index = 0;
-//					while ( Index != StrSize ) {
-//						// For all parts of the current vector //
-//						for ( int idx = 0; idx < VecSize; idx++ ) {
-//							if ( Str[Index] == qk_vec_element_table[idx] ) {
-//								Ret[Index] = Vec[idx];
-//								break;
-//							}
-//						}
-//						if ( Str[Index] == '0' ) {
-//							Ret[Index] = 0.0f;
-//						}
-//						else if ( Str[Index] == '1' ) {
-//							Ret[Index] = 1.0f;
-//						}
-//						Index++;
-//					}
-//				}
-//				else {
-//					return sq_throwerror(v,"Too many characters used in vector swizzle mask.");
-//				}
-//			}
-//		}
-//	}
-//	// Indexing. I.e. MyVec[0] for x.
-//	else if ( Type == OT_INTEGER ) {
-//		float* Vec;
-//		sq_getinstanceup(v,1,(void**)&Vec,0);
-//		
-//		unsigned int Index;
-//		sq_getinteger(v,2,(int*)&Index);
-//		
-//		if ( Index < VecSize ) {
-//			sq_pushfloat(v,Vec[Index]);	// +1 //
-//			return SQ_RETURN;
-//		}
-//		else {
-//			return sq_throwerror(v,"Vector index out of range");
-//		}
-//	}
-//	
-//	sq_pushnull(v);				/* +1 */
-//	return sq_throwobject(v);	/* -1 */
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_scalar_set( HSQUIRRELVM v ) {
