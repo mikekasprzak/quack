@@ -70,8 +70,15 @@ public:
 				UID Id = Assets.size();//Assets->Size;
 				NameTable[_FileName] = Id;
 				Assets.push_back( GelAsset() );
+				
+				std::string FullFileName;
+#ifdef USES_ANDROID
+				FullFileName += "/mnt/sdcard/work/";
+#endif // USES_ANDROID //
+				FullFileName += _FileName;
+				
 				// TODO: Add this to the Job Queue //
-				Assets.back().Load( _FileName );
+				Assets.back().Load( FullFileName.c_str() );//_FileName );
 				Log( "* Asset \"%s\" loaded as: %i", _FileName, Id );
 				return Id;
 			}

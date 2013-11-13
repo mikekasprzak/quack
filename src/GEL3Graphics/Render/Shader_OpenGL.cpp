@@ -28,10 +28,15 @@ ShaderHandle Noise1BitShader;
 ShaderHandle ColorNoise1BitShader;
 // - ------------------------------------------------------------------------------------------ - //
 void InitShader() {
+#ifdef USES_DESKTOP
 	// Use Files //	
 	Default = new cUberShader( "src/GEL3Graphics/Render/Embedded/GLSL/DefaultShader.json" );
+#endif // USES DESKTOP //
+
+#ifdef USES_MOBILE
 	// Use Embedded //
-//	Default = new cUberShader( DefaultShader_json, DefaultShader_json_Size, DefaultShader_glsl, DefaultShader_glsl_Size );
+	Default = new cUberShader( DefaultShader_json, DefaultShader_json_Size, DefaultShader_glsl, DefaultShader_glsl_Size );
+#endif // USES_MOBILE //
 
 	// Find all the shaders //
 	FlatShader = Default->Find( "Flat" );

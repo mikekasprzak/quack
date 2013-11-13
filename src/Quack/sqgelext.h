@@ -34,6 +34,7 @@ inline SQBool sqext_load_nut( HSQUIRRELVM v, const char* NutFile ) {
 	VLog( "+ Loading Script File (%s)...", NutFile );
 
 	const char* NutFileResult = Gel::Search(NutFile);
+	VVVLog( "* Full Name: %s", NutFileResult );
 	GelAssetPool::UID Nut = Gel::AssetPool.Load(NutFileResult);
 		
 	GelAsset& MyAsset = Gel::AssetPool[Nut];
