@@ -14,7 +14,7 @@ USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_ANDROID USES_MOBILE USES_GCC
-DEFINES				+=	USES_STAT USES_UNIX_TIME
+DEFINES				+=	USES_STAT USES_UNIX_TIME USES_UNIX_DIR
 DEFINES				+=	USES_LOGCAT USES_LESS_NEWLINES USES_EXTRA_QUOTES
 # - ------------------------------------------------------------------------ - #
 

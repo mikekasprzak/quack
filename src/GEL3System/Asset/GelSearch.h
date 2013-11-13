@@ -39,8 +39,13 @@ public:
 		st OriginalSize = File.size();
 		
 		{
+			std::string TheDir;
+#ifdef USES_ANDROID
+			TheDir += "/mnt/sdcard/work/";
+#endif // USES_ANDROID //
+			TheDir += DirName;
 			// Create a GelDirectory, and populate it //
-			GelDirectory* Dir = new_GelDirectory( DirName );
+			GelDirectory* Dir = new_GelDirectory( TheDir.c_str() );//DirName );
 	
 			// Copy all file names found, adding them to results and hash tables //
 			for( size_t idx = 0; idx < size_GelDirectory( Dir ); idx++ ) {

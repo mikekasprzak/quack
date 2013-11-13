@@ -1,5 +1,5 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifdef USES_OPENGL
+#ifdef USES_OPENGL_LIB
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <API/API_OpenGL.h>
@@ -153,35 +153,35 @@ void gelLogGraphicsAPIDetails() {
 		glGetIntegerv( GL_MAX_VERTEX_ATTRIBS, (GLint*)&Dummy );
 		Log( "GL_MAX_VERTEX_ATTRIBS: %i    (Max number of generic 4 component Vertex Attributes. [Minimum 8])", Dummy );
 	
+		#ifdef USES_OPENGL_3_FAMILY
 		Dummy = 0;
 		glGetIntegerv( GL_MAX_VARYING_VECTORS, (GLint*)&Dummy );
-		#ifdef USES_SHADERS
-			if ( Dummy == 0 ) {
-				glGetIntegerv( GL_MAX_VARYING_COMPONENTS, (GLint*)&Dummy );
-				Log( "GL_MAX_VARYING_COMPONENTS: %i [%i]    (Max number of interpolated fp values. [Minimum 8])", Dummy, Dummy / 4 );
-			}
-			else
-		#endif // USES_SHADERS //
-				Log( "GL_MAX_VARYING_VECTORS: %i    (Max number of 4 element interpolated fp values. [Minimum 8])", Dummy );
+		if ( Dummy == 0 ) {
+			glGetIntegerv( GL_MAX_VARYING_COMPONENTS, (GLint*)&Dummy );
+			Log( "GL_MAX_VARYING_COMPONENTS: %i [%i]    (Max number of interpolated fp values. [Minimum 8])", Dummy, Dummy / 4 );
+		}
+		else
+			Log( "GL_MAX_VARYING_VECTORS: %i    (Max number of 4 element interpolated fp values. [Minimum 8])", Dummy );
+		#endif // USES_OPENGL_3_FAMILY //
 	
+		#ifdef USES_OPENGL_3_FAMILY
 		Dummy = 0;
 		glGetIntegerv( GL_MAX_VERTEX_UNIFORM_VECTORS, (GLint*)&Dummy );
-		#ifdef USES_SHADERS
-			if ( Dummy == 0 ) {
-				glGetIntegerv( GL_MAX_VERTEX_UNIFORM_COMPONENTS, (GLint*)&Dummy );
-				Log( "GL_MAX_VERTEX_UNIFORM_COMPONENTS: %i [%i]    (Max number of fp, int, bool values. [Minimum 128])", Dummy, Dummy / 4 );
-			}
-			else 
-		#endif // USES_SHADERS //
-				Log( "GL_MAX_VERTEX_UNIFORM_VECTORS: %i    (Max number of 4 element fp, int, bool values. [Minimum 128])", Dummy );
+		if ( Dummy == 0 ) {
+			glGetIntegerv( GL_MAX_VERTEX_UNIFORM_COMPONENTS, (GLint*)&Dummy );
+			Log( "GL_MAX_VERTEX_UNIFORM_COMPONENTS: %i [%i]    (Max number of fp, int, bool values. [Minimum 128])", Dummy, Dummy / 4 );
+		}
+		else 
+			Log( "GL_MAX_VERTEX_UNIFORM_VECTORS: %i    (Max number of 4 element fp, int, bool values. [Minimum 128])", Dummy );
+		#endif // USES_OPENGL_3_FAMILY //
 	
 	
-		#if defined(USES_OPENGL3) || defined(USES_OPENGL_ES3)
+		#ifdef USES_OPENGL_3_FAMILY
 			// http://www.opengl.org/wiki/Uniform_Buffer_Object
 			Dummy = 0;
 			glGetIntegerv( GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&Dummy );
 			Log( "GL_MAX_VERTEX_UNIFORM_BLOCKS: %i    (Max number of Uniform Blocks per Vertex Shader. [Minimum 12])", Dummy );
-		#endif // defined(USES_OPENGL3) || defined(USES_OPENGLES3) //
+		#endif // USES_OPENGL_3_FAMILY //
 	
 		Dummy = 0;
 		glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, (GLint*)&Dummy );
@@ -189,16 +189,16 @@ void gelLogGraphicsAPIDetails() {
 	
 		Log( "" );
 		
+		#ifdef USES_OPENGL_3_FAMILY
 		Dummy = 0;
 		glGetIntegerv( GL_MAX_FRAGMENT_UNIFORM_VECTORS, (GLint*)&Dummy );
-		#ifdef USES_SHADERS
-			if ( Dummy == 0 ) {
-				glGetIntegerv( GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, (GLint*)&Dummy );
-				Log( "GL_MAX_FRAGMENT_UNIFORM_COMPONENTS: %i [%i]    (Max number of fp, int, bool values. [Minimum 16])", Dummy, Dummy / 4 );
-			}
-			else
-		#endif // USES_OPENGL2 //
-				Log( "GL_MAX_FRAGMENT_UNIFORM_VECTORS: %i    (Max number of 4 element fp, int, bool values. [Minimum 16])", Dummy );
+		if ( Dummy == 0 ) {
+			glGetIntegerv( GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, (GLint*)&Dummy );
+			Log( "GL_MAX_FRAGMENT_UNIFORM_COMPONENTS: %i [%i]    (Max number of fp, int, bool values. [Minimum 16])", Dummy, Dummy / 4 );
+		}
+		else
+			Log( "GL_MAX_FRAGMENT_UNIFORM_VECTORS: %i    (Max number of 4 element fp, int, bool values. [Minimum 16])", Dummy );
+		#endif // USES_OPENGL_3_FAMILY //
 	
 		#if defined(USES_OPENGL3) || defined(USES_OPENGL_ES3)
 			// http://www.opengl.org/wiki/Uniform_Buffer_Object
@@ -288,5 +288,5 @@ void gelLogGraphicsAPIDetails() {
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
-#endif // USES_OPENGL //
+#endif // USES_OPENGL_LIB //
 // - ------------------------------------------------------------------------------------------ - //
