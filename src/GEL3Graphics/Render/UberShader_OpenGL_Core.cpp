@@ -203,7 +203,11 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 			}
 			else if ( strcmp( Type, "hfloat" ) == 0 ) {
 				Attr->Type = cUberShader_Shader::cAttrib::AI_HFLOAT;
+#ifdef USES_OPENGL_ES2
+				Attr->GLType = GL_HALF_FLOAT_OES;
+#else // USES_OPENGL_ES2 //
 				Attr->GLType = GL_HALF_FLOAT;
+#endif // USES_OPENGL_ES2 //
 			}
 			else if ( strcmp( Type, "fixed" ) == 0 ) {
 				// Legacy //

@@ -19,7 +19,7 @@ inline void GenerateMagnitudeDistanceGrid2D( Grid2D<tType>& Dest, const int x1, 
 
 			// Magnitude //
 			int MagnitudeSquared = xDiffABS*xDiffABS+yDiffABS*yDiffABS;
-			Dest(x2,y2) = sqrt(MagnitudeSquared);
+			Dest(x2,y2) = sqrt((float)MagnitudeSquared);
 		}
 	}
 }

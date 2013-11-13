@@ -20,6 +20,9 @@ endif # WINDIR #
 CODE_FILES			:=	$(filter %.cpp %.c,$(filter $(SRC_FILTER),$(ALL_CODE_FILES)))
 H_FILES				:=	$(filter %.hpp %.h,$(filter $(SRC_FILTER),$(ALL_CODE_FILES)))
 
+# Remove Ignored Files #
+CODE_FILES			:=	$(filter-out $(IGNORE_LIST),$(CODE_FILES))
+
 # Make a backup of all include folders and defines, in case we need to use something other than -I and -D #
 INCLUDES_ORIGINAL	:=	$(SRC_FOLDERS) $(INCLUDE_FOLDERS)
 DEFINES_ORIGINAL	:=	$(DEFINES)
@@ -28,7 +31,7 @@ DEFINES_ORIGINAL	:=	$(DEFINES)
 INCLUDES			:=	$(addprefix -I,$(INCLUDES_ORIGINAL))
 DEFINES				:=	$(addprefix -D,$(DEFINES_ORIGINAL))
 # - ------------------------------------------------------------------------ - #
-.O_FILES			:=	$(addprefix obj/$(TARGET_NAME)/,$(addsuffix .o,$(filter-out $(IGNORE_LIST),$(CODE_FILES))))
+.O_FILES			:=	$(addprefix obj/$(TARGET_NAME)/,$(addsuffix .o,$(CODE_FILES)))
 .O_FOLDERS			:=	$(sort $(dir $(.O_FILES)))
 FOLDER_STUBS		:=	$(addsuffix _stub,$(.O_FOLDERS))
 # - ------------------------------------------------------------------------ - #
