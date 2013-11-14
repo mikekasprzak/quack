@@ -57,6 +57,29 @@ void AppInit() {
 	
 	// **** //
 
+#ifdef USES_MOBILE 
+	{
+	    typedef khronos_int64_t EGLint64NV;
+	    typedef khronos_uint64_t EGLuint64NV;
+	    typedef void (GL_APIENTRYP PFNGLCOVERAGEMASKNVPROC) (GLboolean mask);
+	    typedef void (GL_APIENTRYP PFNGLCOVERAGEOPERATIONNVPROC) (GLenum operation);
+	    typedef EGLuint64NV (EGLAPIENTRYP PFNEGLGETSYSTEMTIMEFREQUENCYNVPROC)(void);
+	    typedef EGLuint64NV (EGLAPIENTRYP PFNEGLGETSYSTEMTIMENVPROC)(void);
+	    PFNGLCOVERAGEMASKNVPROC glCoverageMaskNV;
+	    PFNGLCOVERAGEOPERATIONNVPROC glCoverageOperationNV;
+	    PFNEGLGETSYSTEMTIMEFREQUENCYNVPROC eglGetSystemTimeFrequencyNV;
+	    PFNEGLGETSYSTEMTIMENVPROC eglGetSystemTimeNV;
+
+	    eglGetSystemTimeFrequencyNV = (PFNEGLGETSYSTEMTIMEFREQUENCYNVPROC)eglGetProcAddress("eglGetSystemTimeFrequencyNV");
+		eglGetSystemTimeNV = (PFNEGLGETSYSTEMTIMENVPROC)eglGetProcAddress("eglGetSystemTimeNV");
+		//if available use the extension. This enables the frame profiler in PerfHUD ES
+		if (eglGetSystemTimeFrequencyNV && eglGetSystemTimeNV) {
+			eglGetSystemTimeFrequencyNV();
+			eglGetSystemTimeNV();
+		}
+	}
+#endif // USES_MOBILE //
+	
 	LogLevel = 3;
 	App::Mode = App::AM_NULL;
 	App::Exit = false;
