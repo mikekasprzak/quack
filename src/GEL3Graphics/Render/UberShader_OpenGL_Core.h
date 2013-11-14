@@ -2,7 +2,7 @@
 #ifndef __GEL_RENDER_UBERSHADER_OPENGL_CORE_H__
 #define __GEL_RENDER_UBERSHADER_OPENGL_CORE_H__
 // - ------------------------------------------------------------------------------------------ - //
-#if defined(USES_OPENGL2) || defined(USES_OPENGL_ES2)
+#ifdef USES_OPENGL_2_FAMILY
 // - ------------------------------------------------------------------------------------------ - //
 #include <string>
 #include <vector>
@@ -409,7 +409,7 @@ public:
 		glVertexAttribPointer( Index, Size, Type, Normalized, Stride, Ptr );
 	}
 
-#if defined(USES_OPENGL3) || defined(USES_OPENGLES3)
+#ifdef USES_OPENGL_3_FAMILY
 	// Integer Data Pointers (on GPUs that support native Integer Data, vs just Int2Float conversions) //
 	inline void IntAttrib( const GLuint Index, const void* Ptr ) {
 		const GLint Size = CurrentShader->Attrib[Index].Count;	// Can be GL_BGRA, but not in GL ES //
@@ -418,9 +418,9 @@ public:
 
 		glVertexAttribIPointer( Index, Size, Type, Stride, Ptr );
 	}
-#endif // defined(USES_OPENGL3) || defined(USES_OPENGLES3) //
+#endif // USES_OPENGL_3_FAMILY //
 
-#if defined(USES_OPENGL4) || defined(USES_OPENGLES4)
+#ifdef USES_OPENGL_4_FAMILY
 	// Double Data Pointers (on GPUs that support native Double Data, vs just Double2Float conversions) //
 	inline void DoubleAttrib( const GLuint Index, const void* Ptr ) {
 		const GLint Size = CurrentShader->Attrib[Index].Count;	// Can be GL_BGRA, but not in GL ES //
@@ -429,7 +429,7 @@ public:
 
 		glVertexAttribLPointer( Index, Size, Type, Stride, Ptr );
 	}
-#endif // defined(USES_OPENGL4) || defined(USES_OPENGLES4) //
+#endif // USES_OPENGL_2_FAMILY //
 
 	// GL Drawing Code //
 	inline void DrawArrays( const int Mode, const size_t PolyCount ) {
@@ -510,7 +510,7 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // defined(USES_OPENGL2) || defined(USES_OPENGL_ES2) //
+#endif // USES_OPENGL_2_FAMILY //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_RENDER_UBERSHADER_OPENGL_CORE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

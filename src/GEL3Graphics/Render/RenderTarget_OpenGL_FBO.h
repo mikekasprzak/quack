@@ -47,7 +47,7 @@
 // FYI: The gl_FragColor name can be changed in the shader when using GLSL 1.5+. *shrug* Who cares?
 //		http://en.wikipedia.org/wiki/GLSL#A_sample_trivial_GLSL_fragment_shader
 // - ------------------------------------------------------------------------------------------ - //
-#if defined(USES_OPENGL2) || defined(USES_OPENGLES2)
+#ifdef USES_OPENGL_2_FAMILY
 // - ------------------------------------------------------------------------------------------ - //
 #if defined(USES_FBO) || defined(USES_FBO_EXT) || defined(USES_FBO_OES)
 // - ------------------------------------------------------------------------------------------ - //
@@ -254,7 +254,7 @@ inline void UnBind() {
 // - ------------------------------------------------------------------------------------------ - //
 #endif // defined(USES_FBO) || defined(USES_FBO_EXT) || defined(USES_FBO_OES) //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // defined(USES_OPENGL2) || defined(USES_OPENGLES2) //
+#endif // USES_OPENGL_2_FAMILY //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_RENDER_RENDERTARGET_OPENGL_FBO_H__ //
 // - ------------------------------------------------------------------------------------------ - //

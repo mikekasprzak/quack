@@ -1,5 +1,5 @@
 // - ------------------------------------------------------------------------------------------ - //
-#if defined(USES_OPENGL2) || defined(USES_OPENGL_ES2)
+#ifdef USES_OPENGL_2_FAMILY
 // - ------------------------------------------------------------------------------------------ - //
 #include "UberShader.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -236,7 +236,7 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 					Attr->GLType = GL_DOUBLE;
 				}
 			#endif // defined(USES_OPENGL3) //
-			#if defined(USES_OPENGL3) || defined(USES_OPENGLES3)
+			#if defined(USES_OPENGL_3_FAMILY)
 				else if ( strcmp( Type, "uint" ) == 0 ) {
 					Attr->Type = cUberShader_Shader::cAttrib::AI_UINT;
 					Attr->GLType = GL_UNSIGNED_INT;
@@ -258,7 +258,7 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 					Attr->Type = cUberShader_Shader::cAttrib::AI_INT_10_10_10_2;
 					Attr->GLType = GL_INT_2_10_10_10_REV; // Reversed Format //
 				}
-			#endif // defined(USES_OPENGL3) || defined(USES_OPENGLES3)
+			#endif // defined(USES_OPENGL_3_FAMILY)
 
 			// Special Names //
 			else if ( strcmp( Type, "UVType" ) == 0 ) {
@@ -379,11 +379,11 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 				Uni->Type = cUberShader_Shader::cUniform::UI_COLOR;
 			}
 
-			#if defined(USES_OPENGL3) || defined(USES_OPENGLES3)
+			#if defined(USES_OPENGL_3_FAMILY)
 				else if ( strcmp( Type, "uint" ) == 0 ) {
 					Uni->Type = cUberShader_Shader::cUniform::UI_UINT;
 				}
-			#endif // defined(USES_OPENGL3) || defined(USES_OPENGLES3) //			
+			#endif // defined(USES_OPENGL_3_FAMILY) //			
 			
 			else if ( strcmp( Type, "int" ) == 0 ) {
 				Uni->Type = cUberShader_Shader::cUniform::UI_INT;
@@ -399,7 +399,7 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 			}
 
 			// These first, because mat4 is a valid name otherwise //
-			#if defined(USES_OPENGL3) || defined(USES_OPENGLES3)
+			#if defined(USES_OPENGL_3_FAMILY)
 				else if ( strcmp( Type, "mat2x3" ) == 0 ) {
 					Uni->Type = cUberShader_Shader::cUniform::UI_MAT2x3;
 				}
@@ -418,7 +418,7 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 				else if ( strcmp( Type, "mat4x3" ) == 0 ) {
 					Uni->Type = cUberShader_Shader::cUniform::UI_MAT4x3;
 				}
-			#endif // defined(USES_OPENGL3) || defined(USES_OPENGLES3) //
+			#endif // defined(USES_OPENGL_3_FAMILY) //
 
 			// These after, because mat4 is a valid name //
 			else if ( (strcmp( Type, "mat2" ) == 0) || strcmp( Type, "mat2x2" ) == 0 ) {
@@ -779,5 +779,5 @@ ShaderHandle cUberShader::Find( const char* ShaderName ) {
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // defined(USES_OPENGL2) || defined(USES_OPENGL_ES2) //
+#endif // defined(USES_OPENGL_2_FAMILY) //
 // - ------------------------------------------------------------------------------------------ - //

@@ -2,9 +2,9 @@
 #ifndef __GEL_RENDER_RENDERTARGET_OPENGL_FBO_GLDEFINES_H__
 #define __GEL_RENDER_RENDERTARGET_OPENGL_FBO_GLDEFINES_H__
 // - ------------------------------------------------------------------------------------------ - //
-#if defined(USES_OPENGL2) || defined(USES_OPENGL_ES2)
+#ifdef USES_OPENGL_2_FAMILY
 // - ------------------------------------------------------------------------------------------ - //
-#if defined(USES_FBO)
+#ifdef USES_FBO
 // - ------------------------------------------------------------------------------------------ - //
 #define gels_GenFramebuffers			glGenFramebuffers
 #define gels_DeleteFramebuffers			glDeleteFramebuffers
@@ -114,7 +114,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_FBO //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // defined(USES_OPENGL2) || defined(USES_OPENGL_ES2) //
+#endif // USES_OPENGL_2_FAMILY //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_RENDER_RENDERTARGET_OPENGL_FBO_GLDEFINES_H__ //
 // - ------------------------------------------------------------------------------------------ - //
