@@ -11,11 +11,14 @@ USES_LOGCAT			:=	true		# FileLog Output to use #
 USES_LESS_NEWLINES	:=	true		# Don't output extra newline (\n) in logs #
 USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
 # - ------------------------------------------------------------------------ - #
+USES_EGL			:=	true		# Mobile Device #
+# - ------------------------------------------------------------------------ - #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_ANDROID USES_MOBILE USES_GCC
 DEFINES				+=	USES_STAT USES_UNIX_TIME USES_UNIX_DIR
 DEFINES				+=	USES_LOGCAT USES_LESS_NEWLINES USES_EXTRA_QUOTES
+DEFINES				+=	USES_EGL
 # - ------------------------------------------------------------------------ - #
 
 

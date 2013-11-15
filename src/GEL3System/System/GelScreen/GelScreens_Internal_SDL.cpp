@@ -17,11 +17,6 @@ std::vector<GelNativeScreen>	Native;
 
 // - ------------------------------------------------------------------------------------------ - //
 GelError gelsInitScreen( const st Index ) {
-#ifdef USES_MOBILE
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-#endif // USES_MOBILE //
-
 	Gel::Native[Index].InitWindow( Index );
 	return GEL_OK;
 }

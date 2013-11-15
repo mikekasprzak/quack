@@ -31,7 +31,7 @@
 #ifndef USES_NO_EGL
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-#include <egl/eglplatform.h>
+#include <EGL/eglplatform.h>
 #endif // NO_EGL //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_OPENGL_ES2 //

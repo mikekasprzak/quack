@@ -165,11 +165,10 @@ public:
 		}
 
 		return_if( UpdateBounds() );		
-		
-		return_if( MakeCurrent() );
-		
-		return_if( UpdateViewport() );
-		
+
+//		return_if( MakeCurrent() );
+//		return_if( UpdateViewport() );
+			
 		return GEL_OK;
 	}
 
@@ -201,6 +200,9 @@ public:
 		
 		return_if_Log( GLContext == NULL, "! Error Creating GLContext %i: %i", Index, GLContext );
 		Log( "* GLContext %i Created: %i", Index, GLContext );
+		
+		return_if( MakeCurrent() );
+		return_if( UpdateViewport() );
 		
 		return GEL_OK;
 	}
