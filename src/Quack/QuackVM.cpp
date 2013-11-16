@@ -129,7 +129,14 @@ bool QuackVMCallSetup() {
 		return false;
 	}
 	Log( "" );
-	
+
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable( GL_LINE_SMOOTH );
+	glLineWidth( 1 );
+	//glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+
 	return true;			
 }
 // - ------------------------------------------------------------------------------------------ - //

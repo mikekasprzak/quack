@@ -122,10 +122,10 @@ extern "C" int main( int argc, char* argv[] ) {
 
 	// **** //
 
-#ifdef USES_MOBILE
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+//#ifdef USES_MOBILE
+//	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 	
 //	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 //	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -134,11 +134,18 @@ extern "C" int main( int argc, char* argv[] ) {
 //
 //	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 //	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
+#ifndef USES_MOBILE
+	// Currently not safe on Tegra, so Desktop Only (for now) //
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);	// 4x //
 #endif // USES_MOBILE //
+
+//#endif // USES_MOBILE //
 
 	// **** //
 
-	SDL_GL_LoadLibrary( NULL );
+	//SDL_GL_LoadLibrary( NULL );
 	SDL_DisableScreenSaver();
 	atexit(SDL_Quit);
 	atexit(SDL_GL_UnloadLibrary);

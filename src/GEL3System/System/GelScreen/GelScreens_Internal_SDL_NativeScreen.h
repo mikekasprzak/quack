@@ -82,9 +82,25 @@ public:
 		
 		return_if( GetDisplayBounds() );
 		
-		return_if( NewWindow() );
+		if ( NewWindow() ) {
+			// This means we failed to create a Window with MSAA //
+			Log( "* Trying to create Window again, without MSAA Buffers..." );
 
-		return_if( NewGLContext() );
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+			
+			return_if( NewWindow() );
+		}
+
+		if ( NewGLContext() ) {
+			// This means we failed to create a context with MSAA //
+			Log( "* Trying to create GLContext again, without MSAA Buffers..." );
+
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+
+			return_if( NewGLContext() );
+		}
 		
 		return GEL_OK;
 	}

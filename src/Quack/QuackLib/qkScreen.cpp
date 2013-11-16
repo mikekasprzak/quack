@@ -52,13 +52,14 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	float Radius = 10.0f;
 	Vector3D Pos;
 	
-	SQUserPointer uMatrix = 0;
+	Matrix4x4* uMatrix = 0;
 	
 	GelColor Color = GEL_RGBA(255,255,255,255);
 	
 	int NumArgs = sq_gettop(vm);
 	if ( NumArgs >= 2 ) {
-		sq_getuserdata(vm,2,&uMatrix,NULL);
+		//sq_getuserdata(vm,2,&uMatrix,NULL);
+		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
 
 //		int Elements = sq_getsize(vm,3);
 //		if ( Elements >= 1 ) {
@@ -104,7 +105,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 		Vector3D Verts[ VertCount ];
 		generate_Vertex3D_Circle( Verts, Pos, Real(Radius) );
 	
-		Gel::RenderFlat( GEL_LINE_LOOP, *((Matrix4x4*)uMatrix), Color, Verts, VertCount );
+		Gel::RenderFlat( GEL_LINE_LOOP, *uMatrix, Color, Verts, VertCount );
 	}
 	else {
 		Log("! qkDrawCircle -- Not enough arguments");
