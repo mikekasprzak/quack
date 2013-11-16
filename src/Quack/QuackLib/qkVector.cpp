@@ -40,6 +40,20 @@
 	sq_pushnull(v);				/* +1 */ \
 	return sq_throwobject(v);	/* -1 */
 // - ------------------------------------------------------------------------------------------ - //
+#define _VEC_TO_BEGIN(_TYPENAME_,_TYPENAME_LEN_) \
+	sq_pushroottable(v); \
+	sq_pushstring(v,_TYPENAME_,_TYPENAME_LEN_);		/* +1 */ \
+	sq_get(v,-2);									/* =0 */ \
+	sq_createinstance(v,-1);						/* +1 */ \
+	/* NOTE: Contructor not called! */ \
+	\
+	float* Vec; \
+	sq_getinstanceup(v,1,(void**)&Vec,0); \
+	\
+	float* Ret; \
+	sq_getinstanceup(v,-1,(void**)&Ret,0);
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 // _tostring //
@@ -480,7 +494,7 @@ SQInteger qk_scalar_constructor( HSQUIRRELVM v ) {
 	
 	*Vec = Real(Arr[0]);
 
-	_VEC_CONSTRUCTOR_END(Real);
+	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_scalar_get( HSQUIRRELVM v ) {
@@ -498,6 +512,105 @@ SQInteger qk_scalar_set( HSQUIRRELVM v ) {
 	}
 
 	_VEC_SET_END(Real);
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. All new elements are zero. //
+SQInteger qk_scalar_tovec2( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec2",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 0.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling up type, last element becomes 1 //
+SQInteger qk_scalar_tohvec2( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec2",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// i = identity. I.e. When scaling up type, all new elements become 1 //
+SQInteger qk_scalar_toivec2( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec2",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. All new elements are zero. //
+SQInteger qk_scalar_tovec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 0.0f;
+	Ret[2] = 0.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling up type, last element becomes 1 //
+SQInteger qk_scalar_tohvec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 0.0f;
+	Ret[2] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// i = identity. I.e. When scaling up type, all new elements become 1 //
+SQInteger qk_scalar_toivec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 1.0f;
+	Ret[2] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. All new elements are zero. //
+SQInteger qk_scalar_tovec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 0.0f;
+	Ret[2] = 0.0f;
+	Ret[3] = 0.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling up type, last element becomes 1 //
+SQInteger qk_scalar_tohvec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 0.0f;
+	Ret[2] = 0.0f;
+	Ret[3] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// i = identity. I.e. When scaling up type, all new elements become 1 //
+SQInteger qk_scalar_toivec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = 1.0f;
+	Ret[2] = 1.0f;
+	Ret[3] = 1.0f;
+
+	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
 _VEC_TOSTRING(Real,qk_scalar_tostring,"(%0.03f)",Vec->ToFloat());
@@ -549,26 +662,12 @@ SQInteger qk_vec2_constructor( HSQUIRRELVM v ) {
 	
 	*Vec = Vector2D(Arr[0],Arr[1]);
 
-	_VEC_CONSTRUCTOR_END(Vector2D);
+	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec2_get( HSQUIRRELVM v ) {
 	const int VecSize = sizeof(Vector2D) / sizeof(Real);
 	return qk_vec_get_body( v, VecSize );
-/*
-	_VEC_GET_START(Vector2D);
-	
-	// Return different data depending on requested member //
-	if ( MemberName[0] == 'x' ) {
-		sq_pushfloat(v,Vec->x.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'y' ) {
-		sq_pushfloat(v,Vec->y.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-
-	_VEC_GET_END(Vector2D);*/
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec2_set( HSQUIRRELVM v ) {
@@ -586,6 +685,93 @@ SQInteger qk_vec2_set( HSQUIRRELVM v ) {
 	}
 
 	_VEC_SET_END(Vector2D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. Old elements are disposed of. //
+SQInteger qk_vec2_toscalar( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("scalar",6);
+	
+	Ret[0] = Vec[0];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling down type, divide by last element. //
+SQInteger qk_vec2_tohscalar( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec2",4);
+	
+	Ret[0] = Vec[0] / Vec[1];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. All new elements are zero. //
+SQInteger qk_vec2_tovec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = 0.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling up type, last element becomes 1 //
+SQInteger qk_vec2_tohvec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// i = identity. I.e. When scaling up type, all new elements become 1 //
+SQInteger qk_vec2_toivec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. All new elements are zero. //
+SQInteger qk_vec2_tovec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = 0.0f;
+	Ret[3] = 0.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling up type, last element becomes 1 //
+SQInteger qk_vec2_tohvec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = 0.0f;
+	Ret[3] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// i = identity. I.e. When scaling up type, all new elements become 1 //
+SQInteger qk_vec2_toivec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = 1.0f;
+	Ret[3] = 1.0f;
+
+	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
 _VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat());
@@ -631,30 +817,12 @@ SQInteger qk_vec3_constructor( HSQUIRRELVM v ) {
 	
 	*Vec = Vector3D(Arr[0],Arr[1],Arr[2]);
 
-	_VEC_CONSTRUCTOR_END(Vector3D);
+	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec3_get( HSQUIRRELVM v ) {
 	const int VecSize = sizeof(Vector3D) / sizeof(Real);
 	return qk_vec_get_body( v, VecSize );
-
-/*	_VEC_GET_START(Vector3D);
-	
-	// Return different data depending on requested member //
-	if ( MemberName[0] == 'x' ) {
-		sq_pushfloat(v,Vec->x.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'y' ) {
-		sq_pushfloat(v,Vec->y.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'z' ) {
-		sq_pushfloat(v,Vec->z.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-
-	_VEC_GET_END(Vector3D);*/
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec3_set( HSQUIRRELVM v ) {
@@ -677,6 +845,71 @@ SQInteger qk_vec3_set( HSQUIRRELVM v ) {
 	}
 
 	_VEC_SET_END(Vector3D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. Old elements are disposed of. //
+SQInteger qk_vec3_toscalar( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("scalar",6);
+	
+	Ret[0] = Vec[0];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. Old elements are disposed of. //
+SQInteger qk_vec3_tovec2( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec2",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling down type, divide by last element. //
+SQInteger qk_vec3_tohvec2( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec2",4);
+	
+	Ret[0] = Vec[0] / Vec[2];
+	Ret[1] = Vec[1] / Vec[2];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. All new elements are zero. //
+SQInteger qk_vec3_tovec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = Vec[2];
+	Ret[3] = 0.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling up type, last element becomes 1 //
+SQInteger qk_vec3_tohvec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = Vec[2];
+	Ret[3] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// i = identity. I.e. When scaling up type, all new elements become 1 //
+SQInteger qk_vec3_toivec4( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec4",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = Vec[2];
+	Ret[3] = 1.0f;
+
+	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
 _VEC_TOSTRING(Vector3D,qk_vec3_tostring,"(%0.03f,%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat(),Vec->z.ToFloat());
@@ -723,34 +956,12 @@ SQInteger qk_vec4_constructor( HSQUIRRELVM v ) {
 	
 	*Vec = Vector4D(Arr[0],Arr[1],Arr[2],Arr[3]);
 
-	_VEC_CONSTRUCTOR_END(Vector4D);
+	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec4_get( HSQUIRRELVM v ) {
 	const int VecSize = sizeof(Vector4D) / sizeof(Real);
 	return qk_vec_get_body( v, VecSize );
-
-/*	_VEC_GET_START(Vector4D);
-	
-	// Return different data depending on requested member //
-	if ( MemberName[0] == 'x' ) {
-		sq_pushfloat(v,Vec->x.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'y' ) {
-		sq_pushfloat(v,Vec->y.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'z' ) {
-		sq_pushfloat(v,Vec->z.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-	else if ( MemberName[0] == 'w' ) {
-		sq_pushfloat(v,Vec->w.ToFloat());	// +1 //
-		return SQ_RETURN;
-	}
-
-	_VEC_GET_END(Vector4D);*/
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec4_set( HSQUIRRELVM v ) {
@@ -778,6 +989,47 @@ SQInteger qk_vec4_set( HSQUIRRELVM v ) {
 	}
 
 	_VEC_SET_END(Vector4D);
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. Old elements are disposed of. //
+SQInteger qk_vec4_toscalar( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("scalar",6);
+	
+	Ret[0] = Vec[0];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. Old elements are disposed of. //
+SQInteger qk_vec4_tovec2( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec2",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Standard to vector conversion. Old elements are disposed of. //
+SQInteger qk_vec4_tovec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0];
+	Ret[1] = Vec[1];
+	Ret[2] = Vec[2];
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// h = homogeneous. I.e. When scaling down type, divide by last element. //
+SQInteger qk_vec4_tohvec3( HSQUIRRELVM v ) {
+	_VEC_TO_BEGIN("vec3",4);
+	
+	Ret[0] = Vec[0] / Vec[3];
+	Ret[1] = Vec[1] / Vec[3];
+	Ret[2] = Vec[2] / Vec[3];
+
+	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
 _VEC_TOSTRING(Vector4D,qk_vec4_tostring,"(%0.03f,%0.03f,%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat(),Vec->z.ToFloat(),Vec->w.ToFloat());
@@ -849,6 +1101,15 @@ SQRegFunction qkVector_funcs[] = {
 //	_DECL_FUNC(qk_scalar_rotatenegative45,1,NULL),
 //	_DECL_FUNC(qk_scalar_cross,2,NULL),
 	_DECL_FUNC(qk_scalar_tofloat,1,NULL),
+	_DECL_FUNC(qk_scalar_tovec2,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_tohvec2,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_toivec2,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_tovec3,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_tohvec3,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_toivec3,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_tovec4,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_tohvec4,1,NULL),	// + //
+	_DECL_FUNC(qk_scalar_toivec4,1,NULL),	// + //
 	
 	_DECL_FUNC(qk_vec2_constructor,-1,NULL),
 	_DECL_FUNC(qk_vec2_get,2,NULL),
@@ -879,6 +1140,14 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_rotate45,1,NULL),
 	_DECL_FUNC(qk_vec2_rotatenegative45,1,NULL),
 //	_DECL_FUNC(qk_vec2_cross,2,NULL),
+	_DECL_FUNC(qk_vec2_toscalar,1,NULL),	// - //
+	_DECL_FUNC(qk_vec2_tohscalar,1,NULL),	// - //
+	_DECL_FUNC(qk_vec2_tovec3,1,NULL),		// + //
+	_DECL_FUNC(qk_vec2_tohvec3,1,NULL),		// + //
+	_DECL_FUNC(qk_vec2_toivec3,1,NULL),		// + //
+	_DECL_FUNC(qk_vec2_tovec4,1,NULL),		// + //
+	_DECL_FUNC(qk_vec2_tohvec4,1,NULL),		// + //
+	_DECL_FUNC(qk_vec2_toivec4,1,NULL),		// + //
 
 	_DECL_FUNC(qk_vec3_constructor,-1,NULL),
 	_DECL_FUNC(qk_vec3_get,2,NULL),
@@ -911,6 +1180,12 @@ SQRegFunction qkVector_funcs[] = {
 //	_DECL_FUNC(qk_vec3_rotate45,1,NULL),
 //	_DECL_FUNC(qk_vec3_rotatenegative45,1,NULL),
 	_DECL_FUNC(qk_vec3_cross,2,NULL),
+	_DECL_FUNC(qk_vec3_toscalar,1,NULL),	// - //
+	_DECL_FUNC(qk_vec3_tovec2,1,NULL),		// - //
+	_DECL_FUNC(qk_vec3_tohvec2,1,NULL),		// - //
+	_DECL_FUNC(qk_vec3_tovec4,1,NULL),		// + //
+	_DECL_FUNC(qk_vec3_tohvec4,1,NULL),		// + //
+	_DECL_FUNC(qk_vec3_toivec4,1,NULL),		// + //
 
 	_DECL_FUNC(qk_vec4_constructor,-1,NULL),
 	_DECL_FUNC(qk_vec4_get,2,NULL),
@@ -945,6 +1220,10 @@ SQRegFunction qkVector_funcs[] = {
 //	_DECL_FUNC(qk_vec4_rotate45,1,NULL),
 //	_DECL_FUNC(qk_vec4_rotatenegative45,1,NULL),
 //	_DECL_FUNC(qk_vec4_cross,2,NULL),
+	_DECL_FUNC(qk_vec4_toscalar,1,NULL),	// - //
+	_DECL_FUNC(qk_vec4_tovec2,1,NULL),		// - //
+	_DECL_FUNC(qk_vec4_tovec3,1,NULL),		// - //
+	_DECL_FUNC(qk_vec4_tohvec3,1,NULL),		// - //
 	
 	{0,0,0,0}
 };
@@ -996,6 +1275,15 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_scalar_rotatenegative45,rotatenegative45);
 //		_CLASS_ADDFUNC(qk_scalar_cross,cross);
 		_CLASS_ADDFUNC(qk_scalar_tofloat,tofloat);
+		_CLASS_ADDFUNC(qk_scalar_tovec2,tovec2);
+		_CLASS_ADDFUNC(qk_scalar_tovec3,tovec3);
+		_CLASS_ADDFUNC(qk_scalar_tovec4,tovec4);
+		_CLASS_ADDFUNC(qk_scalar_tohvec2,tohvec2);
+		_CLASS_ADDFUNC(qk_scalar_tohvec3,tohvec3);
+		_CLASS_ADDFUNC(qk_scalar_tohvec4,tohvec4);
+		_CLASS_ADDFUNC(qk_scalar_toivec2,toivec2);
+		_CLASS_ADDFUNC(qk_scalar_toivec3,toivec3);
+		_CLASS_ADDFUNC(qk_scalar_toivec4,toivec4);
 		_ADD_CLASS_END(Real);
 	}
 
@@ -1030,6 +1318,14 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_vec2_rotate45,rotate45);
 		_CLASS_ADDFUNC(qk_vec2_rotatenegative45,rotatenegative45);
 //		_CLASS_ADDFUNC(qk_vec2_cross,cross);
+		_CLASS_ADDFUNC(qk_vec2_toscalar,toscalar);
+		_CLASS_ADDFUNC(qk_vec2_tohscalar,tohscalar);
+		_CLASS_ADDFUNC(qk_vec2_tovec3,tovec3);
+		_CLASS_ADDFUNC(qk_vec2_tohvec3,tohvec3);
+		_CLASS_ADDFUNC(qk_vec2_toivec3,toivec3);
+		_CLASS_ADDFUNC(qk_vec2_tovec4,tovec4);
+		_CLASS_ADDFUNC(qk_vec2_tohvec4,tohvec4);
+		_CLASS_ADDFUNC(qk_vec2_toivec4,toivec4);
 		_ADD_CLASS_END(Vector2D);
 	}
 
@@ -1066,6 +1362,13 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_vec3_rotate45,rotate45);
 //		_CLASS_ADDFUNC(qk_vec3_rotatenegative45,rotatenegative45);
 		_CLASS_ADDFUNC(qk_vec3_cross,cross);
+		_CLASS_ADDFUNC(qk_vec3_toscalar,toscalar);
+		_CLASS_ADDFUNC(qk_vec3_tovec2,tovec2);
+		_CLASS_ADDFUNC(qk_vec3_tohvec2,tohvec2);
+		_CLASS_ADDFUNC(qk_vec3_tovec4,tovec4);
+		_CLASS_ADDFUNC(qk_vec3_tohvec4,tohvec4);
+		_CLASS_ADDFUNC(qk_vec3_toivec4,toivec4);
+		
 		_ADD_CLASS_END(Vector3D);
 	}
 
@@ -1104,6 +1407,10 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_vec4_rotate45,rotate45);
 //		_CLASS_ADDFUNC(qk_vec4_rotatenegative45,rotatenegative45);
 //		_CLASS_ADDFUNC(qk_vec4_cross,cross);
+		_CLASS_ADDFUNC(qk_vec4_toscalar,toscalar);
+		_CLASS_ADDFUNC(qk_vec4_tovec2,tovec2);
+		_CLASS_ADDFUNC(qk_vec4_tovec3,tovec3);
+		_CLASS_ADDFUNC(qk_vec4_tohvec3,tohvec3);
 		_ADD_CLASS_END(Vector4D);
 	}
 	
