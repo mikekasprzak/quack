@@ -8,6 +8,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: .row0(), .column2() functions might be nice, for getting vectors of the data.
 // TODO: .get00mat2() to get the 2x2 matrix at position 0,0. These sort of functions.
+//       Consider adding wrapping functions, like a way to get the matrix of an edge. .get33mat2()
+//       Consider making this how we handle skewing a matrix. .get20mat4() to shift everything left 2.
+//       Consider using _get for this. That way, we can programatically figure out the position. .get33mat4
 // - ------------------------------------------------------------------------------------------ - //
 // NOTE: It's okay to have a matrix that supports scalar addition, but no other forms of adding. //
 // - ------------------------------------------------------------------------------------------ - //
