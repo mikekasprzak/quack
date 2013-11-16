@@ -137,6 +137,7 @@ inline SQInteger qk_mat_constructor_body( HSQUIRRELVM v, float* Mat, const int M
 					sq_get(v,idx); 				// =0 (-1 then +1) //
 					sq_getfloat(v,-1,&(Mat[MatIndex]));
 					sq_poptop(v);				// -1 //
+					
 					MatIndex++;
 				}
 			}

@@ -8,13 +8,6 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#define _VEC_CONSTRUCTOR_START(_TYPE_) \
-	_TYPE_* Vec; \
-	sq_getinstanceup(v,1,(void**)&Vec,0);
-// - ------------------------------------------------------------------------------------------ - //
-#define _VEC_CONSTRUCTOR_END(_TYPE_) \
-	return SQ_VOID;
-// - ------------------------------------------------------------------------------------------ - //
 #define _VEC_GET_START(_TYPE_) \
 	_TYPE_* Vec; \
 	sq_getinstanceup(v,1,(void**)&Vec,0); \
@@ -304,23 +297,24 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void qk_vec_constructor_body( HSQUIRRELVM v, float* Arr, const int ArrSize ) {
+inline SQInteger qk_vec_constructor_body( HSQUIRRELVM v, float* Arr, const int ArrSize ) {
 	int Args = sq_gettop(v);
 	if ( Args > 1 ) {
-		int ArrIndex = 0;
+		int ArrIndex = 0; // Which Index of the Vector we are writing to. //
 		
 		// Iterate through all arguments //
 		for ( int idx = 2; (idx <= Args) && (ArrIndex < ArrSize); idx++ ) {
 			int Type = sq_gettype(v,idx);
 			if ( Type & (OT_FLOAT|OT_INTEGER) ) {
 				sq_getfloat(v,idx,&Arr[ArrIndex]);
+				
 				ArrIndex++;
 			}
 			else if ( Type == OT_ARRAY ) {
 				int Size = sq_getsize(v,idx);
 				if ( Size > ArrSize-ArrIndex ) {
-					// TODO: Log an error that array attempting to use is too big //
-					Size = ArrSize-ArrIndex;
+					//Size = ArrSize-ArrIndex;
+					return sq_throwerror(v,"array assigned to vector is too large");
 				}
 	
 				for ( int idx2 = 0; idx2 < Size; idx2++ ) {
@@ -332,20 +326,82 @@ inline void qk_vec_constructor_body( HSQUIRRELVM v, float* Arr, const int ArrSiz
 					ArrIndex++;
 				}
 			}
+			else if ( Type == OT_INSTANCE ) {
+				int Tag;			
+				sq_gettypetag(v,idx,(SQUserPointer*)&Tag);
+				if ( Tag == QK_TAG_VEC2 ) {
+					if ( ArrIndex+1 < ArrSize ) {
+						float* Vec;
+						sq_getinstanceup(v,idx,(void**)&Vec,0);				
+						
+						Arr[ArrIndex+0] = Vec[0];
+						Arr[ArrIndex+1] = Vec[1];
+	
+						ArrIndex+=2;
+					}
+					else {
+						return sq_throwerror(v,"vector assigned to vector is too large");
+					}
+				}
+				else if ( Tag == QK_TAG_VEC3 ) {
+					if ( ArrIndex+2 < ArrSize ) {
+						float* Vec;
+						sq_getinstanceup(v,idx,(void**)&Vec,0);				
+						
+						Arr[ArrIndex+0] = Vec[0];
+						Arr[ArrIndex+1] = Vec[1];
+						Arr[ArrIndex+2] = Vec[2];
+	
+						ArrIndex+=3;
+					}
+					else {
+						return sq_throwerror(v,"vector assigned to vector is too large");
+					}
+				}
+				else if ( Tag == QK_TAG_VEC4 ) {
+					if ( ArrIndex+3 < ArrSize ) {
+						float* Vec;
+						sq_getinstanceup(v,idx,(void**)&Vec,0);				
+						
+						Arr[ArrIndex+0] = Vec[0];
+						Arr[ArrIndex+1] = Vec[1];
+						Arr[ArrIndex+2] = Vec[2];
+						Arr[ArrIndex+3] = Vec[3];
+	
+						ArrIndex+=4;
+					}
+					else {
+						return sq_throwerror(v,"vector assigned to vector is too large");
+					}
+				}
+				else if ( Tag == QK_TAG_SCALAR ) {
+					float* Vec;
+					sq_getinstanceup(v,idx,(void**)&Vec,0);				
+					
+					Arr[ArrIndex+0] = Vec[0];
+
+					ArrIndex++;
+				}
+				else {
+					return sq_throwerror(v,"bad type to assignment to vector");
+				}
+			}
 			else {
-				// TODO: Log Bad Matrix Init Type //
+				return sq_throwerror(v,"bad type to assignment to vector");
 			}
 		}
 		
 		// If we didn't put enough data in, pad with zeros //
 		while ( ArrIndex < ArrSize ) {
-			Arr[ArrIndex] = 0;
+			Arr[ArrIndex] = 0.0f;
 			ArrIndex++;
 		}
 	}
 	else {
 		// TODO: No Arguments //
-	}	
+	}
+	
+	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
 //const char qk_vec_element_table[] = { 'x','y','z','w' };
@@ -485,16 +541,11 @@ SQInteger qk_vec_get_body( HSQUIRRELVM v, const unsigned int VecSize ) {
 // scalar --------------------------------------------------------------------------------------- - //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_scalar_constructor( HSQUIRRELVM v ) {
-	_VEC_CONSTRUCTOR_START(Real);
+	float* Arr;
+	sq_getinstanceup(v,1,(void**)&Arr,0);
+	const int ArrSize = sizeof(Real) / sizeof(Real);
 	
-	const int ArrSize = 1;
-	float Arr[ArrSize];
-	
-	qk_vec_constructor_body(v,Arr,ArrSize);
-	
-	*Vec = Real(Arr[0]);
-
-	return SQ_VOID;
+	return qk_vec_constructor_body(v,Arr,ArrSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_scalar_get( HSQUIRRELVM v ) {
@@ -653,16 +704,11 @@ SQInteger qk_scalar_tofloat( HSQUIRRELVM v ) {
 // vec2 --------------------------------------------------------------------------------------- - //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec2_constructor( HSQUIRRELVM v ) {
-	_VEC_CONSTRUCTOR_START(Vector2D);
+	float* Arr;
+	sq_getinstanceup(v,1,(void**)&Arr,0);
+	const int ArrSize = sizeof(Vector2D) / sizeof(Real);
 	
-	const int ArrSize = 2;
-	float Arr[ArrSize];
-	
-	qk_vec_constructor_body(v,Arr,ArrSize);
-	
-	*Vec = Vector2D(Arr[0],Arr[1]);
-
-	return SQ_VOID;
+	return qk_vec_constructor_body(v,Arr,ArrSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec2_get( HSQUIRRELVM v ) {
@@ -808,16 +854,11 @@ _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotatenegative45,RotateNegative45);
 // vec3 --------------------------------------------------------------------------------------- - //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec3_constructor( HSQUIRRELVM v ) {
-	_VEC_CONSTRUCTOR_START(Vector3D);
+	float* Arr;
+	sq_getinstanceup(v,1,(void**)&Arr,0);
+	const int ArrSize = sizeof(Vector3D) / sizeof(Real);
 	
-	const int ArrSize = 3;
-	float Arr[ArrSize];
-	
-	qk_vec_constructor_body(v,Arr,ArrSize);
-	
-	*Vec = Vector3D(Arr[0],Arr[1],Arr[2]);
-
-	return SQ_VOID;
+	return qk_vec_constructor_body(v,Arr,ArrSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec3_get( HSQUIRRELVM v ) {
@@ -947,16 +988,11 @@ _VEC_VS_RETURNS_VEC(Vector3D,qk_vec3_cross,cross);
 // vec4 --------------------------------------------------------------------------------------- - //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec4_constructor( HSQUIRRELVM v ) {
-	_VEC_CONSTRUCTOR_START(Vector4D);
+	float* Arr;
+	sq_getinstanceup(v,1,(void**)&Arr,0);
+	const int ArrSize = sizeof(Vector4D) / sizeof(Real);
 	
-	const int ArrSize = 4;
-	float Arr[ArrSize];
-	
-	qk_vec_constructor_body(v,Arr,ArrSize);
-	
-	*Vec = Vector4D(Arr[0],Arr[1],Arr[2],Arr[3]);
-
-	return SQ_VOID;
+	return qk_vec_constructor_body(v,Arr,ArrSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec4_get( HSQUIRRELVM v ) {
