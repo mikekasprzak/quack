@@ -16,6 +16,7 @@
 #include "QuackLib/qkColor.h"	// color
 #include "QuackLib/qkVector.h"	// vec2, vec3, vec4, scalar
 #include "QuackLib/qkMatrix.h"	// mat2, mat3, mat4
+#include "QuackLib/qkFloat.h"	// float (internal)
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -76,6 +77,7 @@ void QuackVMInit() {
 		Log("* qkColor"); register_qkColor( vm );
 		Log("* qkVector"); register_qkVector( vm );
 		Log("* qkMatrix"); register_qkMatrix( vm );
+		Log("* qkFloat"); register_qkFloat( vm );
 	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	
