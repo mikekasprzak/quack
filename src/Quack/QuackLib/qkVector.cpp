@@ -23,19 +23,6 @@
 	sq_pushnull(v);				/* +1 */ \
 	return sq_throwobject(v);	/* -1 */
 // - ------------------------------------------------------------------------------------------ - //
-#define _ARR_TO_BEGIN(_TYPENAME_,_TYPENAME_LEN_) \
-	sq_pushroottable(v); \
-	sq_pushstring(v,_TYPENAME_,_TYPENAME_LEN_);		/* +1 */ \
-	sq_get(v,-2);									/* =0 */ \
-	sq_createinstance(v,-1);						/* +1 */ \
-	/* NOTE: Contructor not called! */ \
-	\
-	float* Arr; \
-	sq_getinstanceup(v,1,(void**)&Arr,0); \
-	\
-	float* Ret; \
-	sq_getinstanceup(v,-1,(void**)&Ret,0);
-// - ------------------------------------------------------------------------------------------ - //
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -522,6 +509,15 @@ SQInteger qk_scalar_tomat4( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// scalar.identity() //
+SQInteger qk_scalar_identity( HSQUIRRELVM v ) {
+	_ARR_TO_BEGIN_RETONLY("scalar",6);
+	
+	Ret[0] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
 _VEC_TOSTRING(Real,qk_scalar_tostring,"(%0.03f)",Vec->ToFloat());
 _VEC_TYPEOF(Real,qk_scalar_typeof,"scalar",6);
 _VEC_CLONED(Real,qk_scalar_cloned);
@@ -772,6 +768,41 @@ SQInteger qk_vec2_tomat4( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// vec2.identity() //
+SQInteger qk_vec2_identity( HSQUIRRELVM v ) {
+	_ARR_TO_BEGIN_RETONLY("vec2",4);
+	
+	Ret[0] = 1.0f;
+	Ret[1] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+_VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat());
+_VEC_TYPEOF(Vector2D,qk_vec2_typeof,"vec2",4);
+_VEC_CLONED(Vector2D,qk_vec2_cloned);
+_MATH_LEN(Vector2D,qk_vec2_len);
+_VEC_UNM(Vector2D,qk_vec2_unm);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipx,FlipX);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipy,FlipY);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_xaxis,XAxis);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_yaxis,YAxis);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_normal,Normal);
+_VEC_FUNC_SELF_RETURNS_VEC(Vector2D,qk_vec2_normalize,Normalize);
+_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_normalizeret,NormalizeRet);
+_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_magnitude,Magnitude);
+_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_magnitudesquared,MagnitudeSquared);
+_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_manhattan,Manhattan);
+_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_minitude,Minitude);
+_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_maxitude,Maxitude);
+_VEC_VS_RETURNS_FLOAT(Vector2D,qk_vec2_dot,dot);
+_VEC_VS_ALPHA_RETURNS_VEC(Vector2D,qk_vec2_mix,mix);
+
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_tangent,Tangent);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotate45,Rotate45);
+_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotatenegative45,RotateNegative45);
+//_VEC_VS_RETURNS_VEC(Vector2D,qk_vec2_cross,cross);
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_vec2_add( HSQUIRRELVM v ) {
 	_MATH_OP_START()
 	_MATH_OP_TYPE_START(OT_INSTANCE)
@@ -812,31 +843,6 @@ SQInteger qk_vec2_div( HSQUIRRELVM v ) {
 	_MATH_OP_TYPE_FLOAT(Vector2D,/)
 	_MATH_OP_END(/)
 }
-// - ------------------------------------------------------------------------------------------ - //
-_VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat());
-_VEC_TYPEOF(Vector2D,qk_vec2_typeof,"vec2",4);
-_VEC_CLONED(Vector2D,qk_vec2_cloned);
-_MATH_LEN(Vector2D,qk_vec2_len);
-_VEC_UNM(Vector2D,qk_vec2_unm);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipx,FlipX);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipy,FlipY);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_xaxis,XAxis);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_yaxis,YAxis);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_normal,Normal);
-_VEC_FUNC_SELF_RETURNS_VEC(Vector2D,qk_vec2_normalize,Normalize);
-_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_normalizeret,NormalizeRet);
-_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_magnitude,Magnitude);
-_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_magnitudesquared,MagnitudeSquared);
-_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_manhattan,Manhattan);
-_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_minitude,Minitude);
-_VEC_FUNC_RETURNS_FLOAT(Vector2D,qk_vec2_maxitude,Maxitude);
-_VEC_VS_RETURNS_FLOAT(Vector2D,qk_vec2_dot,dot);
-_VEC_VS_ALPHA_RETURNS_VEC(Vector2D,qk_vec2_mix,mix);
-
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_tangent,Tangent);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotate45,Rotate45);
-_VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_rotatenegative45,RotateNegative45);
-//_VEC_VS_RETURNS_VEC(Vector2D,qk_vec2_cross,cross);
 // - ------------------------------------------------------------------------------------------ - //
 
 
@@ -980,6 +986,17 @@ SQInteger qk_vec3_tomat4( HSQUIRRELVM v ) {
 	Ret[13] = 0.0f;
 	Ret[14] = 0.0f;
 	Ret[15] = 1.0f; // Identity //
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// vec3.identity() //
+SQInteger qk_vec3_identity( HSQUIRRELVM v ) {
+	_ARR_TO_BEGIN_RETONLY("vec3",4);
+	
+	Ret[0] = 1.0f;
+	Ret[1] = 1.0f;
+	Ret[2] = 1.0f;
 
 	return SQ_RETURN;
 }
@@ -1173,6 +1190,18 @@ SQInteger qk_vec4_tomat4( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// vec3.identity() //
+SQInteger qk_vec4_identity( HSQUIRRELVM v ) {
+	_ARR_TO_BEGIN_RETONLY("vec4",4);
+	
+	Ret[0] = 1.0f;
+	Ret[1] = 1.0f;
+	Ret[2] = 1.0f;
+	Ret[3] = 1.0f;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
 _VEC_TOSTRING(Vector4D,qk_vec4_tostring,"(%0.03f,%0.03f,%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat(),Vec->z.ToFloat(),Vec->w.ToFloat());
 _VEC_TYPEOF(Vector4D,qk_vec4_typeof,"vec4",4);
 _VEC_CLONED(Vector4D,qk_vec4_cloned);
@@ -1253,6 +1282,7 @@ SQRegFunction qkVector_funcs[] = {
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	_DECL_FUNC(qk_scalar_constructor,-1,NULL),
+	_DECL_FUNC(qk_scalar_identity,0,NULL),
 	_DECL_FUNC(qk_scalar_get,2,NULL),
 	_DECL_FUNC(qk_scalar_set,3,NULL),
 	_DECL_FUNC(qk_scalar_typeof,1,NULL),
@@ -1295,6 +1325,7 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_scalar_tomat4,1,NULL),
 	
 	_DECL_FUNC(qk_vec2_constructor,-1,NULL),
+	_DECL_FUNC(qk_vec2_identity,0,NULL),
 	_DECL_FUNC(qk_vec2_get,2,NULL),
 	_DECL_FUNC(qk_vec2_set,3,NULL),
 	_DECL_FUNC(qk_vec2_typeof,1,NULL),
@@ -1337,6 +1368,7 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec2_tomat4,1,NULL),
 
 	_DECL_FUNC(qk_vec3_constructor,-1,NULL),
+	_DECL_FUNC(qk_vec3_identity,0,NULL),
 	_DECL_FUNC(qk_vec3_get,2,NULL),
 	_DECL_FUNC(qk_vec3_set,3,NULL),
 	_DECL_FUNC(qk_vec3_typeof,1,NULL),
@@ -1379,6 +1411,7 @@ SQRegFunction qkVector_funcs[] = {
 	_DECL_FUNC(qk_vec3_tomat4,1,NULL),
 
 	_DECL_FUNC(qk_vec4_constructor,-1,NULL),
+	_DECL_FUNC(qk_vec4_identity,0,NULL),
 	_DECL_FUNC(qk_vec4_get,2,NULL),
 	_DECL_FUNC(qk_vec4_set,3,NULL),
 	_DECL_FUNC(qk_vec4_typeof,1,NULL),
@@ -1443,6 +1476,7 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	{
 		_ADD_CLASS_START(Real,"scalar",QK_TAG_SCALAR);
 		_CLASS_ADDFUNC(qk_scalar_constructor,constructor);
+		_CLASS_ADDFUNC_STATIC(qk_scalar_identity,identity);
 		_CLASS_ADDFUNC(qk_scalar_get,_get);
 		_CLASS_ADDFUNC(qk_scalar_set,_set);
 		_CLASS_ADDFUNC(qk_scalar_tostring,_tostring);
@@ -1489,6 +1523,7 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	{
 		_ADD_CLASS_START(Vector2D,"vec2",QK_TAG_VEC2);
 		_CLASS_ADDFUNC(qk_vec2_constructor,constructor);
+		_CLASS_ADDFUNC_STATIC(qk_vec2_identity,identity);
 		_CLASS_ADDFUNC(qk_vec2_get,_get);
 		_CLASS_ADDFUNC(qk_vec2_set,_set);
 		_CLASS_ADDFUNC(qk_vec2_tostring,_tostring);
@@ -1535,6 +1570,7 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	{
 		_ADD_CLASS_START(Vector3D,"vec3",QK_TAG_VEC3);
 		_CLASS_ADDFUNC(qk_vec3_constructor,constructor);
+		_CLASS_ADDFUNC_STATIC(qk_vec3_identity,identity);
 		_CLASS_ADDFUNC(qk_vec3_get,_get);
 		_CLASS_ADDFUNC(qk_vec3_set,_set);
 		_CLASS_ADDFUNC(qk_vec3_tostring,_tostring);
@@ -1581,6 +1617,7 @@ SQInteger register_qkVector(HSQUIRRELVM v) {
 	{
 		_ADD_CLASS_START(Vector4D,"vec4",QK_TAG_VEC4);
 		_CLASS_ADDFUNC(qk_vec4_constructor,constructor);
+		_CLASS_ADDFUNC_STATIC(qk_vec4_identity,identity);
 		_CLASS_ADDFUNC(qk_vec4_get,_get);
 		_CLASS_ADDFUNC(qk_vec4_set,_set);
 		_CLASS_ADDFUNC(qk_vec4_tostring,_tostring);

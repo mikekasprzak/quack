@@ -146,6 +146,12 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_get(v,Root); /* lookup function */		/* =0 */ \
 	sq_newslot(v,CPos,false);					/* -2 */
 // - ------------------------------------------------------------------------------------------ - //
+#define _CLASS_ADDFUNC_STATIC(_FUNC_,_METHOD_) \
+	sq_pushstring(v,#_METHOD_,-1);				/* +1 */ \
+	sq_pushstring(v,#_FUNC_,-1);				/* +1 */ \
+	sq_get(v,Root); /* lookup function */		/* =0 */ \
+	sq_newslot(v,CPos,true);					/* -2 */
+// - ------------------------------------------------------------------------------------------ - //
 #define _ADD_CLASS_START(_TYPE_,_TYPENAME_,_TYPETAG_) \
 	sq_pushstring(v,_TYPENAME_,-1);				/* +1 */ \
 	sq_newclass(v,false); 						/* +1 */ \
@@ -155,6 +161,31 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 // - ------------------------------------------------------------------------------------------ - //
 #define _ADD_CLASS_END(_TYPE_) \
 	sq_newslot(v,Root,false); /* Add to Root */	/* -2 */
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+#define _ARR_TO_BEGIN(_TYPENAME_,_TYPENAME_LEN_) \
+	sq_pushroottable(v); \
+	sq_pushstring(v,_TYPENAME_,_TYPENAME_LEN_);		/* +1 */ \
+	sq_get(v,-2);									/* =0 */ \
+	sq_createinstance(v,-1);						/* +1 */ \
+	/* NOTE: Contructor not called! */ \
+	\
+	float* Arr; \
+	sq_getinstanceup(v,1,(void**)&Arr,0); \
+	\
+	float* Ret; \
+	sq_getinstanceup(v,-1,(void**)&Ret,0);
+// - ------------------------------------------------------------------------------------------ - //
+#define _ARR_TO_BEGIN_RETONLY(_TYPENAME_,_TYPENAME_LEN_) \
+	sq_pushroottable(v); \
+	sq_pushstring(v,_TYPENAME_,_TYPENAME_LEN_);		/* +1 */ \
+	sq_get(v,-2);									/* =0 */ \
+	sq_createinstance(v,-1);						/* +1 */ \
+	/* NOTE: Contructor not called! */ \
+	\
+	float* Ret; \
+	sq_getinstanceup(v,-1,(void**)&Ret,0);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -259,7 +290,12 @@ inline SQInteger qk_arr_constructor_body( HSQUIRRELVM v, float* Arr, const int A
 		}
 	}
 	else {
-		// TODO: No Arguments //
+		// No Arguments, so zero the data //
+		int ArrIndex = 0;
+		while ( ArrIndex < ArrSize ) {
+			Arr[ArrIndex] = 0.0f;
+			ArrIndex++;
+		}
 	}
 	
 	return SQ_VOID;

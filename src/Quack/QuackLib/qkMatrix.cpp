@@ -33,19 +33,6 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 // TODO: safe_sprintf. need a consistent version that either always prints, or notes a size error //
 //       that I can in-turn write a "ERROR: not enough room to sprintf" to it (if it fits). //
 // - ------------------------------------------------------------------------------------------ - //
-#define _MAT_TO_BEGIN(_TYPENAME_,_TYPENAME_LEN_) \
-	sq_pushroottable(v); \
-	sq_pushstring(v,_TYPENAME_,_TYPENAME_LEN_);		/* +1 */ \
-	sq_get(v,-2);									/* =0 */ \
-	sq_createinstance(v,-1);						/* +1 */ \
-	/* NOTE: Contructor not called! */ \
-	\
-	float* Mat; \
-	sq_getinstanceup(v,1,(void**)&Mat,0); \
-	\
-	float* Ret; \
-	sq_getinstanceup(v,-1,(void**)&Ret,0);
-// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 // _cloned //
@@ -92,7 +79,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 
 // - ------------------------------------------------------------------------------------------ - //
 inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize, const unsigned int MatWidth ) {
-	int Type = sq_gettype(v,2);
+	const int Type = sq_gettype(v,2);
 	if ( Type == OT_INTEGER ) {
 		int Index;
 		sq_getinteger(v,2,&Index);
@@ -137,7 +124,7 @@ inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize, const
 		float Value;
 		sq_getfloat(v,3,&Value);
 	
-		int Type = sq_gettype(v,2);
+		const int Type = sq_gettype(v,2);
 		if ( Type == OT_INTEGER ) {
 			unsigned int Index;
 			sq_getinteger(v,2,(int*)&Index);
@@ -213,14 +200,14 @@ SQInteger qk_mat2_set( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat2_tomat3( HSQUIRRELVM v ) {
-	_MAT_TO_BEGIN("mat3",4);
+	_ARR_TO_BEGIN("mat3",4);
 	
-	Ret[0] = Mat[0];
-	Ret[1] = Mat[1];
+	Ret[0] = Arr[0];
+	Ret[1] = Arr[1];
 	Ret[2] = 0.0f;
 
-	Ret[3] = Mat[2];
-	Ret[4] = Mat[3];
+	Ret[3] = Arr[2];
+	Ret[4] = Arr[3];
 	Ret[5] = 0.0f;
 
 	Ret[6] = 0.0f;
@@ -231,15 +218,15 @@ SQInteger qk_mat2_tomat3( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat2_tomat4( HSQUIRRELVM v ) {
-	_MAT_TO_BEGIN("mat4",4);
+	_ARR_TO_BEGIN("mat4",4);
 	
-	Ret[0] = Mat[0];
-	Ret[1] = Mat[1];
+	Ret[0] = Arr[0];
+	Ret[1] = Arr[1];
 	Ret[2] = 0.0f;
 	Ret[3] = 0.0f;
 
-	Ret[4] = Mat[2];
-	Ret[5] = Mat[3];
+	Ret[4] = Arr[2];
+	Ret[5] = Arr[3];
 	Ret[6] = 0.0f;
 	Ret[7] = 0.0f;
 
@@ -254,6 +241,17 @@ SQInteger qk_mat2_tomat4( HSQUIRRELVM v ) {
 	Ret[15] = 1.0f;
 
 	return SQ_RETURN;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat2_identity( HSQUIRRELVM v ) {
+	_ARR_TO_BEGIN_RETONLY("mat2",4);
+	
+	Ret[0] = 1.0f;
+	Ret[1] = 0.0f;
+	Ret[2] = 0.0f;
+	Ret[3] = 1.0f;
+	
+	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
@@ -332,21 +330,21 @@ SQInteger qk_mat3_set( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat3_tomat4( HSQUIRRELVM v ) {
-	_MAT_TO_BEGIN("mat4",4);
+	_ARR_TO_BEGIN("mat4",4);
 	
-	Ret[0] = Mat[0];
-	Ret[1] = Mat[1];
-	Ret[2] = Mat[2];
+	Ret[0] = Arr[0];
+	Ret[1] = Arr[1];
+	Ret[2] = Arr[2];
 	Ret[3] = 0.0f;
 
-	Ret[4] = Mat[3];
-	Ret[5] = Mat[4];
-	Ret[6] = Mat[5];
+	Ret[4] = Arr[3];
+	Ret[5] = Arr[4];
+	Ret[6] = Arr[5];
 	Ret[7] = 0.0f;
 
-	Ret[8] = Mat[6];
-	Ret[9] = Mat[7];
-	Ret[10] = Mat[8];
+	Ret[8] = Arr[6];
+	Ret[9] = Arr[7];
+	Ret[10] = Arr[8];
 	Ret[11] = 0.0f;
 
 	Ret[12] = 0.0f;
@@ -355,6 +353,24 @@ SQInteger qk_mat3_tomat4( HSQUIRRELVM v ) {
 	Ret[15] = 1.0f;
 
 	return SQ_RETURN;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat3_identity( HSQUIRRELVM v ) {
+	_ARR_TO_BEGIN_RETONLY("mat3",4);
+	
+	Ret[0] = 1.0f;
+	Ret[1] = 0.0f;
+	Ret[2] = 0.0f;
+
+	Ret[3] = 0.0f;
+	Ret[4] = 1.0f;
+	Ret[5] = 0.0f;
+
+	Ret[6] = 0.0f;
+	Ret[7] = 0.0f;
+	Ret[8] = 1.0f;
+	
+	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
@@ -432,6 +448,32 @@ SQInteger qk_mat4_set( HSQUIRRELVM v ) {
 	return qk_mat_set(v,Mat,MatSize,4);
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat4_identity( HSQUIRRELVM v ) {
+	_ARR_TO_BEGIN_RETONLY("mat4",4);
+	
+	Ret[0] = 1.0f;
+	Ret[1] = 0.0f;
+	Ret[2] = 0.0f;
+	Ret[3] = 0.0f;
+
+	Ret[4] = 0.0f;
+	Ret[5] = 1.0f;
+	Ret[6] = 0.0f;
+	Ret[7] = 0.0f;
+
+	Ret[8] = 0.0f;
+	Ret[9] = 0.0f;
+	Ret[10] = 1.0f;
+	Ret[11] = 0.0f;
+
+	Ret[12] = 0.0f;
+	Ret[13] = 0.0f;
+	Ret[14] = 0.0f;
+	Ret[15] = 1.0f;
+	
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
 _MATH_LEN(Matrix4x4,qk_mat4_len);
 _MAT_CLONED(Matrix4x4,qk_mat4_cloned);
@@ -491,6 +533,7 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat2_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat2_get,2,NULL),
 	_DECL_FUNC(qk_mat2_set,3,NULL),
+	_DECL_FUNC(qk_mat2_identity,0,NULL),
 	_DECL_FUNC(qk_mat2_tostring,1,NULL),
 	_DECL_FUNC(qk_mat2_len,1,NULL),
 	_DECL_FUNC(qk_mat2_cloned,2,NULL),
@@ -506,6 +549,7 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat3_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat3_get,2,NULL),
 	_DECL_FUNC(qk_mat3_set,3,NULL),
+	_DECL_FUNC(qk_mat3_identity,0,NULL),
 	_DECL_FUNC(qk_mat3_tostring,1,NULL),
 	_DECL_FUNC(qk_mat3_len,1,NULL),
 	_DECL_FUNC(qk_mat3_cloned,2,NULL),
@@ -520,6 +564,7 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat4_constructor,-1,NULL),
 	_DECL_FUNC(qk_mat4_get,2,NULL),
 	_DECL_FUNC(qk_mat4_set,3,NULL),
+	_DECL_FUNC(qk_mat4_identity,0,NULL),
 	_DECL_FUNC(qk_mat4_tostring,1,NULL),
 	_DECL_FUNC(qk_mat4_len,1,NULL),
 	_DECL_FUNC(qk_mat4_cloned,2,NULL),
@@ -555,6 +600,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat2_constructor,constructor);
 		_CLASS_ADDFUNC(qk_mat2_get,_get);
 		_CLASS_ADDFUNC(qk_mat2_set,_set);
+		_CLASS_ADDFUNC_STATIC(qk_mat2_identity,identity);
 		_CLASS_ADDFUNC(qk_mat2_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_mat2_len,len);
 		_CLASS_ADDFUNC(qk_mat2_cloned,_cloned);
@@ -573,6 +619,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat3_constructor,constructor);
 		_CLASS_ADDFUNC(qk_mat3_get,_get);
 		_CLASS_ADDFUNC(qk_mat3_set,_set);
+		_CLASS_ADDFUNC_STATIC(qk_mat3_identity,identity);
 		_CLASS_ADDFUNC(qk_mat3_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_mat3_len,len);
 		_CLASS_ADDFUNC(qk_mat3_cloned,_cloned);
@@ -590,6 +637,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat4_constructor,constructor);
 		_CLASS_ADDFUNC(qk_mat4_get,_get);
 		_CLASS_ADDFUNC(qk_mat4_set,_set);
+		_CLASS_ADDFUNC_STATIC(qk_mat4_identity,identity);
 		_CLASS_ADDFUNC(qk_mat4_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_mat4_len,len);
 		_CLASS_ADDFUNC(qk_mat4_cloned,_cloned);
