@@ -255,6 +255,7 @@ SQInteger qk_mat2_identity( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
+_FUNC_TYPEOF(Matrix2x2,qk_mat2_typeof,"mat2",4);
 _MATH_LEN(Matrix2x2,qk_mat2_len);
 _MAT_CLONED(Matrix2x2,qk_mat2_cloned);
 _MAT_UNM(Matrix2x2,qk_mat2_unm);
@@ -374,6 +375,7 @@ SQInteger qk_mat3_identity( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
+_FUNC_TYPEOF(Matrix3x3,qk_mat3_typeof,"mat3",4);
 _MATH_LEN(Matrix3x3,qk_mat3_len);
 _MAT_CLONED(Matrix3x3,qk_mat3_cloned);
 _MAT_UNM(Matrix3x3,qk_mat3_unm);
@@ -475,6 +477,7 @@ SQInteger qk_mat4_identity( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
+_FUNC_TYPEOF(Matrix4x4,qk_mat4_typeof,"mat4",4);
 _MATH_LEN(Matrix4x4,qk_mat4_len);
 _MAT_CLONED(Matrix4x4,qk_mat4_cloned);
 _MAT_UNM(Matrix4x4,qk_mat4_unm);
@@ -535,7 +538,8 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat2_set,3,NULL),
 	_DECL_FUNC(qk_mat2_identity,0,NULL),
 	_DECL_FUNC(qk_mat2_tostring,1,NULL),
-	_DECL_FUNC(qk_mat2_len,1,NULL),
+	_DECL_FUNC(qk_mat2_typeof,0,NULL),
+	_DECL_FUNC(qk_mat2_len,0,NULL),
 	_DECL_FUNC(qk_mat2_cloned,2,NULL),
 	_DECL_FUNC(qk_mat2_unm,1,NULL),
 	_DECL_FUNC(qk_mat2_add,2,NULL),
@@ -551,7 +555,8 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat3_set,3,NULL),
 	_DECL_FUNC(qk_mat3_identity,0,NULL),
 	_DECL_FUNC(qk_mat3_tostring,1,NULL),
-	_DECL_FUNC(qk_mat3_len,1,NULL),
+	_DECL_FUNC(qk_mat3_len,0,NULL),
+	_DECL_FUNC(qk_mat3_typeof,0,NULL),
 	_DECL_FUNC(qk_mat3_cloned,2,NULL),
 	_DECL_FUNC(qk_mat3_unm,1,NULL),
 	_DECL_FUNC(qk_mat3_add,2,NULL),
@@ -566,7 +571,8 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat4_set,3,NULL),
 	_DECL_FUNC(qk_mat4_identity,0,NULL),
 	_DECL_FUNC(qk_mat4_tostring,1,NULL),
-	_DECL_FUNC(qk_mat4_len,1,NULL),
+	_DECL_FUNC(qk_mat4_typeof,0,NULL),
+	_DECL_FUNC(qk_mat4_len,0,NULL),
 	_DECL_FUNC(qk_mat4_cloned,2,NULL),
 	_DECL_FUNC(qk_mat4_unm,1,NULL),
 	_DECL_FUNC(qk_mat4_add,2,NULL),
@@ -602,7 +608,8 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat2_set,_set);
 		_CLASS_ADDFUNC_STATIC(qk_mat2_identity,identity);
 		_CLASS_ADDFUNC(qk_mat2_tostring,_tostring);
-		_CLASS_ADDFUNC(qk_mat2_len,len);
+		_CLASS_ADDFUNC_STATIC(qk_mat2_typeof,_typeof);
+		_CLASS_ADDFUNC_STATIC(qk_mat2_len,len);
 		_CLASS_ADDFUNC(qk_mat2_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_mat2_unm,_unm);
 		_CLASS_ADDFUNC(qk_mat2_add,_add);
@@ -621,7 +628,8 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat3_set,_set);
 		_CLASS_ADDFUNC_STATIC(qk_mat3_identity,identity);
 		_CLASS_ADDFUNC(qk_mat3_tostring,_tostring);
-		_CLASS_ADDFUNC(qk_mat3_len,len);
+		_CLASS_ADDFUNC_STATIC(qk_mat3_typeof,_typeof);
+		_CLASS_ADDFUNC_STATIC(qk_mat3_len,len);
 		_CLASS_ADDFUNC(qk_mat3_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_mat3_unm,_unm);
 		_CLASS_ADDFUNC(qk_mat3_add,_add);
@@ -639,7 +647,8 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat4_set,_set);
 		_CLASS_ADDFUNC_STATIC(qk_mat4_identity,identity);
 		_CLASS_ADDFUNC(qk_mat4_tostring,_tostring);
-		_CLASS_ADDFUNC(qk_mat4_len,len);
+		_CLASS_ADDFUNC_STATIC(qk_mat4_typeof,_typeof);
+		_CLASS_ADDFUNC_STATIC(qk_mat4_len,len);
 		_CLASS_ADDFUNC(qk_mat4_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_mat4_unm,_unm);
 		_CLASS_ADDFUNC(qk_mat4_add,_add);

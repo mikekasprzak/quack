@@ -114,12 +114,6 @@ SQInteger qk_color_set( HSQUIRRELVM v ) {
 	return sq_throwobject(v);	// -1 //
 }
 // - ------------------------------------------------------------------------------------------ - //
-// _typeof metamethod //
-SQInteger qk_color_typeof( HSQUIRRELVM v ) {
-	sq_pushstring(v,"color",5); // 5 characters long //
-	return SQ_RETURN;
-}
-// - ------------------------------------------------------------------------------------------ - //
 // _tostring metamethod //
 SQInteger qk_color_tostring( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
@@ -150,6 +144,9 @@ SQInteger qk_color_cloned( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+_FUNC_TYPEOF(GelColor,qk_color_typeof,"color",5);
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -161,7 +158,7 @@ SQRegFunction qkColor_funcs[] = {
 	_DECL_FUNC(qk_color_constructor,-1,NULL),
 	_DECL_FUNC(qk_color_get,2,NULL),
 	_DECL_FUNC(qk_color_set,3,NULL),
-	_DECL_FUNC(qk_color_typeof,1,NULL),
+	_DECL_FUNC(qk_color_typeof,0,NULL),
 	_DECL_FUNC(qk_color_tostring,1,NULL),
 	_DECL_FUNC(qk_color_cloned,2,NULL),	
 	
@@ -187,7 +184,7 @@ SQInteger register_qkColor(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_color_constructor,constructor);
 		_CLASS_ADDFUNC(qk_color_get,_get);
 		_CLASS_ADDFUNC(qk_color_set,_set);
-		_CLASS_ADDFUNC(qk_color_typeof,_typeof);
+		_CLASS_ADDFUNC_STATIC(qk_color_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_color_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_color_cloned,_cloned);
 		_ADD_CLASS_END(GelColor);
