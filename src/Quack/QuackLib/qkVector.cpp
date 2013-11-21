@@ -83,6 +83,65 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	return SQ_VOID; \
 }
 // - ------------------------------------------------------------------------------------------ - //
+#define _VEC_MATH_START() \
+	int VsType = sq_gettype(v,2);
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_MATH_END() \
+	{ \
+		; \
+	}
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_MATH_TYPE_START(_TYPE_) \
+	if ( VsType == _TYPE_ ) { \
+		int VsTag; \
+		sq_gettypetag(v,2,(SQUserPointer*)&VsTag); \
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_MATH_TYPE_END() \
+		{ \
+			; \
+		} \
+	} \
+	else
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_MATH_TYPE_FLOAT(_TYPE_,_OP_) \
+	if ( VsType & OT_FLOAT|OT_INTEGER ) { \
+		Log("FOOOOOOOOOOOOOOOOOOOOOOOO! THIS IS FAILING!"); \
+		sq_clone(v,1); /* +1 */ \
+		\
+		_TYPE_* Vec; \
+		sq_getinstanceup(v,-1,(void**)&Vec,0); \
+		\
+		Real* Vs; \
+		sq_getinstanceup(v,2,(void**)&Vs,0); \
+		\
+		*Vec = (*Vec) _OP_ (*Vs); \
+		\
+		return SQ_RETURN; \
+	} \
+	else
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_MATH_TAG(_TYPE_,_TYPE2_,_TYPECONSTANT_,_OP_) \
+		if ( VsTag == _TYPECONSTANT_ ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,-1,(void**)&Vec,0); \
+			\
+			_TYPE2_* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else 
+// - ------------------------------------------------------------------------------------------ - //
+#define _VEC_MATH_TAG_END() \
+		{ \
+			; \
+		}
+// - ------------------------------------------------------------------------------------------ - //
+			
+// - ------------------------------------------------------------------------------------------ - //
 // _add, _sub, _mul, _div //
 #define _VEC_MATH(_TYPE_,_NAME_,_TYPECONSTANT_,_OP_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
@@ -112,6 +171,61 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 			sq_getinstanceup(v,2,(void**)&Vs,0); \
 			\
 			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+	} \
+	return sq_throwerror(v,"Cannot " #_OP_ " type versus vector. Types must be same vector type, or vector and scalar."); \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// _add, _sub, _mul, _div //
+#define _VEC_MATH_MUL(_TYPE_,_NAME_,_TYPECONSTANT_,_OP_,_MATRIX_,_MATRIXTAGCONSTANT_,_MATRIXTO_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	int VsType = sq_gettype(v,2); \
+	if ( VsType == OT_INSTANCE ) { \
+		int VsTag; \
+		sq_gettypetag(v,2,(SQUserPointer*)&VsTag); \
+		if ( VsTag == _TYPECONSTANT_ ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,-1,(void**)&Vec,0); \
+			\
+			_TYPE_* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_SCALAR ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,-1,(void**)&Vec,0); \
+			\
+			Real* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == _MATRIXTAGCONSTANT_ ) { \
+			/* Vector vs Matrix = Vector */	\
+			sq_pushroottable(v);			/* +1 */ \
+			sq_pushstring(v,"vec2",4);		/* +1 */ \
+			sq_get(v,-2);					/* =0 */ \
+			sq_createinstance(v,-1);		/* +1 */ \
+			\
+			_MATRIX_* Mat; \
+			sq_getinstanceup(v,1,(void**)&Mat,0); \
+			\
+			_MATRIXTO_* Vs;	\
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			_MATRIXTO_* Ret; \
+			sq_getinstanceup(v,-1,(void**)&Ret,0); \
+			\
+			*Ret = (*Mat) * (*Vs); \
+			\
 			return SQ_RETURN; \
 		} \
 	} \
@@ -168,6 +282,101 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 			sq_getinstanceup(v,1,(void**)&Vec,0); \
 			\
 			Vector4D* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+	} \
+	return sq_throwerror(v,"Cannot " #_OP_ " type versus scalar. Types must be same vector type, or vector and scalar."); \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// _add, _sub, _mul, _div //
+#define _SCALAR_MATH_MUL(_TYPE_,_NAME_,_TYPECONSTANT_,_OP_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	int VsType = sq_gettype(v,2); \
+	if ( VsType == OT_INSTANCE ) { \
+		int VsTag; \
+		sq_gettypetag(v,2,(SQUserPointer*)&VsTag); \
+		if ( VsTag == _TYPECONSTANT_ ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,-1,(void**)&Vec,0); \
+			\
+			_TYPE_* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Vec = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_VEC2 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Vector2D* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_VEC3 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Vector3D* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_VEC4 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Vector4D* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_MAT2 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Matrix2x2* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_MAT3 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Matrix3x3* Vs; \
+			sq_getinstanceup(v,-1,(void**)&Vs,0); \
+			\
+			*Vs = (*Vec) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else if ( VsTag == QK_TAG_MAT4 ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			Matrix4x4* Vs; \
 			sq_getinstanceup(v,-1,(void**)&Vs,0); \
 			\
 			*Vs = (*Vec) _OP_ (*Vs); \
@@ -820,13 +1029,50 @@ SQInteger qk_vec2_toivec4( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec2_add( HSQUIRRELVM v ) {
+	_VEC_MATH_START()
+	_VEC_MATH_TYPE_START(OT_INSTANCE)
+		_VEC_MATH_TAG(Vector2D,Vector2D,QK_TAG_VEC2,+)
+		_VEC_MATH_TAG(Vector2D,Real,QK_TAG_SCALAR,+)
+	_VEC_MATH_TYPE_END()
+	_VEC_MATH_TYPE_FLOAT(Vector2D,+)
+	_VEC_MATH_END()
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec2_sub( HSQUIRRELVM v ) {
+	_VEC_MATH_START()
+	_VEC_MATH_TYPE_START(OT_INSTANCE)
+		_VEC_MATH_TAG(Vector2D,Vector2D,QK_TAG_VEC2,-)
+		_VEC_MATH_TAG(Vector2D,Real,QK_TAG_SCALAR,-)
+	_VEC_MATH_TYPE_END()
+	_VEC_MATH_END()
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec2_mul( HSQUIRRELVM v ) {
+	_VEC_MATH_START()
+	_VEC_MATH_TYPE_START(OT_INSTANCE)
+		_VEC_MATH_TAG(Vector2D,Vector2D,QK_TAG_VEC2,*)
+		_VEC_MATH_TAG(Vector2D,Real,QK_TAG_SCALAR,*)
+	_VEC_MATH_TYPE_END()
+	_VEC_MATH_END()
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_vec2_div( HSQUIRRELVM v ) {
+	_VEC_MATH_START()
+	_VEC_MATH_TYPE_START(OT_INSTANCE)
+		_VEC_MATH_TAG(Vector2D,Vector2D,QK_TAG_VEC2,/)
+		_VEC_MATH_TAG(Vector2D,Real,QK_TAG_SCALAR,/)
+	_VEC_MATH_TYPE_END()
+	_VEC_MATH_END()
+}
+// - ------------------------------------------------------------------------------------------ - //
 _VEC_TOSTRING(Vector2D,qk_vec2_tostring,"(%0.03f,%0.03f)",Vec->x.ToFloat(),Vec->y.ToFloat());
 _VEC_TYPEOF(Vector2D,qk_vec2_typeof,"vec2",4);
 _VEC_CLONED(Vector2D,qk_vec2_cloned);
-_VEC_MATH(Vector2D,qk_vec2_add,QK_TAG_VEC2,+);
-_VEC_MATH(Vector2D,qk_vec2_sub,QK_TAG_VEC2,-);
-_VEC_MATH(Vector2D,qk_vec2_mul,QK_TAG_VEC2,*);
-_VEC_MATH(Vector2D,qk_vec2_div,QK_TAG_VEC2,/);
+//_VEC_MATH(Vector2D,qk_vec2_add,QK_TAG_VEC2,+);
+//_VEC_MATH(Vector2D,qk_vec2_sub,QK_TAG_VEC2,-);
+//_VEC_MATH(Vector2D,qk_vec2_mul,QK_TAG_VEC2,*);
+//_VEC_MATH(Vector2D,qk_vec2_div,QK_TAG_VEC2,/);
 _VEC_UNM(Vector2D,qk_vec2_unm);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipx,FlipX);
 _VEC_FUNC_RETURNS_VEC(Vector2D,qk_vec2_flipy,FlipY);
