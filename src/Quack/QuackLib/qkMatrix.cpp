@@ -91,113 +91,6 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 
 
 // - ------------------------------------------------------------------------------------------ - //
-inline SQInteger qk_mat_constructor_body( HSQUIRRELVM v, float* Mat, const int MatSize ) {
-	int Args = sq_gettop(v);
-	if ( Args > 1 ) {
-		int MatIndex = 0; // Which Cell of the Matrix we are writing to. //
-		
-		// Iterate through all arguments //
-		for ( int idx = 2; (idx <= Args) && (MatIndex < MatSize); idx++ ) {
-			int Type = sq_gettype(v,idx);
-			if ( Type & (OT_FLOAT|OT_INTEGER) ) {
-				sq_getfloat(v,idx,&(Mat[MatIndex]));
-				
-				MatIndex++;
-			}
-			else if ( Type == OT_ARRAY ) {
-				int Size = sq_getsize(v,idx);
-				if ( Size > MatSize-MatIndex ) {
-					//Size = MatSize-MatIndex;
-					return sq_throwerror(v,"array assigned to matrix is too large");
-				}
-				
-				for ( int idx2 = 0; idx2 < Size; idx2++ ) {
-					sq_pushinteger(v,idx2); 	// +1 //
-					sq_get(v,idx); 				// =0 (-1 then +1) //
-					sq_getfloat(v,-1,&(Mat[MatIndex]));
-					sq_poptop(v);				// -1 //
-					
-					MatIndex++;
-				}
-			}
-			else if ( Type == OT_INSTANCE ) {
-				int Tag;			
-				sq_gettypetag(v,idx,(SQUserPointer*)&Tag);
-				if ( Tag == QK_TAG_VEC2 ) {
-					if ( MatIndex+1 < MatSize ) {
-						Vector2D* Vec;
-						sq_getinstanceup(v,idx,(void**)&Vec,0);				
-						
-						Mat[MatIndex+0] = Vec->x.ToFloat();
-						Mat[MatIndex+1] = Vec->y.ToFloat();
-	
-						MatIndex+=2;
-					}
-					else {
-						return sq_throwerror(v,"vector assigned to matrix is too large");
-					}
-				}
-				else if ( Tag == QK_TAG_VEC3 ) {
-					if ( MatIndex+2 < MatSize ) {
-						Vector3D* Vec;
-						sq_getinstanceup(v,idx,(void**)&Vec,0);				
-						
-						Mat[MatIndex+0] = Vec->x.ToFloat();
-						Mat[MatIndex+1] = Vec->y.ToFloat();
-						Mat[MatIndex+2] = Vec->z.ToFloat();
-	
-						MatIndex+=3;
-					}
-					else {
-						return sq_throwerror(v,"vector assigned to matrix is too large");
-					}
-				}
-				else if ( Tag == QK_TAG_VEC4 ) {
-					if ( MatIndex+3 < MatSize ) {
-						Vector4D* Vec;
-						sq_getinstanceup(v,idx,(void**)&Vec,0);				
-						
-						Mat[MatIndex+0] = Vec->x.ToFloat();
-						Mat[MatIndex+1] = Vec->y.ToFloat();
-						Mat[MatIndex+2] = Vec->z.ToFloat();
-						Mat[MatIndex+3] = Vec->w.ToFloat();
-	
-						MatIndex+=4;
-					}
-					else {
-						return sq_throwerror(v,"vector assigned to matrix is too large");
-					}
-				}
-				else if ( Tag == QK_TAG_SCALAR ) {
-					Real* Vec;
-					sq_getinstanceup(v,idx,(void**)&Vec,0);				
-					
-					Mat[MatIndex] = Vec->ToFloat();
-
-					MatIndex++;
-				}
-				else {
-					return sq_throwerror(v,"bad type to assignment to matrix");
-				}
-			}
-			else {
-				return sq_throwerror(v,"bad type to assignment to matrix");
-			}
-		}
-		
-		// If we didn't put enough data in, pad with zeros //
-		while ( MatIndex < MatSize ) {
-			Mat[MatIndex] = 0.0f;
-			MatIndex++;
-		}
-	}
-	else {
-		// TODO: No Arguments //
-	}
-	
-	return SQ_VOID;
-}
-// - ------------------------------------------------------------------------------------------ - //
 inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize, const unsigned int MatWidth ) {
 	int Type = sq_gettype(v,2);
 	if ( Type == OT_INTEGER ) {
@@ -300,7 +193,7 @@ SQInteger qk_mat2_constructor( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix2x2) / sizeof(Real);
 	
-	return qk_mat_constructor_body(v,Mat,MatSize);
+	return qk_arr_constructor_body(v,Mat,MatSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat2_get( HSQUIRRELVM v ) {
@@ -419,7 +312,7 @@ SQInteger qk_mat3_constructor( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix3x3) / sizeof(Real);
 	
-	return qk_mat_constructor_body(v,Mat,MatSize);
+	return qk_arr_constructor_body(v,Mat,MatSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat3_get( HSQUIRRELVM v ) {
@@ -520,7 +413,7 @@ SQInteger qk_mat4_constructor( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Mat,0);
 	const int MatSize = sizeof(Matrix4x4) / sizeof(Real);
 	
-	return qk_mat_constructor_body(v,Mat,MatSize);
+	return qk_arr_constructor_body(v,Mat,MatSize);
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat4_get( HSQUIRRELVM v ) {
