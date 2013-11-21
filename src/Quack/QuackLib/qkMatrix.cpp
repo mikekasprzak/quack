@@ -68,22 +68,6 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	return SQ_VOID; \
 }
 // - ------------------------------------------------------------------------------------------ - //
-// _add, _sub, _mul, _div //
-#define _MAT_MATH(_TYPE_,_NAME_,_OP_) \
-SQInteger _NAME_( HSQUIRRELVM v ) { \
-	sq_clone(v,1); /* +1 */ \
-	\
-	_TYPE_* Mat; \
-	sq_getinstanceup(v,-1,(void**)&Mat,0); \
-	\
-	_TYPE_* Vs; \
-	sq_getinstanceup(v,2,(void**)&Vs,0); \
-	\
-	*Mat = (*Mat) _OP_ (*Vs); \
-	\
-	return SQ_RETURN; \
-}
-// - ------------------------------------------------------------------------------------------ - //
 // _unm (i.e. negative) //
 #define _MAT_UNM(_TYPE_,_NAME_) \
 SQInteger _NAME_( HSQUIRRELVM v ) { \
@@ -389,10 +373,6 @@ _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03
 _MAT_LEN(Matrix2x2,qk_mat2_len);
 _MAT_CLONED(Matrix2x2,qk_mat2_cloned);
 _MAT_UNM(Matrix2x2,qk_mat2_unm);
-//_MAT_MATH(Matrix2x2,qk_mat2_add,+);
-//_MAT_MATH(Matrix2x2,qk_mat2_sub,-);
-//_MAT_MATH(Matrix2x2,qk_mat2_mul,*);
-//_MAT_MATH(Matrix2x2,qk_mat2_div,/);
 _MAT_FUNC(Matrix2x2,qk_mat2_transpose,Transpose);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_mat2_add( HSQUIRRELVM v ) {
@@ -435,73 +415,6 @@ SQInteger qk_mat2_div( HSQUIRRELVM v ) {
 	_MATH_OP_TYPE_FLOAT(Matrix2x2,/)
 	_MATH_OP_END(/)
 }
-// - ------------------------------------------------------------------------------------------ - //
-//SQInteger qk_mat2_mul( HSQUIRRELVM v ) {
-//	int Type = sq_gettype(v,2);
-//	if ( Type & (OT_FLOAT|OT_INTEGER) ) {
-//		// TODO: Float Math //
-//	}
-//	else if ( Type == OT_ARRAY ) {
-//		// TODO: Array Math //
-//	}
-//	else if ( Type == OT_INSTANCE ) {
-//		int Tag;			
-//		sq_gettypetag(v,2,(SQUserPointer*)&Tag);
-//		if ( Tag == QK_TAG_VEC2 ) {
-//			// Vector vs Matrix = Vector //			
-//			sq_pushroottable(v);			// +1 //
-//			sq_pushstring(v,"vec2",4);		// +1 //
-//			sq_get(v,-2);					// =0 //
-//			sq_createinstance(v,-1);		// +1 //
-//
-//			Matrix2x2* Mat;
-//			sq_getinstanceup(v,1,(void**)&Mat,0);
-//
-//			Matrix2x1* Vs;
-//			sq_getinstanceup(v,2,(void**)&Vs,0);
-//			
-//			Matrix2x1* Ret;
-//			sq_getinstanceup(v,-1,(void**)&Ret,0);
-//			
-//			*Ret = (*Vs) * (*Mat);
-//
-//			return SQ_RETURN;
-//		}
-//		else if ( Tag == QK_TAG_SCALAR ) {
-//			// Scalar Multiplication is different. Scale Values, Matrix result. //
-//			sq_clone(v,1); /* +1 */
-//		
-//			Matrix2x2* Mat;
-//			sq_getinstanceup(v,-1,(void**)&Mat,0);
-//
-//			Real* Vs;
-//			sq_getinstanceup(v,2,(void**)&Vs,0);
-//		
-//			*Mat = (*Mat) * (*Vs);
-//			
-//			return SQ_RETURN;
-//		}
-//		else if ( Tag == QK_TAG_MAT2 ) {
-//			// Versus another Matrix //
-//			sq_clone(v,1); /* +1 */
-//		
-//			Matrix2x2* Mat;
-//			sq_getinstanceup(v,-1,(void**)&Mat,0);
-//
-//			Matrix2x2* Vs;
-//			sq_getinstanceup(v,2,(void**)&Vs,0);
-//		
-//			*Mat = (*Mat) * (*Vs);
-//
-//			return SQ_RETURN;
-//		}
-//		else {
-//			return sq_throwerror(v,"bad type to * vs matrix");
-//		}
-//	}
-//
-//	return sq_throwerror(v,"bad type to * vs matrix");
-//}
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -561,11 +474,48 @@ _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03
 _MAT_LEN(Matrix3x3,qk_mat3_len);
 _MAT_CLONED(Matrix3x3,qk_mat3_cloned);
 _MAT_UNM(Matrix3x3,qk_mat3_unm);
-//_MAT_MATH(Matrix3x3,qk_mat3_add,+);
-//_MAT_MATH(Matrix3x3,qk_mat3_sub,-);
-_MAT_MATH(Matrix3x3,qk_mat3_mul,*);
-//_MAT_MATH(Matrix3x3,qk_mat3_div,/);
 _MAT_FUNC(Matrix3x3,qk_mat3_transpose,Transpose);
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat3_add( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix3x3,Matrix3x3,QK_TAG_MAT3,+)
+		_MATH_OP_TAG(Matrix3x3,Real,QK_TAG_SCALAR,+)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix3x3,+)
+	_MATH_OP_END(+)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat3_sub( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix3x3,Matrix3x3,QK_TAG_MAT3,-)
+		_MATH_OP_TAG(Matrix3x3,Real,QK_TAG_SCALAR,-)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix3x3,-)
+	_MATH_OP_END(-)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat3_mul( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+		_MATH_OP_TAG(Matrix3x3,Matrix3x3,QK_TAG_MAT3,*)
+		_MATH_OP_TAG(Matrix3x3,Real,QK_TAG_SCALAR,*)
+		_MATH_OP_TAG2(Matrix3x3,Matrix1x3,QK_TAG_VEC2,*)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix3x3,*)
+	_MATH_OP_END(*)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat3_div( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix3x3,Matrix3x3,QK_TAG_MAT3,/)
+		_MATH_OP_TAG(Matrix3x3,Real,QK_TAG_SCALAR,/)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix3x3,/)
+	_MATH_OP_END(/)
+}
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -599,11 +549,48 @@ _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\
 _MAT_LEN(Matrix4x4,qk_mat4_len);
 _MAT_CLONED(Matrix4x4,qk_mat4_cloned);
 _MAT_UNM(Matrix4x4,qk_mat4_unm);
-//_MAT_MATH(Matrix4x4,qk_mat4_add,+);
-//_MAT_MATH(Matrix4x4,qk_mat4_sub,-);
-_MAT_MATH(Matrix4x4,qk_mat4_mul,*);
-//_MAT_MATH(Matrix4x4,qk_mat4_div,/);
 _MAT_FUNC(Matrix4x4,qk_mat4_transpose,Transpose);
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat4_add( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix4x4,Matrix4x4,QK_TAG_MAT4,+)
+		_MATH_OP_TAG(Matrix4x4,Real,QK_TAG_SCALAR,+)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix4x4,+)
+	_MATH_OP_END(+)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat4_sub( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix4x4,Matrix4x4,QK_TAG_MAT4,-)
+		_MATH_OP_TAG(Matrix4x4,Real,QK_TAG_SCALAR,-)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix4x4,-)
+	_MATH_OP_END(-)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat4_mul( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+		_MATH_OP_TAG(Matrix4x4,Matrix4x4,QK_TAG_MAT4,*)
+		_MATH_OP_TAG(Matrix4x4,Real,QK_TAG_SCALAR,*)
+		_MATH_OP_TAG2(Matrix4x4,Matrix1x4,QK_TAG_VEC2,*)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix4x4,*)
+	_MATH_OP_END(*)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat4_div( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix4x4,Matrix4x4,QK_TAG_MAT4,/)
+		_MATH_OP_TAG(Matrix4x4,Real,QK_TAG_SCALAR,/)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix4x4,/)
+	_MATH_OP_END(/)
+}
 // - ------------------------------------------------------------------------------------------ - //
 
 
