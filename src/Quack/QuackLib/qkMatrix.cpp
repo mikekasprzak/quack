@@ -33,12 +33,6 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 // TODO: safe_sprintf. need a consistent version that either always prints, or notes a size error //
 //       that I can in-turn write a "ERROR: not enough room to sprintf" to it (if it fits). //
 // - ------------------------------------------------------------------------------------------ - //
-#define _MAT_LEN(_TYPE_,_NAME_) \
-SQInteger _NAME_( HSQUIRRELVM v ) { \
-	sq_pushinteger(v, sizeof(_TYPE_) / sizeof(Real) ); \
-	return SQ_RETURN; \
-}
-// - ------------------------------------------------------------------------------------------ - //
 #define _MAT_TO_BEGIN(_TYPENAME_,_TYPENAME_LEN_) \
 	sq_pushroottable(v); \
 	sq_pushstring(v,_TYPENAME_,_TYPENAME_LEN_);		/* +1 */ \
@@ -370,7 +364,7 @@ SQInteger qk_mat2_tomat4( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix2x2,qk_mat2_tostring,"[% 10.03f % 10.03f]\n[% 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat());
-_MAT_LEN(Matrix2x2,qk_mat2_len);
+_MATH_LEN(Matrix2x2,qk_mat2_len);
 _MAT_CLONED(Matrix2x2,qk_mat2_cloned);
 _MAT_UNM(Matrix2x2,qk_mat2_unm);
 _MAT_FUNC(Matrix2x2,qk_mat2_transpose,Transpose);
@@ -471,7 +465,7 @@ SQInteger qk_mat3_tomat4( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix3x3,qk_mat3_tostring,"[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat());
-_MAT_LEN(Matrix3x3,qk_mat3_len);
+_MATH_LEN(Matrix3x3,qk_mat3_len);
 _MAT_CLONED(Matrix3x3,qk_mat3_cloned);
 _MAT_UNM(Matrix3x3,qk_mat3_unm);
 _MAT_FUNC(Matrix3x3,qk_mat3_transpose,Transpose);
@@ -546,7 +540,7 @@ SQInteger qk_mat4_set( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 _MAT_TOSTRING(Matrix4x4,qk_mat4_tostring,"[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]\n[% 10.03f % 10.03f % 10.03f % 10.03f]",(*Mat)[0].ToFloat(),(*Mat)[1].ToFloat(),(*Mat)[2].ToFloat(),(*Mat)[3].ToFloat(),(*Mat)[4].ToFloat(),(*Mat)[5].ToFloat(),(*Mat)[6].ToFloat(),(*Mat)[7].ToFloat(),(*Mat)[8].ToFloat(),(*Mat)[9].ToFloat(),(*Mat)[10].ToFloat(),(*Mat)[11].ToFloat(),(*Mat)[12].ToFloat(),(*Mat)[13].ToFloat(),(*Mat)[14].ToFloat(),(*Mat)[15].ToFloat());
-_MAT_LEN(Matrix4x4,qk_mat4_len);
+_MATH_LEN(Matrix4x4,qk_mat4_len);
 _MAT_CLONED(Matrix4x4,qk_mat4_cloned);
 _MAT_UNM(Matrix4x4,qk_mat4_unm);
 _MAT_FUNC(Matrix4x4,qk_mat4_transpose,Transpose);
@@ -648,26 +642,6 @@ SQRegFunction qkMatrix_funcs[] = {
 #undef _DECL_FUNC
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
-
-
-// - ------------------------------------------------------------------------------------------ - //
-#define _CLASS_ADDFUNC(_FUNC_,_METHOD_) \
-	sq_pushstring(v,#_METHOD_,-1);				/* +1 */ \
-	sq_pushstring(v,#_FUNC_,-1);				/* +1 */ \
-	sq_get(v,Root); /* lookup function */		/* =0 */ \
-	sq_newslot(v,CPos,false);					/* -2 */
-// - ------------------------------------------------------------------------------------------ - //
-#define _ADD_CLASS_START(_TYPE_,_TYPENAME_,_TYPETAG_) \
-	sq_pushstring(v,_TYPENAME_,-1);				/* +1 */ \
-	sq_newclass(v,false); 						/* +1 */ \
-	int CPos = sq_gettop(v); /* class pos */ \
-	sq_setclassudsize(v,CPos,sizeof(_TYPE_)); \
-	sq_settypetag(v,CPos,(void*)_TYPETAG_);
-// - ------------------------------------------------------------------------------------------ - //
-#define _ADD_CLASS_END(_TYPE_) \
-	sq_newslot(v,Root,false); /* Add to Root */	/* -2 */
-// - ------------------------------------------------------------------------------------------ - //
-
 
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkMatrix(HSQUIRRELVM v) {
