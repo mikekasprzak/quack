@@ -602,10 +602,10 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat2_len,1,NULL),
 	_DECL_FUNC(qk_mat2_cloned,2,NULL),
 	_DECL_FUNC(qk_mat2_unm,1,NULL),
-//	_DECL_FUNC(qk_mat2_add,2,NULL),
-//	_DECL_FUNC(qk_mat2_sub,2,NULL),
+	_DECL_FUNC(qk_mat2_add,2,NULL),
+	_DECL_FUNC(qk_mat2_sub,2,NULL),
 	_DECL_FUNC(qk_mat2_mul,2,NULL),
-//	_DECL_FUNC(qk_mat2_div,2,NULL),
+	_DECL_FUNC(qk_mat2_div,2,NULL),
 	_DECL_FUNC(qk_mat2_transpose,1,NULL),
 	_DECL_FUNC(qk_mat2_tomat3,1,NULL),
 	_DECL_FUNC(qk_mat2_tomat4,1,NULL),	
@@ -617,10 +617,10 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat3_len,1,NULL),
 	_DECL_FUNC(qk_mat3_cloned,2,NULL),
 	_DECL_FUNC(qk_mat3_unm,1,NULL),
-//	_DECL_FUNC(qk_mat3_add,2,NULL),
-//	_DECL_FUNC(qk_mat3_sub,2,NULL),
+	_DECL_FUNC(qk_mat3_add,2,NULL),
+	_DECL_FUNC(qk_mat3_sub,2,NULL),
 	_DECL_FUNC(qk_mat3_mul,2,NULL),
-//	_DECL_FUNC(qk_mat3_div,2,NULL),
+	_DECL_FUNC(qk_mat3_div,2,NULL),
 	_DECL_FUNC(qk_mat3_transpose,1,NULL),
 	_DECL_FUNC(qk_mat3_tomat4,1,NULL),
 
@@ -631,10 +631,10 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qk_mat4_len,1,NULL),
 	_DECL_FUNC(qk_mat4_cloned,2,NULL),
 	_DECL_FUNC(qk_mat4_unm,1,NULL),
-//	_DECL_FUNC(qk_mat4_add,2,NULL),
-//	_DECL_FUNC(qk_mat4_sub,2,NULL),
+	_DECL_FUNC(qk_mat4_add,2,NULL),
+	_DECL_FUNC(qk_mat4_sub,2,NULL),
 	_DECL_FUNC(qk_mat4_mul,2,NULL),
-//	_DECL_FUNC(qk_mat4_div,2,NULL),
+	_DECL_FUNC(qk_mat4_div,2,NULL),
 	_DECL_FUNC(qk_mat4_transpose,1,NULL),
 	
 	{0,0,0,0}
@@ -666,10 +666,10 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat2_len,len);
 		_CLASS_ADDFUNC(qk_mat2_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_mat2_unm,_unm);
-//		_CLASS_ADDFUNC(qk_mat2_add,_add);
-//		_CLASS_ADDFUNC(qk_mat2_sub,_sub);
+		_CLASS_ADDFUNC(qk_mat2_add,_add);
+		_CLASS_ADDFUNC(qk_mat2_sub,_sub);
 		_CLASS_ADDFUNC(qk_mat2_mul,_mul);
-//		_CLASS_ADDFUNC(qk_mat2_div,_div);
+		_CLASS_ADDFUNC(qk_mat2_div,_div);
 		_CLASS_ADDFUNC(qk_mat2_transpose,transpose);
 		_CLASS_ADDFUNC(qk_mat2_tomat3,tomat3);
 		_CLASS_ADDFUNC(qk_mat2_tomat4,tomat4);
@@ -684,10 +684,10 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat3_len,len);
 		_CLASS_ADDFUNC(qk_mat3_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_mat3_unm,_unm);
-//		_CLASS_ADDFUNC(qk_mat3_add,_add);
-//		_CLASS_ADDFUNC(qk_mat3_sub,_sub);
+		_CLASS_ADDFUNC(qk_mat3_add,_add);
+		_CLASS_ADDFUNC(qk_mat3_sub,_sub);
 		_CLASS_ADDFUNC(qk_mat3_mul,_mul);
-//		_CLASS_ADDFUNC(qk_mat3_div,_div);
+		_CLASS_ADDFUNC(qk_mat3_div,_div);
 		_CLASS_ADDFUNC(qk_mat3_transpose,transpose);
 		_CLASS_ADDFUNC(qk_mat3_tomat4,tomat4);
 		_ADD_CLASS_END(Matrix3x3);
@@ -701,10 +701,10 @@ SQInteger register_qkMatrix(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_mat4_len,len);
 		_CLASS_ADDFUNC(qk_mat4_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_mat4_unm,_unm);
-//		_CLASS_ADDFUNC(qk_mat4_add,_add);
-//		_CLASS_ADDFUNC(qk_mat4_sub,_sub);
+		_CLASS_ADDFUNC(qk_mat4_add,_add);
+		_CLASS_ADDFUNC(qk_mat4_sub,_sub);
 		_CLASS_ADDFUNC(qk_mat4_mul,_mul);
-//		_CLASS_ADDFUNC(qk_mat4_div,_div);
+		_CLASS_ADDFUNC(qk_mat4_div,_div);
 		_CLASS_ADDFUNC(qk_mat4_transpose,transpose);
 		_ADD_CLASS_END(Matrix4x4);
 	}
