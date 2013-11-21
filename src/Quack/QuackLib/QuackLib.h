@@ -59,7 +59,78 @@ inline const char* qk_gettagname( int Index ) {
 	};
 
 	return "invalid tag";
-}			
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+#define _MATH_OP_START() \
+	int VsType = sq_gettype(v,2);
+// - ------------------------------------------------------------------------------------------ - //
+#define _MATH_OP_END(_OP_) \
+	{ \
+		; \
+	} \
+	return sq_throwerror(v,"Cannot " #_OP_ " type versus vector. Types must be same vector type, or vector and scalar.");
+// - ------------------------------------------------------------------------------------------ - //
+#define _MATH_OP_TYPE_START(_TYPE_) \
+	if ( VsType == _TYPE_ ) { \
+		int VsTag; \
+		sq_gettypetag(v,2,(SQUserPointer*)&VsTag); \
+// - ------------------------------------------------------------------------------------------ - //
+#define _MATH_OP_TYPE_END() \
+		{ \
+			; \
+		} \
+	} \
+	else
+// - ------------------------------------------------------------------------------------------ - //
+#define _MATH_OP_TYPE_FLOAT(_TYPE_,_OP_) \
+	if ( VsType & (OT_FLOAT|OT_INTEGER) ) { \
+		sq_clone(v,1); /* +1 */ \
+		\
+		_TYPE_* Vec; \
+		sq_getinstanceup(v,-1,(void**)&Vec,0); \
+		\
+		float Vs; \
+		sq_getfloat(v,2,&Vs); \
+		\
+		*Vec = (*Vec) _OP_ Real(Vs); \
+		\
+		return SQ_RETURN; \
+	} \
+	else
+// - ------------------------------------------------------------------------------------------ - //
+#define _MATH_OP_TAG(_TYPE_,_TYPE2_,_TYPECONSTANT_,_OP_) \
+		if ( VsTag == _TYPECONSTANT_ ) { \
+			sq_clone(v,1); /* +1 */ \
+			\
+			_TYPE_* Ret; \
+			sq_getinstanceup(v,-1,(void**)&Ret,0); \
+			\
+			_TYPE2_* Vs; \
+			sq_getinstanceup(v,2,(void**)&Vs,0); \
+			\
+			*Ret = (*Ret) _OP_ (*Vs); \
+			return SQ_RETURN; \
+		} \
+		else 
+// - ------------------------------------------------------------------------------------------ - //
+#define _MATH_OP_TAG2(_TYPE_,_TYPE2_,_TYPECONSTANT_,_OP_) \
+		if ( VsTag == _TYPECONSTANT_ ) { \
+			sq_clone(v,2); /* +1 */ \
+			\
+			_TYPE2_* Ret; \
+			sq_getinstanceup(v,-1,(void**)&Ret,0); \
+			\
+			_TYPE_* Vec; \
+			sq_getinstanceup(v,1,(void**)&Vec,0); \
+			\
+			*Ret = (*Vec) _OP_ (*Ret); \
+			return SQ_RETURN; \
+		} \
+		else 
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_QUACKLIB_QUACKLIB_H__ //
 // - ------------------------------------------------------------------------------------------ - //

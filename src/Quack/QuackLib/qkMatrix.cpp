@@ -111,6 +111,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+
 // - ------------------------------------------------------------------------------------------ - //
 inline SQInteger qk_mat_constructor_body( HSQUIRRELVM v, float* Mat, const int MatSize ) {
 	int Args = sq_gettop(v);
@@ -394,72 +395,113 @@ _MAT_UNM(Matrix2x2,qk_mat2_unm);
 //_MAT_MATH(Matrix2x2,qk_mat2_div,/);
 _MAT_FUNC(Matrix2x2,qk_mat2_transpose,Transpose);
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qk_mat2_mul( HSQUIRRELVM v ) {
-	int Type = sq_gettype(v,2);
-	if ( Type & (OT_FLOAT|OT_INTEGER) ) {
-		// TODO: Float Math //
-	}
-	else if ( Type == OT_ARRAY ) {
-		// TODO: Array Math //
-	}
-	else if ( Type == OT_INSTANCE ) {
-		int Tag;			
-		sq_gettypetag(v,2,(SQUserPointer*)&Tag);
-		if ( Tag == QK_TAG_VEC2 ) {
-			// Vector vs Matrix = Vector //			
-			sq_pushroottable(v);			// +1 //
-			sq_pushstring(v,"vec2",4);		// +1 //
-			sq_get(v,-2);					// =0 //
-			sq_createinstance(v,-1);		// +1 //
-
-			Matrix2x2* Mat;
-			sq_getinstanceup(v,1,(void**)&Mat,0);
-
-			Matrix2x1* Vs;
-			sq_getinstanceup(v,2,(void**)&Vs,0);
-			
-			Matrix2x1* Ret;
-			sq_getinstanceup(v,-1,(void**)&Ret,0);
-			
-			*Ret = (*Vs) * (*Mat);
-
-			return SQ_RETURN;
-		}
-		else if ( Tag == QK_TAG_SCALAR ) {
-			// Scalar Multiplication is different. Scale Values, Matrix result. //
-			sq_clone(v,1); /* +1 */
-		
-			Matrix2x2* Mat;
-			sq_getinstanceup(v,-1,(void**)&Mat,0);
-
-			Real* Vs;
-			sq_getinstanceup(v,2,(void**)&Vs,0);
-		
-			*Mat = (*Mat) * (*Vs);
-			
-			return SQ_RETURN;
-		}
-		else if ( Tag == QK_TAG_MAT2 ) {
-			// Versus another Matrix //
-			sq_clone(v,1); /* +1 */
-		
-			Matrix2x2* Mat;
-			sq_getinstanceup(v,-1,(void**)&Mat,0);
-
-			Matrix2x2* Vs;
-			sq_getinstanceup(v,2,(void**)&Vs,0);
-		
-			*Mat = (*Mat) * (*Vs);
-
-			return SQ_RETURN;
-		}
-		else {
-			return sq_throwerror(v,"bad type to * vs matrix");
-		}
-	}
-
-	return sq_throwerror(v,"bad type to * vs matrix");
+SQInteger qk_mat2_add( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix2x2,Matrix2x2,QK_TAG_MAT2,+)
+		_MATH_OP_TAG(Matrix2x2,Real,QK_TAG_SCALAR,+)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix2x2,+)
+	_MATH_OP_END(+)
 }
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat2_sub( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix2x2,Matrix2x2,QK_TAG_MAT2,-)
+		_MATH_OP_TAG(Matrix2x2,Real,QK_TAG_SCALAR,-)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix2x2,-)
+	_MATH_OP_END(-)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat2_mul( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+		_MATH_OP_TAG(Matrix2x2,Matrix2x2,QK_TAG_MAT2,*)
+		_MATH_OP_TAG(Matrix2x2,Real,QK_TAG_SCALAR,*)
+		_MATH_OP_TAG2(Matrix2x2,Matrix1x2,QK_TAG_VEC2,*)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix2x2,*)
+	_MATH_OP_END(*)
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_mat2_div( HSQUIRRELVM v ) {
+	_MATH_OP_START()
+	_MATH_OP_TYPE_START(OT_INSTANCE)
+//		_MATH_OP_TAG(Matrix2x2,Matrix2x2,QK_TAG_MAT2,/)
+		_MATH_OP_TAG(Matrix2x2,Real,QK_TAG_SCALAR,/)
+	_MATH_OP_TYPE_END()
+	_MATH_OP_TYPE_FLOAT(Matrix2x2,/)
+	_MATH_OP_END(/)
+}
+// - ------------------------------------------------------------------------------------------ - //
+//SQInteger qk_mat2_mul( HSQUIRRELVM v ) {
+//	int Type = sq_gettype(v,2);
+//	if ( Type & (OT_FLOAT|OT_INTEGER) ) {
+//		// TODO: Float Math //
+//	}
+//	else if ( Type == OT_ARRAY ) {
+//		// TODO: Array Math //
+//	}
+//	else if ( Type == OT_INSTANCE ) {
+//		int Tag;			
+//		sq_gettypetag(v,2,(SQUserPointer*)&Tag);
+//		if ( Tag == QK_TAG_VEC2 ) {
+//			// Vector vs Matrix = Vector //			
+//			sq_pushroottable(v);			// +1 //
+//			sq_pushstring(v,"vec2",4);		// +1 //
+//			sq_get(v,-2);					// =0 //
+//			sq_createinstance(v,-1);		// +1 //
+//
+//			Matrix2x2* Mat;
+//			sq_getinstanceup(v,1,(void**)&Mat,0);
+//
+//			Matrix2x1* Vs;
+//			sq_getinstanceup(v,2,(void**)&Vs,0);
+//			
+//			Matrix2x1* Ret;
+//			sq_getinstanceup(v,-1,(void**)&Ret,0);
+//			
+//			*Ret = (*Vs) * (*Mat);
+//
+//			return SQ_RETURN;
+//		}
+//		else if ( Tag == QK_TAG_SCALAR ) {
+//			// Scalar Multiplication is different. Scale Values, Matrix result. //
+//			sq_clone(v,1); /* +1 */
+//		
+//			Matrix2x2* Mat;
+//			sq_getinstanceup(v,-1,(void**)&Mat,0);
+//
+//			Real* Vs;
+//			sq_getinstanceup(v,2,(void**)&Vs,0);
+//		
+//			*Mat = (*Mat) * (*Vs);
+//			
+//			return SQ_RETURN;
+//		}
+//		else if ( Tag == QK_TAG_MAT2 ) {
+//			// Versus another Matrix //
+//			sq_clone(v,1); /* +1 */
+//		
+//			Matrix2x2* Mat;
+//			sq_getinstanceup(v,-1,(void**)&Mat,0);
+//
+//			Matrix2x2* Vs;
+//			sq_getinstanceup(v,2,(void**)&Vs,0);
+//		
+//			*Mat = (*Mat) * (*Vs);
+//
+//			return SQ_RETURN;
+//		}
+//		else {
+//			return sq_throwerror(v,"bad type to * vs matrix");
+//		}
+//	}
+//
+//	return sq_throwerror(v,"bad type to * vs matrix");
+//}
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
