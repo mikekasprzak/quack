@@ -157,12 +157,14 @@ SQRegFunction qkColor_funcs[] = {
 	// 1: Function Name.
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
+	
 	_DECL_FUNC(qk_color_constructor,-1,NULL),
 	_DECL_FUNC(qk_color_get,2,NULL),
 	_DECL_FUNC(qk_color_set,3,NULL),
 	_DECL_FUNC(qk_color_typeof,1,NULL),
 	_DECL_FUNC(qk_color_tostring,1,NULL),
 	_DECL_FUNC(qk_color_cloned,2,NULL),	
+	
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
@@ -179,50 +181,17 @@ SQInteger register_qkColor(HSQUIRRELVM v) {
 		i++;
 	}
 	
-	int Root = sq_gettop(v); // root table pos
-	sq_pushstring(v,"color",-1);						// +1 //
-	sq_newclass(v,false); 								// +1 //
-	int CPos = sq_gettop(v); // class pos
-	sq_setclassudsize(v,CPos,sizeof(GelColor));
-	sq_settypetag(v,CPos,(void*)QK_TAG_COLOR);
-	
-	// constructor //
-	sq_pushstring(v,"constructor",-1);					// +1 //
-	sq_pushstring(v,"qk_color_constructor",-1);			// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// get metamethod //
-	sq_pushstring(v,"_get",-1);							// +1 //
-	sq_pushstring(v,"qk_color_get",-1);					// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// set metamethod //
-	sq_pushstring(v,"_set",-1);							// +1 //
-	sq_pushstring(v,"qk_color_set",-1);					// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// typeof metamethod //
-	sq_pushstring(v,"_typeof",-1);						// +1 //
-	sq_pushstring(v,"qk_color_typeof",-1);				// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// tostring metamethod //
-	sq_pushstring(v,"_tostring",-1);					// +1 //
-	sq_pushstring(v,"qk_color_tostring",-1);			// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-
-	// cloned metamethod //
-	sq_pushstring(v,"_cloned",-1);						// +1 //
-	sq_pushstring(v,"qk_color_cloned",-1);				// +1 //
-	sq_get(v,Root); // lookup function 					// =0 // (-1,+1?)
-	sq_newslot(v,CPos,false);							// -2 //
-	
-	sq_newslot(v,Root,false); // Add Class to Root		// -2 //
+	int Root = sq_gettop(v); // root table pos //
+	{
+		_ADD_CLASS_START(GelColor,"color",QK_TAG_COLOR);
+		_CLASS_ADDFUNC(qk_color_constructor,constructor);
+		_CLASS_ADDFUNC(qk_color_get,_get);
+		_CLASS_ADDFUNC(qk_color_set,_set);
+		_CLASS_ADDFUNC(qk_color_typeof,_typeof);
+		_CLASS_ADDFUNC(qk_color_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_color_cloned,_cloned);
+		_ADD_CLASS_END(GelColor);
+	}
 	
 	return SQ_OK;
 }
