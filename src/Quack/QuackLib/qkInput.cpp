@@ -9,7 +9,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger extGetXInputPad( HSQUIRRELVM v ) {
+SQInteger qkInputXInputGet( HSQUIRRELVM v ) {
 #ifdef USES_WINDOWS
 	int Index = 0;
 	int NumArgs = sq_gettop(v);
@@ -57,7 +57,7 @@ SQInteger extGetXInputPad( HSQUIRRELVM v ) {
 // - Four face buttons
 // - One set of L+R triggers as buttons
 // - One extra button (typically Stick Click)
-SQInteger qkGetPad( HSQUIRRELVM v ) {
+SQInteger qkInputPadGet( HSQUIRRELVM v ) {
 	// Check the Arguments for an Index. If none specified, assume GamePad 0. //
 	int Index = 0;
 	int NumArgs = sq_gettop(v);
@@ -291,8 +291,8 @@ SQRegFunction qkInput_funcs[] = {
 	// 1: Function Name.
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
-	_DECL_FUNC(extGetXInputPad,2,_SC(".i")),
-	_DECL_FUNC(qkGetPad,2,_SC(".i")),
+	_DECL_FUNC(qkInputXInputGet,2,_SC(".i")),
+	_DECL_FUNC(qkInputPadGet,2,_SC(".i")),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC

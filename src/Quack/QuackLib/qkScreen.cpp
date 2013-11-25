@@ -14,7 +14,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkSetScreenScalar( HSQUIRRELVM v ) {
+SQInteger qkScreenSetScalar( HSQUIRRELVM v ) {
 	float Scale;
 	if(SQ_FAILED(sq_getfloat(v,2,&Scale)))
 		return sq_throwerror(v,_SC("invalid param"));
@@ -24,7 +24,7 @@ SQInteger qkSetScreenScalar( HSQUIRRELVM v ) {
 	return SQ_VOID;	
 }
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkInitScreens( HSQUIRRELVM v ) {
+SQInteger qkScreenInit( HSQUIRRELVM v ) {
 	gelInitScreens();
 
 	gelLogGraphicsAPIDetails();
@@ -33,7 +33,7 @@ SQInteger qkInitScreens( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkAspectRatio(HSQUIRRELVM vm) {
+SQInteger qkScreenGetAspectRatio(HSQUIRRELVM vm) {
 	sq_pushfloat( vm, (float)Gel::Native[0].GetWidth() / (float)Gel::Native[0].GetHeight() );
 
 	return SQ_RETURN;
@@ -41,12 +41,14 @@ SQInteger qkAspectRatio(HSQUIRRELVM vm) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkClear(HSQUIRRELVM vm) {
+SQInteger qkScreenClear(HSQUIRRELVM vm) {
 	//gelClear( true, true );
 	glClearColor(0.2,0,0,1);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	return SQ_VOID;
 }
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	float Radius = 10.0f;
@@ -58,28 +60,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	
 	int NumArgs = sq_gettop(vm);
 	if ( NumArgs >= 2 ) {
-		//sq_getuserdata(vm,2,&uMatrix,NULL);
 		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
-
-//		int Elements = sq_getsize(vm,3);
-//		if ( Elements >= 1 ) {
-//			sq_pushinteger(vm,0);	// Push the desired array Index //
-//			sq_get(vm,3);			// Get the value from an array found at stack pos //
-//			sq_getfloat(vm,-1,&x);
-//			sq_pop(vm,1);
-//		}
-//		if ( Elements >= 2 ) {
-//			sq_pushinteger(vm,1);	// Push the desired array Index //
-//			sq_get(vm,3);			// Get the value from an array found at stack pos //
-//			sq_getfloat(vm,-1,&y);
-//			sq_pop(vm,1);
-//		}
-//		if ( Elements >= 3 ) {
-//			sq_pushinteger(vm,2);	// Push the desired array Index //
-//			sq_get(vm,3);			// Get the value from an array found at stack pos //
-//			sq_getfloat(vm,-1,&z);
-//			sq_pop(vm,1);
-//		}
 
 		if ( NumArgs >= 3 ) {
 			void* UserPointer;
@@ -121,9 +102,8 @@ SQInteger qkMatrixIdentity(HSQUIRRELVM vm) {
 
 	return SQ_RETURN;
 }
-
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkScalarMatrix(HSQUIRRELVM vm) {
+SQInteger qkMatrixScalar(HSQUIRRELVM vm) {
 	float x = 1.0f;
 	float y = 1.0f;
 	float z = 1.0f;
@@ -157,71 +137,35 @@ SQInteger qkScalarMatrix(HSQUIRRELVM vm) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkMultMatrix(HSQUIRRELVM vm) {
-	SQUserPointer aMatrix = 0;
-	SQUserPointer bMatrix = 0;
-	
-	sq_getuserdata(vm,2,&aMatrix,NULL);	
-	sq_getuserdata(vm,3,&bMatrix,NULL);	
-	
-	Matrix4x4* paMatrix = (Matrix4x4*)aMatrix;
-	Matrix4x4* pbMatrix = (Matrix4x4*)bMatrix;
-	
-	Matrix4x4 rMatrix = (*paMatrix) * (*pbMatrix);
-	
-	// Also pushes the UserPointer on the Stack //
-	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
-	copy_Data( (void*)&rMatrix, (void*)Mat, sizeof( Matrix4x4 ) );
-
-	return SQ_RETURN;
-}
-// - ------------------------------------------------------------------------------------------ - //
-SQInteger qkDoMatrix(HSQUIRRELVM vm) {
-	SQUserPointer uMatrix = 0;
-	
-	int NumArgs = sq_gettop(vm);
-	if ( NumArgs >= 2 ) {
-		sq_getuserdata(vm,2,&uMatrix,NULL);	
-	}
-	
-	Matrix4x4* pMatrix = (Matrix4x4*)uMatrix;
-	
-	Log( "[%f %f %f %f]", (*pMatrix)(0,0).ToFloat(),(*pMatrix)(1,0).ToFloat(),(*pMatrix)(2,0).ToFloat(),(*pMatrix)(3,0).ToFloat() );
-	Log( "[%f %f %f %f]", (*pMatrix)(0,1).ToFloat(),(*pMatrix)(1,1).ToFloat(),(*pMatrix)(2,1).ToFloat(),(*pMatrix)(3,1).ToFloat() );
-	Log( "[%f %f %f %f]", (*pMatrix)(0,2).ToFloat(),(*pMatrix)(1,2).ToFloat(),(*pMatrix)(2,2).ToFloat(),(*pMatrix)(3,2).ToFloat() );
-	Log( "[%f %f %f %f]", (*pMatrix)(0,3).ToFloat(),(*pMatrix)(1,3).ToFloat(),(*pMatrix)(2,3).ToFloat(),(*pMatrix)(3,3).ToFloat() );
-	Log( "" );
-	
-	return SQ_VOID;
-}
-// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
-SQRegFunction qklib_funcs[] = {
+SQRegFunction qkScreen_funcs[] = {
 	// 1: Function Name.
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
-	_DECL_FUNC(qkSetScreenScalar,2,_SC(".n")),
-	_DECL_FUNC(qkInitScreens,1,NULL),
-	_DECL_FUNC(qkAspectRatio,1,NULL),
-	_DECL_FUNC(qkClear,1,NULL),
+	_DECL_FUNC(qkScreenInit,1,NULL),
+	_DECL_FUNC(qkScreenSetScalar,2,_SC(".n")),
+	_DECL_FUNC(qkScreenGetAspectRatio,1,NULL),
+	_DECL_FUNC(qkScreenClear,1,NULL),
+
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
+
 	_DECL_FUNC(qkMatrixIdentity,1,NULL),
-	_DECL_FUNC(qkScalarMatrix,-2,NULL),
-	_DECL_FUNC(qkMultMatrix,3,NULL), // TODO ARG3
-	_DECL_FUNC(qkDoMatrix,2,NULL),
+	_DECL_FUNC(qkMatrixScalar,-2,NULL),
+
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkScreen(HSQUIRRELVM v) {
 	SQInteger i=0;
-	while(qklib_funcs[i].name!=0) {
-		sq_pushstring(v,qklib_funcs[i].name,-1);
-		sq_newclosure(v,qklib_funcs[i].f,0);
-		sq_setparamscheck(v,qklib_funcs[i].nparamscheck,qklib_funcs[i].typemask);
-		sq_setnativeclosurename(v,-1,qklib_funcs[i].name);
+	SQRegFunction* funcs = qkScreen_funcs;
+	while(funcs[i].name!=0) {
+		sq_pushstring(v,funcs[i].name,-1);
+		sq_newclosure(v,funcs[i].f,0);
+		sq_setparamscheck(v,funcs[i].nparamscheck,funcs[i].typemask);
+		sq_setnativeclosurename(v,-1,funcs[i].name);
 		sq_newslot(v,-3,SQFalse);
 		i++;
 	}	
