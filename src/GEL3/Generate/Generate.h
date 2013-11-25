@@ -1,10 +1,8 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_GRAPHICS_GRAPHICS_H__
-#define __GEL_GRAPHICS_GRAPHICS_H__
+#ifndef __GEL_GENERATE_GENERATE_H__
+#define __GEL_GENERATE_GENERATE_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "Log/LogGraphicsAPIDetails.h"
-#include "GraphicsInit/GraphicsInit.h"
-#include "GelColor.h"
+#include "Vertex.h"
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_GRAPHICS_GRAPHICS_H__ //
+#endif // __GEL_GENERATE_GENERATE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

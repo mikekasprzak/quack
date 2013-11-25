@@ -1,5 +1,5 @@
 // - ------------------------------------------------------------------------------------------ - //
-// SVector -- SVectorXD classes - A version of Vector that contains 32bit integers //
+// SVector -- SVectorXD classes - A version of Vector that contains 16bit integers //
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __Geometry_SVector_H__
 #define __Geometry_SVector_H__

@@ -65,6 +65,7 @@ void QuackVMInit() {
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
 		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
 		Log("* qkScreen"); register_qkScreen( vm );
+		Log("* qkDraw"); register_qkDraw( vm );
 		Log("* qkInput"); register_qkInput( vm );
 		//Log("* qkJson"); register_qkJson( vm );
 		Log("* qkColor"); register_qkColor( vm );

@@ -1,10 +1,10 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_GRAPHICS_GRAPHICS_H__
-#define __GEL_GRAPHICS_GRAPHICS_H__
+#ifndef __GEL_GEOMETRY_GEOMETRY_H__
+#define __GEL_GEOMETRY_GEOMETRY_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "Log/LogGraphicsAPIDetails.h"
-#include "GraphicsInit/GraphicsInit.h"
-#include "GelColor.h"
+#include "Axis.h"
+#include "Rect.h"
+#include "Sphere.h"
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_GRAPHICS_GRAPHICS_H__ //
+#endif // __GEL_GEOMETRY_GEOMETRY_H__ //
 // - ------------------------------------------------------------------------------------------ - //
