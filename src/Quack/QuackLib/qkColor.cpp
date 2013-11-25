@@ -1,10 +1,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
-#include <Graphics/GelColor.h>
 #include <API/API_Squirrel.h>
-#include "sqext.h"
-#include "sqgelext.h"
-#include "QuackLib.h"
+#include "QuackLib_Internal.h"
+// - ------------------------------------------------------------------------------------------ - //
+#include <Graphics/GelColor.h>
 // - ------------------------------------------------------------------------------------------ - //
 
 

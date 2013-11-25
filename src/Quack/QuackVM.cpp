@@ -9,15 +9,7 @@
 #include "App.h"
 #include "QuackVM.h"
 // - ------------------------------------------------------------------------------------------ - //
-#include "QuackLib/qkSystem.h"
-#include "QuackLib/qkScreen.h"
-#include "QuackLib/qkInput.h"
-// - ------------------------------------------------------------------------------------------ - //
-#include "QuackLib/qkColor.h"	// color
-#include "QuackLib/qkVector.h"	// vec2, vec3, vec4, scalar
-#include "QuackLib/qkMatrix.h"	// mat2, mat3, mat4
-#include "QuackLib/qkFloat.h"	// float (internal)
-#include "QuackLib/qkGrid.h"	// grid
+#include "QuackLib/QuackLib.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //

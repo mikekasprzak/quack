@@ -1,9 +1,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <API/API_Squirrel.h>
-#include "sqext.h"
-#include "sqgelext.h"
-#include "QuackLib.h"
+#include "QuackLib_Internal.h"
 // - ------------------------------------------------------------------------------------------ - //
 
 

@@ -1,8 +1,10 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
+#include <API/API_Squirrel.h>
+#include "QuackLib_Internal.h"
+// - ------------------------------------------------------------------------------------------ - //
 #include <System/System.h>
 #include <Graphics/Graphics.h>
-#include <API/API_Squirrel.h>
 #include <App.h>
 
 #include <Graphics/GelColor.h>

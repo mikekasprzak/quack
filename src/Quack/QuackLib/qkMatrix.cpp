@@ -1,10 +1,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
-#include <Math/Matrix.h>
 #include <API/API_Squirrel.h>
-#include "sqext.h"
-#include "sqgelext.h"
-#include "QuackLib.h"
+#include "QuackLib_Internal.h"
+// - ------------------------------------------------------------------------------------------ - //
+#include <Math/Matrix.h>
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: .row0(), .column2() functions might be nice, for getting vectors of the data.
 // TODO: .get00mat2() to get the 2x2 matrix at position 0,0. These sort of functions.
