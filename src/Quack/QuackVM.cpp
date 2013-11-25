@@ -4,7 +4,6 @@
 #include <Asset/Asset.h>
 #include <API/API_Squirrel.h>
 #include "sqext.h"
-#include "sqgelext.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "App.h"
 #include "QuackVM.h"

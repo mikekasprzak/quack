@@ -1,6 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_WTF_SQGELEXT_H__
-#define __GEL_WTF_SQGELEXT_H__
+#ifndef __GEL_WTF_SQEXT_H__
+#define __GEL_WTF_SQEXT_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <API/API_Squirrel.h>
@@ -205,5 +205,5 @@ inline void sqslot_string(HSQUIRRELVM vm, const char* name, const char* value ) 
 	sq_newslot(vm,-3,SQFalse);
 }
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_WTF_SQGELEXT_H__ //
+#endif // __GEL_WTF_SQEXT_H__ //
 // - ------------------------------------------------------------------------------------------ - //
