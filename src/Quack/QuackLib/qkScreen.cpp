@@ -51,49 +51,6 @@ SQInteger qkScreenClear(HSQUIRRELVM vm) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
-// - ------------------------------------------------------------------------------------------ - //
-SQInteger qkMatrixIdentity(HSQUIRRELVM vm) {
-	// Also pushes the UserPointer on the Stack //
-	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
-	copy_Data( (void*)&Matrix4x4::Identity, (void*)Mat, sizeof( Matrix4x4 ) );
-
-	return SQ_RETURN;
-}
-// - ------------------------------------------------------------------------------------------ - //
-SQInteger qkMatrixScalar(HSQUIRRELVM vm) {
-	float x = 1.0f;
-	float y = 1.0f;
-	float z = 1.0f;
-	float w = 1.0f;
-	
-	int NumArgs = sq_gettop(vm);
-
-	if ( NumArgs >= 2 ) {
-		sq_getfloat(vm,2,&x);
-	}
-	if ( NumArgs >= 3 ) {
-		sq_getfloat(vm,3,&y);
-	}
-	if ( NumArgs >= 4 ) {
-		sq_getfloat(vm,4,&z);
-	}
-	if ( NumArgs >= 5 ) {
-		sq_getfloat(vm,5,&w);
-	}
-
-	Matrix4x4 rMatrix = Matrix4x4::Identity;
-	rMatrix(0,0) = x;
-	rMatrix(1,1) = y;
-	rMatrix(2,2) = z;
-	rMatrix(3,3) = w;
-	
-	// Also pushes the UserPointer on the Stack //
-	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
-	copy_Data( (void*)&rMatrix, (void*)Mat, sizeof( Matrix4x4 ) );
-
-	return SQ_RETURN;
-}
-// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -108,9 +65,6 @@ SQRegFunction qkScreen_funcs[] = {
 	// Screen Singular //
 	_DECL_FUNC(qkScreenGetAspectRatio,1,NULL),
 	_DECL_FUNC(qkScreenClear,1,NULL),
-
-	_DECL_FUNC(qkMatrixIdentity,1,NULL),
-	_DECL_FUNC(qkMatrixScalar,-2,NULL),
 
 	{0,0,0,0}
 };
