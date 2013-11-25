@@ -2,8 +2,8 @@
 #ifndef __QUACK_QUACKLIB_QUACKLIB_INTERNAL_H__
 #define __QUACK_QUACKLIB_QUACKLIB_INTERNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
-//#include "sqext.h"
-#include "sqgelext.h"
+#include "sqext.h"
+//#include "sqgelext.h"
 // - ------------------------------------------------------------------------------------------ - //
 // Type Enums (for TypeTags) //
 enum {
