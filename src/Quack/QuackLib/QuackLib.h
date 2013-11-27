@@ -12,6 +12,7 @@ SQInteger register_qkMatrix(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkScreen(HSQUIRRELVM v);
 SQInteger register_qkDraw(HSQUIRRELVM v);
+SQInteger register_qkTexture(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkInput(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
