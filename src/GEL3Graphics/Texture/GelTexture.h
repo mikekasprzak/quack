@@ -2,18 +2,62 @@
 #ifndef __GEL_TEXTURE_GELTEXTURE_H__
 #define __GEL_TEXTURE_GELTEXTURE_H__
 // - ------------------------------------------------------------------------------------------ - //
-// A Smart System built on top of Texture that is indiffent of texture format, and caches the
-//   data so multiple requests for the same data do not waste VRAM.
+#include <Asset/Asset.h>
+#include "GelTextureHandle.h"
 
-// TODO: Make it so the new TexturePool can actually be instanced. Smaller pools of textures. //
-// MAYBE: No top level Texture Pool. Part of Texture instead.
-// NOPE: GelTextureHandle's rely on an internal active Texture Unit and Handle. Not really viable.
+#include "Texture_STB.h"
+#include "Texture_PVR3.h"
 // - ------------------------------------------------------------------------------------------ - //
-class GelTexturePool {
-public:
-	typedef int UID;
-public:
+class GelTexture {
+	friend class GelTexturePool;
+protected:
+	GelAssetPool::UID AssetID;
+	GelTextureHandle Handle;
 	
+	int _Width, _Height;
+
+public:
+	inline GelTexture() :
+		AssetID( 0 ),
+		Handle( 0 ),
+		_Width( 0 ), _Height( 0 )
+	{
+	}
+	
+public:
+	inline void Load( const char* _FileName ) {
+		AssetID = Gel::AssetPool.Load( _FileName );
+			
+		// TODO: Add the following to an OnLoaded listener.
+		
+		if ( AssetID ) {
+			GelAsset& MyAsset = Gel::AssetPool[AssetID];
+			if ( Gel::is_STBTexture(MyAsset.Get(),MyAsset.GetSize()) ) {
+				Gel::STBTexture Tex = Gel::new_STBTexture( MyAsset.Get(), MyAsset.GetSize() );
+
+				Handle = Gel::upload_STBTexture( Tex );
+					
+				// TODO: Correct these numbers in the case of MaxTextureSize being larger.
+				_Width = Tex.Width;
+				_Height = Tex.Height;
+				//SizeInBytes = Tex.Info;
+				
+				Gel::delete_STBTexture( Tex );
+			}
+			// TODO: PVR //
+			else {
+				Log( "! Unsupported Texture! %s", _FileName );
+			}
+		}
+	}
+	
+	inline void Unload() {
+		if ( Handle ) {
+			delete_GelTextureHandle( Handle );
+			//Gel::AssetPool[AssetID].Unload(); // Done automatically by AssetPool //
+			Handle = 0;
+		}
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_TEXTURE_TEXTUREPOOL_H__ //
