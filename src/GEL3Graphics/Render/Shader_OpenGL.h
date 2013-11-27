@@ -41,6 +41,16 @@ inline void RenderFlat( const int Mode, const Matrix4x4& Matrix, const GelColor 
 	Default->DrawArrays( Mode, Count );
 }
 // - ------------------------------------------------------------------------------------------ - //
+inline void RenderTexture( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const void* UVs, const st32 Count ) {
+	Default->Bind( TextureShader );
+	Default->UniformMatrix4x4( 0, Matrix );
+	Default->UniformColor( 1, Color ); // GlobalColor //
+	Default->BindUniforms();
+	Default->Attrib( 0, Verts );
+	Default->Attrib( 1, UVs );
+	Default->DrawArrays( Mode, Count );
+}
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_OPENGL_2_FAMILY //

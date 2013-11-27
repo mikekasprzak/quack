@@ -67,7 +67,68 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 		Log("! qkDrawCircle -- Not enough arguments");
 	}
 	
-	return SQ_VOID;	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
+	float Radius = 10.0f;
+	Vector3D Pos;
+	
+	Matrix4x4* uMatrix = 0;
+	
+	GelColor Color = GEL_RGBA(255,255,255,255);
+	
+	int NumArgs = sq_gettop(vm);
+	if ( NumArgs >= 2 ) {
+		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
+
+		if ( NumArgs >= 3 ) {
+			void* UserPointer;
+			sq_getinstanceup(vm,3,(void**)&UserPointer,NULL);
+
+			// TODO: Check type (vec2, vec3) //
+
+			Vector2D* Vec = (Vector2D*)UserPointer;
+			Pos = Vec->ToVector3D();
+		}
+		
+		if ( NumArgs >= 4 ) {
+			sq_getfloat(vm,4,&Radius);
+		}
+		if ( NumArgs >= 5 ) {
+			// Retrieve Data (Pointer) //
+			GelColor* ColorArg;
+			sq_getinstanceup(vm,5,(void**)&ColorArg,0);
+			Color = *ColorArg;
+		}
+	
+		const st32 VertCount = 6;
+		Vector3D Verts[ VertCount ];
+		Verts[0] = Vector3D(-Radius,-Radius,0);
+		Verts[1] = Vector3D(+Radius,-Radius,0);
+		Verts[2] = Vector3D(+Radius,+Radius,0);
+		Verts[3] = Vector3D(+Radius,+Radius,0);
+		Verts[4] = Vector3D(-Radius,+Radius,0);
+		Verts[5] = Vector3D(-Radius,-Radius,0);
+		
+		// TODO: Add Pos //
+		
+		UVSet<Gel::UVType> UVs[ VertCount ];
+		UVs[0] = UVSet<Gel::UVType>(UV_ZERO,UV_ZERO);
+		UVs[1] = UVSet<Gel::UVType>( UV_ONE,UV_ZERO);
+		UVs[2] = UVSet<Gel::UVType>( UV_ONE, UV_ONE);
+		UVs[3] = UVSet<Gel::UVType>( UV_ONE, UV_ONE);
+		UVs[4] = UVSet<Gel::UVType>(UV_ZERO, UV_ONE);
+		UVs[5] = UVSet<Gel::UVType>(UV_ZERO,UV_ZERO);
+		
+	
+		Gel::RenderTexture( GEL_TRIANGLES, *uMatrix, Color, Verts, UVs, VertCount );
+	}
+	else {
+		Log("! qkDrawTexturedQuad -- Not enough arguments");
+	}
+	
+	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -79,6 +140,7 @@ SQRegFunction qkDraw_funcs[] = {
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
+	_DECL_FUNC(qkDrawTexturedQuad,-2,NULL),
 	
 	{0,0,0,0}
 };
