@@ -10,6 +10,7 @@
 #include "QuackVM.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include <Asset/Asset.h>
+#include <Texture/Texture.h>
 //#include <rde/rdestl.h>
 #include <PVRTModelPOD.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -90,6 +91,7 @@ void AppInit() {
 	gelTimeInit();
 	gelSystemInit();
 	gelAssetInit();
+	gelTextureInit();
 	Gel::Input::Init();
 	
 	Gel::Search.Add( "src/Quack/QuackLib" );
@@ -121,12 +123,24 @@ void AppInit() {
 			Log("Verts: %i  Faces: %i  UVW: %i",
 				Scene.pMesh[0].nNumVertex, Scene.pMesh[0].nNumFaces, Scene.pMesh[0].nNumUVW );
 				
-			for ( int idx = 0; idx < Scene.nNumTexture; idx++ ) {
+			for ( st32 idx = 0; idx < Scene.nNumTexture; idx++ ) {
 				Log("%i T: %s", idx, Scene.pTexture[idx].pszName );
 			}
 		}
 		
 		Log("**** DONE");
+	}
+	
+	{
+		Log("**** TexturePool Test" );
+		const char* SearchResult = Gel::Search("content/SheetPack11.png");
+		Log( SearchResult );
+		
+		GelTexturePool::UID MyUID = Gel::TexturePool.Load(SearchResult);	
+		GelTexture& MyTexture = Gel::TexturePool[MyUID];
+		const GelAssetPool::UID MyAssetId = MyTexture.GetAssetId();
+		GelAsset& MyAsset = Gel::AssetPool[MyAssetId];
+		Log( "* UID: %i (%i)", MyUID, MyAssetId );
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //

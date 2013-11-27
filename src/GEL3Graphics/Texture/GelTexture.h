@@ -63,6 +63,10 @@ public:
 	inline void Bind( const st32 TextureUnit = 0 ) {
 		bind_GelTextureHandle( Handle, TextureUnit );
 	}
+	
+	inline const GelAssetPool::UID GetAssetId() const {
+		return AssetID;
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_TEXTURE_TEXTUREPOOL_H__ //
