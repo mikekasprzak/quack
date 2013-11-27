@@ -111,7 +111,9 @@ SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 		Verts[4] = Vector3D(-Radius,+Radius,0);
 		Verts[5] = Vector3D(-Radius,-Radius,0);
 		
-		// TODO: Add Pos //
+		for ( st32 idx = 0; idx < VertCount; idx++ ) {
+			Verts[idx] += Pos;
+		}
 		
 		UVSet<Gel::UVType> UVs[ VertCount ];
 		UVs[0] = UVSet<Gel::UVType>(UV_ZERO,UV_ZERO);
