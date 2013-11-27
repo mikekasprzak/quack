@@ -8,6 +8,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 typedef unsigned int		GelTextureHandle;
 // - ------------------------------------------------------------------------------------------ - //
+void init_GelTextureHandle();
+void exit_GelTextureHandle();
+// - ------------------------------------------------------------------------------------------ - //
 GelTextureHandle new_GelTextureHandle();
 void delete_GelTextureHandle( GelTextureHandle Handle );
 
