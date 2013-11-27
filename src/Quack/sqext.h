@@ -31,29 +31,33 @@ inline SQBool sqext_compile_nut( HSQUIRRELVM v, const char* Text, const st TextS
 	return SQFalse;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline SQBool sqext_load_nut( HSQUIRRELVM v, const char* NutFile ) {
-	VLog( "+ Loading Script File (%s)...", NutFile );
+inline SQBool sqext_load_nut( HSQUIRRELVM v, const char* FileName ) {
+	VLog( "+ Loading Script File (%s)...", FileName );
 
-	const char* NutFileResult = Gel::Search(NutFile);
-	VVVLog( "* Full Name: %s", NutFileResult );
-	GelAssetPool::UID Nut = Gel::AssetPool.Load(NutFileResult);
+	const char* SearchResult = Gel::Search(FileName);
+	VVVLog( "* Full Name: %s", SearchResult );
+	GelAssetPool::UID MyUID = Gel::AssetPool.Load(SearchResult);
 		
-	GelAsset& MyAsset = Gel::AssetPool[Nut];
-	VVVLog( "* NUT: %i", Nut );
+	GelAsset& MyAsset = Gel::AssetPool[MyUID];
+	VVVLog( "* UID: %i", MyUID );
 
 	if ( !MyAsset.IsBad() ) {
-		MyAsset.SubscribeToChanges( sqext_reload_subscriber, Nut );
+		MyAsset.SubscribeToChanges( sqext_reload_subscriber, MyUID );
 		
+		// NOTE: This could be done instead. //
+		//return sqext_reload_subscriber( MyUID );
+
 		return_if_VLog( 
-			sqext_compile_nut( v, MyAsset.Get(), MyAsset.GetSize(), NutFileResult ), 
-			"- Script File Loaded Successfully (%s).", NutFile 
+			sqext_compile_nut( v, MyAsset.Get(), MyAsset.GetSize(), SearchResult ), 
+			"- Script File Loaded Successfully (%s).", FileName 
 		);
 	}
 	
-	VLog( "- Unable to load Script File (%s).", NutFile );
+	VLog( "- Unable to load Script File (%s).", FileName );
 	
 	return SQFalse;
 }
+// - ------------------------------------------------------------------------------------------ - //
 //inline const char* sqext_gettypename( HSQUIRRELVM v, SQInteger Index ) {
 //	switch( sq_gettype(v,Index) ) {
 inline const char* sqext_gettypename( SQInteger Index ) {

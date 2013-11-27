@@ -159,6 +159,8 @@ void AppStep() {
 	sq_newslot(vm,-3,SQFalse);
 	sq_pop(vm,1+1); // Slot and Root Table //
 	// END: Update FrameTime //
+	
+	GelAsset::SetTimeStamp( App::FrameTime );
 
 	QuackVMCallStep();
 	
