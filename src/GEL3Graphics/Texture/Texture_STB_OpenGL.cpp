@@ -15,20 +15,13 @@
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, const bool Flip, const bool PreMultiplyAlpha ) {
-	// Texture ID we'll be returning //
-//	GelTextureHandle TextureID;
-
 	Log("+ Loading Texture (STB Loader)..." );
 
 	VLog("* Allocating GL Texture ID..." );
 	// Generate a GL Texture //
-	//glGenTextures( 1, (GLuint*)&TextureID );
 	GelTextureHandle TextureID = new_GelTextureHandle();
 	bind_GelTextureHandle( TextureID );
-//	VVLog("* GL Texture ID: %i (IsTexture: %i)", TextureID, glIsTexture(TextureID) );	
-//	glBindTexture( GL_TEXTURE_2D, TextureID );
-//	VLog("* GL Texture ID: %i (IsTexture: %i)", TextureID, glIsTexture(TextureID) );
-	
+
 //	if ( glGetError() != GL_NO_ERROR ) {
 //		ELog( "Texture Bind Failed!" );
 //	}
@@ -41,7 +34,6 @@ GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, cons
 	int RGBFormat = 0;
 	int ReadFormat = GL_RGBA;
 	int InternalFormat = GL_RGBA;
-	
 		
 	// Switch the Load Format found inside the PVR File //
 	switch ( Texture.Info ) {
@@ -71,12 +63,6 @@ GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, cons
 			ELog( "Unknown STB Format (0x%x)!", Texture.Info );
 			break;
 	};
-	
-	// Remember a few things about this texture //
-//	if ( Detail ) {
-//		Detail->Width = Texture.Width;
-//		Detail->Height = Texture.Height;
-//	}
 
 	// Various Settings for executing glTexImage //
 	int Width = Texture.Width;
@@ -107,7 +93,7 @@ GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, cons
 		}
 	}
 	else {
-		// Don't flip the Image Data (for some reason) //
+		// Don't flip the Image Data //
 		//copy_Data( Orig, Pixels, Texture.Width*Texture.Height*Texture.Info );
 		Pixels = Orig;
 	}
@@ -115,7 +101,7 @@ GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, cons
 	// Premultiply the Alpha, but only if it has alpha //
 	if ( PreMultiplyAlpha && (Texture.Info == 4) ) {
 		VLog("* Premultiplying Alpha...");
-		unsigned int* Data = (unsigned int*)Pixels;//(&Texture.Data[0]);
+		unsigned int* Data = (unsigned int*)Pixels;
 		for ( int texHeight = 0; texHeight < Texture.Height; texHeight++ ) {
 			for ( int texWidth = 0; texWidth < Texture.Width; texWidth++ ) {
 				register int Index = (texHeight * (int)Texture.Width) + texWidth;

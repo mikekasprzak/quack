@@ -58,6 +58,11 @@ public:
 			Handle = 0;
 		}
 	}
+	
+public:
+	inline void Bind( const st32 TextureUnit = 0 ) {
+		bind_GelTextureHandle( Handle, TextureUnit );
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_TEXTURE_TEXTUREPOOL_H__ //

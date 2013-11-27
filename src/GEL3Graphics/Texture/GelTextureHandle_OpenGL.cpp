@@ -6,16 +6,24 @@
 #include "GelTextureHandle_OpenGL.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
+	enum {
+		GEL_MAX_TEXTURE_UNITS = 32
+	};
+	
 	// OpenGL Specific, for eliminating redundant calls //
 	st32 ActiveTextureUnit = 0;
-	GelTextureHandle ActiveTexture = 0;
+	GelTextureHandle ActiveTexture[GEL_MAX_TEXTURE_UNITS];
 };
 // - ------------------------------------------------------------------------------------------ - //
 void init_GelTextureHandle() {
 	Gel::ActiveTextureUnit = 0;
 	glActiveTexture( GL_TEXTURE0 + Gel::ActiveTextureUnit );
-	Gel::ActiveTexture = 0;
-	glBindTexture( GL_TEXTURE_2D, Gel::ActiveTexture );
+		
+	for ( int idx = 0; idx < Gel::GEL_MAX_TEXTURE_UNITS; idx++ ) { 	
+		Gel::ActiveTexture[idx] = 0;
+	}
+	// TODO: Actually check how many TU's there are, and call this. //
+	glBindTexture( GL_TEXTURE_2D, Gel::ActiveTexture[0] );
 }
 // - ------------------------------------------------------------------------------------------ - //
 void exit_GelTextureHandle() {
@@ -39,9 +47,9 @@ void bind_GelTextureHandle( GelTextureHandle Handle, const st32 TextureUnit ) {
 		glActiveTexture( GL_TEXTURE0 + TextureUnit );
 		Gel::ActiveTextureUnit = TextureUnit;
 	}
-	if ( Handle != Gel::ActiveTexture ) {
+	if ( Handle != Gel::ActiveTexture[Gel::ActiveTextureUnit] ) {
 		glBindTexture( GL_TEXTURE_2D, Handle );
-		Gel::ActiveTexture = Handle;
+		Gel::ActiveTexture[Gel::ActiveTextureUnit] = Handle;
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -52,9 +60,9 @@ void unbind_GelTextureHandle( GelTextureHandle, const st32 TextureUnit ) {
 		glActiveTexture( GL_TEXTURE0 + TextureUnit );
 		Gel::ActiveTextureUnit = TextureUnit;
 	}
-	if ( Gel::ActiveTexture != 0 ) {
+	if ( Gel::ActiveTexture[Gel::ActiveTextureUnit] != 0 ) {
 		glBindTexture( GL_TEXTURE_2D, 0 );
-		Gel::ActiveTexture = 0;
+		Gel::ActiveTexture[Gel::ActiveTextureUnit] = 0;
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
