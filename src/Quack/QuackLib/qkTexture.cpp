@@ -83,7 +83,7 @@ SQInteger qkTextureLoad( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkTextureBind( HSQUIRRELVM v ) {
-	// Synonym for MyQkTexture.Bind();
+/*	// Synonym for MyQkTexture.Bind();
 	int ArgCount = sq_gettop(v);
 
 	sq_pushroottable(v);
@@ -98,8 +98,13 @@ SQInteger qkTextureBind( HSQUIRRELVM v ) {
 		sq_push(v,idx);  // Arg //					// +1 //
 	}
 	sq_call(v,ArgCount-1,false,true);				// -ArgCount //
-	
+
 	return SQ_VOID;	
+*/
+
+	// Simpler version. Remove redundant stack item, and call directly. //
+	sq_remove(v,1);
+	return qk_texture_bind(v);
 }
 // - ------------------------------------------------------------------------------------------ - //
 
