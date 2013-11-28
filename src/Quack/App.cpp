@@ -131,17 +131,17 @@ void AppInit() {
 		Log("**** DONE");
 	}
 	
-	{
-		Log("**** TexturePool Test" );
-		const char* SearchResult = Gel::Search("content/SheetPack11.png");
-		Log( SearchResult );
-		
-		GelTexturePool::UID MyUID = Gel::TexturePool.Load(SearchResult);	
-		GelTexture& MyTexture = Gel::TexturePool[MyUID];
-		const GelAssetPool::UID MyAssetId = MyTexture.GetAssetId();
-		GelAsset& MyAsset = Gel::AssetPool[MyAssetId];
-		Log( "* UID: %i (%i)", MyUID, MyAssetId );
-	}
+//	{
+//		Log("**** TexturePool Test" );
+//		const char* SearchResult = Gel::Search("content/SheetPack11.png");
+//		Log( SearchResult );
+//		
+//		GelTexturePool::UID MyUID = Gel::TexturePool.Load(SearchResult);	
+//		GelTexture& MyTexture = Gel::TexturePool[MyUID];
+//		const GelAssetPool::UID MyAssetId = MyTexture.GetAssetId();
+//		GelAsset& MyAsset = Gel::AssetPool[MyAssetId];
+//		Log( "* UID: %i (%i)", MyUID, MyAssetId );
+//	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {

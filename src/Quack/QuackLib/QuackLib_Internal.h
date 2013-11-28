@@ -9,7 +9,6 @@ enum {
 	QK_TAG_NULL = 0,
 	QK_TAG_DUMMY = 1,
 
-
 	QK_TAG_VEC2,
 	QK_TAG_VEC3,
 	QK_TAG_VEC4,
@@ -21,6 +20,14 @@ enum {
 
 	QK_TAG_COLOR,
 	
+	QK_TAG_TEXTURE,
+	QK_TAG_FONT,
+	QK_TAG_SCENE, // 3D //
+	QK_TAG_SPINE, // 2D //
+	QK_TAG_SHADER,
+	
+	QK_TAG_GRID2,
+	QK_TAG_GRID3,
 	
 	QK_TAG_MAX		// Last Symbol //
 };

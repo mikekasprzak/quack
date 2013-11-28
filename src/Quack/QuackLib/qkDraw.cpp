@@ -109,7 +109,6 @@ SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 		UVs[4] = UVSet<Gel::UVType>(UV_ZERO, UV_ONE);
 		UVs[5] = UVSet<Gel::UVType>(UV_ZERO,UV_ZERO);
 		
-	
 		Gel::RenderTexture( GEL_TRIANGLES, *uMatrix, Color, Verts, UVs, VertCount );
 	}
 	else {

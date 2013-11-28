@@ -45,6 +45,7 @@ inline void RenderTexture( const int Mode, const Matrix4x4& Matrix, const GelCol
 	Default->Bind( TextureShader );
 	Default->UniformMatrix4x4( 0, Matrix );
 	Default->UniformColor( 1, Color ); // GlobalColor //
+	Default->Uniform1i( 2, 0 ); // "TexImage0" //
 	Default->BindUniforms();
 	Default->Attrib( 0, Verts );
 	Default->Attrib( 1, UVs );
