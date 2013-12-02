@@ -245,8 +245,8 @@ public class SDLActivity extends Activity {
     public static native void nativePause();
     public static native void nativeResume();
     public static native void onNativeResize(int x, int y, int format);
-    public static native void onNativePadDown(int padId, int keycode);
-    public static native void onNativePadUp(int padId, int keycode);
+    public static native int onNativePadDown(int padId, int keycode);
+    public static native int onNativePadUp(int padId, int keycode);
     public static native void onNativeJoy(int joyId, int axis,
                                           float value);
     public static native void onNativeKeyDown(int keycode);
@@ -275,6 +275,34 @@ public class SDLActivity extends Activity {
 
     public static Context getContext() {
         return mSingleton;
+    }
+
+    /**
+     * @return result of getSystemService(name) but executed on UI thread.
+     */
+    public Object getSystemServiceFromUiThread(final String name) {
+        final Object lock = new Object();
+        final Object[] results = new Object[2]; // array for writable variables
+        synchronized (lock) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (lock) {
+                        results[0] = getSystemService(name);
+                        results[1] = Boolean.TRUE;
+                        lock.notify();
+                    }
+                }
+            });
+            if (results[1] == null) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return results[0];
     }
 
     static class ShowTextInputTask implements Runnable {
@@ -600,19 +628,22 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onKey(View  v, int keyCode, KeyEvent event) {
         // Dispatch the different events depending on where they come from
-        // Some SOURCE_DPAD or SOURCE_GAMEPAD events appear to also be marked as SOURCE_KEYBOARD
-        // So, to avoid problems, we process DPAD or GAMEPAD events first.
+        // Some SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
+        // So, we try to process them as DPAD or GAMEPAD events first, if that fails we try them as KEYBOARD
         
         if ( (event.getSource() & 0x00000401) != 0 || /* API 12: SOURCE_GAMEPAD */
                    (event.getSource() & InputDevice.SOURCE_DPAD) != 0 ) {
             int id = SDLActivity.getJoyId( event.getDeviceId() );
             if (id != -1) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    SDLActivity.onNativePadDown(id, keyCode);
+                    if (SDLActivity.onNativePadDown(id, keyCode) == 0) {
+                        return true;
+                    }
                 } else if (event.getAction() == KeyEvent.ACTION_UP) {
-                    SDLActivity.onNativePadUp(id, keyCode);
+                    if (SDLActivity.onNativePadUp(id, keyCode) == 0) {
+                        return true;
+                    }
                 }
-                return true;
             }
         }
         
@@ -635,31 +666,48 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Touch events
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-             final int touchDevId = event.getDeviceId();
-             final int pointerCount = event.getPointerCount();
-             // touchId, pointerId, action, x, y, pressure
-             int actionPointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT; /* API 8: event.getActionIndex(); */
-             int pointerFingerId = event.getPointerId(actionPointerIndex);
-             int action = (event.getAction() & MotionEvent.ACTION_MASK); /* API 8: event.getActionMasked(); */
-
-             float x = event.getX(actionPointerIndex) / mWidth;
-             float y = event.getY(actionPointerIndex) / mHeight;
-             float p = event.getPressure(actionPointerIndex);
-
-             if (action == MotionEvent.ACTION_MOVE && pointerCount > 1) {
-                // TODO send motion to every pointer if its position has
-                // changed since prev event.
-                for (int i = 0; i < pointerCount; i++) {
+        /* Ref: http://developer.android.com/training/gestures/multi.html */
+        final int touchDevId = event.getDeviceId();
+        final int pointerCount = event.getPointerCount();
+        int action = event.getActionMasked();
+        int pointerFingerId;
+        int i = -1;
+        float x,y,p;
+        
+        switch(action) {
+            case MotionEvent.ACTION_MOVE:
+                for (i = 0; i < pointerCount; i++) {
                     pointerFingerId = event.getPointerId(i);
                     x = event.getX(i) / mWidth;
                     y = event.getY(i) / mHeight;
                     p = event.getPressure(i);
                     SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
                 }
-             } else {
+                break;
+            
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_DOWN:
+                // Primary pointer up/down, the index is always zero
+                i = 0;
+            case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                // Non primary pointer up/down
+                if (i == -1) {
+                    i = event.getActionIndex();
+                }
+                
+                pointerFingerId = event.getPointerId(i);
+                x = event.getX(i) / mWidth;
+                y = event.getY(i) / mHeight;
+                p = event.getPressure(i);
                 SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
-             }
-      return true;
+                break;
+            
+            default:
+                break;
+        }
+
+        return true;
    } 
 
     // Sensor events

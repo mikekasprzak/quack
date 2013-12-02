@@ -66,17 +66,19 @@ void gelLogGraphicsAPIDetails() {
 //	}
 //	#endif // USES_CGL //
 
-	#ifdef USES_EGL
-	{
-		Log( "-=- EGL -=-" );
-		extern EGLDisplay g_eglDisplay;
-		Log( "EGL Version: %s", eglQueryString(g_eglDisplay, EGL_VERSION) );
-		Log( "Driver Vendor: %s", eglQueryString(g_eglDisplay, EGL_VENDOR) );
-		Log( "Client APIs: %s", eglQueryString(g_eglDisplay, EGL_CLIENT_APIS) );
-		Log( "Extensions: %s", eglQueryString(g_eglDisplay, EGL_EXTENSIONS) );
-		Log( "" );
-	}
-	#endif // USES_EGL //
+//	#ifdef USES_EGL
+//	{
+//		Log( "-=- EGL -=-" );
+//		// TODO: The following will not work (old EGLProxy code) //
+//		//		 To fix this, I'm going to need an SDL way of querying EGL vars. //
+//		extern EGLDisplay g_eglDisplay;
+//		Log( "EGL Version: %s", eglQueryString(g_eglDisplay, EGL_VERSION) );
+//		Log( "Driver Vendor: %s", eglQueryString(g_eglDisplay, EGL_VENDOR) );
+//		Log( "Client APIs: %s", eglQueryString(g_eglDisplay, EGL_CLIENT_APIS) );
+//		Log( "Extensions: %s", eglQueryString(g_eglDisplay, EGL_EXTENSIONS) );
+//		Log( "" );
+//	}
+//	#endif // USES_EGL //
 	
 	// Get OpenGL Information Strings //
 	const char* OpenGLVendor = (const char*)glGetString( GL_VENDOR );

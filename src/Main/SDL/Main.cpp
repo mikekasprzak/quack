@@ -135,11 +135,11 @@ extern "C" int main( int argc, char* argv[] ) {
 //	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 //	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
-#ifndef USES_MOBILE
+//#ifndef USES_MOBILE
 	// Currently not safe on Tegra, so Desktop Only (for now) //
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);	// 4x //
-#endif // USES_MOBILE //
+//#endif // USES_MOBILE //
 
 //#endif // USES_MOBILE //
 

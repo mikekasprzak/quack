@@ -99,6 +99,8 @@ public:
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 
+			// Android doesn't create standalone contexts, so window must be disposed of. //
+			return_if( NewWindow() );
 			return_if( NewGLContext() );
 		}
 		
@@ -145,9 +147,10 @@ public:
 			SDL_GetWindowPosition( pWindow, &Bounds.x, &Bounds.y );
 			SDL_GetWindowSize( pWindow, &Bounds.w, &Bounds.h );
 			
-			VVVLog( "** Window %i [%i] Bounds Updated: (%i, %i) (%i, %i)", Index, SDL_GetWindowID(pWindow), Bounds.x, Bounds.y, Bounds.w, Bounds.h );
+			VLog( "** Window %i [%i] Bounds Updated: (%i, %i) (%i, %i)", Index, SDL_GetWindowID(pWindow), Bounds.x, Bounds.y, Bounds.w, Bounds.h );
+			return GEL_OK;
 		}
-		return GEL_OK;
+		return GEL_ERROR;
 	}
 		
 public:
@@ -172,12 +175,12 @@ public:
 		// SDL_WINDOW_BORDERLESS, SDL_WINDOW_RESIZABLE
 		
 		if ( FullScreen ) {
-			return_if_Log( pWindow == NULL, "! Error Creating Full Screen Window[%i]: %s", Index, SDL_GetError() );
-			Log( "* Full Screen Window %i with ID %i Created", Index, SDL_GetWindowID( pWindow ) );
+			return_if_Log( !HasWindow(), "! Error Creating Full Screen Window[%i]: %s", Index, SDL_GetError() );
+			Log( "* Full Screen Window %i with ID %i Created (%i,%i)", Index, SDL_GetWindowID( pWindow ), Width, Height );
 		}
 		else {
-			return_if_Log( pWindow == NULL, "! Error Creating Window[%i]: %s", Index, SDL_GetError() );
-			Log( "* Window %i with ID %i Created", Index, SDL_GetWindowID( pWindow ) );
+			return_if_Log( !HasWindow(), "! Error Creating Window[%i]: %s", Index, SDL_GetError() );
+			Log( "* Window %i with ID %i Created (%i,%i)", Index, SDL_GetWindowID( pWindow ), Width, Height );
 		}
 
 		return_if( UpdateBounds() );		
