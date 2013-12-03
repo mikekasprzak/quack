@@ -155,6 +155,61 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	return SQ_RETURN; \
 }
 // - ------------------------------------------------------------------------------------------ - //
+#define _FUNC_POOL_CONSTRUCTOR(_TYPE_,_NAME_,_POOLNAME_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	_TYPE_::UID* Data; \
+	sq_getinstanceup(v,1,(void**)&Data,0); \
+	\
+	if ( sq_gettop(v) > 1 ) { \
+		/* Do a load */ \
+		const char* FileName; \
+		sq_getstring(v,2,&FileName); \
+		\
+		if ( FileName ) { \
+			const char* SearchResult = Gel::Search( FileName ); \
+			*Data = Gel::_POOLNAME_.Load( SearchResult ); \
+		} \
+		else { \
+			*Data = 0; \
+		} \
+	} \
+	else { \
+		*Data = 0;	/* Dummy UID */ \
+	} \
+	\
+	return SQ_VOID; \
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Create an Instance of a class, alternate version //
+// TODO: Use the .constructor method directly
+#define _FUNC_LOAD_POOL(_NAME_,_TYPENAME_,_TYPENAME_LEN_,_FUNCNAME_) \
+SQInteger _NAME_( HSQUIRRELVM v ) { \
+	int ArgCount = sq_gettop(v); \
+	\
+	sq_pushroottable(v); \
+	\
+	int Root = sq_gettop(v); \
+	\
+	sq_pushstring(v,_TYPENAME_,_TYPENAME_LEN_);		/* +1 */ \
+	sq_get(v,Root);									/* =0 */ \
+	sq_createinstance(v,-1);						/* +1 */ \
+	\
+	sq_pushstring(v,_FUNCNAME_,-1);					/* +1 */ \
+	sq_get(v,Root);									/* =0 */ \
+	\
+	sq_push(v,-2); /* Instance */					/* +1 */ \
+	\
+	/* Arguments 2+ */ \
+	for ( int idx = 2; idx <= ArgCount; idx++ ) { \
+		sq_push(v,idx);  /* Arg */					/* +1 */ \
+	} \
+	sq_call(v,ArgCount,false,true);					/* -ArgCount */ \
+	\
+	sq_push(v,-2); /* Instance */					/* +1 */ \
+	\
+	return SQ_RETURN; \
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _CLASS_ADDFUNC(_FUNC_,_METHOD_) \
@@ -318,6 +373,8 @@ inline SQInteger qk_arr_constructor_body( HSQUIRRELVM v, float* Arr, const int A
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+
+
 
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_QUACKLIB_QUACKLIB_INTERNAL_H__ //

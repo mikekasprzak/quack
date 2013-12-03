@@ -9,32 +9,35 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qk_texture_constructor( HSQUIRRELVM v ) {
-	GelTexturePool::UID* Data;
-	sq_getinstanceup(v,1,(void**)&Data,0);
-
-	if ( sq_gettop(v) > 1 ) {
-		// Do a load //
-		const char* FileName;
-		sq_getstring(v,2,&FileName);
-		
-		Log("In: %s", FileName );
-		
-		if ( FileName ) {
-			const char* SearchResult = Gel::Search( FileName );
-			*Data = Gel::TexturePool.Load( SearchResult );
-		}
-		else {
-			*Data = 0;
-		}
-	}
-	else {
-		*Data = 0;	// Dummy UID //
-	}
-
-	return SQ_VOID;
-}
+//SQInteger qk_texture_constructor( HSQUIRRELVM v ) {
+//	GelTexturePool::UID* Data;
+//	sq_getinstanceup(v,1,(void**)&Data,0);
+//
+//	if ( sq_gettop(v) > 1 ) {
+//		// Do a load //
+//		const char* FileName;
+//		sq_getstring(v,2,&FileName);
+//		
+//		Log("In: %s", FileName );
+//		
+//		if ( FileName ) {
+//			const char* SearchResult = Gel::Search( FileName );
+//			*Data = Gel::TexturePool.Load( SearchResult );
+//		}
+//		else {
+//			*Data = 0;
+//		}
+//	}
+//	else {
+//		*Data = 0;	// Dummy UID //
+//	}
+//
+//	return SQ_VOID;
+//}
 // - ------------------------------------------------------------------------------------------ - //
+_FUNC_POOL_CONSTRUCTOR(GelTexturePool,qk_texture_constructor,TexturePool);
+_FUNC_LOAD_POOL(qkTextureLoad,"QkTexture",9,"qk_texture_constructor");
+
 _FUNC_TYPEOF(GelTexturePool::UID,qk_texture_typeof,"QkTexture",9);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_texture_bind( HSQUIRRELVM v ) {
@@ -56,33 +59,33 @@ SQInteger qk_texture_bind( HSQUIRRELVM v ) {
 
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkTextureLoad( HSQUIRRELVM v ) {
-	int ArgCount = sq_gettop(v);
-
-	sq_pushroottable(v);
-
-	int Root = sq_gettop(v);
-	
-	sq_pushstring(v,"QkTexture",9);					// +1 //
-	sq_get(v,Root);									// =0 //
-	sq_createinstance(v,-1);						// +1 //
-
-	sq_pushstring(v,"qk_texture_constructor",-1);	// +1 //
-	sq_get(v,Root);									// =0 //
-
-	sq_push(v,-2); // Instance //					// +1 //
-	
-	// Arguments 2+ //
-	for ( int idx = 2; idx <= ArgCount; idx++ ) {
-		sq_push(v,idx);  // Arg //					// +1 //
-	}
-	sq_call(v,ArgCount,false,true);					// -ArgCount //
-	
-	sq_push(v,-2); // Instance //					// +1 //
-	
-	// returns a QkTexture
-	return SQ_RETURN;
-}
+//SQInteger qkTextureLoad( HSQUIRRELVM v ) {
+//	int ArgCount = sq_gettop(v);
+//
+//	sq_pushroottable(v);
+//
+//	int Root = sq_gettop(v);
+//	
+//	sq_pushstring(v,"QkTexture",9);					// +1 //
+//	sq_get(v,Root);									// =0 //
+//	sq_createinstance(v,-1);						// +1 //
+//
+//	sq_pushstring(v,"qk_texture_constructor",-1);	// +1 //
+//	sq_get(v,Root);									// =0 //
+//
+//	sq_push(v,-2); // Instance //					// +1 //
+//	
+//	// Arguments 2+ //
+//	for ( int idx = 2; idx <= ArgCount; idx++ ) {
+//		sq_push(v,idx);  // Arg //					// +1 //
+//	}
+//	sq_call(v,ArgCount,false,true);					// -ArgCount //
+//	
+//	sq_push(v,-2); // Instance //					// +1 //
+//	
+//	// returns a QkTexture
+//	return SQ_RETURN;
+//}
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkTextureBind( HSQUIRRELVM v ) {
 /*	// Synonym for MyQkTexture.Bind();
