@@ -95,6 +95,7 @@ void AppInit() {
 	gelSystemInit();
 	gelAssetInit();
 	gelTextureInit();
+	gelFontInit();
 	Gel::Input::Init();
 	
 	Gel::Search.Add( "src/Quack/QuackLib" );

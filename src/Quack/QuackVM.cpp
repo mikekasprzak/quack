@@ -66,6 +66,7 @@ void QuackVMInit() {
 		Log("* qkScreen"); register_qkScreen( vm );
 		Log("* qkDraw"); register_qkDraw( vm );
 		Log("* qkTexture"); register_qkTexture( vm );
+		Log("* qkFont"); register_qkFont( vm );
 		Log("* qkInput"); register_qkInput( vm );
 		//Log("* qkJson"); register_qkJson( vm );
 		Log("* qkColor"); register_qkColor( vm );

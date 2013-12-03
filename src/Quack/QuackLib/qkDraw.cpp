@@ -4,10 +4,12 @@
 #include "QuackLib_Internal.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include <Math/Math.h>
+#include <Asset/Asset.h>
 #include <Graphics/Graphics.h>
 #include <Render/Render.h>
+#include <Font/Font.h>
+
 #include <Generate/Generate.h>
-#include <Asset/Asset.h>
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -21,8 +23,10 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	
 	int NumArgs = sq_gettop(vm);
 	if ( NumArgs >= 2 ) {
+		// ARG1: Matrix
 		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
 
+		// ARG2: Position
 		if ( NumArgs >= 3 ) {
 			void* UserPointer;
 			sq_getinstanceup(vm,3,(void**)&UserPointer,NULL);
@@ -33,9 +37,12 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 			Pos = Vec->ToVector3D();
 		}
 		
+		// ARG3: Radius
 		if ( NumArgs >= 4 ) {
 			sq_getfloat(vm,4,&Radius);
 		}
+		
+		// ARG4: Color
 		if ( NumArgs >= 5 ) {
 			// Retrieve Data (Pointer) //
 			GelColor* ColorArg;
@@ -56,6 +63,7 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: Add a .Draw member to the QkTexture that does exactly this. //
 SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 	float Radius = 10.0f;
 	Vector3D Pos;
@@ -66,8 +74,10 @@ SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 	
 	int NumArgs = sq_gettop(vm);
 	if ( NumArgs >= 2 ) {
+		// ARG1: Matrix
 		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
 
+		// ARG2: Position
 		if ( NumArgs >= 3 ) {
 			void* UserPointer;
 			sq_getinstanceup(vm,3,(void**)&UserPointer,NULL);
@@ -78,9 +88,12 @@ SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 			Pos = Vec->ToVector3D();
 		}
 		
+		// ARG3: Radius
 		if ( NumArgs >= 4 ) {
 			sq_getfloat(vm,4,&Radius);
 		}
+		
+		// ARG4: Color
 		if ( NumArgs >= 5 ) {
 			// Retrieve Data (Pointer) //
 			GelColor* ColorArg;
@@ -118,6 +131,69 @@ SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkDrawText(HSQUIRRELVM vm) {
+	float FontSize = 8.0f;
+	Vector3D Pos;
+	
+	Matrix4x4* uMatrix = 0;
+	
+	GelColor Color = GEL_RGBA(255,255,255,255);
+	
+	const char* Text = "";
+	
+	GelFontPool::UID FontUID = 1; // Default to Font #1 //
+	
+	int NumArgs = sq_gettop(vm);
+	if ( NumArgs >= 3 ) {
+		// ARG1: Matrix
+		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
+		
+		// ARG2: Text
+		sq_getstring(vm,3,&Text);
+
+		// ARG3: Position
+		if ( NumArgs >= 4 ) {
+			void* UserPointer;
+			sq_getinstanceup(vm,4,(void**)&UserPointer,NULL);
+
+			// TODO: Check type (vec2, vec3) //
+
+			Vector2D* Vec = (Vector2D*)UserPointer;
+			Pos = Vec->ToVector3D();
+		}
+		
+		// ARG4: Font Size
+		if ( NumArgs >= 5 ) {
+			sq_getfloat(vm,5,&FontSize);
+		}
+		
+		// ARG5: Color
+		if ( NumArgs >= 6 ) {
+			// Retrieve Data (Pointer) //
+			GelColor* ColorArg;
+			sq_getinstanceup(vm,6,(void**)&ColorArg,0);
+			Color = *ColorArg;
+		}
+
+		// ARG6: Font
+		if ( NumArgs >= 7 ) {
+			// Retrieve Data (Pointer) //
+			GelFontPool::UID* UIDPtr;
+			sq_getinstanceup(vm,7,(void**)&UIDPtr,0);
+			FontUID = *UIDPtr;
+		}
+		
+		// TODO: Align
+	
+		Gel::FontPool[FontUID].DrawText( *uMatrix, Text, Pos, FontSize, GEL_ALIGN_DEFAULT );
+	}
+	else {
+		Log("! qkDrawText -- Not enough arguments");
+	}
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -128,6 +204,7 @@ SQRegFunction qkDraw_funcs[] = {
 
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
 	_DECL_FUNC(qkDrawTexturedQuad,-2,NULL),
+	_DECL_FUNC(qkDrawText,-3,NULL),
 	
 	{0,0,0,0}
 };
