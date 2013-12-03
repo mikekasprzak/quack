@@ -301,6 +301,17 @@ public:
 		return "";
 	}
 
+	// Variation of Get. Returns the DataBlock. //	
+	inline const DataBlock* GetDataBlock() {
+		DoTimeStamp(); // Write a timestamp every time this is accessed //
+		
+		if ( _IsLoaded() )
+			return Data;
+		else if ( _IsReleased() )
+			RequestReload();
+		return 0;
+	}
+
 	// Variation that does not request Reload //
 	inline char* _Get() {
 		DoTimeStamp(); // Write a timestamp every time this is accessed //
@@ -318,6 +329,14 @@ public:
 		else
 			return "";
 	}
+	inline const DataBlock* _GetDataBlock() {
+		DoTimeStamp(); // Write a timestamp every time this is accessed //
+		
+		if ( _IsLoaded() )
+			return Data;
+		else
+			return 0;
+	}
 
 	// Weak version that does not set timestamp or request reload //
 	inline char* __Get() {
@@ -331,6 +350,12 @@ public:
 			return Data->Data;
 		else
 			return "";
+	}
+	inline const DataBlock* __GetDataBlock() const {
+		if ( _IsLoaded() )
+			return Data;
+		else
+			return 0;
 	}
 
 	// Gets the size, and also requests a reload if the data was released //

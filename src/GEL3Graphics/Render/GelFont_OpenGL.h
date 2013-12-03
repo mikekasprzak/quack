@@ -28,11 +28,15 @@ public:
 	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
-	GelFont( const char* InFile ) :
-		Font( new_read_BMFont( InFile ) )
-	{
+	GelFont( const char* InFile, const bool Smooth = true ) {
+		//Font = new_read_BMFont( InFile );
+		const char* File = Gel::Search( InFile );
+		GelAssetPool::UID FontUID = Gel::AssetPool.Load( File );
+			
+		Font = new_read_BMFont( Gel::AssetPool[FontUID].GetDataBlock() );
+		
 		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-			const char* File = Gel::Search( Font->PageName->Data[idx] );
+			const char* TextureFile = Gel::Search( Font->PageName->Data[idx] );
 			/*		
 			DataBlock* Data = new_read_DataBlock( File );
 			Gel::STBTexture Tex = Gel::new_STBTexture( Data->Data, Data->Size );
@@ -43,8 +47,9 @@ public:
 				
 			Gel::delete_STBTexture( Tex );
 			*/
-			if ( File ) {
-				TexturePage.push_back( Gel::TexturePool.Load( File, false, false ) );
+			if ( TextureFile ) {
+				// HACK: Don't Flip. Need to sort out the flip order in my brain //
+				TexturePage.push_back( Gel::TexturePool.Load( TextureFile, Smooth, false ) );
 			}
 		}
 	}
