@@ -20,6 +20,12 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "GelTexture.h"
 // - ------------------------------------------------------------------------------------------ - //
+class GelTexturePool: public GelPool<GelTexture> {
+public:
+	_GELPOOL_LOAD_FUNC( const bool Smooth = true, const bool Flip = true, const bool PreMultiplyAlpha = true )
+	_GELPOOL_LOAD_BODY( "Texture",GelTexture, Smooth, Flip, PreMultiplyAlpha )
+};
+/*
 class GelTexturePool {
 public:
 	typedef int UID;
@@ -85,7 +91,7 @@ public:
 		}
 	}
 
-};
+};*/
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_TEXTURE_GELTEXTUREPOOL_H__ //
 // - ------------------------------------------------------------------------------------------ - //
