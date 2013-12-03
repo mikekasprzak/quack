@@ -27,7 +27,14 @@ public:
 	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
-	GelFont( const char* InFile, const bool Smooth = true ) {
+	inline GelFont() :
+		Font( 0 )
+	{	
+	}
+
+
+public:
+	inline void Load( const char* InFile, const bool Smooth = true, const bool PreMultiplyAlpha = true ) {
 		//Font = new_read_BMFont( InFile );
 		const char* File = Gel::Search( InFile );
 		GelAssetPool::UID FontUID = Gel::AssetPool.Load( File );
@@ -48,19 +55,26 @@ public:
 			*/
 			if ( TextureFile ) {
 				// HACK: Don't Flip. Need to sort out the flip order in my brain //
-				TexturePage.push_back( Gel::TexturePool.Load( TextureFile, Smooth, false ) );
+				TexturePage.push_back( Gel::TexturePool.Load( TextureFile, Smooth, false, PreMultiplyAlpha ) );
 			}
 		}
 	}
-	
-	~GelFont() {
-		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-			//delete_GelTextureHandle( TexturePage[idx] );
-			// TODO: Delete Texture ?
-		}		
-		delete_BMFont( Font );
+
+	void Unload() {
+		// TODO: Delete Textures ?
+//		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
+//			delete_GelTextureHandle( TexturePage[idx] );
+//		}
+		TexturePage.clear();		
+				
+		if ( Font ) {
+			delete_BMFont( Font );
+			Font = 0;
+		}
 	}
 	
+public:
+		
 	void DrawText( const Matrix4x4& Mat, const char* Text, const size_t Length, Vector3D Pos, Real Scalar = Real::One, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
 		size_t CharsDrawn = 0;
 		

@@ -52,7 +52,7 @@ GelSignal LoseFocus;
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
 #include <Font/Font.h>
-GelFont* MyFont;
+GelFont MyFont;
 
 // - ------------------------------------------------------------------------------------------ - //
 void AppInit() {
@@ -135,9 +135,9 @@ void AppInit() {
 	
 	
 	{
-//		MyFont = new GelFont( "Fonts/Arial.fnt" );
-//		MyFont = new GelFont( "Fonts/Fontin.fnt" );
-		MyFont = new GelFont( "Fonts/CourierNew.fnt" );
+		MyFont.Load( "Fonts/Arial.fnt" );
+//		MyFont.Load( "Fonts/Fontin.fnt" );
+//		MyFont.Load( "Fonts/CourierNew.fnt" );
 		//"C64Pro.fnt", false );
 	}
 }
@@ -186,7 +186,7 @@ void AppDraw() {
 
 	QuackVMCallDraw();
 	
-	MyFont->printf( 
+	MyFont.printf( 
 		Matrix4x4( 0.002,0,0,0, 0,0.003,0,0, 0,0,1,0, 0,0,0,1 ),
 		Vector3D(0,0,0), Real(8), GEL_ALIGN_DEFAULT, 
 		"SUP Robo! %i", 14);

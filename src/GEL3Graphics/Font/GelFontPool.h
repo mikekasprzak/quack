@@ -1,6 +1,10 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_TEXTURE_GELFONTPOOL_H__
-#define __GEL_TEXTURE_GELFONTPOOL_H__
+#ifndef __GEL_FONT_GELFONTPOOL_H__
+#define __GEL_FONT_GELFONTPOOL_H__
+// - ------------------------------------------------------------------------------------------ - //
+#include <Lib/Lib.h>
+//#include <Lib/GelPool/GelPool.h>
+#include <System/System.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <Render/Render.h>
 #include "GelFont.h"
@@ -8,5 +12,5 @@
 class GelFontPool {
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_TEXTURE_GELFONTPOOL_H__ //
+#endif // __GEL_FONT_GELFONTPOOL_H__ //
 // - ------------------------------------------------------------------------------------------ - //
