@@ -45,7 +45,7 @@ public:
 	}
 
 	// Get a UID for an Asset //
-	inline UID Load( const char* _FileName ) {
+	inline UID Load( const char* _FileName, const bool Smooth = true, const bool Flip = true, const bool PreMultiplyAlpha = true ) {
 		// NOTE: This should always return a legal UID //
 		
 		// If we got a zero (Search Failure) then return the dummy UID //
@@ -79,7 +79,7 @@ public:
 				Textures.push_back( GelTexture() );
 				
 				// TODO: Add this to the Job Queue //
-				Textures.back().Load( _FileName );
+				Textures.back().Load( _FileName, Smooth, Flip, PreMultiplyAlpha );
 				Log( "* Texture \"%s\" loaded as: %i", _FileName, Id );
 				return Id;
 			}

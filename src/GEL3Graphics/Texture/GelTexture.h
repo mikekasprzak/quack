@@ -25,7 +25,7 @@ public:
 	}
 	
 public:
-	inline void Load( const char* _FileName ) {
+	inline void Load( const char* _FileName, const bool Smooth = true, const bool Flip = true, const bool PreMultiplyAlpha = true ) {
 		AssetID = Gel::AssetPool.Load( _FileName );
 			
 		// TODO: Add the following to an OnLoaded listener.
@@ -35,7 +35,7 @@ public:
 			if ( Gel::is_STBTexture(MyAsset.Get(),MyAsset.GetSize()) ) {
 				Gel::STBTexture Tex = Gel::new_STBTexture( MyAsset.Get(), MyAsset.GetSize() );
 
-				Handle = Gel::upload_STBTexture( Tex );
+				Handle = Gel::upload_STBTexture( Tex, Smooth, Flip, PreMultiplyAlpha );
 					
 				// TODO: Correct these numbers in the case of MaxTextureSize being larger.
 				_Width = Tex.Width;

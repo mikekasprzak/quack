@@ -9,8 +9,8 @@
 #include "GelFont_BMFont.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "UV.h"
-#include <Texture/Texture.h>
 #include <Asset/Asset.h>
+#include <Texture/Texture.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <Graphics/Allocator/Allocator.h>
 #include <Graphics/Allocator/Vector3DAllocator.h>
@@ -25,14 +25,15 @@
 class GelFont {
 public:
 	BMFont* Font;
-	std::vector< GelTextureHandle > TexturePage;
+	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
 	GelFont( const char* InFile ) :
 		Font( new_read_BMFont( InFile ) )
 	{
 		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-			const char* File = Gel::Search( Font->PageName->Data[idx] );			
+			const char* File = Gel::Search( Font->PageName->Data[idx] );
+			/*		
 			DataBlock* Data = new_read_DataBlock( File );
 			Gel::STBTexture Tex = Gel::new_STBTexture( Data->Data, Data->Size );
 			delete_DataBlock( Data );
@@ -41,12 +42,17 @@ public:
 			TexturePage.push_back( Gel::upload_STBTexture( Tex, false, false ) );
 				
 			Gel::delete_STBTexture( Tex );
+			*/
+			if ( File ) {
+				TexturePage.push_back( Gel::TexturePool.Load( File, false, false ) );
+			}
 		}
 	}
 	
 	~GelFont() {
 		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-			delete_GelTextureHandle( TexturePage[idx] );
+			//delete_GelTextureHandle( TexturePage[idx] );
+			// TODO: Delete Texture ?
 		}		
 		delete_BMFont( Font );
 	}
@@ -146,7 +152,8 @@ public:
 			Gel::Default->UniformColor( 1, GEL_RGB_WHITE ); // GlobalColor //
 			Gel::Default->Uniform1i( 2, 0 ); // "TexImage0" //
 			Gel::Default->BindUniforms();
-			Bind( TexturePage[Tex], 0 );
+			//Bind( TexturePage[Tex], 0 );
+			Gel::TexturePool[TexturePage[Tex]].Bind( 0 );
 			Gel::Default->Attrib( 0, Vert.Get() );
 			Gel::Default->Attrib( 1, UV.Get() );
 			Gel::Default->DrawArrays( GL_TRIANGLES, Vert.Size() );
