@@ -30,7 +30,6 @@ public:
 	inline GelTexturePool() {
 		// Add 1 element to the Textures array: A dummy placeholder for Id 0. //
 		Textures.push_back( GelTexture() );
-//		Textures.back().SetFlag( GelAsset::AF_DONT_LOAD | GelAsset::AF_BAD );
 	}
 	inline ~GelTexturePool() {
 		for ( st idx = 0; idx < Textures.size(); idx++ ) {
