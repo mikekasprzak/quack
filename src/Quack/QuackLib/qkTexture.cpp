@@ -1,4 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: Add a ".Draw" function that just draws a quad. Mainly for testing.
+// - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <API/API_Squirrel.h>
 #include "QuackLib_Internal.h"

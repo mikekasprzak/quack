@@ -134,15 +134,6 @@ void AppInit() {
 		
 		Log("**** DONE");
 	}
-	
-	
-	{
-		MyFont = Gel::FontPool.Load( "Fonts/Fontin.fnt" );
-//		MyFont.Load( "Fonts/Arial.fnt" );
-//		MyFont.Load( "Fonts/Fontin.fnt" );
-//		MyFont.Load( "Fonts/CourierNew.fnt" );
-		//"C64Pro.fnt", false );
-	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
@@ -188,11 +179,6 @@ void AppDraw() {
 	// *** //
 
 	QuackVMCallDraw();
-	
-	Gel::FontPool[MyFont].printf( 
-		Matrix4x4( 0.002,0,0,0, 0,0.003,0,0, 0,0,1,0, 0,0,0,1 ),
-		Vector3D(0,0,0), Real(8), GEL_ALIGN_DEFAULT, 
-		"SUP Horbo! %i", 124);
 
 	// *** //
 	App::DrawProfiler.Stop();

@@ -185,7 +185,7 @@ SQInteger qkDrawText(HSQUIRRELVM vm) {
 		
 		// TODO: Align
 	
-		Gel::FontPool[FontUID].DrawText( *uMatrix, Text, Pos, FontSize, GEL_ALIGN_DEFAULT );
+		Gel::FontPool[FontUID].DrawText( *uMatrix, Text, Pos, FontSize, Color, GEL_ALIGN_DEFAULT );
 	}
 	else {
 		Log("! qkDrawText -- Not enough arguments");
