@@ -10,6 +10,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Asset/Asset.h>
 #include <Texture/Texture.h>
+#include <Render/Render.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <Graphics/Allocator/Allocator.h>
 #include <Graphics/Allocator/Vector3DAllocator.h>
