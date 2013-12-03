@@ -1054,10 +1054,10 @@ struct PVRTMat3 : public PVRTMATRIX3
 *****************************************************************************/
 	PVRTMat3(const VERTTYPE* pMat)
 	{
-		VERTTYPE* ptr = f;
+		VERTTYPE* lptr = f;
 		for(int i=0;i<9;i++)
 		{
-			(*ptr++)=(*pMat++);
+			(*lptr++)=(*pMat++);
 		}
 	}
 
@@ -1505,10 +1505,10 @@ struct PVRTMat4 : public PVRTMATRIX
 *****************************************************************************/
 	PVRTMat4(const VERTTYPE* mat)
 	{
-		VERTTYPE* ptr = f;
+		VERTTYPE* lptr = f;
 		for(int i=0;i<16;i++)
 		{
-			(*ptr++)=(*mat++);
+			(*lptr++)=(*mat++);
 		}
 	}
 

@@ -51,7 +51,7 @@ public:
 		delete_BMFont( Font );
 	}
 	
-	void DrawText( const char* Text, const size_t Length, Vector3D Pos, Real Scalar = Real::One, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
+	void DrawText( const Matrix4x4& Mat, const char* Text, const size_t Length, Vector3D Pos, Real Scalar = Real::One, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
 		size_t CharsDrawn = 0;
 		
 		int ScaleW = common_BMFont( Font )->ScaleW;
@@ -142,7 +142,7 @@ public:
 //				);
 			
 			Gel::Default->Bind( Gel::TextureShader );
-			Gel::Default->UniformMatrix4x4( 0, Gel::ViewMatrix );
+			Gel::Default->UniformMatrix4x4( 0, Mat );
 			Gel::Default->UniformColor( 1, GEL_RGB_WHITE ); // GlobalColor //
 			Gel::Default->Uniform1i( 2, 0 ); // "TexImage0" //
 			Gel::Default->BindUniforms();
@@ -156,14 +156,14 @@ public:
 		}
 	}
 	
-	inline void DrawText( const char* Text, const Vector3D& Pos, const Real Scalar = Real::One, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
-		DrawText( Text, length_String( Text ), Pos, Scalar, Align );
+	inline void DrawText( const Matrix4x4& Mat, const char* Text, const Vector3D& Pos, const Real Scalar = Real::One, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
+		DrawText( Mat, Text, length_String( Text ), Pos, Scalar, Align );
 	}
-	inline void DrawText( const char* Text, const Vector2D& Pos, const Real Scalar = Real::One, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
-		DrawText( Text, Pos.ToVector3D(), Scalar, Align );
+	inline void DrawText( const Matrix4x4& Mat, const char* Text, const Vector2D& Pos, const Real Scalar = Real::One, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
+		DrawText( Mat, Text, Pos.ToVector3D(), Scalar, Align );
 	}
 	
-	inline void printf( const Vector3D& Pos, const Real Scalar, const GelAlign Align, const char* Text, ... ) {
+	inline void printf( const Matrix4x4& Mat, const Vector3D& Pos, const Real Scalar, const GelAlign Align, const char* Text, ... ) {
 		char StrBuff[2048];
 		
 		{
@@ -175,7 +175,7 @@ public:
 			va_end( vl );
 		}
 
-		DrawText( StrBuff, Pos, Scalar, Align );
+		DrawText( Mat, StrBuff, Pos, Scalar, Align );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //

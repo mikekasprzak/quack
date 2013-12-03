@@ -52,6 +52,9 @@ GelSignal LoseFocus;
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
 
+#include <Render/Render.h>
+GelFont* MyFont;
+
 // - ------------------------------------------------------------------------------------------ - //
 void AppInit() {
 	Log( "-=- AppInit -=-" );
@@ -130,6 +133,11 @@ void AppInit() {
 		
 		Log("**** DONE");
 	}
+	
+	
+	{
+		MyFont = new GelFont( "project/content/C64Pro.fnt" );
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
@@ -175,6 +183,11 @@ void AppDraw() {
 	// *** //
 
 	QuackVMCallDraw();
+	
+	MyFont->printf( 
+		Matrix4x4( 0.002,0,0,0, 0,0.003,0,0, 0,0,1,0, 0,0,0,1 ),
+		Vector3D(0,0,0), Real(8*8), GEL_ALIGN_DEFAULT, 
+		"SUP Robo! %i", 14);
 
 	// *** //
 	App::DrawProfiler.Stop();
