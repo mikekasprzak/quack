@@ -1,9 +1,9 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SHADER_SHADER_H__
-#define __GEL_SHADER_SHADER_H__
+#ifndef __GEL_RENDER_DEFAULTSHADER_H__
+#define __GEL_RENDER_DEFAULTSHADER_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "Shader_OpenGL.h"
-#include "Shader_Stub.h"
+#include "DefaultShader_OpenGL.h"
+#include "DefaultShader_Stub.h"
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SHADER_SHADER_H__ //
+#endif // __GEL_RENDER_DEFAULTSHADER_H__ //
 // - ------------------------------------------------------------------------------------------ - //
