@@ -114,7 +114,7 @@ void AppInit() {
 	{	
 		Log("**** LOADING MONKEY POD");
 		CPVRTModelPOD Scene;
-		EPVRTError Error = Scene.ReadFromFile("project/content/Cube.pod");
+		EPVRTError Error = Scene.ReadFromFile("project/content/Monkey.pod");
 		//ReadFromMemory(pData,Size);
 		
 		if ( Error == PVR_SUCCESS ) {
