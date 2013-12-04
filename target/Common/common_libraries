@@ -92,5 +92,6 @@ include target/Common/common_libraries_windows
 include target/Common/common_libraries_shared
 
 include target/Common/common_libraries_powervrsdk
+include target/Common/common_libraries_spine
 # - ------------------------------------------------------------------------ - #
 

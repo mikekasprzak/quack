@@ -23,6 +23,7 @@ COPY_FILES			+=
 # Game Specific Library Requesting Defines #
 USES_GEL3			:=	true	# Uses the GEL3 Library (Game Engineering Library) #
 USES_POWERVR_SDK	:=	true	# Use the PowerVR SDK (POD Loading and Utils) #
+USES_SPINE			:=	true	# Use the Spine Runtime (2D Skeletal Mesh Animation) #
 
 USES_SYSTEM			:=	true	# Uses the system (hardware) library #
 USES_GRAPHICS		:=	true	# Uses either Windowed or Fullscreen Graphics #
