@@ -37,8 +37,6 @@ public:
 			EPVRTError Error = Model->ReadFromMemory( Asset.Get(), Asset.GetSize() );
 		
 			if ( Error == PVR_SUCCESS ) {
-				Log("Success!");
-				
 				Log("Nodes: %i  MeshNodes: %i  Meshes: %i  AnimationFrames: %i (Lights: %i  Cameras: %i  Materials: %i  Textures: %i)", 
 					Model->nNumNode, Model->nNumMeshNode, Model->nNumMesh, Model->nNumFrame,
 					Model->nNumLight, Model->nNumCamera, Model->nNumMaterial, Model->nNumTexture );
@@ -48,16 +46,12 @@ public:
 					
 				for ( st32 idx = 0; idx < Model->nNumTexture; idx++ ) {
 					Log("%i T: %s", idx, Model->pTexture[idx].pszName );
+					const char* TextureFile = Gel::Search( Model->pTexture[idx].pszName );
+		
+					if ( TextureFile ) {
+						TexturePage.push_back( Gel::TexturePool.Load( TextureFile ) );
+					}
 				}
-				
-//		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-//			const char* TextureFile = Gel::Search( Font->PageName->Data[idx] );
-//
-//			if ( TextureFile ) {
-//				// HACK: Don't Flip. Need to sort out the flip order in my brain //
-//				TexturePage.push_back( Gel::TexturePool.Load( TextureFile, Smooth, false, PreMultiplyAlpha ) );
-//			}
-//		}
 			}
 		}
 	}
