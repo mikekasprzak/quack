@@ -14,6 +14,7 @@ SQInteger register_qkScreen(HSQUIRRELVM v);
 SQInteger register_qkDraw(HSQUIRRELVM v);
 SQInteger register_qkTexture(HSQUIRRELVM v);
 SQInteger register_qkFont(HSQUIRRELVM v);
+SQInteger register_qkModel(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkInput(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //

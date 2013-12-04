@@ -111,12 +111,12 @@ void AppInit() {
 	QuackVMCallSetup();
 	QuackVMCallInit();
 
-	{	
-		Log("**** LOADING POD");
-		GelModelPool::UID MyUID = Gel::ModelPool.Load( "project/content/Cube.pod" );
-		
-		Log("**** DONE");
-	}
+//	{	
+//		Log("**** LOADING POD");
+//		GelModelPool::UID MyUID = Gel::ModelPool.Load( "project/content/Cube.pod" );
+//		
+//		Log("**** DONE");
+//	}
 
 }
 // - ------------------------------------------------------------------------------------------ - //
