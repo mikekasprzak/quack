@@ -55,7 +55,7 @@ public:
 		}
 	}
 
-	void Unload() {
+	inline void Unload() {
 		// TODO: Delete Textures ?
 //		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
 //			delete_GelTextureHandle( TexturePage[idx] );

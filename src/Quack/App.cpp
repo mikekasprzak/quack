@@ -12,7 +12,7 @@
 #include <Asset/Asset.h>
 #include <Texture/Texture.h>
 //#include <rde/rdestl.h>
-#include <PVRTModelPOD.h>
+#include <Model/Model.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -111,29 +111,37 @@ void AppInit() {
 	QuackVMCallSetup();
 	QuackVMCallInit();
 	
+//	{	
+//		Log("**** LOADING MONKEY POD");
+//		CPVRTModelPOD Scene;
+//		EPVRTError Error = Scene.ReadFromFile("project/content/Monkey.pod");
+//		//ReadFromMemory(pData,Size);
+//		
+//		if ( Error == PVR_SUCCESS ) {
+//			Log("Success!");
+//			
+//			Log("Nodes: %i  MeshNodes: %i  Meshes: %i  AnimationFrames: %i (Lights: %i  Cameras: %i  Materials: %i  Textures: %i)", 
+//				Scene.nNumNode, Scene.nNumMeshNode, Scene.nNumMesh, Scene.nNumFrame,
+//				Scene.nNumLight, Scene.nNumCamera, Scene.nNumMaterial, Scene.nNumTexture );
+//				
+//			Log("Verts: %i  Faces: %i  UVW: %i",
+//				Scene.pMesh[0].nNumVertex, Scene.pMesh[0].nNumFaces, Scene.pMesh[0].nNumUVW );
+//				
+//			for ( st32 idx = 0; idx < Scene.nNumTexture; idx++ ) {
+//				Log("%i T: %s", idx, Scene.pTexture[idx].pszName );
+//			}
+//		}
+//		
+//		Log("**** DONE");
+//	}
+
 	{	
-		Log("**** LOADING MONKEY POD");
-		CPVRTModelPOD Scene;
-		EPVRTError Error = Scene.ReadFromFile("project/content/Monkey.pod");
-		//ReadFromMemory(pData,Size);
-		
-		if ( Error == PVR_SUCCESS ) {
-			Log("Success!");
-			
-			Log("Nodes: %i  MeshNodes: %i  Meshes: %i  AnimationFrames: %i (Lights: %i  Cameras: %i  Materials: %i  Textures: %i)", 
-				Scene.nNumNode, Scene.nNumMeshNode, Scene.nNumMesh, Scene.nNumFrame,
-				Scene.nNumLight, Scene.nNumCamera, Scene.nNumMaterial, Scene.nNumTexture );
-				
-			Log("Verts: %i  Faces: %i  UVW: %i",
-				Scene.pMesh[0].nNumVertex, Scene.pMesh[0].nNumFaces, Scene.pMesh[0].nNumUVW );
-				
-			for ( st32 idx = 0; idx < Scene.nNumTexture; idx++ ) {
-				Log("%i T: %s", idx, Scene.pTexture[idx].pszName );
-			}
-		}
+		Log("**** LOADING POD");
+		GelModelPool::UID MyUID = Gel::ModelPool.Load( "project/content/Cube.pod" );
 		
 		Log("**** DONE");
 	}
+
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
