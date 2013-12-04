@@ -118,12 +118,12 @@ void AppInit() {
 //		Log("**** DONE");
 //	}
 
-	{	
-		Log("**** LOADING SPINE");
-		GelModel2DPool::UID MyUID = Gel::Model2DPool.Load( "SpineTest/spineboy.json" );
-		
-		Log("**** DONE");
-	}
+//	{	
+//		Log("**** LOADING SPINE");
+//		GelModel2DPool::UID MyUID = Gel::Model2DPool.Load( "SpineTest/spineboy.json" );
+//		
+//		Log("**** DONE");
+//	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
