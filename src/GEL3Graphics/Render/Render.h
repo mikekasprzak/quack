@@ -9,7 +9,7 @@
 #include "IndexHandle.h"
 #include "RenderTarget.h"
 #include "Blending.h"
-#include "Shader.h"
+#include "DefaultShader.h"
 
 #include "Render_Core.h"
 // - ------------------------------------------------------------------------------------------ - //
