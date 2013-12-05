@@ -9,7 +9,7 @@
 #include <PVRTModelPOD.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelModel {
-protected:
+public:
 	CPVRTModelPOD* Model;
 	std::vector< GelTexturePool::UID > TexturePage;
 	

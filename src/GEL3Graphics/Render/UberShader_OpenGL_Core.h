@@ -19,7 +19,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-typedef size_t ShaderHandle;
+typedef st32 ShaderHandle;
 // - ------------------------------------------------------------------------------------------ - //
 class cUberShader_Shader {
 public:
@@ -432,12 +432,12 @@ public:
 #endif // USES_OPENGL_2_FAMILY //
 
 	// GL Drawing Code //
-	inline void DrawArrays( const int Mode, const size_t PolyCount ) {
+	inline void DrawArrays( const int Mode, const st32 PolyCount ) {
 		glDrawArrays( Mode, 0, PolyCount );	
 	}
 	// PolyCount unused here with OpenGL //
-	inline void DrawElements( const int Mode, const size_t /*PolyCount*/, const unsigned short* Index, const size_t IndexCount ) {
-		glDrawElements( Mode, IndexCount, GL_UNSIGNED_SHORT, (const unsigned short*)Index );
+	inline void DrawElements( const int Mode, const st32 /*PolyCount*/, const void* Index, const st32 IndexCount ) {
+		glDrawElements( Mode, IndexCount, GL_UNSIGNED_SHORT/*GL_UNSIGNED_INT*/, Index );
 	}
 
 public:
@@ -464,9 +464,9 @@ public:
 	inline void UniformMatrix2x2( const st32 Index, const Matrix2x2& v );
 	inline void UniformMatrix3x3( const st32 Index, const Matrix3x3& v );
 	inline void UniformMatrix4x4( const st32 Index, const Matrix4x4& v );
-	inline void UniformMatrix2fv( const st32 Index, const float* v, const size_t Count );
-	inline void UniformMatrix3fv( const st32 Index, const float* v, const size_t Count );
-	inline void UniformMatrix4fv( const st32 Index, const float* v, const size_t Count );
+	inline void UniformMatrix2fv( const st32 Index, const float* v, const st32 Count );
+	inline void UniformMatrix3fv( const st32 Index, const float* v, const st32 Count );
+	inline void UniformMatrix4fv( const st32 Index, const float* v, const st32 Count );
 
 	inline void UniformColor( const st32 Index, const GelColor Color );
 	inline void UniformSColor( const st32 Index, const GelSColor Color );
@@ -487,22 +487,22 @@ public:
 	inline int BindUniform3f( const char* Name, const float v0, const float v1, const float v2 );
 	inline int BindUniform4f( const char* Name, const float v0, const float v1, const float v2, const float v3 );
 
-	inline int BindUniform1iv( const char* Name, const int* v, const size_t Count );
-	inline int BindUniform2iv( const char* Name, const int* v, const size_t Count );
-	inline int BindUniform3iv( const char* Name, const int* v, const size_t Count );
-	inline int BindUniform4iv( const char* Name, const int* v, const size_t Count );
+	inline int BindUniform1iv( const char* Name, const int* v, const st32 Count );
+	inline int BindUniform2iv( const char* Name, const int* v, const st32 Count );
+	inline int BindUniform3iv( const char* Name, const int* v, const st32 Count );
+	inline int BindUniform4iv( const char* Name, const int* v, const st32 Count );
 
-	inline int BindUniform1fv( const char* Name, const float* v, const size_t Count );
-	inline int BindUniform2fv( const char* Name, const float* v, const size_t Count );
-	inline int BindUniform3fv( const char* Name, const float* v, const size_t Count );
-	inline int BindUniform4fv( const char* Name, const float* v, const size_t Count );
+	inline int BindUniform1fv( const char* Name, const float* v, const st32 Count );
+	inline int BindUniform2fv( const char* Name, const float* v, const st32 Count );
+	inline int BindUniform3fv( const char* Name, const float* v, const st32 Count );
+	inline int BindUniform4fv( const char* Name, const float* v, const st32 Count );
 
 	inline int BindUniformMatrix2x2( const char* Name, const Matrix2x2& Matrix );
 	inline int BindUniformMatrix3x3( const char* Name, const Matrix3x3& Matrix );
 	inline int BindUniformMatrix4x4( const char* Name, const Matrix4x4& Matrix );
-	inline int BindUniformMatrix2fv( const char* Name, const float* Matrix, const size_t Count );
-	inline int BindUniformMatrix3fv( const char* Name, const float* Matrix, const size_t Count );
-	inline int BindUniformMatrix4fv( const char* Name, const float* Matrix, const size_t Count );
+	inline int BindUniformMatrix2fv( const char* Name, const float* Matrix, const st32 Count );
+	inline int BindUniformMatrix3fv( const char* Name, const float* Matrix, const st32 Count );
+	inline int BindUniformMatrix4fv( const char* Name, const float* Matrix, const st32 Count );
 
 	inline int BindUniformColor( const char* Name, const GelColor Color );		// 8 bit unsigned color (255=1.0) //
 	inline int BindUniformSColor( const char* Name, const GelSColor Color );	// 16 bit signed color  (255=1.0) //

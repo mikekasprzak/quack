@@ -8,6 +8,7 @@
 #include <Graphics/Graphics.h>
 #include <Render/Render.h>
 #include <Font/Font.h>
+#include <Model/Model.h>
 
 #include <Generate/Generate.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -194,6 +195,60 @@ SQInteger qkDrawText(HSQUIRRELVM vm) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: Add a .Draw member to the QkModel that does exactly this. //
+SQInteger qkDrawModel(HSQUIRRELVM vm) {
+	Matrix4x4* uMatrix = 0;
+	
+	GelColor Color = GEL_RGBA(255,255,255,255);
+	GelModelPool::UID ModelUID = 1; // Default to Font #1 //
+	
+	int NumArgs = sq_gettop(vm);
+	if ( NumArgs >= 2 ) {
+		// ARG1: Matrix
+		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
+
+		// ARG2: Font
+		if ( NumArgs >= 3 ) {
+			// Retrieve Data (Pointer) //
+			GelModelPool::UID* UIDPtr;
+			sq_getinstanceup(vm,3,(void**)&UIDPtr,0);
+			ModelUID = *UIDPtr;
+		}
+
+		// ARG3: Color
+		if ( NumArgs >= 4 ) {
+			// Retrieve Data (Pointer) //
+			GelColor* ColorArg;
+			sq_getinstanceup(vm,4,(void**)&ColorArg,0);
+			Color = *ColorArg;
+		}
+		
+		// Render // 
+		{
+			CPVRTModelPOD* Model = Gel::ModelPool[ModelUID].Model;
+			
+			for ( st32 MeshIndex = 0; MeshIndex < Model->nNumMesh; MeshIndex++ ) {
+				SPODMesh& Mesh = Model->pMesh[MeshIndex];
+				const float* Vert = (const float*)Mesh.pInterleaved;//sVertex.pData;
+				const st32 VertCount = Mesh.nNumVertex;
+				
+				//if ( Mesh.sFaces.eType == EPODDataUnsignedShort ) // Is usually an Unsigned Short! Good! //
+				const int* Index = (const int*)Mesh.sFaces.pData;
+				const st32 IndexCount = Mesh.nNumFaces;
+				
+				//Log( ">> %i -- %x:%i [%x:%i,%i]  %x:%i [%x:%i,%i]", MeshIndex, Vert,VertCount,  Mesh.sVertex.eType,Mesh.sVertex.n,Mesh.sVertex.nStride,  Index,IndexCount ,Mesh.sFaces.eType,Mesh.sFaces.n,Mesh.sFaces.nStride );
+				
+				Gel::RenderFlatIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,VertCount, Index,IndexCount*3 );
+			}
+		}
+	}
+	else {
+		Log("! qkDrawModel -- Not enough arguments");
+	}
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -205,6 +260,7 @@ SQRegFunction qkDraw_funcs[] = {
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
 	_DECL_FUNC(qkDrawTexturedQuad,-2,NULL),
 	_DECL_FUNC(qkDrawText,-3,NULL),
+	_DECL_FUNC(qkDrawModel,-3,NULL),
 	
 	{0,0,0,0}
 };
