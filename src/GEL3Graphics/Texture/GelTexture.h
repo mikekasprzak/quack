@@ -19,13 +19,28 @@ protected:
 	GelTextureHandle Handle;
 	
 	int _Width, _Height;
+	
+	enum {
+		GT_1BPP =				1,
+		GT_2BPP =				2,
+		GT_3BPP =				3,
+		GT_4BPP =				4,
+		GT_BYTESPERPIXEL = 		0xF,
+		
+		GT_SMOOTH = 			0x100,
+		GT_FLIP = 				0x200,
+		GT_PREMULTIPLYALPHA = 	0x400,
+	};
+	
+	int Flags;
 
 public:
 	inline GelTexture( const st32 _MyID ) :
 		MyID( _MyID ),
 		AssetID( 0 ),
 		Handle( 0 ),
-		_Width( 0 ), _Height( 0 )
+		_Width( 0 ), _Height( 0 ),
+		Flags( 0 )
 	{
 	}
 	
@@ -36,22 +51,13 @@ public:
 		// TODO: Add the following to an OnLoaded listener.
 		
 		if ( AssetID ) {
-			GelAsset& MyAsset = Gel::AssetPool[AssetID];
-			Log("MyID: %i", MyID);
-			MyAsset.SubscribeToChanges( GelTexturePool_Subscriber, MyID );
+			Flags = Smooth ? GT_SMOOTH : 0;
+			Flags |= Flip ? GT_FLIP : 0;
+			Flags |= PreMultiplyAlpha ? GT_PREMULTIPLYALPHA : 0;
 			
-//			if ( Gel::is_STBTexture(MyAsset.Get(),MyAsset.GetSize()) ) {
-//				Gel::STBTexture Tex = Gel::new_STBTexture( MyAsset.Get(), MyAsset.GetSize() );
-//
-//				Handle = Gel::upload_STBTexture( Tex, Smooth, Flip, PreMultiplyAlpha );
-//					
-//				// TODO: Correct these numbers in the case of MaxTextureSize being larger.
-//				_Width = Tex.Width;
-//				_Height = Tex.Height;
-//				//SizeInBytes = Tex.Info;
-//				
-//				Gel::delete_STBTexture( Tex );
-//			}
+			GelAsset& MyAsset = Gel::AssetPool[AssetID];
+			MyAsset.SubscribeToChanges( GelTexturePool_Subscriber, MyID );
+
 			if ( LoadBody( *this, MyAsset ) ) {
 				// It worked... Do something... Maybe //
 			}
@@ -74,12 +80,17 @@ public:
 			Gel::STBTexture Tex = Gel::new_STBTexture( MyAsset.Get(), MyAsset.GetSize() );
 
 			// NOTE: Cannot handle these extra args. //
-			MyTexture.Handle = Gel::upload_STBTexture( Tex );//, Smooth, Flip, PreMultiplyAlpha );
+			MyTexture.Handle = Gel::upload_STBTexture( 
+				Tex, 
+				MyTexture.Flags & GT_SMOOTH, 
+				MyTexture.Flags & GT_FLIP, 
+				MyTexture.Flags & GT_PREMULTIPLYALPHA
+				);
 				
 			// TODO: Correct these numbers in the case of MaxTextureSize being larger.
 			MyTexture._Width = Tex.Width;
 			MyTexture._Height = Tex.Height;
-			//SizeInBytes = Tex.Info;
+			MyTexture.Flags = Tex.Info | (MyTexture.Flags & ~GT_BYTESPERPIXEL);
 			
 			Gel::delete_STBTexture( Tex );
 			
