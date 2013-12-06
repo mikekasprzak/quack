@@ -49,6 +49,7 @@ GelTime FrameTime = 0;
 GelProfiler StepProfiler;
 GelProfiler DrawProfiler;
 // - ------------------------------------------------------------------------------------------ - //
+bool AppStarted = false;	// Flag that is set only after Init is called (for the these Focus functions).
 GelSignal GainFocus;
 GelSignal LoseFocus;
 // - ------------------------------------------------------------------------------------------ - //
@@ -111,9 +112,11 @@ void AppInit() {
 	Log( "" );	
 	
 	App::HadVMError = false;
+	App::AppStarted = false;
 	QuackVMInit();
 	QuackVMCallSetup();
 	QuackVMCallInit();
+	App::AppStarted = true;
 
 	// **** //
 
@@ -213,13 +216,19 @@ void AppDraw() {
 // - ------------------------------------------------------------------------------------------ - //
 void AppGainFocus() {
 	App::GainFocus();
-	QuackVMClearError();
-	Gel::AssetPool.ScanForChanges();
-	QuackVMCallGainFocus();
+	// Only Call this code if we have actually finished running VMInit() //
+	if ( App::AppStarted ) {
+		QuackVMClearError();
+		Gel::AssetPool.ScanForChanges();
+		QuackVMCallGainFocus();
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppLoseFocus() {
-	QuackVMCallLoseFocus();
+	// Only Call this code if we have actually finished running VMInit() //
+	if ( App::AppStarted ) {
+		QuackVMCallLoseFocus();
+	}
 	App::LoseFocus();
 }
 // - ------------------------------------------------------------------------------------------ - //
