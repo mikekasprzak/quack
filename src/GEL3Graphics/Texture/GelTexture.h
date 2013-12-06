@@ -8,16 +8,21 @@
 #include "Texture_STB.h"
 #include "Texture_PVR3.h"
 // - ------------------------------------------------------------------------------------------ - //
+extern void GelTexturePool_Subscriber( const st UserData );
+// - ------------------------------------------------------------------------------------------ - //
 class GelTexture {
 	friend class GelTexturePool;
+	friend void GelTexturePool_Subscriber( const st UserData );
 protected:
+	st32 MyID;	// My TextureID (an Internal Copy) //
 	GelAssetPool::UID AssetID;
 	GelTextureHandle Handle;
 	
 	int _Width, _Height;
 
 public:
-	inline GelTexture() :
+	inline GelTexture( const st32 _MyID ) :
+		MyID( _MyID ),
 		AssetID( 0 ),
 		Handle( 0 ),
 		_Width( 0 ), _Height( 0 )
@@ -32,19 +37,24 @@ public:
 		
 		if ( AssetID ) {
 			GelAsset& MyAsset = Gel::AssetPool[AssetID];
-			if ( Gel::is_STBTexture(MyAsset.Get(),MyAsset.GetSize()) ) {
-				Gel::STBTexture Tex = Gel::new_STBTexture( MyAsset.Get(), MyAsset.GetSize() );
-
-				Handle = Gel::upload_STBTexture( Tex, Smooth, Flip, PreMultiplyAlpha );
-					
-				// TODO: Correct these numbers in the case of MaxTextureSize being larger.
-				_Width = Tex.Width;
-				_Height = Tex.Height;
-				//SizeInBytes = Tex.Info;
-				
-				Gel::delete_STBTexture( Tex );
+			Log("MyID: %i", MyID);
+			MyAsset.SubscribeToChanges( GelTexturePool_Subscriber, MyID );
+			
+//			if ( Gel::is_STBTexture(MyAsset.Get(),MyAsset.GetSize()) ) {
+//				Gel::STBTexture Tex = Gel::new_STBTexture( MyAsset.Get(), MyAsset.GetSize() );
+//
+//				Handle = Gel::upload_STBTexture( Tex, Smooth, Flip, PreMultiplyAlpha );
+//					
+//				// TODO: Correct these numbers in the case of MaxTextureSize being larger.
+//				_Width = Tex.Width;
+//				_Height = Tex.Height;
+//				//SizeInBytes = Tex.Info;
+//				
+//				Gel::delete_STBTexture( Tex );
+//			}
+			if ( LoadBody( *this, MyAsset ) ) {
+				// It worked... Do something... Maybe //
 			}
-			// TODO: PVR //
 			else {
 				Log( "! Unsupported Texture! %s", _FileName );
 			}
@@ -57,6 +67,27 @@ public:
 			//Gel::AssetPool[AssetID].Unload(); // Done automatically by AssetPool //
 			Handle = 0;
 		}
+	}
+	
+	static bool LoadBody( GelTexture& MyTexture, GelAsset& MyAsset ) {
+		if ( Gel::is_STBTexture(MyAsset.Get(),MyAsset.GetSize()) ) {
+			Gel::STBTexture Tex = Gel::new_STBTexture( MyAsset.Get(), MyAsset.GetSize() );
+
+			// NOTE: Cannot handle these extra args. //
+			MyTexture.Handle = Gel::upload_STBTexture( Tex );//, Smooth, Flip, PreMultiplyAlpha );
+				
+			// TODO: Correct these numbers in the case of MaxTextureSize being larger.
+			MyTexture._Width = Tex.Width;
+			MyTexture._Height = Tex.Height;
+			//SizeInBytes = Tex.Info;
+			
+			Gel::delete_STBTexture( Tex );
+			
+			return true;
+		}
+		// TODO: PVR //
+		
+		return false;
 	}
 	
 public:

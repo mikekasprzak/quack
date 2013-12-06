@@ -21,6 +21,8 @@
 // - ------------------------------------------------------------------------------------------ - //
 class GelModel2D {
 protected:
+	st32 MyID;	// My TextureID (an Internal Copy) //
+
 	// NOTE: This is bad! Spine requires a source atlas or a "Attachment Loader" to read a skeleton file.
 	spAtlas* Atlas;
 	spSkeletonJson* SkeletonJson;
@@ -32,7 +34,8 @@ protected:
 	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
-	inline GelModel2D() :
+	inline GelModel2D( const st32 _MyID ) :
+		MyID( _MyID ),
 		Atlas( 0 ),
 		SkeletonJson( 0 ),
 		SkeletonData( 0 ),

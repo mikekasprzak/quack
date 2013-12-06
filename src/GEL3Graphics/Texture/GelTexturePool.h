@@ -18,8 +18,10 @@
 class GelTexturePool: public GelPool<GelTexture> {
 public:
 	_GELPOOL_LOAD_FUNC( const bool Smooth = true, const bool Flip = true, const bool PreMultiplyAlpha = true )
-	_GELPOOL_LOAD_BODY( "Texture",GelTexture, Smooth, Flip, PreMultiplyAlpha )
+	_GELPOOL_LOAD_BODY( "Texture", GelTexture, Smooth, Flip, PreMultiplyAlpha )
 };
+// - ------------------------------------------------------------------------------------------ - //
+void GelTexturePool_Subscriber( const st UserData );
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_TEXTURE_GELTEXTUREPOOL_H__ //
 // - ------------------------------------------------------------------------------------------ - //

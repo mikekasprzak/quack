@@ -24,11 +24,13 @@
 // - ------------------------------------------------------------------------------------------ - //
 class GelFont {
 public:
+	st32 MyID;	// My FontID (an Internal Copy) //
 	BMFont* Font;
 	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
-	inline GelFont() :
+	inline GelFont( const st32 _MyID ) :
+		MyID( _MyID ),
 		Font( 0 )
 	{	
 	}

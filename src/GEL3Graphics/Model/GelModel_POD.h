@@ -10,11 +10,13 @@
 // - ------------------------------------------------------------------------------------------ - //
 class GelModel {
 public:
+	st32 MyID;	// My TextureID (an Internal Copy) //
 	CPVRTModelPOD* Model;
 	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
-	inline GelModel() :
+	inline GelModel( const st32 _MyID ) :
+		MyID( _MyID ),
 		Model( 0 )
 	{	
 	}

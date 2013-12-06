@@ -18,7 +18,7 @@ protected:
 public:
 	inline GelPool() {
 		// Add 1 element to the Items array: A dummy placeholder for Id 0. //
-		Items.push_back( T() );
+		Items.push_back( T( 0 ) );
 //		Items.back().SetFlag( GelAsset::AF_DONT_LOAD | GelAsset::AF_BAD );
 	}
 	inline ~GelPool() {
@@ -72,7 +72,7 @@ public:
 				/* Use the Back, as there are no UID's in the 'available' table */ \
 				UID Id = Items.size(); \
 				NameTable[_FileName] = Id; \
-				Items.push_back( _Type() ); \
+				Items.push_back( _Type( Items.size() ) ); \
 				\
 				/* TODO: Add this to the Job Queue */ \
 				Items.back().Load( _FileName, ## __VA_ARGS__ ); \
