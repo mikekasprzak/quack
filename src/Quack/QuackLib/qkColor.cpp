@@ -143,12 +143,49 @@ SQInteger qk_color_cloned( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-_FUNC_TYPEOF(GelColor,qk_color_typeof,"color",5);
+_FUNC_TYPEOF(GelColor,qk_color_typeof,"QkColor",7);
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_color_RGB( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	int Top = sq_gettop(v);
+
+	// Create an instance of the QkColor Class //
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"QkColor",7);		// +1 //
+	sq_get(v,-2);						// =0 //
+	sq_createinstance(v,-1);			// +1 //
+
+	// Retrieve Data (Pointer) //
+	GelColor* Color;
+	sq_getinstanceup(v,-1,(void**)&Color,0);
+	
+	// Build our color channels //
+	int r,g,b;
+	int a = 255;
+	sq_getinteger(v,2,&r);
+	sq_getinteger(v,3,&g);
+	sq_getinteger(v,4,&b);
+	if ( Top > 4 )
+		sq_getinteger(v,5,&a);
+	
+	// Clamp Colors to 0-255 range //
+	r = GEL_CLAMP_COLOR_COMPONENT(r);
+	g = GEL_CLAMP_COLOR_COMPONENT(g);
+	b = GEL_CLAMP_COLOR_COMPONENT(b);
+	a = GEL_CLAMP_COLOR_COMPONENT(a);
+	
+	// Write Data //
+	*Color = GEL_RGBA(r,g,b,a);
+	
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
+#define _DECL_FUNC_ALT(sqname,name,nparams,pmask) {_SC(sqname),name,nparams,pmask}
 SQRegFunction qkColor_funcs[] = {
 	// 1: Function Name.
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
@@ -160,6 +197,9 @@ SQRegFunction qkColor_funcs[] = {
 	_DECL_FUNC(qk_color_typeof,0,NULL),
 	_DECL_FUNC(qk_color_tostring,1,NULL),
 	_DECL_FUNC(qk_color_cloned,2,NULL),	
+
+	_DECL_FUNC_ALT("RGB",qk_color_RGB,-4,NULL),
+	_DECL_FUNC_ALT("RGBA",qk_color_RGB,5,NULL),
 	
 	{0,0,0,0}
 };
@@ -179,7 +219,7 @@ SQInteger register_qkColor(HSQUIRRELVM v) {
 	
 	int Root = sq_gettop(v); // root table pos //
 	{
-		_ADD_CLASS_START(GelColor,"color",QK_TAG_COLOR);
+		_ADD_CLASS_START(GelColor,"QkColor",QK_TAG_COLOR);
 		_CLASS_ADDFUNC(qk_color_constructor,constructor);
 		_CLASS_ADDFUNC(qk_color_get,_get);
 		_CLASS_ADDFUNC(qk_color_set,_set);
