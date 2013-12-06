@@ -22,16 +22,29 @@
 
 #include <Lib/StdString/StdString.h>
 // - ------------------------------------------------------------------------------------------ - //
+extern void GelFontPool_Subscriber( const st UserData );
+// - ------------------------------------------------------------------------------------------ - //
 class GelFont {
+	friend void GelFontPool_Subscriber( const st UserData );
 public:
 	st32 MyID;	// My FontID (an Internal Copy) //
+	GelAssetPool::UID AssetID;
 	BMFont* Font;
 	std::vector< GelTexturePool::UID > TexturePage;
+
+	enum {
+		GF_SMOOTH = 			0x100,
+		GF_FLIP = 				0x200,
+		GF_PREMULTIPLYALPHA = 	0x400,
+	};
+	
+	int Flags;
 	
 public:
 	inline GelFont( const st32 _MyID ) :
 		MyID( _MyID ),
-		Font( 0 )
+		Font( 0 ),
+		Flags( 0 )
 	{	
 	}
 
@@ -43,16 +56,19 @@ public:
 	}
 	
 	inline void _Load( const char* InFile, const bool Smooth = true, const bool PreMultiplyAlpha = true ) {
-		GelAssetPool::UID FontUID = Gel::AssetPool.Load( InFile );
-			
-		Font = new_read_BMFont( Gel::AssetPool[FontUID].GetDataBlock() );
+		AssetID = Gel::AssetPool.Load( InFile );
 		
-		for ( size_t idx = 0; idx < Font->PageName->Size; idx++ ) {
-			const char* TextureFile = Gel::Search( Font->PageName->Data[idx] );
+		if ( AssetID ) {
+			Flags = Smooth ? GF_SMOOTH : 0;
+			// HACK: Don't Flip. Need to sort out the flip order in my brain //
+			Flags |= 0; //Flip ? GY_FLIP : 0;
+			Flags |= PreMultiplyAlpha ? GF_PREMULTIPLYALPHA : 0;
 
-			if ( TextureFile ) {
-				// HACK: Don't Flip. Need to sort out the flip order in my brain //
-				TexturePage.push_back( Gel::TexturePool.Load( TextureFile, Smooth, false, PreMultiplyAlpha ) );
+			GelAsset& MyAsset = Gel::AssetPool[AssetID];
+			MyAsset.SubscribeToChanges( GelFontPool_Subscriber, MyID );
+			
+			if ( LoadBody( *this, MyAsset ) ) {
+				// It worked... Do something... Maybe //
 			}
 		}
 	}
@@ -68,6 +84,28 @@ public:
 			delete_BMFont( Font );
 			Font = 0;
 		}
+	}
+	
+	static bool LoadBody( GelFont& MyFont, GelAsset& MyAsset ) {
+		MyFont.Font = new_read_BMFont( MyAsset.GetDataBlock() );
+		if ( MyFont.Font ) {	
+			for ( size_t idx = 0; idx < MyFont.Font->PageName->Size; idx++ ) {
+				const char* TextureFile = Gel::Search( MyFont.Font->PageName->Data[idx] );
+	
+				if ( TextureFile ) {
+					MyFont.TexturePage.push_back( Gel::TexturePool.Load( 
+						TextureFile, 
+						MyFont.Flags & GF_SMOOTH, 
+						MyFont.Flags & GF_FLIP, 
+						MyFont.Flags & GF_PREMULTIPLYALPHA
+						));
+				}
+			}
+		
+			return true;
+		}
+		
+		return false;		
 	}
 	
 public:
