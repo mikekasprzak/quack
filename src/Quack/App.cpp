@@ -55,6 +55,7 @@ GelSignal LoseFocus;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+GelFontPool::UID RuntimeErrorFont = 0;
 Real AspectRatio;
 Matrix4x4 InfoMatrix;
 bool HadVMError;
@@ -119,6 +120,9 @@ void AppInit() {
 	App::AppStarted = true;
 
 	// **** //
+
+	// AutoLoad a font so 
+	App::RuntimeErrorFont = Gel::FontPool.Load( "Arial.fnt" );
 
 	App::AspectRatio = ((float)Gel::Native[0].GetWidth() / (float)Gel::Native[0].GetHeight());
 	Log( "%i %i -- %f", Gel::Native[0].GetWidth(), Gel::Native[0].GetHeight(), App::AspectRatio.ToFloat() );
@@ -191,22 +195,21 @@ void AppDraw() {
 	// *** //
 	App::DrawProfiler.Stop();
 
+	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
 		App::HadVMError = true;
 		Vector3D MessagePos = Vector3D(-256,+256,0);
 		MessagePos.y /= App::AspectRatio;
 			
-		// HACK: Use whatever Font #1 is.
-		Gel::FontPool[1].printf( 
+		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,128,128), GEL_ALIGN_TOP_LEFT,
-			"Runtime Error Detected. Execution Stopped.");
+			"Runtime Error Detected (see log). Execution Stopped.");
 	}
 	else if ( App::HadVMError ) {
 		Vector3D MessagePos = Vector3D(-256,+256,0);
 		MessagePos.y /= App::AspectRatio;
 			
-		// HACK: Use whatever Font #1 is.
-		Gel::FontPool[1].printf( 
+		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,128,128), GEL_ALIGN_TOP_LEFT,
 			"*");			
 	}
