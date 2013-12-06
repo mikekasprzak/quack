@@ -526,44 +526,152 @@ SQInteger qk_mat4_div( HSQUIRRELVM v ) {
 
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkMatrixIdentity(HSQUIRRELVM vm) {
-	// Also pushes the UserPointer on the Stack //
-	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
-	copy_Data( (void*)&Matrix4x4::Identity, (void*)Mat, sizeof( Matrix4x4 ) );
+SQInteger qkMatrixIdentity( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	//int Top = sq_gettop(v);
+
+	// Create an instance of the QkColor Class //
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"mat4",4);			// +1 //
+	sq_get(v,-2);						// =0 //
+	sq_createinstance(v,-1);			// +1 //
+
+	// Retrieve Data (Pointer) //
+	Matrix4x4* Mat;
+	sq_getinstanceup(v,-1,(void**)&Mat,0);
+
+	(*Mat) = Matrix4x4::Identity;
 
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkMatrixScalar(HSQUIRRELVM vm) {
+SQInteger qkMatrixRotationXY( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	//int Top = sq_gettop(v);
+
+	// Create an instance of the QkColor Class //
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"mat4",4);			// +1 //
+	sq_get(v,-2);						// =0 //
+	sq_createinstance(v,-1);			// +1 //
+
+	// Retrieve Data (Pointer) //
+	Matrix4x4* Mat;
+	sq_getinstanceup(v,-1,(void**)&Mat,0);
+
+	// Get Angle //
+	float Angle = 0.0f;
+	sq_getfloat(v,2,&Angle);
+
+	Real SinA = Real(Angle).Sin();
+	Real CosA = Real(Angle).Cos();
+
+	(*Mat) = Matrix4x4::Identity;
+	(*Mat)[0] = CosA;
+	(*Mat)[1] = SinA;
+	(*Mat)[4] = -SinA;
+	(*Mat)[5] = CosA;
+	
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkMatrixRotationXZ( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	//int Top = sq_gettop(v);
+
+	// Create an instance of the QkColor Class //
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"mat4",4);			// +1 //
+	sq_get(v,-2);						// =0 //
+	sq_createinstance(v,-1);			// +1 //
+
+	// Retrieve Data (Pointer) //
+	Matrix4x4* Mat;
+	sq_getinstanceup(v,-1,(void**)&Mat,0);
+
+	// Get Angle //
+	float Angle = 0.0f;
+	sq_getfloat(v,2,&Angle);
+
+	Real SinA = Real(Angle).Sin();
+	Real CosA = Real(Angle).Cos();
+
+	(*Mat) = Matrix4x4::Identity;
+	(*Mat)[0] = CosA;
+	(*Mat)[2] = SinA;
+	(*Mat)[8] = -SinA;
+	(*Mat)[10] = CosA;
+	
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkMatrixRotationYZ( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	//int Top = sq_gettop(v);
+
+	// Create an instance of the QkColor Class //
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"mat4",4);			// +1 //
+	sq_get(v,-2);						// =0 //
+	sq_createinstance(v,-1);			// +1 //
+
+	// Retrieve Data (Pointer) //
+	Matrix4x4* Mat;
+	sq_getinstanceup(v,-1,(void**)&Mat,0);
+
+	// Get Angle //
+	float Angle = 0.0f;
+	sq_getfloat(v,2,&Angle);
+
+	Real SinA = Real(Angle).Sin();
+	Real CosA = Real(Angle).Cos();
+
+	(*Mat) = Matrix4x4::Identity;
+	(*Mat)[5] = CosA;
+	(*Mat)[6] = SinA;
+	(*Mat)[9] = -SinA;
+	(*Mat)[10] = CosA;
+	
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkMatrixScalar( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	int NumArgs = sq_gettop(v);
+
+	// Create an instance of the QkColor Class //
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"mat4",4);			// +1 //
+	sq_get(v,-2);						// =0 //
+	sq_createinstance(v,-1);			// +1 //
+
+	// Retrieve Data (Pointer) //
+	Matrix4x4* Mat;
+	sq_getinstanceup(v,-1,(void**)&Mat,0);	
+	
 	float x = 1.0f;
 	float y = 1.0f;
 	float z = 1.0f;
 	float w = 1.0f;
-	
-	int NumArgs = sq_gettop(vm);
 
 	if ( NumArgs >= 2 ) {
-		sq_getfloat(vm,2,&x);
+		sq_getfloat(v,2,&x);
 	}
 	if ( NumArgs >= 3 ) {
-		sq_getfloat(vm,3,&y);
+		sq_getfloat(v,3,&y);
 	}
 	if ( NumArgs >= 4 ) {
-		sq_getfloat(vm,4,&z);
+		sq_getfloat(v,4,&z);
 	}
 	if ( NumArgs >= 5 ) {
-		sq_getfloat(vm,5,&w);
+		sq_getfloat(v,5,&w);
 	}
 
-	Matrix4x4 rMatrix = Matrix4x4::Identity;
-	rMatrix(0,0) = x;
-	rMatrix(1,1) = y;
-	rMatrix(2,2) = z;
-	rMatrix(3,3) = w;
-	
-	// Also pushes the UserPointer on the Stack //
-	SQUserPointer Mat = sq_newuserdata( vm, sizeof( Matrix4x4 ) );
-	copy_Data( (void*)&rMatrix, (void*)Mat, sizeof( Matrix4x4 ) );
+	(*Mat) = Matrix4x4::Identity;
+	(*Mat)(0,0) = x;
+	(*Mat)(1,1) = y;
+	(*Mat)(2,2) = z;
+	(*Mat)(3,3) = w;
 
 	return SQ_RETURN;
 }
@@ -627,6 +735,9 @@ SQRegFunction qkMatrix_funcs[] = {
 
 	// Standalone Functions //
 	_DECL_FUNC(qkMatrixIdentity,1,NULL),
+	_DECL_FUNC(qkMatrixRotationXY,2,NULL),
+	_DECL_FUNC(qkMatrixRotationXZ,2,NULL),
+	_DECL_FUNC(qkMatrixRotationYZ,2,NULL),
 	_DECL_FUNC(qkMatrixScalar,-2,NULL),
 
 	{0,0,0,0}
