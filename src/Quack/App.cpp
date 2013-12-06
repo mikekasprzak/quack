@@ -52,6 +52,12 @@ GelProfiler DrawProfiler;
 GelSignal GainFocus;
 GelSignal LoseFocus;
 // - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+Real AspectRatio;
+Matrix4x4 InfoMatrix;
+bool HadVMError;
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -98,18 +104,29 @@ void AppInit() {
 	gelFontInit();
 	Gel::Input::Init();
 	
+	// **** //
+
 	Gel::Search.Add( "src/Quack/QuackLib" );
 	Gel::Search.Add( "project" );
-
-	// **** //
-//	Log( "Screens: %i", (int)Gel::Screen.Count() );
-	Log( "" );
+	Log( "" );	
 	
-	// **** //
-	
+	App::HadVMError = false;
 	QuackVMInit();
 	QuackVMCallSetup();
 	QuackVMCallInit();
+
+	// **** //
+
+	App::AspectRatio = ((float)Gel::Native[0].GetWidth() / (float)Gel::Native[0].GetHeight());
+	Log( "%i %i -- %f", Gel::Native[0].GetWidth(), Gel::Native[0].GetHeight(), App::AspectRatio.ToFloat() );
+	// NOTE: WHOA! Using Native Screen 0 to calculate this Matrix! This is uncool!
+	// Code was borrowed from the Aspect ratio detection code in qkScreen.cpp
+
+	App::InfoMatrix = Matrix4x4::Identity;
+	App::InfoMatrix[0] = Real(1.0f/256.0f);
+	App::InfoMatrix[5] = Real(1.0f/256.0f) * App::AspectRatio;
+
+	// **** //
 
 //	{	
 //		Log("**** LOADING POD");
@@ -164,20 +181,39 @@ void AppStep() {
 	App::StepProfiler.Stop();
 }
 // - ------------------------------------------------------------------------------------------ - //
-void AppDraw() {
+void AppDraw() {	
 	App::DrawProfiler.Start();	
 	// *** //
-
 	QuackVMCallDraw();
-
 	// *** //
 	App::DrawProfiler.Stop();
+
+	if ( QuackVMGetError() ) {
+		App::HadVMError = true;
+		Vector3D MessagePos = Vector3D(-256,+256,0);
+		MessagePos.y /= App::AspectRatio;
+			
+		// HACK: Use whatever Font #1 is.
+		Gel::FontPool[1].printf( 
+			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,128,128), GEL_ALIGN_TOP_LEFT,
+			"Runtime Error Detected. Execution Stopped.");
+	}
+	else if ( App::HadVMError ) {
+		Vector3D MessagePos = Vector3D(-256,+256,0);
+		MessagePos.y /= App::AspectRatio;
+			
+		// HACK: Use whatever Font #1 is.
+		Gel::FontPool[1].printf( 
+			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,128,128), GEL_ALIGN_TOP_LEFT,
+			"*");			
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 void AppGainFocus() {
 	App::GainFocus();
+	QuackVMClearError();
 	Gel::AssetPool.ScanForChanges();
 	QuackVMCallGainFocus();
 }

@@ -1,4 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
+#include <stdarg.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <System/System.h>
 #include <Asset/Asset.h>
@@ -13,6 +15,32 @@
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
 HSQUIRRELVM vm;
+bool vmError;
+// - ------------------------------------------------------------------------------------------ - //
+void QuackVMPrintFunc( HSQUIRRELVM v, const SQChar *s, ... ) {
+	va_list arglist; 
+	va_start(arglist, s); 
+	vLogAlways(s,arglist);
+	va_end(arglist);
+	LogFlush();
+} 
+// - ------------------------------------------------------------------------------------------ - //
+void QuackVMErrorFunc( HSQUIRRELVM v, const SQChar *s, ... ) {
+	va_list arglist; 
+	va_start(arglist, s); 
+	_vLogAlways(s,arglist);
+	va_end(arglist);
+	LogFlush();
+	vmError = true;
+}
+// - ------------------------------------------------------------------------------------------ - //
+void QuackVMClearError() {
+	vmError = false;;
+}
+// - ------------------------------------------------------------------------------------------ - //
+bool QuackVMGetError() {
+	return vmError;
+}
 // - ------------------------------------------------------------------------------------------ - //
 void QuackLog() {
 	Log( "-=- Squirrel VM -=-" );
@@ -40,7 +68,12 @@ void QuackVMInit() {
 	// Initialize VM //
 	Log( "Creating VM..." );
 	vm = sq_open( 32 );		// Start VM (Stack Size) //
-	sq_setprintfunc_Log( vm );	// Set 'Log' to be the print function //
+	// Set the Functions for Printed output and Errors //
+	sq_setprintfunc( vm, QuackVMPrintFunc, QuackVMErrorFunc );
+	// Use the above functions for Squirrel Error Printing //
+	sqstd_seterrorhandlers(vm);
+	
+	QuackVMClearError();	// Clear our error status (because no files have compiled) //
 
 	atexit( QuackVMExit );
 	Log( "VM Created." );
@@ -140,15 +173,19 @@ bool QuackVMCallSetup() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallInit() {
-	if ( sqext_exists( vm, "Init" ) ) {
-		return sqext_call( vm, "Init" );
+	if ( !vmError ) {
+		if ( sqext_exists( vm, "Init" ) ) {
+			return sqext_call( vm, "Init" );
+		}
 	}
 	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallExit() {
-	if ( sqext_exists( vm, "Exit" ) ) {
-		return sqext_call( vm, "Exit" );
+	if ( !vmError ) {
+		if ( sqext_exists( vm, "Exit" ) ) {
+			return sqext_call( vm, "Exit" );
+		}
 	}
 	return false;
 }
@@ -156,15 +193,19 @@ bool QuackVMCallExit() {
 
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallStep() {
-	if ( sqext_exists( vm, "Step" ) ) {
-		return sqext_call( vm, "Step" );
+	if ( !vmError ) {
+		if ( sqext_exists( vm, "Step" ) ) {
+			return sqext_call( vm, "Step" );
+		}
 	}
 	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallDraw() {
-	if ( sqext_exists( vm, "Draw" ) ) {
-		return sqext_call( vm, "Draw" );
+	if ( !vmError ) {
+		if ( sqext_exists( vm, "Draw" ) ) {
+			return sqext_call( vm, "Draw" );
+		}
 	}
 	return false;
 }
@@ -172,16 +213,31 @@ bool QuackVMCallDraw() {
 
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallGainFocus() {
-	return sqext_call( vm, "GainFocus" );
+	if ( !vmError ) {
+		if ( sqext_exists( vm, "GainFocus" ) ) {
+			return sqext_call( vm, "GainFocus" );
+		}
+	}
+	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallLoseFocus() {
-	return sqext_call( vm, "LoseFocus" );
+	if ( !vmError ) {
+		if ( sqext_exists( vm, "LoseFocus" ) ) {
+			return sqext_call( vm, "LoseFocus" );
+		}
+	}
+	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 bool QuackVMCallRequestExit() {
-	return sqext_call( vm, "RequestExit" );
+	if ( !vmError ) {
+		if ( sqext_exists( vm, "RequestExit" ) ) {
+			return sqext_call( vm, "RequestExit" );
+		}
+	}
+	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //

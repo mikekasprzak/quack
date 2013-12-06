@@ -18,6 +18,9 @@ bool QuackVMCallGainFocus();
 bool QuackVMCallLoseFocus();
 
 bool QuackVMCallRequestExit();
+
+void QuackVMClearError();
+bool QuackVMGetError();
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_QUACKVM_H__ //
 // - ------------------------------------------------------------------------------------------ - //
