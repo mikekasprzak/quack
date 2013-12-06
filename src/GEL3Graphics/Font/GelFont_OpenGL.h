@@ -43,6 +43,7 @@ public:
 public:
 	inline GelFont( const st32 _MyID ) :
 		MyID( _MyID ),
+		AssetID( 0 ),
 		Font( 0 ),
 		Flags( 0 )
 	{	
