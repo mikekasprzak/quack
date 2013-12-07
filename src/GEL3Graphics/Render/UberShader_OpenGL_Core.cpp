@@ -262,8 +262,8 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 
 			// Special Names //
 			else if ( strcmp( Type, "UVType" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_SHORT;
-				Attr->GLType = GL_SHORT;
+				Attr->Type = cUberShader_Shader::cAttrib::AI_UVType;
+				Attr->GLType = GL_UVType;
 			}
 			else if ( strcmp( Type, "pad" ) == 0 ) {
 				Attr->Type = cUberShader_Shader::cAttrib::AI_PAD;

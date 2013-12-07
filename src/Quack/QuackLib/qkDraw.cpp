@@ -235,10 +235,20 @@ SQInteger qkDrawModel(HSQUIRRELVM vm) {
 				//if ( Mesh.sFaces.eType == EPODDataUnsignedShort ) // Is usually an Unsigned Short! Good! //
 				const int* Index = (const int*)Mesh.sFaces.pData;
 				const st32 IndexCount = Mesh.nNumFaces;
-				
-				//Log( ">> %i -- %x:%i [%x:%i,%i]  %x:%i [%x:%i,%i]", MeshIndex, Vert,VertCount,  Mesh.sVertex.eType,Mesh.sVertex.n,Mesh.sVertex.nStride,  Index,IndexCount ,Mesh.sFaces.eType,Mesh.sFaces.n,Mesh.sFaces.nStride );
-				
-				Gel::RenderFlatIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,VertCount, Index,IndexCount*3 );
+
+//					Log( ">> %i -- %x:%i [%x:%i,%i]  %x:%i [%x:%i,%i]", 
+//						MeshIndex, 
+//						Vert,VertCount,  
+//						Mesh.sVertex.eType,Mesh.sVertex.n,Mesh.sVertex.nStride,  
+//						Index,IndexCount ,Mesh.sFaces.eType,Mesh.sFaces.n,Mesh.sFaces.nStride 
+//						);
+							
+				if ( Mesh.nNumUVW > 0 ) {
+					//Gel::RenderTextureIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,VertCount, Index,IndexCount*3 );
+				}
+				else {
+					Gel::RenderFlatIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,VertCount, Index,IndexCount*3 );
+				}
 			}
 		}
 	}

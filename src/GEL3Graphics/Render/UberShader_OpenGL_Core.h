@@ -64,6 +64,9 @@ public:
 			AI_FLOAT,		// Float (32bit) //
 			AI_DOUBLE,		// Double (64bit) //
 
+			// UV Type (a synonym for some other type) //
+			AI_UVType,
+
 			// Legacy //
 			AI_FIXED,		// 32bit Fixed Point (16:16)
 			

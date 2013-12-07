@@ -23,9 +23,9 @@ attribute vec4 VertexPos;
 
 // SHADER_NONE means there is no per-pixel data. PPD can be a texture or noise. //
 #if !defined(SHADER_NONE)
-	const float UVScalar = 1.0/1024.0;
-	varying lowp vec2 v_TexCoord;
-	attribute lowp vec2 TexCoord;
+	//const float UVScalar = 1.0/1024.0;
+	varying mediump vec2 v_TexCoord;
+	attribute mediump vec2 TexCoord;
 #endif // SHADER_NONE //
 
 #ifdef SHADER_COLOR
@@ -36,7 +36,7 @@ void main() {
 	gl_Position = ViewMatrix * VertexPos;
 
 	#if !defined(SHADER_NONE)
-		v_TexCoord = TexCoord * UVScalar;
+		v_TexCoord = TexCoord;// * UVScalar;
 	#endif // SHADER_NONE //
 	
 	#ifdef SHADER_FLAT

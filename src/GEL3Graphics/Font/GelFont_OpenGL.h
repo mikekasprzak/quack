@@ -169,10 +169,11 @@ public:
 					V2 *= Scalar;
 
 					// NOTE: FORMER HACK: I (used to) CHANGED THE Y's AROUND! I DUNNO WHY THEY WERE UPSIDE DOWN! //
-					int UV1_x = Glyph[Ch]->x * UV_ONE / ScaleW;
-					int UV1_y = Glyph[Ch]->y * UV_ONE / ScaleH;
-					int UV2_x = (Glyph[Ch]->x + Glyph[Ch]->Width) * UV_ONE / ScaleW;
-					int UV2_y = (Glyph[Ch]->y + Glyph[Ch]->Height) * UV_ONE / ScaleH;
+					// NOTE: Also, these used to be "int"s, back when UVType was a short. 
+					float UV1_x = Glyph[Ch]->x * UV_ONE / ScaleW;
+					float UV1_y = Glyph[Ch]->y * UV_ONE / ScaleH;
+					float UV2_x = (Glyph[Ch]->x + Glyph[Ch]->Width) * UV_ONE / ScaleW;
+					float UV2_y = (Glyph[Ch]->y + Glyph[Ch]->Height) * UV_ONE / ScaleH;
 					
 					Vert.Add( Vector3D( V1.x, V1.y, 0) + CurPos );
 					Vert.Add( Vector3D( V2.x, V1.y, 0) + CurPos );

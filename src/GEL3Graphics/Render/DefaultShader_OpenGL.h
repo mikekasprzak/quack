@@ -71,6 +71,17 @@ inline void RenderTexture( const int Mode, const Matrix4x4& Matrix, const GelCol
 	Default->DrawArrays( Mode, VertCount );
 }
 // - ------------------------------------------------------------------------------------------ - //
+inline void RenderTextureIndexed( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const void* UVs, const st32 VertCount, const void* Indexes, const st32 IndexCount ) {
+	Default->Bind( TextureShader );
+	Default->UniformMatrix4x4( 0, Matrix );
+	Default->UniformColor( 1, Color ); // GlobalColor //
+	Default->Uniform1i( 2, 0 ); // "TexImage0" //
+	Default->BindUniforms();
+	Default->Attrib( 0, Verts );
+	Default->Attrib( 1, UVs );
+	Default->DrawElements( Mode, VertCount, Indexes, IndexCount );
+}
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_OPENGL_2_FAMILY //
