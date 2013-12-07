@@ -229,10 +229,10 @@ SQInteger qkDrawModel(HSQUIRRELVM vm) {
 			
 			// For all Nodes in the Scene //
 			for ( st32 NodeIndex = 0; NodeIndex < Model->nNumMeshNode; NodeIndex++ ) {
-				{
+				if ( Model->nNumTexture ) {
 					st32 MaterialIndex = Model->pNode[NodeIndex].nIdxMaterial;
 					st32 TextureIndex = Model->pMaterial[MaterialIndex].nIdxTexDiffuse;
-					const char* TextureName = Model->pTexture[TextureIndex].pszName;
+					//const char* TextureName = Model->pTexture[TextureIndex].pszName;
 					
 					Gel::TexturePool[Gel::ModelPool[ModelUID].TexturePage[TextureIndex]].Bind();
 				}
