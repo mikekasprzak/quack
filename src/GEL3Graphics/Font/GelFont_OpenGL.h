@@ -202,7 +202,7 @@ public:
 //				Vert.Size()
 //				);
 			
-			Gel::Default->Bind( Gel::TextureShader );
+			Gel::Default->Bind( Gel::TextureAlphaShader );
 			Gel::Default->UniformMatrix4x4( 0, Mat );
 			Gel::Default->UniformColor( 1, Color );
 			Gel::Default->Uniform1i( 2, 0 ); // "TexImage0" //

@@ -532,7 +532,7 @@ SQInteger qkMatrixIdentity( HSQUIRRELVM v ) {
 	// Check the number of arguments //
 	//int Top = sq_gettop(v);
 
-	// Create an instance of the QkColor Class //
+	// Create an instance of the Class //
 	sq_pushroottable(v);				// +1 //
 	sq_pushstring(v,"mat4",4);			// +1 //
 	sq_get(v,-2);						// =0 //
@@ -551,7 +551,7 @@ SQInteger qkMatrixRotationXY( HSQUIRRELVM v ) {
 	// Check the number of arguments //
 	//int Top = sq_gettop(v);
 
-	// Create an instance of the QkColor Class //
+	// Create an instance of the Class //
 	sq_pushroottable(v);				// +1 //
 	sq_pushstring(v,"mat4",4);			// +1 //
 	sq_get(v,-2);						// =0 //
@@ -581,7 +581,7 @@ SQInteger qkMatrixRotationXZ( HSQUIRRELVM v ) {
 	// Check the number of arguments //
 	//int Top = sq_gettop(v);
 
-	// Create an instance of the QkColor Class //
+	// Create an instance of the Class //
 	sq_pushroottable(v);				// +1 //
 	sq_pushstring(v,"mat4",4);			// +1 //
 	sq_get(v,-2);						// =0 //
@@ -611,7 +611,7 @@ SQInteger qkMatrixRotationYZ( HSQUIRRELVM v ) {
 	// Check the number of arguments //
 	//int Top = sq_gettop(v);
 
-	// Create an instance of the QkColor Class //
+	// Create an instance of the Class //
 	sq_pushroottable(v);				// +1 //
 	sq_pushstring(v,"mat4",4);			// +1 //
 	sq_get(v,-2);						// =0 //
@@ -641,7 +641,7 @@ SQInteger qkMatrixScalar( HSQUIRRELVM v ) {
 	// Check the number of arguments //
 	int NumArgs = sq_gettop(v);
 
-	// Create an instance of the QkColor Class //
+	// Create an instance of the Class //
 	sq_pushroottable(v);				// +1 //
 	sq_pushstring(v,"mat4",4);			// +1 //
 	sq_get(v,-2);						// =0 //
@@ -673,6 +673,47 @@ SQInteger qkMatrixScalar( HSQUIRRELVM v ) {
 	(*Mat)(0,0) = x;
 	(*Mat)(1,1) = y;
 	(*Mat)(2,2) = z;
+	(*Mat)(3,3) = w;
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkMatrixTranslation( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	int NumArgs = sq_gettop(v);
+
+	// Create an instance of the Class //
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"mat4",4);			// +1 //
+	sq_get(v,-2);						// =0 //
+	sq_createinstance(v,-1);			// +1 //
+
+	// Retrieve Data (Pointer) //
+	Matrix4x4* Mat;
+	sq_getinstanceup(v,-1,(void**)&Mat,0);	
+	
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+	float w = 1.0f;
+
+	if ( NumArgs >= 2 ) {
+		sq_getfloat(v,2,&x);
+	}
+	if ( NumArgs >= 3 ) {
+		sq_getfloat(v,3,&y);
+	}
+	if ( NumArgs >= 4 ) {
+		sq_getfloat(v,4,&z);
+	}
+	if ( NumArgs >= 5 ) {
+		sq_getfloat(v,5,&w);
+	}
+
+	(*Mat) = Matrix4x4::Identity;
+	(*Mat)(0,3) = x;
+	(*Mat)(1,3) = y;
+	(*Mat)(2,3) = z;
 	(*Mat)(3,3) = w;
 
 	return SQ_RETURN;
@@ -741,6 +782,7 @@ SQRegFunction qkMatrix_funcs[] = {
 	_DECL_FUNC(qkMatrixRotationXZ,2,NULL),
 	_DECL_FUNC(qkMatrixRotationYZ,2,NULL),
 	_DECL_FUNC(qkMatrixScalar,-2,NULL),
+	_DECL_FUNC(qkMatrixTranslation,-2,NULL),
 
 	{0,0,0,0}
 };

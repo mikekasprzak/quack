@@ -50,8 +50,8 @@ GelTextureHandle upload_STBTexture( STBTexture& Texture, const bool Smooth, cons
 		case 1:
 			VLog("* GL_UNSIGNED_BYTE (I_8)");
 			RGBFormat = GL_UNSIGNED_BYTE;
-			ReadFormat = GL_LUMINANCE;
-			InternalFormat = GL_LUMINANCE;
+			ReadFormat = GL_ALPHA;//GL_LUMINANCE;
+			InternalFormat = GL_ALPHA;// GL_LUMINANCE;
 			break;
 		case 2:
 			VLog("* GL_UNSIGNED_SHORT (AI_88)");

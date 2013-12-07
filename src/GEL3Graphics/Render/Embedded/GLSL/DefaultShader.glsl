@@ -39,10 +39,17 @@ void main() {
 		v_TexCoord = TexCoord;// * UVScalar;
 	#endif // SHADER_NONE //
 	
+	vec4 Color = GlobalColor;
+	
+	#ifdef SHADER_TEXTURE_ALPHA
+		// NOTE: Premultipying Alpha //
+		Color = vec4(Color.rgb * Color.aaa,Color.a);
+	#endif // SHADER_TEXTURE_ALPHA //
+	
 	#ifdef SHADER_FLAT
-		v_Color = GlobalColor;
+		v_Color = Color;
 	#else // !SHADER_FLAT //
-		v_Color = VertexColor * GlobalColor;
+		v_Color = VertexColor * Color;
 	#endif // SHADER_FLAT //
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -83,7 +90,12 @@ void main() {
 	#endif // SHADER_NOISE //
 			
 	#ifdef SHADER_TEXTURE
-		gl_FragColor = v_Color * texture2D(TexImage0, v_TexCoord);
+		#ifdef SHADER_TEXTURE_ALPHA
+			// NOTE: Alpha gets Premultiplied in the Vertex Shader //
+			gl_FragColor = v_Color * texture2D(TexImage0, v_TexCoord).aaaa;
+		#else // !SHADER_TEXTURE_ALPHA //
+			gl_FragColor = v_Color * texture2D(TexImage0, v_TexCoord);
+		#endif // SHADER_TEXTURE_ALPHA //
 	#endif // SHADER_TEXTURE //
 	
 	#ifdef SHADER_NONE
