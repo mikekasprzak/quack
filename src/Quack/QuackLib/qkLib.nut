@@ -78,8 +78,8 @@ function _DefaultSetup() {
 
 	if ( qkIsDevMode() ) {
 		Log("# Dev Mode Detected.");
-		qkSetScreenScalar( 0.8 );
+		qkScreensSetScalar( 0.8 );
 	}
-	qkInitScreens();	
+	qkScreensInit();	
 }
 // - -------------------------------------------------------------------------------------------------------------- - //

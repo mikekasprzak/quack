@@ -43,9 +43,26 @@ SQInteger qkScreenGetAspectRatio(HSQUIRRELVM vm) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkScreenClear(HSQUIRRELVM vm) {
+SQInteger qkScreenClear(HSQUIRRELVM v) {
+	int Top = sq_gettop(v);
+	
+	GelColor Color = GEL_RGB_BLACK;
+	
+	if ( Top > 1 ) {
+		GelColor* ColorArg;
+		sq_getinstanceup(v,2,(void**)&ColorArg,0);
+		
+		Color = *ColorArg;
+	}
+
+	glClearColor( 
+		GEL_GET_R(Color) / 255.0f,
+		GEL_GET_G(Color) / 255.0f,
+		GEL_GET_B(Color) / 255.0f,
+		GEL_GET_A(Color) / 255.0f
+		);
+
 	//gelClear( true, true );
-	glClearColor(0.2,0,0,1);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	return SQ_VOID;
 }
@@ -64,7 +81,7 @@ SQRegFunction qkScreen_funcs[] = {
 	_DECL_FUNC(qkScreensSetScalar,2,_SC(".n")),
 	// Screen Singular //
 	_DECL_FUNC(qkScreenGetAspectRatio,1,NULL),
-	_DECL_FUNC(qkScreenClear,1,NULL),
+	_DECL_FUNC(qkScreenClear,-1,NULL),
 
 	{0,0,0,0}
 };
