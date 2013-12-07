@@ -34,6 +34,10 @@ ShaderHandle NoiseShader;
 ShaderHandle ColorNoiseShader;
 ShaderHandle Noise1BitShader;
 ShaderHandle ColorNoise1BitShader;
+ShaderHandle NoiseShader_Packed;
+ShaderHandle ColorNoiseShader_Packed;
+ShaderHandle Noise1BitShader_Packed;
+ShaderHandle ColorNoise1BitShader_Packed;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
@@ -75,6 +79,10 @@ void gelShaderInit() {
 	Gel::ColorNoiseShader = Gel::Default->Find( "ColorNoise" );
 	Gel::Noise1BitShader = Gel::Default->Find( "Noise1Bit" );
 	Gel::ColorNoise1BitShader = Gel::Default->Find( "ColorNoise1Bit" );
+	Gel::NoiseShader_Packed = Gel::Default->Find( "Noise_Packed" );
+	Gel::ColorNoiseShader_Packed = Gel::Default->Find( "ColorNoise_Packed" );
+	Gel::Noise1BitShader_Packed = Gel::Default->Find( "Noise1Bit_Packed" );
+	Gel::ColorNoise1BitShader_Packed = Gel::Default->Find( "ColorNoise1Bit_Packed" );
 	
 	// Enable this here, since all shaders will always require Attrib 0 to be enabled //
 	//glEnableVertexAttribArray( 0 );
