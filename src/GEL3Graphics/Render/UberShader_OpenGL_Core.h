@@ -116,6 +116,9 @@ public:
 				1,2,	// QFLOAT, HFLOAT //
 				4,8,	// float, double //
 				
+				// Special //
+				4,		// UVType //
+
 				// Legacy //
 				4,		// Fixed //
 				

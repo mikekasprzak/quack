@@ -321,13 +321,6 @@
 					"Name" : "TexCoord",
 					"Type" : "UVType",
 					"Count" : 2
-				},
-				{
-					"Index" : 2,
-					"Group" : 0,
-					"Name" : "VertexColor",
-					"Type" : "pad",
-					"Count" : 4
 				}
 			],
 			"Uniform" : [
@@ -371,13 +364,6 @@
 					"Name" : "TexCoord",
 					"Type" : "UVType",
 					"Count" : 2
-				},
-				{
-					"Index" : 2,
-					"Group" : 0,
-					"Name" : "VertexColor",
-					"Type" : "pad",
-					"Count" : 4
 				}
 			],
 			"Uniform" : [

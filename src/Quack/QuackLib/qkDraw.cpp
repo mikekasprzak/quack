@@ -227,27 +227,44 @@ SQInteger qkDrawModel(HSQUIRRELVM vm) {
 		{
 			CPVRTModelPOD* Model = Gel::ModelPool[ModelUID].Model;
 			
-			for ( st32 MeshIndex = 0; MeshIndex < Model->nNumMesh; MeshIndex++ ) {
-				SPODMesh& Mesh = Model->pMesh[MeshIndex];
-				const float* Vert = (const float*)Mesh.pInterleaved;//sVertex.pData;
-				const st32 VertCount = Mesh.nNumVertex;
-				
-				//if ( Mesh.sFaces.eType == EPODDataUnsignedShort ) // Is usually an Unsigned Short! Good! //
-				const int* Index = (const int*)Mesh.sFaces.pData;
-				const st32 IndexCount = Mesh.nNumFaces;
-
-//					Log( ">> %i -- %x:%i [%x:%i,%i]  %x:%i [%x:%i,%i]", 
-//						MeshIndex, 
-//						Vert,VertCount,  
-//						Mesh.sVertex.eType,Mesh.sVertex.n,Mesh.sVertex.nStride,  
-//						Index,IndexCount ,Mesh.sFaces.eType,Mesh.sFaces.n,Mesh.sFaces.nStride 
-//						);
-							
-				if ( Mesh.nNumUVW > 0 ) {
-					//Gel::RenderTextureIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,VertCount, Index,IndexCount*3 );
+			// For all Nodes in the Scene //
+			for ( st32 NodeIndex = 0; NodeIndex < Model->nNumMeshNode; NodeIndex++ ) {
+				{
+					st32 MaterialIndex = Model->pNode[NodeIndex].nIdxMaterial;
+					st32 TextureIndex = Model->pMaterial[MaterialIndex].nIdxTexDiffuse;
+					const char* TextureName = Model->pTexture[TextureIndex].pszName;
+					
+					Gel::TexturePool[Gel::ModelPool[ModelUID].TexturePage[TextureIndex]].Bind();
 				}
-				else {
-					Gel::RenderFlatIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,VertCount, Index,IndexCount*3 );
+				
+				// We know the first nNumMeshNode objects are all Objects (meshes) in the node List //
+				// Everything else is are other things (cameras, lights, etc) //
+				{
+					st32 MeshIndex = Model->pNode[NodeIndex].nIdx;
+					
+					SPODMesh& Mesh = Model->pMesh[MeshIndex];
+					const float* Vert = (const float*)(Mesh.pInterleaved + (int)Mesh.sVertex.pData);
+					const st32 VertCount = Mesh.nNumVertex;
+					
+					//if ( Mesh.sFaces.eType == EPODDataUnsignedShort ) // Is usually an Unsigned Short! Good! //
+					const int* Index = (const int*)Mesh.sFaces.pData;
+					const st32 IndexCount = Mesh.nNumFaces;
+								
+					if ( Mesh.nNumUVW > 0 ) {
+	//					Log( ">> %i -- Mesh: %x:%i [%x:%i,%i]  UVW: %i [%x:%i,%i]:%x  Index: %x:%i [%x:%i,%i]", 
+	//						MeshIndex, 
+	//						Vert,VertCount, Mesh.sVertex.eType,Mesh.sVertex.n,Mesh.sVertex.nStride,  
+	//						Mesh.nNumUVW, Mesh.psUVW[0].eType,Mesh.psUVW[0].n,Mesh.psUVW[0].nStride,Mesh.psUVW[0].pData,
+	//						Index,IndexCount, Mesh.sFaces.eType,Mesh.sFaces.n,Mesh.sFaces.nStride 
+	//						);
+	
+						const float* UVs = (const float*)(Mesh.pInterleaved + (int)Mesh.psUVW[0].pData);
+	
+						Gel::RenderTexturePackedIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,UVs,VertCount, Index,IndexCount*3 );
+					}
+					else {
+						Gel::RenderFlatIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,VertCount, Index,IndexCount*3 );
+					}
 				}
 			}
 		}
