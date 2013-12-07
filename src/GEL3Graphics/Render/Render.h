@@ -9,6 +9,8 @@
 #include "IndexHandle.h"
 #include "RenderTarget.h"
 #include "Blending.h"
+#include "Depth.h"
+
 #include "DefaultShader.h"
 
 #include "Render_Core.h"

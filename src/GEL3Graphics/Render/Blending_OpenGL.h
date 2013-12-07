@@ -2,39 +2,35 @@
 #ifndef __GEL_RENDER_BLENDING_OPENGL_H__
 #define __GEL_RENDER_BLENDING_OPENGL_H__
 // - ------------------------------------------------------------------------------------------ - //
-#ifdef USES_OPENGL_LIB
+#ifdef USES_OPENGL
 // - ------------------------------------------------------------------------------------------ - //
 #include <API/API_OpenGL.h>
 // - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
-// - ------------------------------------------------------------------------------------------ - //
-inline void EnableAlphaBlending() {
+inline void gelEnableAlphaBlending() {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void EnablePremultipliedAlphaBlending() {
+inline void gelEnablePremultipliedAlphaBlending() {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void EnableAddativeBlending() {
+inline void gelEnableAddativeBlending() {
 	glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void EnableModulationBlending() {
+inline void gelEnableModulationBlending() {
 	glEnable( GL_BLEND );
     glBlendFunc( GL_DST_COLOR, GL_ZERO );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void DisableBlending() {
+inline void gelDisableBlending() {
 	glDisable( GL_BLEND );
 }
 // - ------------------------------------------------------------------------------------------ - //
-}; // namespace Gel //
-// - ------------------------------------------------------------------------------------------ - //
-#endif // USES_OPENGL_LIB //
+#endif // USES_OPENGL //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_RENDER_BLENDING_OPENGL_H__ //
 // - ------------------------------------------------------------------------------------------ - //

@@ -188,7 +188,12 @@ void AppStep() {
 	App::StepProfiler.Stop();
 }
 // - ------------------------------------------------------------------------------------------ - //
-void AppDraw() {	
+void AppDraw() {
+	gelClearDepth();
+	gelEnableDepthWrite();
+	gelEnableDepthTest();
+	glClear( GL_DEPTH_BUFFER_BIT );
+	
 	App::DrawProfiler.Start();	
 	// *** //
 	QuackVMCallDraw();

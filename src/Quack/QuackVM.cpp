@@ -4,6 +4,8 @@
 #include <Lib/Lib.h>
 #include <System/System.h>
 #include <Asset/Asset.h>
+#include <Render/Render.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <API/API_Squirrel.h>
 #include "sqext.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -162,12 +164,13 @@ bool QuackVMCallSetup() {
 	}
 	Log( "" );
 
+	gelEnablePremultipliedAlphaBlending();
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glEnable( GL_LINE_SMOOTH );
-	glLineWidth( 1 );
-	//glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+//	glEnable(GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	//glEnable( GL_LINE_SMOOTH );
+//	glLineWidth( 1 );
+//	//glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
 	return true;			
 }
