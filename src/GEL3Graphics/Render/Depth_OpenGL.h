@@ -8,37 +8,49 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void gelClearDepth() {
+inline void gelDepthClear() {
 	glClear( GL_DEPTH_BUFFER_BIT );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void gelEnableDepthTest() {
+inline void gelDepthEnableTest() {
 	glEnable( GL_DEPTH_TEST );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void gelDisableDepthTest() {
+inline void gelDepthDisableTest() {
 	glDisable( GL_DEPTH_TEST );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void gelEnableDepthWrite() {
+inline void gelDepthEnableWrite() {
 	glDepthMask( GL_TRUE );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void gelDisableDepthWrite() {
+inline void gelDepthDisableWrite() {
 	glDepthMask( GL_FALSE );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void gelSetDepthFunc( const int Func ) {
+inline void gelDepthEnable() {
+	gelDepthEnableTest();
+	gelDepthEnableWrite();
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline void gelDepthDisable() {
+	gelDepthDisableTest();
+	gelDepthDisableWrite();
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+inline void gelDepthSetFunc( const int Func ) {
 	glDepthFunc( Func );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void gelSetDepthRange( const Real zNear, const Real zFar ) {
+inline void gelDepthSetRange( const Real zNear, const Real zFar ) {
 #ifdef USES_OPENGL_ES
 	glDepthRangef( zNear.ToFloat(), zFar.ToFloat() );
 #else // USES_OPENGL_ES //

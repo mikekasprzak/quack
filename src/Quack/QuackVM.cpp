@@ -99,7 +99,7 @@ void QuackVMInit() {
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
 		Log("* qkScreen"); register_qkScreen( vm );
 		Log("* qkBlending"); register_qkBlending( vm );
-//		Log("* qkDepth"); register_qkDepth( vm );
+		Log("* qkDepth"); register_qkDepth( vm );
 		Log("* qkDraw"); register_qkDraw( vm );
 		Log("* qkTexture"); register_qkTexture( vm );
 		Log("* qkFont"); register_qkFont( vm );
