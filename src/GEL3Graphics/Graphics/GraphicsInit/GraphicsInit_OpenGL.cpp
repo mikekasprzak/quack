@@ -34,7 +34,12 @@ void gelGraphicsInit() {
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&Gel::MaxTextureSize );
 	Log( "GL_MAX_TEXTURE_SIZE: %i", Gel::MaxTextureSize );
 		
-	Gel::InitShader();
+	gelShaderInit();
+	atexit( gelGraphicsExit );
+}
+// - ------------------------------------------------------------------------------------------ - //
+void gelGraphicsExit() {
+	gelShaderExit();
 }
 // - ------------------------------------------------------------------------------------------ - //
 

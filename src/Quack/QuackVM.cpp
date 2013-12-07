@@ -97,16 +97,17 @@ void QuackVMInit() {
 	sq_pushroottable( vm );	// +1 //
 		Log("* qkSystem"); register_qkSystem( vm );
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
-		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
 		Log("* qkScreen"); register_qkScreen( vm );
+		Log("* qkBlending"); register_qkBlending( vm );
+//		Log("* qkDepth"); register_qkDepth( vm );
 		Log("* qkDraw"); register_qkDraw( vm );
 		Log("* qkTexture"); register_qkTexture( vm );
 		Log("* qkFont"); register_qkFont( vm );
 		Log("* qkModel"); register_qkModel( vm );
 		Log("* qkInput"); register_qkInput( vm );
-		//Log("* qkJson"); register_qkJson( vm );
 		Log("* qkColor"); register_qkColor( vm );
 		Log("* qkVector"); register_qkVector( vm );
+		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
 		Log("* qkMatrix"); register_qkMatrix( vm );
 		Log("* qkFloat"); register_qkFloat( vm );
 		Log("* qkGrid"); register_qkGrid( vm );
@@ -164,10 +165,6 @@ bool QuackVMCallSetup() {
 	}
 	Log( "" );
 
-	gelEnablePremultipliedAlphaBlending();
-
-//	glEnable(GL_BLEND);
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	//glEnable( GL_LINE_SMOOTH );
 //	glLineWidth( 1 );
 //	//glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );

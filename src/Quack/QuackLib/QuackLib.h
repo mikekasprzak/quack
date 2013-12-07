@@ -11,6 +11,8 @@ SQInteger register_qkVector(HSQUIRRELVM v);
 SQInteger register_qkMatrix(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkScreen(HSQUIRRELVM v);
+SQInteger register_qkBlending(HSQUIRRELVM v);
+SQInteger register_qkDepth(HSQUIRRELVM v);
 SQInteger register_qkDraw(HSQUIRRELVM v);
 SQInteger register_qkTexture(HSQUIRRELVM v);
 SQInteger register_qkFont(HSQUIRRELVM v);

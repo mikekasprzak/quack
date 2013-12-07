@@ -27,47 +27,47 @@ ShaderHandle ColorNoiseShader;
 ShaderHandle Noise1BitShader;
 ShaderHandle ColorNoise1BitShader;
 // - ------------------------------------------------------------------------------------------ - //
-void InitShader() {
+}; // namespace Gel //
+// - ------------------------------------------------------------------------------------------ - //
+void gelShaderInit() {
 #ifdef USES_DESKTOP
 	// Use Files //	
-	Default = new cUberShader( "src/GEL3Graphics/Render/Embedded/GLSL/DefaultShader.json" );
+	Gel::Default = new Gel::cUberShader( "src/GEL3Graphics/Render/Embedded/GLSL/DefaultShader.json" );
 #endif // USES DESKTOP //
 
 #ifdef USES_MOBILE
 	// Use Embedded //
-	Default = new cUberShader( DefaultShader_json, DefaultShader_json_Size, DefaultShader_glsl, DefaultShader_glsl_Size );
+	Gel::Default = new Gel::cUberShader( DefaultShader_json, DefaultShader_json_Size, DefaultShader_glsl, DefaultShader_glsl_Size );
 #endif // USES_MOBILE //
 
 	// Find all the shaders //
-	FlatShader = Default->Find( "Flat" );
-	FlatShader2D = Default->Find( "Flat2D" );
-	FlatShader_Packed = Default->Find( "Flat_Packed" );
-	FlatShader2D_Packed = Default->Find( "Flat2D_Packed" );
-	ColorShader = Default->Find( "Color" );
-	ColorShader2D = Default->Find( "Color2D" );
-	TextureShader = Default->Find( "Texture" );
-	TextureShader2D = Default->Find( "Texture2D" );
-	TextureShader_Packed = Default->Find( "Texture_Packed" );
-	TextureShader2D_Packed = Default->Find( "Texture2D_Packed" );
-	ColorTextureShader = Default->Find( "ColorTexture" );
-	ColorTextureShader2D = Default->Find( "ColorTexture2D" );
-	ColorTextureShader_Packed = Default->Find( "ColorTexture_Packed" );
-	ColorTextureShader2D_Packed = Default->Find( "ColorTexture2D_Packed" );
-	NoiseShader = Default->Find( "Noise" );
-	ColorNoiseShader = Default->Find( "ColorNoise" );
-	Noise1BitShader = Default->Find( "Noise1Bit" );
-	ColorNoise1BitShader = Default->Find( "ColorNoise1Bit" );
+	Gel::FlatShader = Gel::Default->Find( "Flat" );
+	Gel::FlatShader2D = Gel::Default->Find( "Flat2D" );
+	Gel::FlatShader_Packed = Gel::Default->Find( "Flat_Packed" );
+	Gel::FlatShader2D_Packed = Gel::Default->Find( "Flat2D_Packed" );
+	Gel::ColorShader = Gel::Default->Find( "Color" );
+	Gel::ColorShader2D = Gel::Default->Find( "Color2D" );
+	Gel::TextureShader = Gel::Default->Find( "Texture" );
+	Gel::TextureShader2D = Gel::Default->Find( "Texture2D" );
+	Gel::TextureShader_Packed = Gel::Default->Find( "Texture_Packed" );
+	Gel::TextureShader2D_Packed = Gel::Default->Find( "Texture2D_Packed" );
+	Gel::ColorTextureShader = Gel::Default->Find( "ColorTexture" );
+	Gel::ColorTextureShader2D = Gel::Default->Find( "ColorTexture2D" );
+	Gel::ColorTextureShader_Packed = Gel::Default->Find( "ColorTexture_Packed" );
+	Gel::ColorTextureShader2D_Packed = Gel::Default->Find( "ColorTexture2D_Packed" );
+	Gel::NoiseShader = Gel::Default->Find( "Noise" );
+	Gel::ColorNoiseShader = Gel::Default->Find( "ColorNoise" );
+	Gel::Noise1BitShader = Gel::Default->Find( "Noise1Bit" );
+	Gel::ColorNoise1BitShader = Gel::Default->Find( "ColorNoise1Bit" );
 	
 	// Enable this here, since all shaders will always require Attrib 0 to be enabled //
 	//glEnableVertexAttribArray( 0 );
-	cUberShader::EnableAttrib( 0 );
+	Gel::cUberShader::EnableAttrib( 0 );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void ExitShader() {
-	delete Default;
+void gelShaderExit() {
+	delete Gel::Default;
 }
-// - ------------------------------------------------------------------------------------------ - //
-}; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // defined(USES_OPENGL_2_FAMILY) //
 // - ------------------------------------------------------------------------------------------ - //
