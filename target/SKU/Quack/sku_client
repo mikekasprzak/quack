@@ -1,6 +1,6 @@
 # - ------------------------------------------------------------------------ - #
 PRODUCT_NAME		:=	"Quack"
-PRODUCT_VERSION		:=	"v0.01"
+PRODUCT_VERSION		:=	"v0.02"
 PRODUCT_SKU			:=	"SYK-018-Q"
 # - ------------------------------------------------------------------------ - #
 # NOTE: Only reference files here suitable for GAME scope (no platform) #
