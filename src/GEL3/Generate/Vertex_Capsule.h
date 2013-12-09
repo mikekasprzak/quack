@@ -1,22 +1,23 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL2_GENERATE_VERTEX_CAPSULE_H__
-#define __GEL2_GENERATE_VERTEX_CAPSULE_H__
+// NOTE: This is not perfect. With different radius, at a shallow angle it looks wrong (nubby).
+// - ------------------------------------------------------------------------------------------ - //
+#ifndef __GEL_GENERATE_VERTEX_CAPSULE_H__
+#define __GEL_GENERATE_VERTEX_CAPSULE_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Math/Vector.h>
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
-inline void generate_Vertex3D_Capsule( T* Dest, const Vector3D& PosA, const Real& RadiusA, const Vector3D& PosB, const Real& RadiusB, const st32 Steps = 32 ) {
+inline void generate_Vertex3D_Capsule( T* Dest, const Vector3D& PosA, const Real& RadiusA, const Vector3D& PosB, const Real& RadiusB, const st32 Steps = GEL_GENERATE_DEFAULT_CIRCLE_STEPS ) {
 	Vector3D* Out;
 
 	Vector3D Line = PosB - PosA;
 	Vector3D Normal = Line.Normal();
 
-//	float FloatSteps = Steps;
 	float FloatSteps = 1.0f / (float)Steps;
 	st32 HalfSteps = Steps >> 1;
 	
-	float BaseAngle = ArcTan2( Normal.x, -Normal.y );
+	float BaseAngle = ArcTan2( Normal.x, -Normal.y ).ToFloat();
     
     // NOTE: <= is not < //
 	for ( st32 idx = 0; idx <= HalfSteps; idx++ ) {
@@ -34,22 +35,9 @@ inline void generate_Vertex3D_Capsule( T* Dest, const Vector3D& PosA, const Real
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
-template< typename T >
-inline void generate_Vertex3D_Capsule( T* Dest, const Vector2D& PosA, const Real& RadiusA, const Vector2D& PosB, const Real& RadiusB, const st32 Steps = 32 ) {
-	generate_Vertex3D_Capsule( Dest, PosA.ToVector3D(), RadiusA, PosB.ToVector3D(), RadiusB, Steps );
-}
-// - ------------------------------------------------------------------------------------------ - //
-inline const st32 size_Vertex3D_Capsule( const st32 Steps = 32 ) {
+inline const st32 size_Vertex3D_Capsule( const st32 Steps = GEL_GENERATE_DEFAULT_CIRCLE_STEPS ) {
 	return Steps+2;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const st32 size_Vertex3D_Capsule( const Vector3D&, const Real&, const st32 Steps = 32 ) {
-	return size_Vertex3D_Capsule( Steps );
-}
-// - ------------------------------------------------------------------------------------------ - //
-inline const st32 size_Vertex3D_Capsule( const Vector2D&, const Real&, const st32 Steps = 32 ) {
-	return size_Vertex3D_Capsule( Steps );
-}
-// - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL2_GENERATE_VERTEX_CAPSULE_H__ //
+#endif // __GEL_GENERATE_VERTEX_CAPSULE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

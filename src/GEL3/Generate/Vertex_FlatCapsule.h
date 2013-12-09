@@ -1,6 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL2_GENERATE_VERTEX_FLATCAPSULE_H__
-#define __GEL2_GENERATE_VERTEX_FLATCAPSULE_H__
+#ifndef __GEL_GENERATE_VERTEX_FLATCAPSULE_H__
+#define __GEL_GENERATE_VERTEX_FLATCAPSULE_H__
 // - ------------------------------------------------------------------------------------------ - //
 // Flat Capsule has no End Cap //
 // - ------------------------------------------------------------------------------------------ - //
@@ -24,25 +24,12 @@ inline void generate_Vertex3D_FlatCapsule( T* Dest, const Vector3D& PosA, const 
 	Out = (Vector3D*)Dest++;
 	*Out = Vector3D( PosB.x - (RadiusB * Tangent.x), PosB.y - (RadiusB * Tangent.y), PosB.z );
 	Out = (Vector3D*)Dest++;
-	*Out = Vector3D( PosA.x - (RadiusB * Tangent.x), PosA.y - (RadiusA * Tangent.y), PosA.z );
-}
-// - ------------------------------------------------------------------------------------------ - //
-template< typename T >
-inline void generate_Vertex3D_FlatCapsule( T* Dest, const Vector2D& PosA, const Real& RadiusA, const Vector2D& PosB, const Real& RadiusB ) {
-	generate_Vertex3D_FlatCapsule( Dest, PosA.ToVector3D(), RadiusA, PosB.ToVector3D(), RadiusB );
+	*Out = Vector3D( PosA.x - (RadiusA * Tangent.x), PosA.y - (RadiusA * Tangent.y), PosA.z );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const st32 size_Vertex3D_FlatCapsule() {
 	return 4;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const st32 size_Vertex3D_FlatCapsule( const Vector3D&, const Real&, const Vector3D&, const Real& ) {
-	return size_Vertex3D_FlatCapsule();
-}
-// - ------------------------------------------------------------------------------------------ - //
-inline const st32 size_Vertex3D_FlatCapsule( const Vector2D&, const Real&, const Vector2D&, const Real& ) {
-	return size_Vertex3D_FlatCapsule();
-}
-// - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL2_GENERATE_VERTEX_FLATCAPSULE_H__ //
+#endif // __GEL_GENERATE_VERTEX_FLATCAPSULE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

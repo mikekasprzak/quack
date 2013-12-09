@@ -7,12 +7,8 @@
 #include <Lib/Lib.h>
 #include <Math/Vector.h>
 // - ------------------------------------------------------------------------------------------ - //
-enum {
-	GENERATE_DEFAULT_CIRCLE_STEPS = 128
-};
-// - ------------------------------------------------------------------------------------------ - //
 template< typename T >
-inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Vector2D& Radius, const st32 Steps = GENERATE_DEFAULT_CIRCLE_STEPS ) {
+inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Vector2D& Radius, const st32 Steps = GEL_GENERATE_DEFAULT_CIRCLE_STEPS ) {
 	Vector3D* Out;
 
 	float FloatSteps = 1.0f / (float)Steps;
@@ -26,11 +22,11 @@ inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Vector
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
-inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Real& Radius, const st32 Steps = GENERATE_DEFAULT_CIRCLE_STEPS ) {
+inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Real& Radius, const st32 Steps = GEL_GENERATE_DEFAULT_CIRCLE_STEPS ) {
 	generate_Vertex3D_Circle( Dest, Pos, Vector3D(Radius,Radius), Steps );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const st32 size_Vertex3D_Circle( const st32 Steps = GENERATE_DEFAULT_CIRCLE_STEPS ) {
+inline const st32 size_Vertex3D_Circle( const st32 Steps = GEL_GENERATE_DEFAULT_CIRCLE_STEPS ) {
 	return Steps;
 }
 // - ------------------------------------------------------------------------------------------ - //
