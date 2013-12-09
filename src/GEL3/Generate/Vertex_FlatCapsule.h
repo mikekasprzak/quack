@@ -15,7 +15,7 @@ inline void generate_Vertex3D_FlatCapsule( T* Dest, const Vector3D& PosA, const 
 
 	Vector3D Line = PosB - PosA;
 	Vector3D Tangent = cross(Line,Vector3D(0,0,1)).Normal();
-	Vector3D LineNormal = Line.Normal();
+	//Vector3D LineNormal = Line.Normal();
 	
 	Out = (Vector3D*)Dest++;
 	*Out = Vector3D( PosA.x + (RadiusA * Tangent.x), PosA.y + (RadiusA * Tangent.y), PosA.z );

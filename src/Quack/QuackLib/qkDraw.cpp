@@ -16,7 +16,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#define _PRIMITIVE_DRAW_RADIUS(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_) \
+#define _PRIMITIVE_DRAW_RADIUS(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_, ...) \
 SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 	Vector3D Pos(0,0); \
 	Vector2D Radius(10,10); \
@@ -56,9 +56,9 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 			Color = *ColorArg; \
 		} \
 		\
-		const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_(); \
+		const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_( __VA_ARGS__ ); \
 		Vector3D Verts[ VertCount ]; \
-		generate_Vertex3D_ ## _PRIMNAME_( Verts, Pos, Radius ); \
+		generate_Vertex3D_ ## _PRIMNAME_( Verts, Pos, Radius, ## __VA_ARGS__ ); \
 		\
 		Gel::RenderFlat( _DRAWMODE_, *uMatrix, Color, Verts, VertCount ); \
 	} \
@@ -72,13 +72,13 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 _PRIMITIVE_DRAW_RADIUS(qkDrawCircle,Circle,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_RADIUS(qkDrawSquare,RadiusRect,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_RADIUS(qkDrawDiamond,Diamond,GEL_LINE_LOOP);
-//_PRIMITIVE_DRAW_RADIUS(qkDrawTriangle,Triangle,GEL_LINE_LOOP);
+_PRIMITIVE_DRAW_RADIUS(qkDrawTriangle,Circle,GEL_LINE_LOOP,3);
 _PRIMITIVE_DRAW_RADIUS(qkDrawCross,Cross,GEL_LINES);
 _PRIMITIVE_DRAW_RADIUS(qkDrawX,X,GEL_LINES);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#define _PRIMITIVE_DRAW_CAPSULE(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_) \
+#define _PRIMITIVE_DRAW_CAPSULE(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_, ... ) \
 SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 	Vector3D PosA(0,0); \
 	float RadiusA = 10.0f; \
@@ -133,9 +133,9 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 			Color = *ColorArg; \
 		} \
 		\
-		const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_(); \
+		const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_( __VA_ARGS__ ); \
 		Vector3D Verts[ VertCount ]; \
-		generate_Vertex3D_ ## _PRIMNAME_( Verts, PosA, Real(RadiusA), PosB, Real(RadiusB) ); \
+		generate_Vertex3D_ ## _PRIMNAME_( Verts, PosA, Real(RadiusA), PosB, Real(RadiusB), ## __VA_ARGS__ ); \
 		\
 		Gel::RenderFlat( _DRAWMODE_, *uMatrix, Color, Verts, VertCount ); \
 	} \
@@ -375,14 +375,16 @@ SQRegFunction qkDraw_funcs[] = {
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
 	_DECL_FUNC(qkDrawSquare,-2,NULL),
 	_DECL_FUNC(qkDrawDiamond,-2,NULL),
-//	_DECL_FUNC(qkDrawTriangle,-2,NULL),
+	_DECL_FUNC(qkDrawTriangle,-2,NULL),
 	_DECL_FUNC(qkDrawCross,-2,NULL),
 	_DECL_FUNC(qkDrawX,-2,NULL),
-//	_DECL_FUNC(qkDrawCube,-2,NULL),
 
 	_DECL_FUNC(qkDrawCapsule,-2,NULL),
 	_DECL_FUNC(qkDrawDiamondCapsule,-2,NULL),
 	_DECL_FUNC(qkDrawFlatCapsule,-2,NULL),
+
+	// 3D Shapes //
+//	_DECL_FUNC(qkDrawCube,-2,NULL),
 	
 	_DECL_FUNC(qkDrawTexturedQuad,-2,NULL),
 	_DECL_FUNC(qkDrawText,-3,NULL),
