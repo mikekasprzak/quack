@@ -16,7 +16,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#define _PRIMITIVE_DRAW_BODY(_FUNCNAME_,_PRIMNAME_) \
+#define _PRIMITIVE_DRAW_BODY(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_) \
 SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 	Vector3D Pos(0,0); \
 	Vector2D Radius(10,10); \
@@ -60,7 +60,7 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 		Vector3D Verts[ VertCount ]; \
 		generate_Vertex3D_ ## _PRIMNAME_( Verts, Pos, Radius ); \
 		\
-		Gel::RenderFlat( GEL_LINE_LOOP, *uMatrix, Color, Verts, VertCount ); \
+		Gel::RenderFlat( _DRAWMODE_, *uMatrix, Color, Verts, VertCount ); \
 	} \
 	else { \
 		Log("! " #_FUNCNAME_ " -- Not enough arguments"); \
@@ -69,110 +69,12 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 	return SQ_VOID; \
 }
 // - ------------------------------------------------------------------------------------------ - //
-_PRIMITIVE_DRAW_BODY(qkDrawCircle,Circle);
-_PRIMITIVE_DRAW_BODY(qkDrawSquare,RadiusRect);
-_PRIMITIVE_DRAW_BODY(qkDrawDiamond,Diamond);
-//_PRIMITIVE_DRAW_BODY(qkDrawCube,Cube);
-// - ------------------------------------------------------------------------------------------ - //
-//SQInteger qkDrawCircle(HSQUIRRELVM vm) {
-//	float Radius = 10.0f;
-//	Vector3D Pos;
-//	
-//	Matrix4x4* uMatrix = 0;
-//	
-//	GelColor Color = GEL_RGBA(255,255,255,255);
-//	
-//	int NumArgs = sq_gettop(vm);
-//	if ( NumArgs >= 2 ) {
-//		// ARG1: Matrix
-//		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
-//
-//		// ARG2: Position
-//		if ( NumArgs >= 3 ) {
-//			void* UserPointer;
-//			sq_getinstanceup(vm,3,(void**)&UserPointer,NULL);
-//
-//			// TODO: Check type (vec2, vec3) //
-//
-//			Vector2D* Vec = (Vector2D*)UserPointer;
-//			Pos = Vec->ToVector3D();
-//		}
-//		
-//		// ARG3: Radius
-//		if ( NumArgs >= 4 ) {
-//			sq_getfloat(vm,4,&Radius);
-//		}
-//		
-//		// ARG4: Color
-//		if ( NumArgs >= 5 ) {
-//			// Retrieve Data (Pointer) //
-//			GelColor* ColorArg;
-//			sq_getinstanceup(vm,5,(void**)&ColorArg,0);
-//			Color = *ColorArg;
-//		}
-//	
-//		const st32 VertCount = size_Vertex3D_Circle();
-//		Vector3D Verts[ VertCount ];
-//		generate_Vertex3D_Circle( Verts, Pos, Real(Radius) );
-//	
-//		Gel::RenderFlat( GEL_LINE_LOOP, *uMatrix, Color, Verts, VertCount );
-//	}
-//	else {
-//		Log("! qkDrawCircle -- Not enough arguments");
-//	}
-//	
-//	return SQ_VOID;
-//}
-// - ------------------------------------------------------------------------------------------ - //
-//SQInteger qkDrawSquare(HSQUIRRELVM vm) {
-//	float Radius = 10.0f;
-//	Vector3D Pos;
-//	
-//	Matrix4x4* uMatrix = 0;
-//	
-//	GelColor Color = GEL_RGBA(255,255,255,255);
-//	
-//	int NumArgs = sq_gettop(vm);
-//	if ( NumArgs >= 2 ) {
-//		// ARG1: Matrix
-//		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
-//
-//		// ARG2: Position
-//		if ( NumArgs >= 3 ) {
-//			void* UserPointer;
-//			sq_getinstanceup(vm,3,(void**)&UserPointer,NULL);
-//
-//			// TODO: Check type (vec2, vec3) //
-//
-//			Vector2D* Vec = (Vector2D*)UserPointer;
-//			Pos = Vec->ToVector3D();
-//		}
-//		
-//		// ARG3: Radius
-//		if ( NumArgs >= 4 ) {
-//			sq_getfloat(vm,4,&Radius);
-//		}
-//		
-//		// ARG4: Color
-//		if ( NumArgs >= 5 ) {
-//			// Retrieve Data (Pointer) //
-//			GelColor* ColorArg;
-//			sq_getinstanceup(vm,5,(void**)&ColorArg,0);
-//			Color = *ColorArg;
-//		}
-//	
-//		const st32 VertCount = size_Vertex3D_RadiusRect();
-//		Vector3D Verts[ VertCount ];
-//		generate_Vertex3D_RadiusRect( Verts, Pos, Vector3D(Radius,Radius,0) );
-//	
-//		Gel::RenderFlat( GEL_LINE_LOOP, *uMatrix, Color, Verts, VertCount );
-//	}
-//	else {
-//		Log("! qkDrawSquare -- Not enough arguments");
-//	}
-//	
-//	return SQ_VOID;
-//}
+_PRIMITIVE_DRAW_BODY(qkDrawCircle,Circle,GEL_LINE_LOOP);
+_PRIMITIVE_DRAW_BODY(qkDrawSquare,RadiusRect,GEL_LINE_LOOP);
+_PRIMITIVE_DRAW_BODY(qkDrawDiamond,Diamond,GEL_LINE_LOOP);
+//_PRIMITIVE_DRAW_BODY(qkDrawTriangle,Triangle,GEL_LINE_LOOP);
+_PRIMITIVE_DRAW_BODY(qkDrawCross,Cross,GEL_LINES);
+_PRIMITIVE_DRAW_BODY(qkDrawX,X,GEL_LINES);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -399,6 +301,9 @@ SQRegFunction qkDraw_funcs[] = {
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
 	_DECL_FUNC(qkDrawSquare,-2,NULL),
 	_DECL_FUNC(qkDrawDiamond,-2,NULL),
+//	_DECL_FUNC(qkDrawTriangle,-2,NULL),
+	_DECL_FUNC(qkDrawCross,-2,NULL),
+	_DECL_FUNC(qkDrawX,-2,NULL),
 //	_DECL_FUNC(qkDrawCube,-2,NULL),
 	
 	_DECL_FUNC(qkDrawTexturedQuad,-2,NULL),

@@ -12,6 +12,9 @@
 #include "Vertex_HalfCircle.h"
 
 #include "Vertex_Diamond.h"
+//#include "Vertex_Triangle.h"
+#include "Vertex_Cross.h"
+#include "Vertex_X.h"
 
 #include "Vertex_Capsule.h"
 #include "Vertex_DiamondCapsule.h"
