@@ -1,4 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: Optionally take a vec2 as a radius input argument, to allow distortions of shape. //
+// - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <API/API_Squirrel.h>
 #include "QuackLib_Internal.h"
@@ -14,7 +16,112 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkDrawCircle(HSQUIRRELVM vm) {
+#define _PRIMITIVE_DRAW_BODY(_FUNCNAME_,_PRIMNAME_) \
+SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
+	Vector3D Pos(0,0); \
+	Vector3D Radius(10,10,0); \
+	\
+	Matrix4x4* uMatrix = 0; \
+	\
+	GelColor Color = GEL_RGB_WHITE; \
+	\
+	int NumArgs = sq_gettop(v); \
+	if ( NumArgs >= 2 ) { \
+		/* ARG1: Matrix */ \
+		sq_getinstanceup(v,2,(void**)&uMatrix,NULL); \
+		\
+		/* ARG2: Position */ \
+		if ( NumArgs >= 3 ) { \
+			void* UserPointer; \
+			sq_getinstanceup(v,3,(void**)&UserPointer,NULL); \
+			\
+			/* TODO: Check type (vec2, vec3) */ \
+			\
+			Vector2D* Vec = (Vector2D*)UserPointer; \
+			Pos = Vec->ToVector3D(); \
+		} \
+		\
+		/* ARG3: Radius */ \
+		if ( NumArgs >= 4 ) { \
+			/* TODO: Check type */ \
+			float FRadius; \
+			sq_getfloat(v,4,&FRadius); \
+			Radius = Vector3D(FRadius,FRadius,0); \
+		} \
+		\
+		/* ARG4: Color */ \
+		if ( NumArgs >= 5 ) { \
+			GelColor* ColorArg; \
+			sq_getinstanceup(v,5,(void**)&ColorArg,0); \
+			Color = *ColorArg; \
+		} \
+		\
+		const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_(); \
+		Vector3D Verts[ VertCount ]; \
+		generate_Vertex3D_ ## _PRIMNAME_( Verts, Pos, Radius ); \
+		\
+		Gel::RenderFlat( GEL_LINE_LOOP, *uMatrix, Color, Verts, VertCount ); \
+	} \
+	else { \
+		Log("! " #_FUNCNAME_ " -- Not enough arguments"); \
+	} \
+	\
+	return SQ_VOID; \
+}
+// - ------------------------------------------------------------------------------------------ - //
+_PRIMITIVE_DRAW_BODY(qkDrawCircle,Circle);
+// - ------------------------------------------------------------------------------------------ - //
+//SQInteger qkDrawCircle(HSQUIRRELVM vm) {
+//	float Radius = 10.0f;
+//	Vector3D Pos;
+//	
+//	Matrix4x4* uMatrix = 0;
+//	
+//	GelColor Color = GEL_RGBA(255,255,255,255);
+//	
+//	int NumArgs = sq_gettop(vm);
+//	if ( NumArgs >= 2 ) {
+//		// ARG1: Matrix
+//		sq_getinstanceup(vm,2,(void**)&uMatrix,NULL);
+//
+//		// ARG2: Position
+//		if ( NumArgs >= 3 ) {
+//			void* UserPointer;
+//			sq_getinstanceup(vm,3,(void**)&UserPointer,NULL);
+//
+//			// TODO: Check type (vec2, vec3) //
+//
+//			Vector2D* Vec = (Vector2D*)UserPointer;
+//			Pos = Vec->ToVector3D();
+//		}
+//		
+//		// ARG3: Radius
+//		if ( NumArgs >= 4 ) {
+//			sq_getfloat(vm,4,&Radius);
+//		}
+//		
+//		// ARG4: Color
+//		if ( NumArgs >= 5 ) {
+//			// Retrieve Data (Pointer) //
+//			GelColor* ColorArg;
+//			sq_getinstanceup(vm,5,(void**)&ColorArg,0);
+//			Color = *ColorArg;
+//		}
+//	
+//		const st32 VertCount = size_Vertex3D_Circle();
+//		Vector3D Verts[ VertCount ];
+//		generate_Vertex3D_Circle( Verts, Pos, Real(Radius) );
+//	
+//		Gel::RenderFlat( GEL_LINE_LOOP, *uMatrix, Color, Verts, VertCount );
+//	}
+//	else {
+//		Log("! qkDrawCircle -- Not enough arguments");
+//	}
+//	
+//	return SQ_VOID;
+//}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkDrawSquare(HSQUIRRELVM vm) {
 	float Radius = 10.0f;
 	Vector3D Pos;
 	
@@ -51,18 +158,20 @@ SQInteger qkDrawCircle(HSQUIRRELVM vm) {
 			Color = *ColorArg;
 		}
 	
-		const st32 VertCount = size_Vertex3D_Circle();
+		const st32 VertCount = size_Vertex3D_RadiusRect();
 		Vector3D Verts[ VertCount ];
-		generate_Vertex3D_Circle( Verts, Pos, Real(Radius) );
+		generate_Vertex3D_RadiusRect( Verts, Pos, Vector3D(Radius,Radius,0) );
 	
 		Gel::RenderFlat( GEL_LINE_LOOP, *uMatrix, Color, Verts, VertCount );
 	}
 	else {
-		Log("! qkDrawCircle -- Not enough arguments");
+		Log("! qkDrawSquare -- Not enough arguments");
 	}
 	
 	return SQ_VOID;
 }
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: Add a .Draw member to the QkTexture that does exactly this. //
 SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
@@ -285,6 +394,8 @@ SQRegFunction qkDraw_funcs[] = {
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 
 	_DECL_FUNC(qkDrawCircle,-2,NULL),
+	_DECL_FUNC(qkDrawSquare,-2,NULL),
+	
 	_DECL_FUNC(qkDrawTexturedQuad,-2,NULL),
 	_DECL_FUNC(qkDrawText,-3,NULL),
 	_DECL_FUNC(qkDrawModel,-3,NULL),

@@ -62,23 +62,12 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Constructors //
 	// - -------------------------------------------------------------------------------------- - //
-	inline Vector4D() {
-	}
-	// - -------------------------------------------------------------------------------------- - //
-	inline Vector4D( const Real& _x, const Real& _y, const Real& _z, const Real& _w ) :
+	inline Vector4D( const Real& _x = Real::Zero, const Real& _y = Real::Zero, const Real& _z = Real::Zero, const Real& _w = Real::Zero ) :
 		x( _x ),
 		y( _y ),
 		z( _z ),
 		w( _w )
 	{
-	}
-	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector4D& Set( const Real& _x, const Real& _y, const Real& _z, const Real& _w ) {
-		x = _x;
-		y = _y;
-		z = _z;
-		w = _w;
-		return *this;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
