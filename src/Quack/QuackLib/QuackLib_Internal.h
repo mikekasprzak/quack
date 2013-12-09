@@ -29,6 +29,9 @@ enum {
 	QK_TAG_GRID2,
 	QK_TAG_GRID3,
 	
+	// EXTERNAL TO QUACKLIB //
+	QK_TAG_ENGINE,
+	
 	QK_TAG_MAX		// Last Symbol //
 };
 // - ------------------------------------------------------------------------------------------ - //
