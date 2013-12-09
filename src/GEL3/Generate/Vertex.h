@@ -11,6 +11,8 @@
 #include "Vertex_Circle.h"
 #include "Vertex_HalfCircle.h"
 
+#include "Vertex_Diamond.h"
+
 #include "Vertex_Capsule.h"
 #include "Vertex_DiamondCapsule.h"
 #include "Vertex_FlatCapsule.h"

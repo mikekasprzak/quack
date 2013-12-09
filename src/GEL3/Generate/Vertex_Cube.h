@@ -1,4 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: This is wrong! You need to subtract the shape too! All axis not added in the swizzle. //
+// - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL2_GENERATE_VERTEX_CUBE_H__
 #define __GEL2_GENERATE_VERTEX_CUBE_H__
 // - ------------------------------------------------------------------------------------------ - //
@@ -13,7 +15,7 @@ inline void generate_Vertex3D_Cube( T* Dest, const Vector3D& Pos, const Vector3D
 	
 	// Top //
 	Out = (Vector3D*)Dest++;
-	*Out = Pos + Shape._000();
+	*Out = Pos + Shape._000(); // - Shape._xyz();
 	Out = (Vector3D*)Dest++;
 	*Out = Pos + Shape._x00();
 	Out = (Vector3D*)Dest++;

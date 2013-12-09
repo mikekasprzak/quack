@@ -12,7 +12,7 @@ enum {
 };
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
-inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Vector3D& Radius, const st32 Steps = GENERATE_DEFAULT_CIRCLE_STEPS ) {
+inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Vector2D& Radius, const st32 Steps = GENERATE_DEFAULT_CIRCLE_STEPS ) {
 	Vector3D* Out;
 
 	float FloatSteps = 1.0f / (float)Steps;
@@ -21,13 +21,8 @@ inline void generate_Vertex3D_Circle( T* Dest, const Vector3D& Pos, const Vector
 		Out = (Vector3D*)Dest++;
 		Out->x = Pos.x + (Real::Cos(idx * FloatSteps) * Radius.x);
 		Out->y = Pos.y + (Real::Sin(idx * FloatSteps) * Radius.y);
-		Out->z = Pos.z + Radius.z;
+		Out->z = Pos.z;
 	}
-}
-// - ------------------------------------------------------------------------------------------ - //
-template< typename T >
-inline void generate_Vertex3D_Circle( T* Dest, const Vector2D& Pos, const Real& Radius, const st32 Steps = GENERATE_DEFAULT_CIRCLE_STEPS ) {
-	generate_Vertex3D_Circle( Dest, Pos.ToVector3D(), Vector3D(Radius,Radius), Steps );
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
@@ -42,7 +37,7 @@ inline const st32 size_Vertex3D_Circle( const st32 Steps = GENERATE_DEFAULT_CIRC
 
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
-inline void generate_Vertex3D_CircleNormals( T* Dest, const Vector3D& Pos, const Vector3D& = Vector3D::One, const Real NormalLength = Real(4) ) {
+inline void generate_Vertex3D_CircleNormals( T* Dest, const Vector3D& Pos, const Vector2D& = Vector2D::One, const Real NormalLength = Real(4) ) {
 	Vector3D* Out;
 
 	Out = (Vector3D*)Dest++;
@@ -52,13 +47,8 @@ inline void generate_Vertex3D_CircleNormals( T* Dest, const Vector3D& Pos, const
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
-inline void generate_Vertex3D_CircleNormals( T* Dest, const Vector2D& Pos, const Real& Radius = Real::One, const Real NormalLength = Real(4) ) {
-	generate_Vertex3D_CircleNormals( Dest, Pos.ToVector3D(), Vector3D(Radius,Radius), NormalLength );
-}
-// - ------------------------------------------------------------------------------------------ - //
-template< typename T >
 inline void generate_Vertex3D_CircleNormals( T* Dest, const Vector3D& Pos, const Real& Radius = Real::One, const Real NormalLength = Real(4) ) {
-	generate_Vertex3D_CircleNormals( Dest, Pos, Vector3D(Radius,Radius), NormalLength );
+	generate_Vertex3D_CircleNormals( Dest, Pos, Vector2D(Radius,Radius), NormalLength );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const st32 size_Vertex3D_CircleNormals() {
