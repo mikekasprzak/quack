@@ -114,11 +114,29 @@ void QuackVMInit() {
 	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	
+	// Load the setup file (if available) //
+	const char* SetupFile = "setup.nut";
+	Log( "Loading Setup File (%s)...", SetupFile );
+	sqext_load_nut( vm, SetupFile );
+	Log( "" );
+	
+	// TODO: --nosetup command-line argument
+	if ( sqext_exists( vm, "Setup" ) ) {
+		Log( "Calling user Setup() function..." );
+		sqext_call( vm, "Setup" );
+	}
+	else if ( sqext_exists( vm, "_DefaultSetup" ) ) {
+		Log( "Calling _DefaultSetup() function..." );
+		sqext_call( vm, "_DefaultSetup" );
+	}
+			
 	// Load the startup file //
 	const char* StartupFile = "main.nut";
 	Log( "Loading Startup File (%s)...", StartupFile );
 	sqext_load_nut( vm, StartupFile );
 	Log( "" );
+	
+	QuackVMCallSetup();
 }
 // - ------------------------------------------------------------------------------------------ - //
 void QuackVMExit() {
@@ -134,7 +152,7 @@ bool QuackVMCallSetup() {
 		sqext_call( vm, "main" );
 		App::SetMode( App::AM_MAIN );
 	}
-	else if ( sqext_exists( vm, "Init" ) || sqext_exists( vm, "Setup" ) || sqext_exists( vm, "Step" ) || sqext_exists( vm, "Draw" ) ) {
+	else if ( sqext_exists( vm, "Init" ) || sqext_exists( vm, "Step" ) || sqext_exists( vm, "Draw" ) ) {
 		// Check for Step and Draw //
 		if ( !sqext_exists( vm, "Step" ) ) {
 			Log( "! ERROR: GameLoop Mode detected, but no Step(). Aborting..." );
@@ -148,18 +166,9 @@ bool QuackVMCallSetup() {
 		}
 
 		App::SetMode( App::AM_GAMELOOP );
-
-		if ( sqext_exists( vm, "Setup" ) ) {
-			Log( "Calling user Setup() function..." );
-			sqext_call( vm, "Setup" );
-		}
-		else if ( sqext_exists( vm, "_DefaultSetup" ) ) {
-			Log( "Calling _DefaultSetup() function..." );
-			sqext_call( vm, "_DefaultSetup" );
-		}
 	}
 	else {
-		Log( "! ERROR: No startup function found (Init, Setup or main). Aborting..." );
+		Log( "! ERROR: No startup function found (Init or main). Aborting..." );
 		App::SetMode( App::AM_ERROR );
 		return false;
 	}

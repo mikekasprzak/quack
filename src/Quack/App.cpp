@@ -115,7 +115,6 @@ void AppInit() {
 	App::HadVMError = false;
 	App::AppStarted = false;
 	QuackVMInit();
-	QuackVMCallSetup();
 	QuackVMCallInit();
 	App::AppStarted = true;
 
