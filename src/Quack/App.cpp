@@ -200,12 +200,12 @@ void DrawSpine() {
 		if (!attachment || attachment->type != ATTACHMENT_REGION) continue;
 		spRegionAttachment* regionAttachment = (spRegionAttachment*)attachment;
 
-//		BlendMode blend = slot->data->additiveBlending ? BlendAdd : BlendAlpha;
-//		if (states.blendMode != blend) {
-//			target.draw(*vertexArray, states);
-//			vertexArray->clear();
-//			states.blendMode = blend;
-//		}
+		if ( slot->data->additiveBlending ) {
+			gelBlendingEnableAddative();
+		}
+		else {
+			gelBlendingEnable();
+		}
 
 		spRegionAttachment_computeWorldVertices(regionAttachment, slot->skeleton->x, slot->skeleton->y, slot->bone, worldVertices);
 
