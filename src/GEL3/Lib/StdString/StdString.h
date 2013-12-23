@@ -85,6 +85,28 @@ namespace String {
 		return WorkString.substr( 0, DotPos - 0 );
 	}
 	// - -------------------------------------------------------------------------------------- - //
+	// Return the base name including directory //
+	inline std::string GetBaseDirectory( const std::string& _FileName ) {
+		std::string WorkString = _FileName;
+		
+		// Find the trailing slash //
+		size_t CharPos = WorkString.rfind( "/" );
+		if ( CharPos == std::string::npos ) {
+			CharPos = 0;
+		}
+			
+		// Find the first dot //
+		size_t DotPos = WorkString.find( ".", CharPos );
+		
+		if ( DotPos == std::string::npos ) {
+			// Dot not found //
+			return WorkString;
+		}
+		
+		// Return the entire string before the first period //
+		return WorkString.substr( 0, DotPos - 0 );
+	}
+	// - -------------------------------------------------------------------------------------- - //
 
 
 	// - -------------------------------------------------------------------------------------- - //

@@ -1,40 +1,33 @@
 // - ------------------------------------------------------------------------------------------ - //
-// Skeleton JSONs can be optionally created with an Attachment Loader. I'm not actually sure what
-//   the other "attachment" options are, but the only option in Spine is an atlas.
+// GelAtlas is based on Spine's Texture Atlases (libGDX) //
+//
+// https://github.com/libgdx/libgdx/wiki/Texture-packer
+// http://code.google.com/p/libgdx-texturepacker-gui/
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SKELMESH_GELSKELMESH_H__
-#define __GEL_SKELMESH_GELSKELMESH_H__
+#ifndef __GEL_ATLAS_GELATLAS_H__
+#define __GEL_ATLAS_GELATLAS_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Asset/Asset.h>
 #include <Texture/Texture.h>
-#include <Atlas/Atlas.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <spine/spine.h>
 // - ------------------------------------------------------------------------------------------ - //
-class GelSkelMesh {
+class GelAtlas {
+	friend class GelSkelMesh;
 protected:
 	st32 MyID;	// My TextureID (an Internal Copy) //
 
-	GelAtlasPool::UID AtlasUID;
-	GelAssetPool::UID AssetUID;
-	
-	spSkeletonJson* SkeletonJson;
-	spSkeletonData* SkeletonData;
-	
-	spSkeleton* Skeleton;
+	GelAssetPool::UID AssetUID;	
 
-	std::vector< spAnimation* > Animation;
-//	spAnimation* Animation;	// NOTE: Need one per animation stored in the Spine file //
+	spAtlas* Atlas;	
+	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
-	inline GelSkelMesh( const st32 _MyID ) :
+	inline GelAtlas( const st32 _MyID ) :
 		MyID( _MyID ),
-		AtlasUID( 0 ),
 		AssetUID( 0 ),
-		SkeletonJson( 0 ),
-		SkeletonData( 0 ),
-		Skeleton( 0 )
+		Atlas( 0 )
 	{	
 	}
 	
@@ -50,23 +43,13 @@ public:
 		AssetUID = Gel::AssetPool.Load( InFile );
 
 		if ( AssetUID ) {
-			std::string BaseFileName = Gel::String::GetBaseDirectory(InFile);	
-			AtlasUID = Gel::AtlasPool.Load( (BaseFileName + ".atlas").c_str() );
-
-			GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
 			GelAsset& Asset = Gel::AssetPool[AssetUID];
 
-			Log("+ Skeleton");
-			SkeletonJson = spSkeletonJson_create(Atlas.Atlas);
-			SkeletonData = spSkeletonJson_readSkeletonData( SkeletonJson, Asset.GetStr() ); // The raw JSON data as a c string
-			Skeleton = spSkeleton_create(SkeletonData);
-			
-			//Animation = spSkeletonData_findAnimation(SkeletonData, "walk");
-			for ( st32 idx = 0; idx < ) {
-				SkeletonData->animations
-			}
-				
-			
+			Log("+ spAtlas_readAtlas");
+			Atlas = spAtlas_readAtlas( Asset.Get(), Asset.GetSize(), Gel::String::GetDirectorySlash(InFile).c_str() );
+			//Atlas = spAtlas_readAtlasFile("spineboy.atlas");
+			Log("- spAtlas_readAtlas (%x)",Atlas);
+
 //			if ( Error == PVR_SUCCESS ) {
 //				Log("Nodes: %i  MeshNodes: %i  Meshes: %i  AnimationFrames: %i (Lights: %i  Cameras: %i  Materials: %i  Textures: %i)", 
 //					Model->nNumNode, Model->nNumMeshNode, Model->nNumMesh, Model->nNumFrame,
@@ -84,34 +67,19 @@ public:
 //					}
 //				}
 //			}
-
-			Log("- Skeleton (%x,%x,%x)",SkeletonJson,SkeletonData,Skeleton);
 		}
 	}
 	
 	inline void Unload() {
-		// TODO: For all aimations //
-//		if ( Animation )
-//			spAnimation_dispose(Animation);
-		Animation.clear();		
+		TexturePage.clear();
 
-		if ( Skeleton ) {
-			spSkeleton_dispose(Skeleton);
-			Skeleton = 0;
-		}
-		if ( SkeletonData ) {
-			spSkeletonData_dispose(SkeletonData);
-			SkeletonData = 0;
-		}
-		if ( SkeletonJson ) {
-			spSkeletonJson_dispose(SkeletonJson);
-			SkeletonJson = 0;
-		}
-		
-		// TODO: Free Atlas and AssetUID's ? //
-		// or at the very least, say "I'm done with them" //
+		// NOTE: Disposal is currently broken (Dec 20th) //
+//		if ( Atlas ) {
+//			spAtlas_dispose(Atlas);
+//			Atlas = 0;
+//		}
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SKELMESH_GELSKELMESH_H__ //
+#endif // __GEL_ATLAS_GELATLAS_H__ //
 // - ------------------------------------------------------------------------------------------ - //

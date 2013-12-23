@@ -14,8 +14,9 @@
 #include <Asset/Asset.h>
 #include <Texture/Texture.h>
 #include <Font/Font.h>
+#include <Atlas/Atlas.h>
+#include <SkelMesh/SkelMesh.h>
 #include <Model/Model.h>
-#include <Model2D/Model2D.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -104,6 +105,9 @@ void AppInit() {
 	gelAssetInit();
 	gelTextureInit();
 	gelFontInit();
+	gelAtlasInit();
+	gelSkelMeshInit();
+	gelModelInit();
 	Gel::Input::Init();
 	
 	// **** //
@@ -141,12 +145,11 @@ void AppInit() {
 //		Log("**** DONE");
 //	}
 
-//	{	
-//		Log("**** LOADING SPINE");
-//		GelModel2DPool::UID MyUID = Gel::Model2DPool.Load( "SpineTest/spineboy.json" );
-//		
-//		Log("**** DONE");
-//	}
+	{	
+		Log("**** LOADING SPINE");
+		GelSkelMeshPool::UID MyUID = Gel::SkelMeshPool.Load( "SpineTest/spineboy.json" );
+		Log("**** DONE");
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
