@@ -48,6 +48,29 @@ bool IsPS4( int Index );
 }; // namespace Input //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
+namespace Gel {
+// - ------------------------------------------------------------------------------------------ - //	
+extern bool KeyESC;
+extern bool KeyRefresh;
+
+extern int KeyFakeLStick;
+extern int KeyFakeRStick;
+extern int KeyFakeButtons;
+
+enum {
+	KEY_UP = 	0x1,
+	KEY_DOWN = 	0x2,
+	KEY_LEFT = 	0x4,
+	KEY_RIGHT =	0x8,
+	
+	KEY_L =		0x10,
+	KEY_R =		0x20,
+	KEY_MENU = 	0x40,
+	KEY_EXTRA = 0x80,
+};
+// - ------------------------------------------------------------------------------------------ - //
+}; // namespace Gel //
+// - ------------------------------------------------------------------------------------------ - //
 #endif // USES_SDL2 //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_INPUT_INPUT_DEVICE_CONTROLLER_SDLINPUT_H__ //

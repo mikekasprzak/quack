@@ -164,8 +164,7 @@ void AppStep() {
 	Gel::Input::Poll();
 	
 	// If the Refresh key is pressed (NOTE: this should be 'just pressed' state) //
-	extern bool ___keyRefresh;
-	if ( ___keyRefresh ) {
+	if ( Gel::KeyRefresh ) {
 		QuackVMCallInit();
 	}
 

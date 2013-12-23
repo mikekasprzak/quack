@@ -9,7 +9,7 @@
 
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputXInputGet( HSQUIRRELVM v ) {
-#ifdef USES_WINDOWS
+#ifdef USES_XINPUT
 	int Index = 0;
 	int NumArgs = sq_gettop(v);
 	if ( NumArgs > 0 ) {
@@ -44,9 +44,9 @@ SQInteger qkInputXInputGet( HSQUIRRELVM v ) {
 	sq_newslot(v,-3,SQFalse);
 
 	return SQ_RETURN;
-#else // USES_WINDOWS //
+#else // USES_XINPUT //
 	return SQ_VOID;
-#endif // USES_WINDOWS //
+#endif // USES_XINPUT //
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -224,6 +224,7 @@ SQInteger qkInputPadGet( HSQUIRRELVM v ) {
 			// Buttons //
 			sqslot_int(v,"Button", Gel::Input::SDLInput::GamePad[Index].Button);
 	
+			// LStick //			
 			Vector2D LStick;
 			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 0 )
 				LStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[0];
@@ -236,7 +237,6 @@ SQInteger qkInputPadGet( HSQUIRRELVM v ) {
 			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 3 )
 				RStick.y = Gel::Input::SDLInput::GamePad[Index].Axis[3];
 	
-			// LStick //			
 			sq_pushstring(v,"LStick",-1);
 			sq_newtable(v);
 			sqslot_float(v,"x", LStick.x.ToFloat());
@@ -251,10 +251,50 @@ SQInteger qkInputPadGet( HSQUIRRELVM v ) {
 			sq_newslot(v,-3,SQFalse);			
 		}
 	}
-//	else if ( true ) {
-//		// NO GAMEPAD CONNECTED! //
-//		// Keyboard Proxy? //	
-//	}
+	else if ( true ) {
+		// No Gamepad Connected? KEYBOARD PROXY! //
+		sqslot_int(v,"Index", Index);
+		sqslot_bool(v,"Connected", true);
+		
+		// Buttons //
+		sqslot_int(v,"Button", Gel::KeyFakeButtons);
+
+		// LStick //
+		Vector2D LStick;
+		if ( Gel::KeyFakeLStick & Gel::KEY_UP )
+			LStick.y = Real::One;
+		else if ( Gel::KeyFakeLStick & Gel::KEY_DOWN )
+			LStick.y = -Real::One;
+				
+		if ( Gel::KeyFakeLStick & Gel::KEY_LEFT )
+			LStick.x = -Real::One;
+		else if ( Gel::KeyFakeLStick & Gel::KEY_RIGHT )
+			LStick.x = Real::One;
+		
+		sq_pushstring(v,"LStick",-1);
+		sq_newtable(v);
+		sqslot_float(v,"x", LStick.x.ToFloat());
+		sqslot_float(v,"y", LStick.y.ToFloat());
+		sq_newslot(v,-3,SQFalse);
+
+		// RStick //			
+		Vector2D RStick;
+		if ( Gel::KeyFakeRStick & Gel::KEY_UP )
+			RStick.y = Real::One;
+		else if ( Gel::KeyFakeRStick & Gel::KEY_DOWN )
+			RStick.y = -Real::One;
+				
+		if ( Gel::KeyFakeRStick & Gel::KEY_LEFT )
+			RStick.x = -Real::One;
+		else if ( Gel::KeyFakeRStick & Gel::KEY_RIGHT )
+			RStick.x = Real::One;
+
+		sq_pushstring(v,"RStick",-1);
+		sq_newtable(v);
+		sqslot_float(v,"x", RStick.x.ToFloat());
+		sqslot_float(v,"y", RStick.y.ToFloat());
+		sq_newslot(v,-3,SQFalse);
+	}
 	else
 #endif // USES_SDL2 //
 	{

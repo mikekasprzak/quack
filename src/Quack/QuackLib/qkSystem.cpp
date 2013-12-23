@@ -5,6 +5,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <System/System.h>
 #include <Asset/Asset.h>
+#include <Input/Input.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <App.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -115,8 +116,7 @@ SQInteger qkRequestExit( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 // Dummy //
 SQInteger qkOnKey( HSQUIRRELVM v ) {
-	extern bool ___keyESC;
-	sq_pushbool( v, ___keyESC ? SQTrue : SQFalse );
+	sq_pushbool( v, Gel::KeyESC ? SQTrue : SQFalse );
 
 	return SQ_RETURN;
 }

@@ -7,6 +7,7 @@
 #include <Lib/Lib.h>
 #include <System/System.h>
 #include <Graphics/Graphics.h>
+#include <Input/Input.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <App.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -26,8 +27,18 @@ void int_func( int Signal ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-bool ___keyESC = false;
-bool ___keyRefresh = false;
+namespace Gel {
+// - ------------------------------------------------------------------------------------------ - //	
+bool KeyESC = false;
+bool KeyRefresh = false;
+
+int KeyFakeLStick = 0;
+int KeyFakeRStick = 0;
+int KeyFakeButtons = 0;
+// - ------------------------------------------------------------------------------------------ - //
+}; // namespace Gel //
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 	if ( Event->type == SDL_QUIT ) {
@@ -61,11 +72,45 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 	}
 	else if ( Event->type == SDL_KEYUP ) {
 		if ( Event->key.keysym.scancode == SDL_SCANCODE_ESCAPE ) {
-			___keyESC = false;
+			Gel::KeyESC = false;
 		}
 		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F2 ) {
-			___keyRefresh = false;
+			Gel::KeyRefresh = false;
 		}
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_UP )
+			Gel::KeyFakeLStick &= ~(Gel::KeyFakeLStick & Gel::KEY_UP);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_DOWN )
+			Gel::KeyFakeLStick &= ~(Gel::KeyFakeLStick & Gel::KEY_DOWN);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_LEFT )
+			Gel::KeyFakeLStick &= ~(Gel::KeyFakeLStick & Gel::KEY_LEFT);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_RIGHT )
+			Gel::KeyFakeLStick &= ~(Gel::KeyFakeLStick & Gel::KEY_RIGHT);
+
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_W )
+			Gel::KeyFakeRStick &= ~(Gel::KeyFakeRStick & Gel::KEY_UP);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_S )
+			Gel::KeyFakeRStick &= ~(Gel::KeyFakeRStick & Gel::KEY_DOWN);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_A )
+			Gel::KeyFakeRStick &= ~(Gel::KeyFakeRStick & Gel::KEY_LEFT);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_D )
+			Gel::KeyFakeRStick &= ~(Gel::KeyFakeRStick & Gel::KEY_RIGHT);
+
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_Z )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & 0x1);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_X )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & 0x2);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_C )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & 0x4);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_V )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & 0x8);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_Q )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & Gel::KEY_L);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_E )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & Gel::KEY_R);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_RETURN )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & Gel::KEY_MENU);
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_TAB )
+			Gel::KeyFakeButtons &= ~(Gel::KeyFakeButtons & Gel::KEY_EXTRA);
 	}
 	else if ( Event->type == SDL_KEYDOWN ) {
 		if ( (Event->key.keysym.scancode == SDL_SCANCODE_F4) && (Event->key.keysym.mod & (KMOD_LALT | KMOD_RALT)) ) {
@@ -76,11 +121,11 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 		
 		if ( Event->key.keysym.scancode == SDL_SCANCODE_ESCAPE ) {
 			Log( "> ESC Signal Recieved" );
-			___keyESC = true;
+			Gel::KeyESC = true;
 		}
 		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F2 ) {
 			Log( "> Refresh Signal Recieved (F2)" );
-			___keyRefresh = true;
+			Gel::KeyRefresh = true;
 		}
 		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F10 ) {
 			#ifdef PRODUCT_DEV_MODE
@@ -92,6 +137,40 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 			#endif // PRODUCT_DEV_MODE //
 			return true;
 		}
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_UP )
+			Gel::KeyFakeLStick |= Gel::KEY_UP;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_DOWN )
+			Gel::KeyFakeLStick |= Gel::KEY_DOWN;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_LEFT )
+			Gel::KeyFakeLStick |= Gel::KEY_LEFT;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_RIGHT )
+			Gel::KeyFakeLStick |= Gel::KEY_RIGHT;
+
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_W )
+			Gel::KeyFakeRStick |= Gel::KEY_UP;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_S )
+			Gel::KeyFakeRStick |= Gel::KEY_DOWN;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_A )
+			Gel::KeyFakeRStick |= Gel::KEY_LEFT;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_D )
+			Gel::KeyFakeRStick |= Gel::KEY_RIGHT;
+
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_Z )
+			Gel::KeyFakeButtons |= 0x1;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_X )
+			Gel::KeyFakeButtons |= 0x2;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_C )
+			Gel::KeyFakeButtons |= 0x4;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_V )
+			Gel::KeyFakeButtons |= 0x8;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_Q )
+			Gel::KeyFakeButtons |= Gel::KEY_L;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_E )
+			Gel::KeyFakeButtons |= Gel::KEY_R;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_RETURN )
+			Gel::KeyFakeButtons |= Gel::KEY_MENU;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_TAB )
+			Gel::KeyFakeButtons |= Gel::KEY_EXTRA;
 	}
 	return false;	
 }
@@ -242,7 +321,7 @@ extern "C" int main( int argc, char* argv[] ) {
 //				FramesOfWork = 1;
 //			}
 //			
-//			if ( __EscKey ) {
+//			if ( Gel::KeyESC ) {
 //				delete App;
 //				App = new cApp();
 //			}
