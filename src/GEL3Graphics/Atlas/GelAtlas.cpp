@@ -12,10 +12,12 @@
 void _spAtlasPage_createTexture( spAtlasPage* self, const char* path ) {
 	Log( "! SPINE ATLAS createTexture: Atlas: 0x%x  \"%s\"", self, path );
 	
-	GelTexturePool::UID Asset = Gel::TexturePool.Load( path );
+	// TODO: Read Atlas information to determine if we should smooth or not //
+	
+	GelTexturePool::UID Asset = Gel::TexturePool.Load( path, true, false );
 	self->rendererObject = (void*)Asset;
-	self->width = Gel::TexturePool[Asset].Width();
-	self->height = Gel::TexturePool[Asset].Height();
+	self->width = Gel::TexturePool[Asset].GetWidth();
+	self->height = Gel::TexturePool[Asset].GetHeight();
 }
 // - ------------------------------------------------------------------------------------------ - //
 void _spAtlasPage_disposeTexture( spAtlasPage* self ) {

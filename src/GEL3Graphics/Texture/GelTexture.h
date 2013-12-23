@@ -18,7 +18,7 @@ protected:
 	GelAssetPool::UID AssetID;
 	GelTextureHandle Handle;
 	
-	int _Width, _Height;
+	int Width, Height;
 	
 	enum {
 		GT_1BPP =				1,
@@ -39,7 +39,7 @@ public:
 		MyID( _MyID ),
 		AssetID( 0 ),
 		Handle( 0 ),
-		_Width( 0 ), _Height( 0 ),
+		Width( 0 ), Height( 0 ),
 		Flags( 0 )
 	{
 	}
@@ -88,8 +88,8 @@ public:
 				);
 				
 			// TODO: Correct these numbers in the case of MaxTextureSize being larger.
-			MyTexture._Width = Tex.Width;
-			MyTexture._Height = Tex.Height;
+			MyTexture.Width = Tex.Width;
+			MyTexture.Height = Tex.Height;
 			MyTexture.Flags = Tex.Info | (MyTexture.Flags & ~GT_BYTESPERPIXEL);
 			
 			Gel::delete_STBTexture( Tex );
@@ -110,11 +110,11 @@ public:
 		return AssetID;
 	}
 	
-	inline int Width() const {
-		return _Width;
+	inline int GetWidth() const {
+		return Width;
 	}
-	inline int Height() const {
-		return _Height;
+	inline int GetHeight() const {
+		return Height;
 	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
