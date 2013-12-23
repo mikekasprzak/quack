@@ -109,6 +109,13 @@ public:
 	inline const GelAssetPool::UID GetAssetId() const {
 		return AssetID;
 	}
+	
+	inline int Width() const {
+		return _Width;
+	}
+	inline int Height() const {
+		return _Height;
+	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_TEXTURE_TEXTUREPOOL_H__ //

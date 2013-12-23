@@ -1,6 +1,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 // Skeleton JSONs can be optionally created with an Attachment Loader. I'm not actually sure what
 //   the other "attachment" options are, but the only option in Spine is an atlas.
+//
+// TODO: Since Skeletons rely on Atlas' and internally use pointers, the SkelMesh should
+//       subscribe to changes made to the Atlas, and reload self.
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_SKELMESH_GELSKELMESH_H__
 #define __GEL_SKELMESH_GELSKELMESH_H__
@@ -22,19 +25,13 @@ protected:
 	spSkeletonJson* SkeletonJson;
 	spSkeletonData* SkeletonData;
 	
-	spSkeleton* Skeleton;
-
-	std::vector< spAnimation* > Animation;
-//	spAnimation* Animation;	// NOTE: Need one per animation stored in the Spine file //
-	
 public:
 	inline GelSkelMesh( const st32 _MyID ) :
 		MyID( _MyID ),
 		AtlasUID( 0 ),
 		AssetUID( 0 ),
 		SkeletonJson( 0 ),
-		SkeletonData( 0 ),
-		Skeleton( 0 )
+		SkeletonData( 0 )
 	{	
 	}
 	
@@ -47,58 +44,34 @@ public:
 	inline void _Load( const char* InFile, const bool Smooth = true, const bool PreMultiplyAlpha = true ) {
 		Unload();
 		
+		// Load the Asset First //
 		AssetUID = Gel::AssetPool.Load( InFile );
 
 		if ( AssetUID ) {
+			// Load the Atlas 2nd, so the files are correctly prioritized //
 			std::string BaseFileName = Gel::String::GetBaseDirectory(InFile);	
 			AtlasUID = Gel::AtlasPool.Load( (BaseFileName + ".atlas").c_str() );
 
 			GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
 			GelAsset& Asset = Gel::AssetPool[AssetUID];
 
-			Log("+ Skeleton");
+			Log("+ SkelMesh");
 			SkeletonJson = spSkeletonJson_create(Atlas.Atlas);
 			SkeletonData = spSkeletonJson_readSkeletonData( SkeletonJson, Asset.GetStr() ); // The raw JSON data as a c string
-			Skeleton = spSkeleton_create(SkeletonData);
+			//Skeleton = spSkeleton_create(SkeletonData);
 			
-			//Animation = spSkeletonData_findAnimation(SkeletonData, "walk");
-			for ( st32 idx = 0; idx < ) {
-				SkeletonData->animations
-			}
-				
+			//Animation = spSkeletonData_findAnimation(SkeletonData, "walk"); // Linear Search //
+			//SkeletonData->animations[Index]; // An array of SkeletonData->animationCount elements //
 			
-//			if ( Error == PVR_SUCCESS ) {
-//				Log("Nodes: %i  MeshNodes: %i  Meshes: %i  AnimationFrames: %i (Lights: %i  Cameras: %i  Materials: %i  Textures: %i)", 
-//					Model->nNumNode, Model->nNumMeshNode, Model->nNumMesh, Model->nNumFrame,
-//					Model->nNumLight, Model->nNumCamera, Model->nNumMaterial, Model->nNumTexture );
-//					
-//				Log("Verts: %i  Faces: %i  UVW: %i",
-//					Model->pMesh[0].nNumVertex, Model->pMesh[0].nNumFaces, Model->pMesh[0].nNumUVW );
-//					
-//				for ( st32 idx = 0; idx < Model->nNumTexture; idx++ ) {
-//					Log("%i T: %s", idx, Model->pTexture[idx].pszName );
-//					const char* TextureFile = Gel::Search( Model->pTexture[idx].pszName );
-//		
-//					if ( TextureFile ) {
-//						TexturePage.push_back( Gel::TexturePool.Load( TextureFile ) );
-//					}
-//				}
-//			}
-
-			Log("- Skeleton (%x,%x,%x)",SkeletonJson,SkeletonData,Skeleton);
+			Log("- SkelMesh (%x,%x)",SkeletonJson,SkeletonData);
 		}
 	}
 	
 	inline void Unload() {
-		// TODO: For all aimations //
-//		if ( Animation )
-//			spAnimation_dispose(Animation);
-		Animation.clear();		
-
-		if ( Skeleton ) {
-			spSkeleton_dispose(Skeleton);
-			Skeleton = 0;
-		}
+//		if ( Skeleton ) {
+//			spSkeleton_dispose(Skeleton);
+//			Skeleton = 0;
+//		}
 		if ( SkeletonData ) {
 			spSkeletonData_dispose(SkeletonData);
 			SkeletonData = 0;
@@ -110,6 +83,11 @@ public:
 		
 		// TODO: Free Atlas and AssetUID's ? //
 		// or at the very least, say "I'm done with them" //
+	}
+
+public:
+	inline spSkeletonData* GetSkeletonData() const {
+		return SkeletonData;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
