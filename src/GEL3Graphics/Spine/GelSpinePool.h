@@ -1,16 +1,16 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_MODEL2D_GELMODEL2DPOOL_H__
-#define __GEL_MODEL2D_GELMODEL2DPOOL_H__
+#ifndef __GEL_SPINE_GELSPINEPOOL_H__
+#define __GEL_SPINE_GELSPINEPOOL_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelModel2D.h"
+#include "GelSpine.h"
 // - ------------------------------------------------------------------------------------------ - //
-class GelModel2DPool: public GelPool<GelModel2D> {
+class GelSpinePool: public GelPool<GelSpine> {
 public:
 	_GELPOOL_LOAD_FUNC()
-	_GELPOOL_LOAD_BODY("Model2D",GelModel2D)
+	_GELPOOL_LOAD_BODY("Spine",GelSpine)
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_MODEL2D_GELMODEL2DPOOL_H__ //
+#endif // __GEL_SPINE_GELSPINEPOOL_H__ //
 // - ------------------------------------------------------------------------------------------ - //

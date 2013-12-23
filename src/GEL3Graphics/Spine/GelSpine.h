@@ -10,8 +10,8 @@
 // Skeleton JSONs can be optionally created with an Attachment Loader. I'm not actually sure what
 //   the other "attachment" options are, but the only option in Spine is an atlas.
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_MODEL2D_GELMODEL2D_SPINE_H__
-#define __GEL_MODEL2D_GELMODEL2D_SPINE_H__
+#ifndef __GEL_SPINE_GELSPINE_H__
+#define __GEL_SPINE_GELSPINE_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Asset/Asset.h>
