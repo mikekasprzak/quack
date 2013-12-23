@@ -10,8 +10,8 @@
 // Skeleton JSONs can be optionally created with an Attachment Loader. I'm not actually sure what
 //   the other "attachment" options are, but the only option in Spine is an atlas.
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SPINE_GELSPINE_H__
-#define __GEL_SPINE_GELSPINE_H__
+#ifndef __GEL_SKELMESH_GELSKELMESH_H__
+#define __GEL_SKELMESH_GELSKELMESH_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Asset/Asset.h>
@@ -19,7 +19,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <spine/spine.h>
 // - ------------------------------------------------------------------------------------------ - //
-class GelModel2D {
+class GelSkelMesh {
 protected:
 	st32 MyID;	// My TextureID (an Internal Copy) //
 
@@ -34,7 +34,7 @@ protected:
 	std::vector< GelTexturePool::UID > TexturePage;
 	
 public:
-	inline GelModel2D( const st32 _MyID ) :
+	inline GelSkelMesh( const st32 _MyID ) :
 		MyID( _MyID ),
 		Atlas( 0 ),
 		SkeletonJson( 0 ),
@@ -116,5 +116,5 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_MODEL2D_GELMODEL2D_SPINE_H__ //
+#endif // __GEL_SKELMESH_GELSKELMESH_H__ //
 // - ------------------------------------------------------------------------------------------ - //
