@@ -16,6 +16,7 @@
 #include <spine/spine.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelSkelMesh {
+	friend class GelSkelAnim;
 protected:
 	st32 MyID;	// My TextureID (an Internal Copy) //
 
