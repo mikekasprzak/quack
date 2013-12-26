@@ -61,9 +61,10 @@ Real AspectRatio;
 Matrix4x4 InfoMatrix;
 bool HadVMError;
 // - ------------------------------------------------------------------------------------------ - //
-GelSkelPool::UID	SpineUID;
-spSkeleton*				SpineSkeleton;
-spAnimationState*		SpineAnimState;
+//GelSkelPool::UID	SpineUID;
+//spSkeleton*				SpineSkeleton;
+//spAnimationState*		SpineAnimState;
+GelSkelAnimator MySkel;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -151,21 +152,20 @@ void AppInit() {
 
 	{	
 		Log("**** LOADING SPINE");
-		App::SpineUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
-		App::SpineSkeleton = spSkeleton_create( Gel::SkelPool[App::SpineUID].GetSkeletonData() );
-		App::SpineAnimState = spAnimationState_create(0);//stateData);
-			
-		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");
-		spAnimationState_setAnimation( App::SpineAnimState, 0, Animation, true );
+		App::MySkel.Load( Gel::SkelPool.Load( "SpineTest/spineboy.json" ) );
+//		App::SpineUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
+//		App::SpineSkeleton = spSkeleton_create( Gel::SkelPool[App::SpineUID].GetSkeletonData() );
+//		App::SpineAnimState = spAnimationState_create(0);//stateData);
+//			
+//		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");
+//		spAnimationState_setAnimation( App::SpineAnimState, 0, Animation, true );
+
+		App::MySkel.Set( "jump" );
 		Log("**** DONE");
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
-	{
-		spAnimationState_dispose( App::SpineAnimState );
-		spSkeleton_dispose( App::SpineSkeleton );
-	}
 
 	/***/
 
@@ -175,110 +175,6 @@ void AppExit() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
-void StepSpine() {
-	float deltaTime = 1000.0f/60.0f;
-	float timeScale = 0.001f;
-	
-	spSkeleton_update(App::SpineSkeleton, deltaTime);
-	spAnimationState_update(App::SpineAnimState, deltaTime * timeScale);
-	spAnimationState_apply(App::SpineAnimState, App::SpineSkeleton);
-	spSkeleton_updateWorldTransform(App::SpineSkeleton);	
-}
-
-void DrawSpine() {
-	Matrix4x4 Matrix = App::InfoMatrix;
-	Matrix[0] *= Real::Quarter;
-	Matrix[5] *= Real::Quarter;
-	//Matrix *= Matrix4x4::ScalarMatrix(0.25f) * Matrix;
-
-	spSkeleton* skeleton = App::SpineSkeleton;
-	
-	float worldVertices[8];
-	for (int i = 0; i < skeleton->slotCount; ++i) {
-		spSlot* slot = skeleton->drawOrder[i];
-		spAttachment* attachment = slot->attachment;
-		if (!attachment || attachment->type != ATTACHMENT_REGION) 
-			continue;
-		spRegionAttachment* regionAttachment = (spRegionAttachment*)attachment;
-
-		if ( slot->data->additiveBlending ) {
-			gelBlendingEnableAddative();
-		}
-		else {
-			gelBlendingEnable();
-		}
-
-		spRegionAttachment_computeWorldVertices(regionAttachment, slot->skeleton->x, slot->skeleton->y, slot->bone, worldVertices);
-
-		Uint8 r = skeleton->r * slot->r * 255;
-		Uint8 g = skeleton->g * slot->g * 255;
-		Uint8 b = skeleton->b * slot->b * 255;
-		Uint8 a = skeleton->a * slot->a * 255;
-		GelColor Color = GEL_RGBA(r,g,b,a);
-		
-		// TODO: Use general vertex type (pos,uv,color), and write color to the vertices. //
-
-//		sf::Vertex vertices[4];
-//		vertices[0].color.r = r;
-//		vertices[0].color.g = g;
-//		vertices[0].color.b = b;
-//		vertices[0].color.a = a;
-//		vertices[1].color.r = r;
-//		vertices[1].color.g = g;
-//		vertices[1].color.b = b;
-//		vertices[1].color.a = a;
-//		vertices[2].color.r = r;
-//		vertices[2].color.g = g;
-//		vertices[2].color.b = b;
-//		vertices[2].color.a = a;
-//		vertices[3].color.r = r;
-//		vertices[3].color.g = g;
-//		vertices[3].color.b = b;
-//		vertices[3].color.a = a;
-
-
-		const st32 VertCount = 6;
-		Vector3D Verts[ VertCount ];
-		Verts[0] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
-		Verts[1] = Vector3D(worldVertices[VERTEX_X2],worldVertices[VERTEX_Y2],0);
-		Verts[2] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
-		
-		Verts[3] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
-		Verts[4] = Vector3D(worldVertices[VERTEX_X4],worldVertices[VERTEX_Y4],0);
-		Verts[5] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
-		
-		// DO THIS WITH MATRIX //
-//		for ( st32 idx = 0; idx < VertCount; idx++ ) {
-//			Verts[idx] += Pos;
-//		}
-
-		GelTexture& Tex = Gel::TexturePool[(int)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject];
-
-		UVSet<Gel::UVType> UVs[ VertCount ];
-		UVs[0] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
-		UVs[1] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X2],regionAttachment->uvs[VERTEX_Y2]);
-		UVs[2] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-
-		UVs[3] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-		UVs[4] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X4],regionAttachment->uvs[VERTEX_Y4]);
-		UVs[5] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
-
-//		vertexArray->append(vertices[0]);
-//		vertexArray->append(vertices[1]);
-//		vertexArray->append(vertices[2]);
-//		vertexArray->append(vertices[3]);
-
-		// TODO: Do batching cleverness here. If same texture, continue batching. If different, render the current batch.
-		//       Advance poniter, so further render ops don't re-draw prior data.
-		Tex.Bind();
-		Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
-//		Gel::RenderFlat( GEL_TRIANGLES, Matrix, Color, Verts, VertCount );
-
-	}
-	// Render everything in the final batch //
-
-//	target.draw(*vertexArray, states);
-}
 
 // - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
@@ -309,7 +205,7 @@ void AppStep() {
 	// *** //
 	App::StepProfiler.Stop();
 
-	StepSpine();
+	App::MySkel.Step();
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppDraw() {
@@ -319,7 +215,7 @@ void AppDraw() {
 	// *** //
 	App::DrawProfiler.Stop();
 		
-	DrawSpine();
+	App::MySkel.Draw( App::InfoMatrix );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
