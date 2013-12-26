@@ -15,7 +15,7 @@
 #include <Texture/Texture.h>
 #include <Font/Font.h>
 #include <Atlas/Atlas.h>
-#include <SkelMesh/SkelMesh.h>
+#include <Skel/Skel.h>
 #include <Model/Model.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
@@ -61,7 +61,7 @@ Real AspectRatio;
 Matrix4x4 InfoMatrix;
 bool HadVMError;
 // - ------------------------------------------------------------------------------------------ - //
-GelSkelMeshPool::UID	SpineUID;
+GelSkelPool::UID	SpineUID;
 spSkeleton*				SpineSkeleton;
 spAnimationState*		SpineAnimState;
 // - ------------------------------------------------------------------------------------------ - //
@@ -110,7 +110,7 @@ void AppInit() {
 	gelTextureInit();
 	gelFontInit();
 	gelAtlasInit();
-	gelSkelMeshInit();
+	gelSkelInit();
 	gelModelInit();
 	Gel::Input::Init();
 	
@@ -151,8 +151,8 @@ void AppInit() {
 
 	{	
 		Log("**** LOADING SPINE");
-		App::SpineUID = Gel::SkelMeshPool.Load( "SpineTest/spineboy.json" );
-		App::SpineSkeleton = spSkeleton_create( Gel::SkelMeshPool[App::SpineUID].GetSkeletonData() );
+		App::SpineUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
+		App::SpineSkeleton = spSkeleton_create( Gel::SkelPool[App::SpineUID].GetSkeletonData() );
 		App::SpineAnimState = spAnimationState_create(0);//stateData);
 			
 		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");

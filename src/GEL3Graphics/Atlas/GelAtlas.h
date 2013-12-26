@@ -14,7 +14,7 @@
 #include <spine/spine.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelAtlas {
-	friend class GelSkelMesh;
+	friend class GelSkel;
 protected:
 	st32 MyID;	// My ID (an Internal Copy) //
 
