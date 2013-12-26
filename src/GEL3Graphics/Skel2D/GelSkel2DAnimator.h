@@ -1,22 +1,22 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SKELMESH_GELSKELANIMATOR_H__
-#define __GEL_SKELMESH_GELSKELANIMATOR_H__
+#ifndef __GEL_SKEL_GELSKELANIMATOR_H__
+#define __GEL_SKEL_GELSKELANIMATOR_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelSkelMesh.h"
+#include "GelSkel.h"
 // - ------------------------------------------------------------------------------------------ - //
 class GelSkelAnimator {
 protected:
-	GelSkelMeshPool::UID	AssetUID;
+	GelSkelPool::UID		AssetUID;
 	spSkeleton*				Skeleton;
 	spAnimationState*		AnimState;
 public:
 	inline GelSkelAnimator() {
-//		AssetUID = Gel::SkelMeshPool.Load( "SpineTest/spineboy.json" );
+//		AssetUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
 //		Skeleton = spSkeleton_create( Gel::SkelMeshPool[AssetUID].GetSkeletonData() );
 //		AnimState = spAnimationState_create(0);//stateData);
 	}
 		
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SKELMESH_GELSKELANIMATOR_H__ //
+#endif // __GEL_SKEL_GELSKELANIMATOR_H__ //
 // - ------------------------------------------------------------------------------------------ - //

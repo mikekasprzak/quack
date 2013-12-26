@@ -2,11 +2,11 @@
 // Skeleton JSONs can be optionally created with an Attachment Loader. I'm not actually sure what
 //   the other "attachment" options are, but the only option in Spine is an atlas.
 //
-// TODO: Since Skeletons rely on Atlas' and internally use pointers, the SkelMesh should
+// TODO: Since Skeletons rely on Atlas' and internally use pointers, the Skel should
 //       subscribe to changes made to the Atlas, and reload self.
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SKELMESH_GELSKELMESH_H__
-#define __GEL_SKELMESH_GELSKELMESH_H__
+#ifndef __GEL_SKEL_GELSKEL_H__
+#define __GEL_SKEL_GELSKEL_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Asset/Asset.h>
@@ -15,8 +15,8 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <spine/spine.h>
 // - ------------------------------------------------------------------------------------------ - //
-class GelSkelMesh {
-	friend class GelSkelAnim;
+class GelSkel {
+	friend class GelSkelAnimator;
 protected:
 	st32 MyID;	// My TextureID (an Internal Copy) //
 
@@ -27,7 +27,7 @@ protected:
 	spSkeletonData* SkeletonData;
 	
 public:
-	inline GelSkelMesh( const st32 _MyID ) :
+	inline GelSkel( const st32 _MyID ) :
 		MyID( _MyID ),
 		AtlasUID( 0 ),
 		AssetUID( 0 ),
@@ -56,7 +56,7 @@ public:
 			GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
 			GelAsset& Asset = Gel::AssetPool[AssetUID];
 
-			Log("+ SkelMesh");
+			Log("+ Skel");
 			SkeletonJson = spSkeletonJson_create(Atlas.Atlas);
 			SkeletonData = spSkeletonJson_readSkeletonData( SkeletonJson, Asset.GetStr() ); // The raw JSON data as a c string
 			//Skeleton = spSkeleton_create(SkeletonData);
@@ -64,7 +64,7 @@ public:
 			//Animation = spSkeletonData_findAnimation(SkeletonData, "walk"); // Linear Search //
 			//SkeletonData->animations[Index]; // An array of SkeletonData->animationCount elements //
 			
-			Log("- SkelMesh (%x,%x)",SkeletonJson,SkeletonData);
+			Log("- Skel (%x,%x)",SkeletonJson,SkeletonData);
 		}
 	}
 	
@@ -92,5 +92,5 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SKELMESH_GELSKELMESH_H__ //
+#endif // __GEL_SKEL_GELSKEL_H__ //
 // - ------------------------------------------------------------------------------------------ - //

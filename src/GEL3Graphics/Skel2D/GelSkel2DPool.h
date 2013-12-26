@@ -1,16 +1,16 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_SKELMESH_GELSKELMESHPOOL_H__
-#define __GEL_SKELMESH_GELSKELMESHPOOL_H__
+#ifndef __GEL_SKEL_GELSKELPOOL_H__
+#define __GEL_SKEL_GELSKELPOOL_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelSkelMesh.h"
+#include "GelSkel.h"
 // - ------------------------------------------------------------------------------------------ - //
-class GelSkelMeshPool: public GelPool<GelSkelMesh> {
+class GelSkelPool: public GelPool<GelSkel> {
 public:
 	_GELPOOL_LOAD_FUNC()
-	_GELPOOL_LOAD_BODY("SkelMesh",GelSkelMesh)
+	_GELPOOL_LOAD_BODY("Skel",GelSkel)
 };
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_SKELMESH_GELSKELMESHPOOL_H__ //
+#endif // __GEL_SKEL_GELSKELPOOL_H__ //
 // - ------------------------------------------------------------------------------------------ - //
