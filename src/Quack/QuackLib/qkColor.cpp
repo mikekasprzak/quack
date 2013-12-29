@@ -18,8 +18,8 @@ SQInteger qk_color_constructor( HSQUIRRELVM v ) {
 	int Top = sq_gettop(v);
 	
 	// Build our color channels //
-	int r,g,b;
-	int a = 255;
+	SQInteger r,g,b;
+	SQInteger a = 255;
 	sq_getinteger(v,2,&r);
 	sq_getinteger(v,3,&g);
 	sq_getinteger(v,4,&b);
@@ -83,7 +83,7 @@ SQInteger qk_color_set( HSQUIRRELVM v ) {
 	sq_getstring(v,2,&MemberName);
 
 	// Get the value //
-	int Value;
+	SQInteger Value;
 	sq_getinteger(v,3,&Value);
 	
 	// Return different data depending on requested member //
@@ -162,8 +162,8 @@ SQInteger qk_color_RGB( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,-1,(void**)&Color,0);
 	
 	// Build our color channels //
-	int r,g,b;
-	int a = 255;
+	SQInteger r,g,b;
+	SQInteger a = 255;
 	sq_getinteger(v,2,&r);
 	sq_getinteger(v,3,&g);
 	sq_getinteger(v,4,&b);

@@ -125,17 +125,17 @@ void cUberShader::UniformMatrix4x4( const st32 Index, const Matrix4x4& v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::UniformMatrix2fv( const st32 Index, const float* v, const size_t Count  ) {
+void cUberShader::UniformMatrix2fv( const st32 Index, const float* v, const st32 Count  ) {
 	float* Target = (float*)&CurrentShader->UniformData->Data[ CurrentShader->Uniform[Index].Offset ];
 	copy_Data( v, Target, sizeof(float)*2*2*Count );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::UniformMatrix3fv( const st32 Index, const float* v, const size_t Count  ) {
+void cUberShader::UniformMatrix3fv( const st32 Index, const float* v, const st32 Count  ) {
 	float* Target = (float*)&CurrentShader->UniformData->Data[ CurrentShader->Uniform[Index].Offset ];
 	copy_Data( v, Target, sizeof(float)*3*3*Count );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::UniformMatrix4fv( const st32 Index, const float* v, const size_t Count  ) {
+void cUberShader::UniformMatrix4fv( const st32 Index, const float* v, const st32 Count  ) {
 	float* Target = (float*)&CurrentShader->UniformData->Data[ CurrentShader->Uniform[Index].Offset ];
 	copy_Data( v, Target, sizeof(float)*4*4*Count );
 }

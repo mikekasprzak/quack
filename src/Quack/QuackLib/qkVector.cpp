@@ -229,8 +229,8 @@ inline SQInteger qk_vec_get( HSQUIRRELVM v, const unsigned int VecWidth ) {
 	}
 	// Array Style Indexing. I.e. MyVec[0] for x.
 	else if ( Type == OT_INTEGER ) {		
-		unsigned int Index;
-		sq_getinteger(v,2,(int*)&Index);
+		SQInteger Index;
+		sq_getinteger(v,2,&Index);
 		
 		if ( Index < VecWidth ) {
 			sq_pushfloat(v,Vec[Index]);	// +1 //
@@ -275,8 +275,8 @@ inline SQInteger qk_vec_set( HSQUIRRELVM v, const unsigned int VecWidth ) {
 			}
 		}
 		else if ( Type == OT_INTEGER ) {
-			unsigned int Index;
-			sq_getinteger(v,2,(int*)&Index);
+			SQInteger Index;
+			sq_getinteger(v,2,&Index);
 	
 			if ( Index < (unsigned int)VecWidth ) {
 				Vec[Index] = Value;

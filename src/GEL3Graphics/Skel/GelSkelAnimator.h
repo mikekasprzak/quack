@@ -139,7 +139,7 @@ public:
 	//			Verts[idx] += Pos;
 	//		}
 	
-			GelTexture& Tex = Gel::TexturePool[(int)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject];
+			GelTexture& Tex = Gel::TexturePool[(st)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject];
 	
 			UVSet<Gel::UVType> UVs[ VertCount ];
 			UVs[0] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);

@@ -82,7 +82,7 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 inline SQInteger qk_mat_get( HSQUIRRELVM v, float* Mat, const int MatSize, const unsigned int MatWidth ) {
 	const int Type = sq_gettype(v,2);
 	if ( Type == OT_INTEGER ) {
-		int Index;
+		SQInteger Index;
 		sq_getinteger(v,2,&Index);
 
 		if ( Index < MatSize ) {
@@ -127,8 +127,8 @@ inline SQInteger qk_mat_set( HSQUIRRELVM v, float* Mat, const int MatSize, const
 	
 		const int Type = sq_gettype(v,2);
 		if ( Type == OT_INTEGER ) {
-			unsigned int Index;
-			sq_getinteger(v,2,(int*)&Index);
+			SQInteger Index;
+			sq_getinteger(v,2,(SQInteger*)&Index);
 	
 			if ( Index < (unsigned int)MatSize ) {
 				Mat[Index] = Value;

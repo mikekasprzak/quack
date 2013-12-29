@@ -331,7 +331,7 @@ SQInteger qkDrawModel(HSQUIRRELVM vm) {
 					st32 MeshIndex = Model->pNode[NodeIndex].nIdx;
 					
 					SPODMesh& Mesh = Model->pMesh[MeshIndex];
-					const float* Vert = (const float*)(Mesh.pInterleaved + (int)Mesh.sVertex.pData); // Stride //
+					const float* Vert = (const float*)(Mesh.pInterleaved + (st)Mesh.sVertex.pData); // Stride //
 					const st32 VertCount = Mesh.nNumVertex;
 					
 					//if ( Mesh.sFaces.eType == EPODDataUnsignedShort ) // Is usually an Unsigned Short! Good! //
@@ -346,7 +346,7 @@ SQInteger qkDrawModel(HSQUIRRELVM vm) {
 	//						Index,IndexCount, Mesh.sFaces.eType,Mesh.sFaces.n,Mesh.sFaces.nStride 
 	//						);
 	
-						const float* UVs = (const float*)(Mesh.pInterleaved + (int)Mesh.psUVW[0].pData); // Stride //
+						const float* UVs = (const float*)(Mesh.pInterleaved + (st)Mesh.psUVW[0].pData); // Stride //
 	
 						Gel::RenderTexturePackedIndexed( GEL_TRIANGLES, *uMatrix, Color, Vert,UVs,VertCount, Index,IndexCount*3 );
 					}

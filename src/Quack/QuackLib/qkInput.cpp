@@ -58,7 +58,7 @@ SQInteger qkInputXInputGet( HSQUIRRELVM v ) {
 // - One extra button (typically Stick Click)
 SQInteger qkInputPadGet( HSQUIRRELVM v ) {
 	// Check the Arguments for an Index. If none specified, assume GamePad 0. //
-	int Index = 0;
+	SQInteger Index = 0;
 	int NumArgs = sq_gettop(v);
 	if ( NumArgs > 0 ) {
 		sq_getinteger(v,2,&Index);

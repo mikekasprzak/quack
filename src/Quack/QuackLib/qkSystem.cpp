@@ -143,7 +143,7 @@ SQInteger qkRequireFile( HSQUIRRELVM v ) {
 	
 	Log( "+ Requirement Found: %s", File );
 	
-	bool Success = false;
+	SQBool SearchSuccess = SQFalse;
 	const char* Requirement = Gel::Search( File );
 		
 	if ( Requirement ) {
@@ -166,10 +166,10 @@ SQInteger qkRequireFile( HSQUIRRELVM v ) {
 			
 //		Log( "> %s (%s)", Requirement, File );
 		
-		Success = true;
+		SearchSuccess = SQTrue;
 	}
 	
-	sq_pushbool( v, Success ? SQTrue : SQFalse );
+	sq_pushbool( v, SearchSuccess );
 
 	Log( "- Done with Requirement (%s).", File );
 	

@@ -66,28 +66,28 @@ int cUberShader::BindUniform4f( const char* Name, const float v0, const float v1
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform1iv( const char* Name, const int* v, const size_t Count ) {
+int cUberShader::BindUniform1iv( const char* Name, const int* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform1iv( Location, Count, v );
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform2iv( const char* Name, const int* v, const size_t Count ) {
+int cUberShader::BindUniform2iv( const char* Name, const int* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform2iv( Location, Count, v );
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform3iv( const char* Name, const int* v, const size_t Count ) {
+int cUberShader::BindUniform3iv( const char* Name, const int* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform3iv( Location, Count, v );
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform4iv( const char* Name, const int* v, const size_t Count ) {
+int cUberShader::BindUniform4iv( const char* Name, const int* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform4iv( Location, Count, v );
@@ -96,28 +96,28 @@ int cUberShader::BindUniform4iv( const char* Name, const int* v, const size_t Co
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform1fv( const char* Name, const float* v, const size_t Count ) {
+int cUberShader::BindUniform1fv( const char* Name, const float* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform1fv( Location, Count, v );
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform2fv( const char* Name, const float* v, const size_t Count ) {
+int cUberShader::BindUniform2fv( const char* Name, const float* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform2fv( Location, Count, v );
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform3fv( const char* Name, const float* v, const size_t Count ) {
+int cUberShader::BindUniform3fv( const char* Name, const float* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform3fv( Location, Count, v );
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniform4fv( const char* Name, const float* v, const size_t Count ) {
+int cUberShader::BindUniform4fv( const char* Name, const float* v, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniform4fv( Location, Count, v );
@@ -149,21 +149,21 @@ int cUberShader::BindUniformMatrix4x4( const char* Name, const Matrix4x4& Matrix
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniformMatrix2fv( const char* Name, const float* Matrix, const size_t Count ) {
+int cUberShader::BindUniformMatrix2fv( const char* Name, const float* Matrix, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniformMatrix2fv( Location, Count, GL_FALSE, Matrix );	
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniformMatrix3fv( const char* Name, const float* Matrix, const size_t Count ) {
+int cUberShader::BindUniformMatrix3fv( const char* Name, const float* Matrix, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniformMatrix3fv( Location, Count, GL_FALSE, Matrix );	
 	return Location;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int cUberShader::BindUniformMatrix4fv( const char* Name, const float* Matrix, const size_t Count ) {
+int cUberShader::BindUniformMatrix4fv( const char* Name, const float* Matrix, const st32 Count ) {
 	GLint Location = glGetUniformLocation( CurrentShader->Program, Name );
 	if ( Location != -1 )
 		glUniformMatrix4fv( Location, Count, GL_FALSE, Matrix );	

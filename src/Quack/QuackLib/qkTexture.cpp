@@ -20,7 +20,7 @@ SQInteger qk_texture_bind( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Data,0);
 
 	if ( Data ) {
-		int TextureUnit = 0;
+		SQInteger TextureUnit = 0;
 		if ( sq_gettop(v) > 1 ) {
 			sq_getinteger(v,2,&TextureUnit);
 		}
