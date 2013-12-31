@@ -140,6 +140,8 @@ void AppInit() {
 	App::InfoMatrix = Matrix4x4::Identity;
 	App::InfoMatrix[0] = Real(1.0f/256.0f);
 	App::InfoMatrix[5] = Real(1.0f/256.0f) * App::AspectRatio;
+	App::InfoMatrix[10] = Real::One;
+	App::InfoMatrix[15] = Real::One;
 
 	// **** //
 
