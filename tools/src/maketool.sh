@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # maketool.sh - Simple Shell Script that compiles a tool for the current platform #
 
 SCRIPT=`readlink -f "$0"`

@@ -1,18 +1,18 @@
 
-#include <Style/Log.h>
-#include <Core/DataBlock.h>
+#include <Lib/Lib.h>
+#include <Lib/DataBlock/DataBlock.h>
+#include <Lib/StdString/StdString.h>
 
 #include <fstream>
 #include <string>
-#include <Util/String/String.h>
 using namespace std;
 
 #define VERSION "v0.3"
 
 int main( int argc, char* argv[] ) {
 	if ( argc < 3 ) {
-		Log( "Text2C " VERSION " - Convert a Text file to a C file, and append a null terminator (0)\n" );
-		Log( "  Usage: Text2C In.txt Out.c PREFIX SUFFIX\n" );
+		printf( "Text2C " VERSION " - Convert a Text file to a C file, and append a null terminator (0)\n" );
+		printf( "  Usage: Text2C In.txt Out.c SUFFIX PREFIX\n" );
 		return -1;
 	}
 
@@ -23,15 +23,15 @@ int main( int argc, char* argv[] ) {
 	string Suffix("");
 	
 	if ( argc > 3 ) {
-		Prefix = argv[3];
-	}
-
-	if ( argc > 4 ) {
-		Suffix = argv[4];
+		Suffix = argv[3];
 	}
 	
-	string FileName = String::FileName( String::SystemSlash( argv[1] ) );
-	string BaseName = String::BaseName( FileName );
+	if ( argc > 4 ) {
+		Prefix = argv[4];
+	}
+
+	string FileName = Gel::String::GetFileName( Gel::String::SystemSlash( argv[1] ) );
+	string BaseName = Gel::String::GetBaseName( FileName );
 	string Symbol = Prefix + BaseName + Suffix;
 	
 	// Open Output File //

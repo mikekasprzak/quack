@@ -99,7 +99,7 @@ output/$(TARGET_NAME)/Android.mk: $(TARGET_STUBS) always
 	@echo "LIBRARIES := $(LIBRARIES)" >>$@
 	@echo "-------------------------------------------------------------------------"
 	@echo "Finished generating makefile."
-	@echo "Next open a Cygwin shell, browse to src/SDLAndroid, and do the following:"
+	@echo "Next open a Cygwin shell, browse to src/Android, and do the following:"
 	@echo "  ndk-build     (to compile native code (gnu make))"
 	@echo "  ant debug     (to build the debug .apk file)"
 	@echo "  ant installd  (to install the debug build on device)"

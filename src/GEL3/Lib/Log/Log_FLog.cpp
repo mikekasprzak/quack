@@ -42,7 +42,18 @@ inline void FLogIndentation( int Count, const char Val = ' ' ) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-security"
 #endif // USES_CLANG //
+
+#ifdef USES_GCC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-security"
+#endif // USES_GCC //
+
 		FLOG_FUNC( s );
+
+#ifdef USES_GCC
+#pragma GCC diagnostic pop
+#endif // USES_GCC //
+
 #ifdef USES_CLANG
 #pragma clang diagnostic pop
 #endif // USES_CLANG //

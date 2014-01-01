@@ -1,18 +1,18 @@
 
-#include <Style/Log.h>
-#include <Core/DataBlock.h>
+#include <Lib/Lib.h>
+#include <Lib/DataBlock/DataBlock.h>
+#include <Lib/StdString/StdString.h>
 
 #include <fstream>
 #include <string>
-#include <Util/String/String.h>
 using namespace std;
 
 #define VERSION "v0.2"
 
 int main( int argc, char* argv[] ) {
 	if ( argc < 3 ) {
-		Log( "Bin2C " VERSION " - Convert a Binary file to a C file\n" );
-		Log( "  Usage: Bin2C In.bin Out.c PREFIX SUFFIX\n" );
+		printf( "Bin2C " VERSION " - Convert a Binary file to a C file\n" );
+		printf( "  Usage: Bin2C In.bin Out.c SUFFIX PREFIX\n" );
 		return -1;
 	}
 
@@ -23,15 +23,15 @@ int main( int argc, char* argv[] ) {
 	string Suffix("");
 	
 	if ( argc > 3 ) {
-		Prefix = argv[3];
+		Suffix = argv[3];
 	}
 
 	if ( argc > 4 ) {
-		Suffix = argv[4];
+		Prefix = argv[4];
 	}
 	
-	string FileName = String::FileName( String::SystemSlash( argv[1] ) );
-	string BaseName = String::BaseName( FileName );
+	string FileName = Gel::String::GetFileName( Gel::String::SystemSlash( argv[1] ) );
+	string BaseName = Gel::String::GetBaseName( FileName );
 	string Symbol = Prefix + BaseName + Suffix;
 	
 	// Open Output File //
