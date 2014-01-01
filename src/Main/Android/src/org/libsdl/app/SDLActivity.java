@@ -26,6 +26,7 @@ public class SDLActivity extends Activity {
 
     // Keep track of the paused state
     public static boolean mIsPaused = false, mIsSurfaceReady = false, mHasFocus = true;
+    public static boolean mExitCalledFromJava;
 
     // Main components
     protected static SDLActivity mSingleton;
@@ -62,6 +63,9 @@ public class SDLActivity extends Activity {
 
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
+        
+        // Make sure this variable is initialized here!
+        mExitCalledFromJava = false;
         
         if(Build.VERSION.SDK_INT >= 12) {
             mJoystickHandler = new SDLJoystickHandler_API12();
@@ -115,6 +119,7 @@ public class SDLActivity extends Activity {
         super.onDestroy();
         Log.v("SDL", "onDestroy()");
         // Send a quit message to the application
+        SDLActivity.mExitCalledFromJava = true;
         SDLActivity.nativeQuit();
 
         // Now wait for the SDL thread to quit
@@ -167,6 +172,12 @@ public class SDLActivity extends Activity {
             SDLActivity.nativeResume();
             mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, true);
         }
+    }
+        
+    /* The native thread has finished */
+    public static void handleNativeExit() {
+        SDLActivity.mSDLThread = null;
+        mSingleton.finish();
     }
 
 
@@ -245,9 +256,9 @@ public class SDLActivity extends Activity {
     public static native void nativePause();
     public static native void nativeResume();
     public static native void onNativeResize(int x, int y, int format);
-    public static native int onNativePadDown(int padId, int keycode);
-    public static native int onNativePadUp(int padId, int keycode);
-    public static native void onNativeJoy(int joyId, int axis,
+    public static native int onNativePadDown(int device_id, int keycode);
+    public static native int onNativePadUp(int device_id, int keycode);
+    public static native void onNativeJoy(int device_id, int axis,
                                           float value);
     public static native void onNativeKeyDown(int keycode);
     public static native void onNativeKeyUp(int keycode);
@@ -259,6 +270,10 @@ public class SDLActivity extends Activity {
     public static native void onNativeSurfaceChanged();
     public static native void onNativeSurfaceDestroyed();
     public static native void nativeFlipBuffers();
+    public static native int nativeAddJoystick(int device_id, String name, 
+                                               int is_accelerometer, int nbuttons, 
+                                               int naxes, int nhats, int nballs);
+    public static native int nativeRemoveJoystick(int device_id);
 
     public static void flipBuffers() {
         SDLActivity.nativeFlipBuffers();
@@ -449,29 +464,16 @@ public class SDLActivity extends Activity {
     }
             
     // Joystick glue code, just a series of stubs that redirect to the SDLJoystickHandler instance
-    public static int getNumJoysticks() {
-        return mJoystickHandler.getNumJoysticks();
-    }
-    
-    public static String getJoystickName(int joy) {
-        return mJoystickHandler.getJoystickName(joy);
-    }
-    
-    public static int getJoystickAxes(int joy) {
-        return mJoystickHandler.getJoystickAxes(joy);
-    }
-    
     public static boolean handleJoystickMotionEvent(MotionEvent event) {
         return mJoystickHandler.handleMotionEvent(event);
     }
     
-    /**
-     * @param devId the device id to get opened joystick id for.
-     * @return joystick id for device id or -1 if there is none.
-     */
-    public static int getJoyId(int devId) {
-        return mJoystickHandler.getJoyId(devId);
+    public static void pollInputDevices() {
+        if (SDLActivity.mSDLThread != null) {
+            mJoystickHandler.pollInputDevices();
+        }
     }
+    
 }
 
 /**
@@ -616,6 +618,23 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             SDLActivity.mSDLThread = new Thread(new SDLMain(), "SDLThread");
             enableSensor(Sensor.TYPE_ACCELEROMETER, true);
             SDLActivity.mSDLThread.start();
+            
+            // Set up a listener thread to catch when the native thread ends
+            new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    try {
+                        SDLActivity.mSDLThread.join();
+                    }
+                    catch(Exception e){}
+                    finally{ 
+                        // Native thread has finished
+                        if (! SDLActivity.mExitCalledFromJava) {
+                            SDLActivity.handleNativeExit();
+                        }
+                    }
+                }
+            }).start();
         }
     }
 
@@ -633,16 +652,13 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         
         if ( (event.getSource() & 0x00000401) != 0 || /* API 12: SOURCE_GAMEPAD */
                    (event.getSource() & InputDevice.SOURCE_DPAD) != 0 ) {
-            int id = SDLActivity.getJoyId( event.getDeviceId() );
-            if (id != -1) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (SDLActivity.onNativePadDown(id, keyCode) == 0) {
-                        return true;
-                    }
-                } else if (event.getAction() == KeyEvent.ACTION_UP) {
-                    if (SDLActivity.onNativePadUp(id, keyCode) == 0) {
-                        return true;
-                    }
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (SDLActivity.onNativePadDown(event.getDeviceId(), keyCode) == 0) {
+                    return true;
+                }
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                if (SDLActivity.onNativePadUp(event.getDeviceId(), keyCode) == 0) {
+                    return true;
                 }
             }
         }
@@ -889,28 +905,12 @@ class SDLInputConnection extends BaseInputConnection {
 
 /* A null joystick handler for API level < 12 devices (the accelerometer is handled separately) */
 class SDLJoystickHandler {
-    public int getNumJoysticks() {
-        return 0;
-    }
-    
-    public String getJoystickName(int joy) {
-        return "";
-    }
-    
-    public int getJoystickAxes(int joy) {
-        return 0;
-    }
-    
-    /**
-     * @param devId the device id to get opened joystick id for.
-     * @return joystick id for device id or -1 if there is none.
-     */
-    public int getJoyId(int devId) {
-        return -1;
-    }
     
     public boolean handleMotionEvent(MotionEvent event) {
         return false;
+    }
+    
+    public void pollInputDevices() {
     }
 }
 
@@ -918,7 +918,7 @@ class SDLJoystickHandler {
 class SDLJoystickHandler_API12 extends SDLJoystickHandler {
   
     class SDLJoystick {
-        public int id;
+        public int device_id;
         public String name;
         public ArrayList<InputDevice.MotionRange> axes;
     }
@@ -926,54 +926,72 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
     private ArrayList<SDLJoystick> mJoysticks;
     
     public SDLJoystickHandler_API12() {
-        /* FIXME: Move the joystick initialization code to its own function and support hotplugging of devices */
        
         mJoysticks = new ArrayList<SDLJoystick>();
-        
+    }
+
+    @Override
+    public void pollInputDevices() {
         int[] deviceIds = InputDevice.getDeviceIds();
-        for(int i=0; i<deviceIds.length; i++) {
-            SDLJoystick joystick = new SDLJoystick();
-            InputDevice joystickDevice = InputDevice.getDevice(deviceIds[i]);
-            
-            if( (joystickDevice.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
-                joystick.id = deviceIds[i];
-                joystick.name = joystickDevice.getName();
-                joystick.axes = new ArrayList<InputDevice.MotionRange>();
-                
-                for (InputDevice.MotionRange range : joystickDevice.getMotionRanges()) {
-                     if ( (range.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
-                        joystick.axes.add(range);
-                     }
+        // It helps processing the device ids in reverse order
+        // For example, in the case of the XBox 360 wireless dongle,
+        // so the first controller seen by SDL matches what the receiver
+        // considers to be the first controller
+        
+        for(int i=deviceIds.length-1; i>-1; i--) {
+            SDLJoystick joystick = getJoystick(deviceIds[i]);
+            if (joystick == null) {
+                joystick = new SDLJoystick();
+                InputDevice joystickDevice = InputDevice.getDevice(deviceIds[i]);
+                if( (joystickDevice.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+                    joystick.device_id = deviceIds[i];
+                    joystick.name = joystickDevice.getName();
+                    joystick.axes = new ArrayList<InputDevice.MotionRange>();
+                    
+                    for (InputDevice.MotionRange range : joystickDevice.getMotionRanges()) {
+                         if ( (range.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+                            joystick.axes.add(range);
+                         }
+                    }
+                    
+                    mJoysticks.add(joystick);
+                    SDLActivity.nativeAddJoystick(joystick.device_id, joystick.name, 0, -1, joystick.axes.size(), 0, 0);
                 }
-                
-                mJoysticks.add(joystick);
             }
         }
-    }
-    
-    @Override
-    public int getNumJoysticks() {
-        return mJoysticks.size();
-    }
-    
-    @Override
-    public String getJoystickName(int joy) {
-        return mJoysticks.get(joy).name;
-    }
-    
-    @Override
-    public int getJoystickAxes(int joy) {
-        return mJoysticks.get(joy).axes.size();
-    }
-    
-    @Override
-    public int getJoyId(int devId) {
+        
+        /* Check removed devices */
+        ArrayList<Integer> removedDevices = new ArrayList<Integer>();
         for(int i=0; i < mJoysticks.size(); i++) {
-            if (mJoysticks.get(i).id == devId) {
-                return i;
+            int device_id = mJoysticks.get(i).device_id;
+            int j;
+            for (j=0; j < deviceIds.length; j++) {
+                if (device_id == deviceIds[j]) break;
+            }
+            if (j == deviceIds.length) {
+                removedDevices.add(device_id);
             }
         }
-        return -1;
+            
+        for(int i=0; i < removedDevices.size(); i++) {
+            int device_id = removedDevices.get(i);
+            SDLActivity.nativeRemoveJoystick(device_id);
+            for (int j=0; j < mJoysticks.size(); j++) {
+                if (mJoysticks.get(j).device_id == device_id) {
+                    mJoysticks.remove(j);
+                    break;
+                }
+            }
+        }        
+    }
+    
+    protected SDLJoystick getJoystick(int device_id) {
+        for(int i=0; i < mJoysticks.size(); i++) {
+            if (mJoysticks.get(i).device_id == device_id) {
+                return mJoysticks.get(i);
+            }
+        }
+        return null;
     }   
     
     @Override        
@@ -983,14 +1001,13 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
             int action = event.getActionMasked();
             switch(action) {
                 case MotionEvent.ACTION_MOVE:
-                    int id = getJoyId( event.getDeviceId() );
-                    if ( id != -1 ) {
-                        SDLJoystick joystick = mJoysticks.get(id);
+                    SDLJoystick joystick = getJoystick(event.getDeviceId());
+                    if ( joystick != null ) {
                         for (int i = 0; i < joystick.axes.size(); i++) {
                             InputDevice.MotionRange range = joystick.axes.get(i);
                             /* Normalize the value to -1...1 */
                             float value = ( event.getAxisValue( range.getAxis(), actionPointerIndex) - range.getMin() ) / range.getRange() * 2.0f - 1.0f;
-                            SDLActivity.onNativeJoy(id, i, value );
+                            SDLActivity.onNativeJoy(joystick.device_id, i, value );
                         }                       
                     }
                     break;
