@@ -8,10 +8,10 @@ project
 Project
 config
 Config
-src/Main/SDLAndroid/jni/SDL
-src/Main/SDLAndroid/bin
-src/Main/SDLAndroid/gen
-src/Main/SDLAndroid/libs
-src/Main/SDLAndroid/obj
-src/Main/SDLAndroid/local.properties
-src/Main/SDLAndroid/project.properties
+src/Main/Android/jni/SDL2
+src/Main/Android/bin
+src/Main/Android/gen
+src/Main/Android/libs
+src/Main/Android/obj
+src/Main/Android/local.properties
+src/Main/Android/project.properties
