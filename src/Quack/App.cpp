@@ -185,12 +185,13 @@ void AppInit() {
 		App::Layout.Root.AddChild( GLAY_FILL );
 		App::Layout.Root.Child.back().SetPos(10,10);
 		App::Layout.Root.Child.back().SetShape(60,30);
+		App::Layout.Root.Child.back().AddEmptyChild();
+		App::Layout.Root.Child.back().AddEmptyChild();
 		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().Child.back().SetShape(20,10);
-//		App::Layout.Root.Child.back().AddEmptyChild();
-		App::Layout.Root.Child.back().AddChild();
-		
+		App::Layout.Root.Child.back().AddEmptyChild();
+		App::Layout.Root.Child.back().AddChild().SetShape(8,4);
+		App::Layout.Root.Child.back().Child.back().SetPos(1,0);
+		App::Layout.Root.Child.back().AddEmptyChild();		
 		App::Layout.Update();
 
 		GlayPoint Pos = App::Layout.Root.Child.back().Child.back().GetPos();

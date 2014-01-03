@@ -125,17 +125,20 @@ struct GlayNode {
 
 public:
 	// Normal Child //
-	inline void AddChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+	inline GlayNode& AddChild( const unsigned int _Flag = GLAY_DEFAULT ) {
 		Child.push_back( GlayNode(this, _Flag | GLAY_SUM) );
+		return Child.back();
 	}
-	// Child that isn't relative the parent //
-	inline void AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+	// Child that is relative the origin, not the parent //
+	inline GlayNode& AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT ) {
 		Child.push_back( GlayNode(this, _Flag) );
+		return Child.back();
 	}
 	// Doesn't affect layout //
-	inline void AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+	inline GlayNode& AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT ) {
 		Child.push_back( GlayNode(this, _Flag | GLAY_SUM | GLAY_EMPTY ) );
 		Child.back().SetShape(GLAY_0,GLAY_0);
+		return Child.back();
 	}
 
 public:
@@ -147,13 +150,6 @@ public:
 	}
 	
 public:
-//	inline const GlayPoint& GetBaseShape() const {
-//		return BaseRegion.Shape;
-//	}
-//	inline const GlayPoint& GetBasePos() const {
-//		return BaseRegion.Pos;
-//	}
-
 	// Get Populated Data //
 	inline const GlayPoint& GetShape() const {
 		return Region.Shape;
@@ -165,19 +161,6 @@ public:
 	inline GlayPoint GetCenterPos() const {
 		return GetPos() + Region.GetHalfShape();
 	}
-
-//	// Calculate the True position //
-//	inline GlayPoint CalcPos() const {
-//		if ( Parent ) {
-//			return GetBasePos() + Parent->CalcPos();
-//		}
-//		
-//		return GetBasePos();
-//	}
-//	// Calculate the True Center point //
-//	inline GlayPoint CalcCenterPos() const {
-//		return CalcPos() + Region.GetHalfShape();
-//	}
 
 public:
 	// Ocassionally we'll need to retrieve the true coordinates (before fitting, etc) //
@@ -193,7 +176,7 @@ public:
 	
 public:
 	// Given a node (me), fit my children to my width, using their width as sizes. Also Y align. //
-	inline void FitChildrenWide( const GlayNodeFlag Flag = GLAY_MIDDLE ) {
+	inline void FitChildrenWide( const unsigned int Flag = GLAY_MIDDLE ) {
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
 		GlayNum Height = GLAY_0;
@@ -219,12 +202,12 @@ public:
 			if ( Height != GLAY_0 )
 				Reg.Shape.y /= Height; // Convert to 0-1 range //
 			
-			if ( Flag == GLAY_MIDDLE )
-				Reg.Pos.y = GlayNumHalf(GLAY_1 - Reg.Shape.y);
+			if ( Flag == GLAY_TOP )
+				Reg.Pos.y = GLAY_0;
 			else if ( Flag == GLAY_BOTTOM )
 				Reg.Pos.y = GLAY_1 - Reg.Shape.y;
-			else //if ( Flag == GLAY_TOP )
-				Reg.Pos.y = GLAY_0;
+			else //if ( Flag == GLAY_MIDDLE )
+				Reg.Pos.y = GlayNumHalf(GLAY_1 - Reg.Shape.y);
 			
 			// Scale to size of parent //
 			Reg.Pos = Reg.Pos * Region.Shape;
@@ -233,7 +216,7 @@ public:
 	}
 
 	// Given a node (me), fit my children to my height, using their heights as sizes. Also X align. //
-	inline void FitChildrenTall( const GlayNodeFlag Flag = GLAY_CENTER ) {
+	inline void FitChildrenTall( const unsigned int Flag = GLAY_CENTER ) {
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
 		GlayNum Height = GLAY_0;
@@ -253,12 +236,12 @@ public:
 			if ( Width != GLAY_0 )
 				Reg.Shape.x /= Width; // Convert to 0-1 range //
 			
-			if ( Flag == GLAY_CENTER )
-				Reg.Pos.x = GlayNumHalf(GLAY_1 - Reg.Shape.x);
+			if ( Flag == GLAY_LEFT )
+				Reg.Pos.x = GLAY_0;
 			else if ( Flag == GLAY_RIGHT )
 				Reg.Pos.x = GLAY_1 - Reg.Shape.x;
-			else //if ( Flag == GLAY_LEFT )
-				Reg.Pos.x = GLAY_0;
+			else //if ( Flag == GLAY_CENTER )
+				Reg.Pos.x = GlayNumHalf(GLAY_1 - Reg.Shape.x);
 			
 			// Distribute about other axis //
 			Reg.Pos.y = Offset;
@@ -273,6 +256,10 @@ public:
 	}
 
 	// Given a node (me), fit my children inside eachother. //
+	// NOTE: Empty Children don't affect layout (unless you change their shape). //
+	// NOTE: Shape usage may not be obvious. With 2 children, the bigger child takes up more space. //
+	//   With more than 2, layouts don't exactly make sense anymore. //
+	// NOTE: Can provide an Offset in Pos, but coordinates are in fractions of parent, so it's weird. //
 	inline void FitChildren() {
 		// Sum of both axis, so we know how to distribute //
 		GlayNum Width = GLAY_0;
@@ -288,21 +275,17 @@ public:
 			// "Reg", so now to shadow my internal member "Region" //
 			GlayRegion& Reg = Itr->Region;
 
-			Reg.Shape.x = GLAY_1 - OffsetX;//GlayNumHalf(OffsetX);
-			Reg.Pos.x = GlayNumHalf(OffsetX);
+			GlayNum StepX = Reg.Shape.x;
+			Reg.Shape.x = GLAY_1 - OffsetX;
+			Reg.Pos.x = GlayNumHalf(OffsetX) - Reg.Pos.x;
 			if ( Width != GLAY_0 )
-				OffsetX += Reg.Shape.x / Width;
-//			OffsetX += Reg.Shape.x;
+				OffsetX += StepX / Width;
 
+			GlayNum StepY = Reg.Shape.y;
 			Reg.Shape.y = GLAY_1 - OffsetY;
-			Reg.Pos.y = GlayNumHalf(OffsetY);
+			Reg.Pos.y = GlayNumHalf(OffsetY) - Reg.Pos.y;
 			if ( Height != GLAY_0 )
-				OffsetY += Reg.Shape.y / Height;
-
-//			Reg.Pos.y = OffsetY;
-//			if ( Height != GLAY_0 )
-//				Reg.Shape.y = Reg.Shape.y / Height;
-//			OffsetY += Reg.Shape.y;
+				OffsetY += StepY / Height;
 
 			// Scale to size of parent //
 			Reg.Pos = Reg.Pos * Region.Shape;
@@ -320,14 +303,17 @@ public:
 			else if ( Flags & GLAY_SUM ) {
 				Region.Pos = Parent->Region.Pos + Region.Pos;
 			}
+			else {
+				// Relative Origin... is automatic, by doing nothing //
+			}
 		}
 
 		// Properties of Children //
 		if ( Flags & GLAY_FILL_WIDTH ) {
-			FitChildrenWide();
+			FitChildrenWide( Flags & GLAY_HALIGN );
 		}
 		else if ( Flags & GLAY_FILL_HEIGHT ) {
-			FitChildrenTall();
+			FitChildrenTall( Flags & GLAY_VALIGN );
 		}
 		else if ( Flags & GLAY_FILL ) {
 			FitChildren();
