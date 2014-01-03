@@ -7,12 +7,61 @@
 #include <string>
 #include <list>
 // - ------------------------------------------------------------------------------------------ - //
-	//GlayNode* Child;
 
 // - ------------------------------------------------------------------------------------------ - //
-typedef float GlayNum;	// Number //
-#define GLAY_0	0.0f
-#define GLAY_1	1.0f
+typedef float GlayNum;		// Number //
+#define GLAY_0		0.0f
+#define GLAY_1		1.0f
+inline GlayNum GlayNumHalf( const GlayNum In ) { return In * 0.5f; }
+// - ------------------------------------------------------------------------------------------ - //
+//typedef int GlayNum;		// Number //
+//#define GLAY_0		0
+//#define GLAY_1		1
+//inline GlayNum GlayNumHalf( const GlayNum In ) { return In >> 1; }
+// - ------------------------------------------------------------------------------------------ - //
+struct GlayPoint {
+	GlayNum x,y;
+	
+	inline GlayPoint( const GlayNum _x = GLAY_0, const GlayNum _y = GLAY_0 ) :
+		x(_x),
+		y(_y)
+	{
+	}
+	
+public:
+	inline GlayPoint GetHalf() const {
+		return GlayPoint( GlayNumHalf(x), GlayNumHalf(y) );
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
+#define __GLAY_OPERATOR_AB( _SYM ) \
+inline GlayPoint operator _SYM ( const GlayPoint& a, const GlayPoint& b ) { \
+	return GlayPoint( a.x _SYM b.x, a.y _SYM b.y ); \
+}
+// - ------------------------------------------------------------------------------------------ - //
+__GLAY_OPERATOR_AB(+)
+__GLAY_OPERATOR_AB(-)
+__GLAY_OPERATOR_AB(*)
+__GLAY_OPERATOR_AB(/)
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+struct GlayRegion {
+	GlayPoint Pos, Shape;
+	
+	inline GlayRegion( const GlayNum _x = GLAY_0, const GlayNum _y = GLAY_0, const GlayNum _w = GLAY_1, const GlayNum _h = GLAY_1 ) :
+		Pos(_x,_y),
+		Shape(_w,_h)
+	{
+	}
+
+public:
+	inline GlayPoint GetCenter() {
+		return Pos + Shape.GetHalf();
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 enum GlayNodeFlags {
 	GLAY_LEFT =			0x1,
@@ -26,30 +75,6 @@ enum GlayNodeFlags {
 	
 	GLAY_DEFAULT =		GLAY_CENTER | GLAY_MIDDLE,
 };
-// - ------------------------------------------------------------------------------------------ - //
-struct GlayRegion {
-	GlayNum x,y,w,h;
-	
-	inline GlayRegion( const GlayNum _x = GLAY_0, const GlayNum _y = GLAY_0, const GlayNum _w = GLAY_1, const GlayNum _h = GLAY_1 ) :
-		x(_x),
-		y(_y),
-		w(_w),
-		h(_h)
-	{
-	}
-	
-public:
-	inline void SetPos( const GlayNum _x, const GlayNum _y ) {
-		x = _x;
-		y = _y;
-	}
-	inline void SetShape( const GlayNum _w, const GlayNum _h ) {
-		w = _w;
-		h = _h;
-	}
-};
-// - ------------------------------------------------------------------------------------------ - //
-
 // - ------------------------------------------------------------------------------------------ - //
 struct GlayNode {
 	GlayRegion Region;
@@ -81,63 +106,6 @@ struct GlayLayout {
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-
-//// - ------------------------------------------------------------------------------------------ - //
-//inline GlayNode* new_Child_GlayNode( GlayNode* Parent ) {
-//	GlayNode* Node = new GlayNode;
-//	Node->Region.x = 0;
-//	Node->Region.y = 0;
-//	Node->Region.w = 1;
-//	Node->Region.h = 1;
-//
-//	Node->Flags = GLAY_DEFAULT;
-//	
-//	Node->Parent = Parent;
-//	//Node->Child = 0;
-//}
-//// - ------------------------------------------------------------------------------------------ - //
-//inline void delete_GlayNode( GlayNode* Node ) {
-//	for (std::list<GlayNode*>::const_iterator itr = intList.begin(); iterator != intList.end(); ++iterator) {
-//	    std::cout << *iterator;
-//	}
-////	if ( Node->Child ) {
-////		delete_GlayNode( Node->Child );
-////	}
-//	delete Node;
-//}
-//// - ------------------------------------------------------------------------------------------ - //
-//inline GlayLayout* new_GlayLayout() {
-//	GlayLayout* Layout = new GlayLayout;
-//	Layout->Root = new_Child_GlayNode( 0 );
-//	return Layout;
-//}
-//// - ------------------------------------------------------------------------------------------ - //
-//inline void delete_GlayLayout( GlayLayout* Layout ) {
-//	if ( Layout->Root ) {
-//		delete_GlayNode( Layout->Root );
-//	}
-//	delete Layout;
-//}
-// - ------------------------------------------------------------------------------------------ - //
-
-//// - ------------------------------------------------------------------------------------------ - //
-//inline void set_Region_GlayNode( GlayNode* Node, const GlayNum x, const GlayNum y, const GlayNum w, const GlayNum h ) {
-//	Node->Region.x = x;
-//	Node->Region.y = y;
-//	Node->Region.w = w;
-//	Node->Region.h = h;
-//}
-//// - ------------------------------------------------------------------------------------------ - //
-//inline void set_Pos_GlayNode( GlayNode* Node, const GlayNum x, const GlayNum y ) {
-//	Node->Region.x = x;
-//	Node->Region.y = y;
-//}
-//// - ------------------------------------------------------------------------------------------ - //
-//inline void set_Shape_GlayNode( GlayNode* Node, const GlayNum w, const GlayNum h ) {
-//	Node->Region.w = w;
-//	Node->Region.h = h;
-//}
-//// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GLAYOUT_H__ //
