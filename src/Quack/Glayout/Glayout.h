@@ -137,6 +137,7 @@ public:
 	}
 	
 public:
+	// Given a node (me), fit my children to my width, using their width as sizes. Also Y align. //
 	inline void FitChildrenWide( const GlayNodeFlag Flag = GLAY_MIDDLE ) {
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
@@ -174,6 +175,7 @@ public:
 		}
 	}
 
+	// Given a node (me), fit my children to my height, using their heights as sizes. Also X align. //
 	inline void FitChildrenTall( const GlayNodeFlag Flag = GLAY_CENTER ) {
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
