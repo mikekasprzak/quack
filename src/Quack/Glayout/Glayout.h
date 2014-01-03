@@ -77,25 +77,29 @@ enum GlayNodeFlag {
 	GLAY_MIDDLE =		GLAY_TOP | GLAY_BOTTOM,
 	
 	// ??? //
-	GLAY_SCALE = 		0x10,	// Child Positions are scaled to fit the Parent dimensions //
-	GLAY_SUM = 			0x20,	// Child Positions are the sum of the Parents //
+	GLAY_FREE =			0x00,	// Free Positioning. Relative the Origin (0,0). //
+	GLAY_SUM = 			0x10,	// Positions are relative the parents. No fitting. Default. //
+	GLAY_FIT_WIDE = 	0x20,	// Fit my children inside me, arranging them wide //
+	GLAY_FIT_TALL = 	0x30,	// Fit my children inside me, arranging them tall //
+	GLAY_FILL =			0x40,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
 
-
-	GLAY_DEFAULT =		GLAY_CENTER | GLAY_MIDDLE,// | GLAY_SCALE,
+	GLAY_DEFAULT =		GLAY_CENTER | GLAY_MIDDLE | GLAY_SUM,
 };
 // - ------------------------------------------------------------------------------------------ - //
 struct GlayNode {
-	GlayRegion Region;
-	unsigned int Flags;
-	
-	// Tree //
 	GlayNode* Parent;
 	std::list<GlayNode> Child;
+
+	GlayRegion Region;
+
+	GlayRegion BaseRegion;
+	unsigned int Flags;
 		
 	inline GlayNode( GlayNode* _Parent ) :
+		Parent( _Parent ),
 		Region( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
-		Flags( GLAY_DEFAULT ),
-		Parent( _Parent )
+		BaseRegion( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
+		Flags( GLAY_DEFAULT )
 	{
 	}
 
@@ -106,17 +110,15 @@ public:
 
 public:
 	inline void SetPos( const GlayNum _x = GLAY_0, const GlayNum _y = GLAY_0 ) {
-		Region.Pos = GlayPoint(_x,_y);
+		BaseRegion.Pos = GlayPoint(_x,_y);
+		Region.Pos = BaseRegion.Pos;
 	}
 	inline void SetShape( const GlayNum _x = GLAY_1, const GlayNum _y = GLAY_1 ) {
-		Region.Shape = GlayPoint(_x,_y);
+		BaseRegion.Shape = GlayPoint(_x,_y);
+		Region.Shape = BaseRegion.Shape;
 	}
 	
 public:	
-	// Get the Local position //
-	inline const GlayPoint& GetLocalPos() const {
-		return Region.Pos;
-	}
 	// Get the Shape //
 	inline const GlayPoint& GetShape() const {
 		return Region.Shape;
@@ -134,6 +136,11 @@ public:
 	// Get the True Center point //
 	inline GlayPoint GetCenterPos() const {
 		return GetPos() + Region.GetHalfShape();
+	}
+	
+	// Ocassionally we'll need to retrieve the true coordinates (before fitting, etc) //
+	inline void CopyBaseToRegion() {
+		Region = BaseRegion;
 	}
 	
 public:
