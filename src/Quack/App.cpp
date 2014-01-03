@@ -164,7 +164,28 @@ void AppInit() {
 //		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");
 //		spAnimationState_setAnimation( App::SpineAnimState, 0, Animation, true );
 
-		App::MySkel.Set( "jump" );
+		App::MySkel.Set( "walk" );
+		Log("**** DONE");
+	}
+	
+	{
+		Log("**** GLAYOUT");
+		GlayLayout Layout;
+//		Layout.Root.SetPos(5,0);
+		Layout.Root.SetShape(10,10);
+		Layout.Root.AddChild();
+		Layout.Root.Child.back().SetPos(2,0);
+		Layout.Root.Child.back().SetShape(2,2);
+		Layout.Root.Child.back().AddChild();
+		Layout.Root.Child.back().AddChild();
+		Layout.Root.Child.back().Child.back().SetShape(2,2);
+		Layout.Root.Child.back().AddChild();
+		Layout.Root.Child.back().FitChildrenWide( GLAY_BOTTOM );
+
+		GlayPoint Pos = Layout.Root.Child.back().Child.back().GetPos();
+		GlayPoint Shape = Layout.Root.Child.back().Child.back().GetShape();
+		Log("Pos: (%f, %f) (%f, %f)", Pos.x, Pos.y, Shape.x, Shape.y);
+		
 		Log("**** DONE");
 	}
 }
