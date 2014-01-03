@@ -1,6 +1,12 @@
 // - ------------------------------------------------------------------------------------------ - //
 // Glayout - General Purpose Layout Engine for simple UIs //
 // - ------------------------------------------------------------------------------------------ - //
+// NOTES: By default a node is at (0,0) and is 1x1. Nodes can be 0x0, meaning they're both //
+//   unaffected and don't affect by Fitting operations. Say, if you needed to chain some data. //
+// - ------------------------------------------------------------------------------------------ - //
+// TODO: Add a way that sizes cascade to children.
+// TODO: Make inner filling work (which means deciding what width/height mean to them).
+// - ------------------------------------------------------------------------------------------ - //
 #ifndef __GLAYOUT_H__
 #define __GLAYOUT_H__
 // - ------------------------------------------------------------------------------------------ - //
@@ -76,14 +82,28 @@ enum GlayNodeFlag {
 	GLAY_BOTTOM	=		0x8,
 	GLAY_MIDDLE =		GLAY_TOP | GLAY_BOTTOM,
 	
-	// ??? //
-	GLAY_FREE =			0x00,	// Free Positioning. Relative the Origin (0,0). //
-	GLAY_SUM = 			0x10,	// Positions are relative the parents. No fitting. Default. //
-	GLAY_FIT_WIDE = 	0x20,	// Fit my children inside me, arranging them wide //
-	GLAY_FIT_TALL = 	0x30,	// Fit my children inside me, arranging them tall //
-	GLAY_FILL =			0x40,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
+	GLAY_HALIGN =		GLAY_CENTER,
+	GLAY_VALIGN =		GLAY_MIDDLE,
+	GLAY_ALIGN =		0xF,
+	
+	// Properties of Self //
+	//GLAY_FREE =		0x00,	// Free Positioning. Relative the Origin (0,0). //
+	GLAY_SUM = 			0x10,	// Positions are relative the parents. Default. //
+	GLAY_FIT =			0x20,	// Fit myself to my parent (100%). //
+	GLAY_EMPTY = 		0x80,	// Special kind of node (an empty) that disregards position. //
 
-	GLAY_DEFAULT =		GLAY_CENTER | GLAY_MIDDLE | GLAY_SUM,
+	GLAY_SELF = 		0xF0,
+	
+	// Properties of Children //
+	GLAY_FILL =			0x100,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
+	GLAY_FILL_WIDTH = 	0x200,	// Fit my children inside me, arranging them wide //
+	GLAY_FILL_HEIGHT = 	0x400,	// Fit my children inside me, arranging them tall //
+
+	GLAY_CHILDREN =		0xF00,
+
+	// *** //
+	
+	GLAY_DEFAULT =		GLAY_CENTER | GLAY_MIDDLE,
 };
 // - ------------------------------------------------------------------------------------------ - //
 struct GlayNode {
@@ -95,52 +115,80 @@ struct GlayNode {
 	GlayRegion BaseRegion;
 	unsigned int Flags;
 		
-	inline GlayNode( GlayNode* _Parent ) :
+	inline GlayNode( GlayNode* _Parent, const unsigned int _Flag = GLAY_DEFAULT ) :
 		Parent( _Parent ),
 		Region( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
 		BaseRegion( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
-		Flags( GLAY_DEFAULT )
+		Flags( _Flag )
 	{
 	}
 
 public:
-	inline void AddChild() {
-		Child.push_back( GlayNode(this) );
+	// Normal Child //
+	inline void AddChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+		Child.push_back( GlayNode(this, _Flag | GLAY_SUM) );
+	}
+	// Child that isn't relative the parent //
+	inline void AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+		Child.push_back( GlayNode(this, _Flag) );
+	}
+	// Doesn't affect layout //
+	inline void AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+		Child.push_back( GlayNode(this, _Flag | GLAY_SUM | GLAY_EMPTY ) );
+		Child.back().SetShape(GLAY_0,GLAY_0);
 	}
 
 public:
 	inline void SetPos( const GlayNum _x = GLAY_0, const GlayNum _y = GLAY_0 ) {
 		BaseRegion.Pos = GlayPoint(_x,_y);
-		Region.Pos = BaseRegion.Pos;
 	}
 	inline void SetShape( const GlayNum _x = GLAY_1, const GlayNum _y = GLAY_1 ) {
 		BaseRegion.Shape = GlayPoint(_x,_y);
-		Region.Shape = BaseRegion.Shape;
 	}
 	
-public:	
-	// Get the Shape //
+public:
+//	inline const GlayPoint& GetBaseShape() const {
+//		return BaseRegion.Shape;
+//	}
+//	inline const GlayPoint& GetBasePos() const {
+//		return BaseRegion.Pos;
+//	}
+
+	// Get Populated Data //
 	inline const GlayPoint& GetShape() const {
 		return Region.Shape;
 	}
-	
-	// Get the True position //
-	inline GlayPoint GetPos() const {
-		if ( Parent ) {
-			return Region.Pos + Parent->GetPos();
-		}
-		
+	inline const GlayPoint& GetPos() const {
 		return Region.Pos;
 	}
-	
-	// Get the True Center point //
+	// Get the Center point //
 	inline GlayPoint GetCenterPos() const {
 		return GetPos() + Region.GetHalfShape();
 	}
-	
+
+//	// Calculate the True position //
+//	inline GlayPoint CalcPos() const {
+//		if ( Parent ) {
+//			return GetBasePos() + Parent->CalcPos();
+//		}
+//		
+//		return GetBasePos();
+//	}
+//	// Calculate the True Center point //
+//	inline GlayPoint CalcCenterPos() const {
+//		return CalcPos() + Region.GetHalfShape();
+//	}
+
+public:
 	// Ocassionally we'll need to retrieve the true coordinates (before fitting, etc) //
 	inline void CopyBaseToRegion() {
 		Region = BaseRegion;
+	}
+	inline void CopyChildBases() {
+		CopyBaseToRegion();
+		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+			Itr->CopyChildBases();
+		}
 	}
 	
 public:
@@ -163,11 +211,13 @@ public:
 			
 			// Distribute about axis //
 			Reg.Pos.x = Offset;
-			Reg.Shape.x = Reg.Shape.x / Width;
+			if ( Width != GLAY_0 )
+				Reg.Shape.x = Reg.Shape.x / Width;
 			Offset += Reg.Shape.x;
 			
 			// Align about other axis //
-			Reg.Shape.y /= Height; // Convert to 0-1 range //
+			if ( Height != GLAY_0 )
+				Reg.Shape.y /= Height; // Convert to 0-1 range //
 			
 			if ( Flag == GLAY_MIDDLE )
 				Reg.Pos.y = GlayNumHalf(GLAY_1 - Reg.Shape.y);
@@ -200,7 +250,8 @@ public:
 			GlayRegion& Reg = Itr->Region;
 						
 			// Align about axis //
-			Reg.Shape.x /= Width; // Convert to 0-1 range //
+			if ( Width != GLAY_0 )
+				Reg.Shape.x /= Width; // Convert to 0-1 range //
 			
 			if ( Flag == GLAY_CENTER )
 				Reg.Pos.x = GlayNumHalf(GLAY_1 - Reg.Shape.x);
@@ -211,12 +262,80 @@ public:
 			
 			// Distribute about other axis //
 			Reg.Pos.y = Offset;
-			Reg.Shape.y = Reg.Shape.y / Height;
+			if ( Height != GLAY_0 )
+				Reg.Shape.y = Reg.Shape.y / Height;
 			Offset += Reg.Shape.y;
 
 			// Scale to size of parent //
 			Reg.Pos = Reg.Pos * Region.Shape;
-			Reg.Shape = Reg.Shape * Region.Shape;			
+			Reg.Shape = Reg.Shape * Region.Shape;
+		}
+	}
+
+	// Given a node (me), fit my children inside eachother. //
+	inline void FitChildren() {
+		// Sum of both axis, so we know how to distribute //
+		GlayNum Width = GLAY_0;
+		GlayNum Height = GLAY_0;
+		for (std::list<GlayNode>::const_iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+			Width += Itr->Region.Shape.x;
+			Height += Itr->Region.Shape.y;
+		}
+
+		GlayNum OffsetX = GLAY_0;
+		GlayNum OffsetY = GLAY_0;
+		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+			// "Reg", so now to shadow my internal member "Region" //
+			GlayRegion& Reg = Itr->Region;
+
+			Reg.Shape.x = GLAY_1 - OffsetX;//GlayNumHalf(OffsetX);
+			Reg.Pos.x = GlayNumHalf(OffsetX);
+			if ( Width != GLAY_0 )
+				OffsetX += Reg.Shape.x / Width;
+//			OffsetX += Reg.Shape.x;
+
+			Reg.Shape.y = GLAY_1 - OffsetY;
+			Reg.Pos.y = GlayNumHalf(OffsetY);
+			if ( Height != GLAY_0 )
+				OffsetY += Reg.Shape.y / Height;
+
+//			Reg.Pos.y = OffsetY;
+//			if ( Height != GLAY_0 )
+//				Reg.Shape.y = Reg.Shape.y / Height;
+//			OffsetY += Reg.Shape.y;
+
+			// Scale to size of parent //
+			Reg.Pos = Reg.Pos * Region.Shape;
+			Reg.Shape = Reg.Shape * Region.Shape;
+		}
+	}
+		
+public:
+	inline void Update() {
+		// Properties of Self //
+		if ( Parent ) {
+			if ( Flags & GLAY_FIT ) {
+				Region = Parent->Region;
+			}
+			else if ( Flags & GLAY_SUM ) {
+				Region.Pos = Parent->Region.Pos + Region.Pos;
+			}
+		}
+
+		// Properties of Children //
+		if ( Flags & GLAY_FILL_WIDTH ) {
+			FitChildrenWide();
+		}
+		else if ( Flags & GLAY_FILL_HEIGHT ) {
+			FitChildrenTall();
+		}
+		else if ( Flags & GLAY_FILL ) {
+			FitChildren();
+		}
+
+		// Update Children //
+		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+			Itr->Update();
 		}
 	}
 };
@@ -227,6 +346,12 @@ struct GlayLayout {
 	inline GlayLayout() :
 		Root( 0 )
 	{
+	}
+	
+public: 
+	inline void Update() {
+		Root.CopyChildBases();
+		Root.Update();
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //

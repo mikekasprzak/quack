@@ -67,6 +67,8 @@ bool HadVMError;
 //spSkeleton*				SpineSkeleton;
 //spAnimationState*		SpineAnimState;
 GelSkelAnimator MySkel;
+
+GlayLayout Layout;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -169,21 +171,30 @@ void AppInit() {
 	}
 	
 	{
-		Log("**** GLAYOUT");
-		GlayLayout Layout;
-//		Layout.Root.SetPos(5,0);
-		Layout.Root.SetShape(10,10);
-		Layout.Root.AddChild();
-		Layout.Root.Child.back().SetPos(2,0);
-		Layout.Root.Child.back().SetShape(2,2);
-		Layout.Root.Child.back().AddChild();
-		Layout.Root.Child.back().AddChild();
-		Layout.Root.Child.back().Child.back().SetShape(2,2);
-		Layout.Root.Child.back().AddChild();
-		Layout.Root.Child.back().FitChildrenWide( GLAY_BOTTOM );
+		Log("**** GLAYOUT");		
+//		App::Layout.Root.SetPos(5,0);
+		App::Layout.Root.SetShape(100,100);
+		App::Layout.Root.AddChild( GLAY_FILL_WIDTH );
+		App::Layout.Root.Child.back().SetPos(40,60);
+		App::Layout.Root.Child.back().SetShape(20,20);
+		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.Child.back().Child.back().SetShape(4,2);
+		App::Layout.Root.Child.back().AddChild();
 
-		GlayPoint Pos = Layout.Root.Child.back().Child.back().GetPos();
-		GlayPoint Shape = Layout.Root.Child.back().Child.back().GetShape();
+		App::Layout.Root.AddChild( GLAY_FILL );
+		App::Layout.Root.Child.back().SetPos(10,10);
+		App::Layout.Root.Child.back().SetShape(60,30);
+		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.Child.back().Child.back().SetShape(20,10);
+//		App::Layout.Root.Child.back().AddEmptyChild();
+		App::Layout.Root.Child.back().AddChild();
+		
+		App::Layout.Update();
+
+		GlayPoint Pos = App::Layout.Root.Child.back().Child.back().GetPos();
+		GlayPoint Shape = App::Layout.Root.Child.back().Child.back().GetShape();
 		Log("Pos: (%f, %f) (%f, %f)", Pos.x, Pos.y, Shape.x, Shape.y);
 		
 		Log("**** DONE");
@@ -200,6 +211,25 @@ void AppExit() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+void DrawLayout( const GlayNode& Node ) {
+	const st32 VertCount = 4;
+	Vector3D Verts[ VertCount ];
+	Verts[0].x = Node.GetPos().x;
+	Verts[0].y = Node.GetPos().y;
+	Verts[1].x = Node.GetPos().x + Node.GetShape().x;
+	Verts[1].y = Node.GetPos().y;
+	Verts[2].x = Node.GetPos().x + Node.GetShape().x;
+	Verts[2].y = Node.GetPos().y + Node.GetShape().y;
+	Verts[3].x = Node.GetPos().x;
+	Verts[3].y = Node.GetPos().y + Node.GetShape().y;
+
+	Gel::RenderFlat( GEL_LINE_LOOP, App::InfoMatrix, GEL_RGB_PURPLE, Verts, VertCount );
+	
+	
+	for (std::list<GlayNode>::const_iterator Itr = Node.Child.begin(), End = Node.Child.end(); Itr != End; ++Itr) {
+		DrawLayout( *Itr );
+	}
+}
 
 // - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
@@ -241,6 +271,8 @@ void AppDraw() {
 	App::DrawProfiler.Stop();
 		
 	App::MySkel.Draw( App::InfoMatrix );
+
+	DrawLayout( App::Layout.Root );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
