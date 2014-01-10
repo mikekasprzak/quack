@@ -52,7 +52,7 @@ public:
 		
 		AssetUID = _Asset,
 		Skeleton = spSkeleton_create( Gel::SkelPool[AssetUID].GetSkeletonData() );
-		AnimState = spAnimationState_create(0); // stateData //		
+		AnimState = spAnimationState_create(0); // To do animation mixing, apparently you pass an AnimationStateData here //
 	}
 
 public:
@@ -66,10 +66,10 @@ public:
 		float deltaTime = 1000.0f/60.0f;
 		float timeScale = 0.001f;
 		
-		spSkeleton_update( Skeleton, deltaTime );
-		spAnimationState_update( AnimState, deltaTime * timeScale );
-		spAnimationState_apply( AnimState, Skeleton );
-		spSkeleton_updateWorldTransform( Skeleton );		
+		spSkeleton_update( Skeleton, deltaTime ); // Add deltaTime //
+		spAnimationState_update( AnimState, deltaTime * timeScale ); // Step all active animations //
+		spAnimationState_apply( AnimState, Skeleton ); // Apply and Mix Animations, trigger event callbacks //
+		spSkeleton_updateWorldTransform( Skeleton ); // Build Matrix //
 	}
 	
 	inline void Draw( const Matrix4x4& Matrix ) {

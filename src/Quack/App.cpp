@@ -158,7 +158,7 @@ void AppInit() {
 
 	{	
 		Log("**** LOADING SPINE");
-		App::MySkel.Load( Gel::SkelPool.Load( "SpineTest/spineboy.json" ) );
+		App::MySkel.Load( Gel::SkelPool.Load( "Creature/QuadrupedA.json" ) );//"SpineTest/spineboy.json" ) );
 //		App::SpineUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
 //		App::SpineSkeleton = spSkeleton_create( Gel::SkelPool[App::SpineUID].GetSkeletonData() );
 //		App::SpineAnimState = spAnimationState_create(0);//stateData);
@@ -166,7 +166,7 @@ void AppInit() {
 //		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");
 //		spAnimationState_setAnimation( App::SpineAnimState, 0, Animation, true );
 
-		App::MySkel.Set( "walk" );
+		App::MySkel.Set( "Walk" );//"walk" );
 		Log("**** DONE");
 	}
 	
@@ -270,8 +270,11 @@ void AppDraw() {
 	QuackVMCallDraw();
 	// *** //
 	App::DrawProfiler.Stop();
-		
-	App::MySkel.Draw( App::InfoMatrix );
+	
+	Matrix4x4 Doof = App::InfoMatrix;
+	Doof[0] *= Real(0.5f);
+	Doof[5] *= Real(0.5f);
+	App::MySkel.Draw( Doof );
 
 	DrawLayout( App::Layout.Root );
 
