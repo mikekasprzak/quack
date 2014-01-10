@@ -73,11 +73,6 @@ public:
 	}
 	
 	inline void Draw( const Matrix4x4& Matrix ) {
-//		Matrix4x4 Matrix = App::InfoMatrix;
-//		Matrix[0] *= Real::Quarter;
-//		Matrix[5] *= Real::Quarter;
-//		//Matrix *= Matrix4x4::ScalarMatrix(0.25f) * Matrix;
-	
 		spSkeleton* skeleton = Skeleton;
 		
 		float worldVertices[8];
@@ -135,9 +130,9 @@ public:
 			Verts[5] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
 			
 			// DO THIS WITH MATRIX //
-	//		for ( st32 idx = 0; idx < VertCount; idx++ ) {
-	//			Verts[idx] += Pos;
-	//		}
+//			for ( st32 idx = 0; idx < VertCount; idx++ ) {
+//				Verts[idx] += Pos;
+//			}
 	
 			GelTexture& Tex = Gel::TexturePool[(st)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject];
 	
