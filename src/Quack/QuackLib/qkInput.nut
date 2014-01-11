@@ -1,26 +1,21 @@
 // - -------------------------------------------------------------------------------------------------------------- - //
 class qkPad {
 	Index = 0;
+	InputFunc = null;
 	Current = null;
 	Old = null;
 	
 	LStick = null;
 	RStick = null;
 	
-	constructor( _Index ) {
+	constructor( _Index, _InputFunc ) {
 		Index = _Index;
-		Current = qkInputPadGet( Index );
+		InputFunc = _InputFunc;
+		Current = InputFunc( Index );
 		Update();
 	}
 	
 	function _get( _Index ) {
-//		if ( _Index == "LStick" ) {
-//			return Current.LStick;
-//		}
-//		else if ( _Index == "RStick" ) {
-//			return Current.RStick;
-//		}
-//		else 
 		if ( _Index == "Button" ) {
 			return Current.Button;
 		}
@@ -42,7 +37,7 @@ class qkPad {
 	
 	function Update() {
 		Old = Current;
-		Current = qkInputPadGet(Index);
+		Current = InputFunc(Index);
 		
 		LStick = clone Current.LStick;
 		RStick = clone Current.RStick;
@@ -74,6 +69,46 @@ class qkPad {
 };
 // - -------------------------------------------------------------------------------------------------------------- - //
 function qkPadGet( Index ) {
-	return qkPad(Index);
+	return qkPad(Index,qkInputPadGet);
+}
+// - -------------------------------------------------------------------------------------------------------------- - //
+
+// - -------------------------------------------------------------------------------------------------------------- - //
+function qkInputMasterPadGet( Index /* Ignored */ ) {
+	local Pads = [];
+	for ( local idx = 0; idx < 4; idx++ ) {
+		Pads.push( qkInputPadGet(idx) );
+	}
+	
+	local Ret = {};
+	
+	Ret.Connected <- true;
+	
+	Ret.LStick <- clone Pads[0].LStick;
+	for ( local idx = 1; idx < Pads.len(); idx++ ) {
+		if ( Ret.LStick.magnitude() < 0.1 )
+			Ret.LStick = clone Pads[idx].LStick;
+		else
+			break;
+	}
+
+	Ret.RStick <- clone Pads[0].RStick;
+	for ( local idx = 1; idx < Pads.len(); idx++ ) {
+		if ( Ret.RStick.magnitude() < 0.1 )
+			Ret.RStick = clone Pads[idx].RStick;
+		else
+			break;
+	}
+	
+	Ret.Button <- Pads[0].Button;
+	for ( local idx = 1; idx < Pads.len(); idx++ ) {
+		Ret.Button = Ret.Button | Pads[idx].Button;
+	}
+	
+	return Ret;
+}
+// - -------------------------------------------------------------------------------------------------------------- - //
+function qkMasterPadGet() {
+	return qkPad(0,qkInputMasterPadGet);
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
