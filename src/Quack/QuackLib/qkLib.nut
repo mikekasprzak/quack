@@ -46,12 +46,12 @@ function print_table( table, level = 0, name = "" ) {
 			if ( typeof(val) == "table" ) {
 				print_table( val, level+1, idx + " " );
 			}
-			else if ( typeof(table) == "array" ) {
-				print( Prefix + "+ " + name + "[" + typeof(table) + "]: " + table.len() + " elements" );
-				for ( local idx = 0; idx < table.len(); idx++ ) {
-					print( Prefix + Indent + "* " + idx + " [" + typeof table[idx] + "]: " + table[idx] );
+			else if ( typeof(val) == "array" ) {
+				print( Prefix + "+ " + name + "[" + typeof(val) + "]: " + val.len() + " elements" );
+				for ( local idx = 0; idx < val.len(); idx++ ) {
+					print( Prefix + Indent + "* " + idx + " [" + typeof val[idx] + "]: " + val[idx] );
 				}
-				print( Prefix + "- " + name + "[" + typeof(table) + "]" );
+				print( Prefix + "- " + name + "[" + typeof(val) + "]" );
 			}
 			else {
 				print( Prefix + Indent + "* " + idx + " [" + typeof(val) + "]: " + val );

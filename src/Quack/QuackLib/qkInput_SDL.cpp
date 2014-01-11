@@ -133,10 +133,10 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 	}
 
 	Vector2D RStick;
-	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 2 )
-		RStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[2];
 	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 3 )
-		RStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[3];
+		RStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[3];
+	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 4 )
+		RStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[4];
 
 	// LStick //
 	{

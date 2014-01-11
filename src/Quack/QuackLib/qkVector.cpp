@@ -222,9 +222,9 @@ inline SQInteger qk_vec_get( HSQUIRRELVM v, const unsigned int VecWidth ) {
 
 				return SQ_RETURN;
 			}
-			else {
-				return sq_throwerror(v,"Too many characters used in vector swizzle mask.");
-			}
+//			else {
+//				return sq_throwerror(v,"Too many characters used in vector swizzle mask.");
+//			}
 		}
 	}
 	// Array Style Indexing. I.e. MyVec[0] for x.
