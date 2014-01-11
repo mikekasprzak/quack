@@ -3,8 +3,8 @@
 #include <API/API_Squirrel.h>
 #include "QuackLib_Internal.h"
 // - ------------------------------------------------------------------------------------------ - //
-#include <System/System.h>
-#include <Input/Input.h>
+//#include <System/System.h>
+//#include <Input/Input.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include "qkInput.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -16,223 +16,19 @@
 // - One set of L+R triggers as buttons
 // - One Menu button (Start or Option)
 // - One Extra button (Select or RStick Click)
-SQInteger qkInputPadGet( HSQUIRRELVM v ) {
-	// Check the Arguments for an Index. If none specified, assume GamePad 0. //
-	SQInteger Index = 0;
-	int NumArgs = sq_gettop(v);
-	if ( NumArgs > 0 ) {
-		sq_getinteger(v,2,&Index);
-	}
-	
-	// Push the Index back on the stack (to be recieved by another function) //
-	//sq_pushinteger(v,Index);
-	
-	// TODO: Some smart clever way of assigning Indexes to GamePads //
-//	if ( GamePad(Index).Type == GP_XINPUT ) {
+SQInteger qkInputPadGet( HSQUIRRELVM v ) {	
 #ifdef USES_XINPUT
-	if ( qkInputPadXInputGetSimple(v) != SQ_ERROR ) {
-		// Success //
-	}
+	if ( qkInputPadXInputGetSimple(v) != SQ_ERROR ) { /* Success */ }
 	else
 #endif // USES_XINPUT //
-//	else if ( GamePad(Index).Type == GP_SDL ) {
 #ifdef USES_SDL2
-	if ( qkInputPadSDLGetSimple(v) != SQ_ERROR ) {
-		// Success //
-//	if ( Index < (int)Gel::Input::SDLInput::DevicesConnected() ) {
-//#ifndef USES_WINDOWS
-//		if ( Gel::Input::SDLInput::Is360(Index) ) {
-//			
-//		}
-//		else
-//#endif // !USES_WINDOWS //
-//		if ( Gel::Input::SDLInput::IsPS4(Index) ) {
-//			// Create a new table to store the data we want to return (will be an empty table on error) //
-//			sq_newtable(v);
-//
-//			sqslot_int(v,"Index", Index);
-//			sqslot_bool(v,"Connected", true); // Not Optional //
-//			
-//			// Buttons //
-//			u32 ButtonMask = 0; //|= Gel::Input::SDLInput::GamePad[Index].Button;
-//			
-//			// Convert to ABXY order (was XABY, or SQ X O TRI) //
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & 0x2 ) {
-//				ButtonMask |= 0x1;
-//			}
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & 0x4 ) {
-//				ButtonMask |= 0x2;
-//			}
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & 0x1 ) {
-//				ButtonMask |= 0x4;
-//			}
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & 0x8 ) {
-//				ButtonMask |= 0x8;
-//			}
-//			
-//			// PS4 Driver has L2+R2 as buttons, in addition to as Analogs //
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & (0x10 | 0x40) ) {
-//				ButtonMask |= 0x10;	// L //
-//			}
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & (0x20 | 0x80) ) {
-//				ButtonMask |= 0x20;	// R //
-//			}
-//
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & (0x200 | 0x1000) ) {
-//				ButtonMask |= 0x40;	// Menu //
-//			}
-//			if ( Gel::Input::SDLInput::GamePad[Index].Button & (0x800) ) {
-//				ButtonMask |= 0x80;	// Extra //
-//			}
-//			
-//			sqslot_int(v,"Button", ButtonMask);
-//	
-//			// LStick //			
-//			sq_pushstring(v,"LStick",-1);
-//			sq_newtable(v);
-//
-//			Vector2D LStick( Gel::Input::SDLInput::GamePad[Index].Axis[0], -Gel::Input::SDLInput::GamePad[Index].Axis[1] );
-//			// TODO: Convert to MagnitudeSquared() //
-//			if ( LStick.Magnitude() < Real(0.1f) ) {
-//				LStick = Gel::Input::SDLInput::GamePad[Index].DPad;
-//			}
-//			// TODO: Fit 0.95<->0.1 range to 1.0<->0.0 //
-//			// TODO: Convert to MagnitudeSquared() //
-//			// Clip Ranges above 1.0. I.e. DPad diagonals //
-//			if ( LStick.Magnitude() > Real(1.0f) ) {
-//				LStick.Normalize();
-//			}
-//			
-//			sqslot_float(v,"x", LStick.x.ToFloat());
-//			sqslot_float(v,"y", LStick.y.ToFloat());	
-//			sq_newslot(v,-3,SQFalse);
-//	
-//			// RStick //			
-//			sq_pushstring(v,"RStick",-1);
-//			sq_newtable(v);
-//
-//			Vector2D RStick( Gel::Input::SDLInput::GamePad[Index].Axis[2], -Gel::Input::SDLInput::GamePad[Index].Axis[3] );
-//			// TODO: Fit 0.95<->0.1 range to 1.0<->0.0 //
-//			// TODO: Convert to MagnitudeSquared() //
-//			// Clip Ranges above 1.0 //
-//			if ( RStick.Magnitude() > Real(1.0f) ) {
-//				RStick.Normalize();
-//			}
-//
-//			sqslot_float(v,"x", RStick.x.ToFloat());
-//			sqslot_float(v,"y", RStick.y.ToFloat());		
-//			sq_newslot(v,-3,SQFalse);			
-//		}
-//		else {
-//			// Create a new table to store the data we want to return (will be an empty table on error) //
-//			sq_newtable(v);
-//
-//			// a Normal controller //
-//			sqslot_int(v,"Index", Index);
-//			sqslot_bool(v,"Connected", true); // Not Optional //
-//			
-//			// Buttons //
-//			sqslot_int(v,"Button", Gel::Input::SDLInput::GamePad[Index].Button);
-//	
-//			// LStick //			
-//			Vector2D LStick;
-//			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 0 )
-//				LStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[0];
-//			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 1 )
-//				LStick.y = Gel::Input::SDLInput::GamePad[Index].Axis[1];
-//
-//			Vector2D RStick;
-//			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 2 )
-//				RStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[2];
-//			if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 3 )
-//				RStick.y = Gel::Input::SDLInput::GamePad[Index].Axis[3];
-//	
-//			sq_pushstring(v,"LStick",-1);
-//			sq_newtable(v);
-//			sqslot_float(v,"x", LStick.x.ToFloat());
-//			sqslot_float(v,"y", LStick.y.ToFloat());		
-//			sq_newslot(v,-3,SQFalse);
-//	
-//			// RStick //			
-//			sq_pushstring(v,"RStick",-1);
-//			sq_newtable(v);
-//			sqslot_float(v,"x", RStick.x.ToFloat());
-//			sqslot_float(v,"y", RStick.y.ToFloat());		
-//			sq_newslot(v,-3,SQFalse);
-//		}
-	}
-	else if ( qkInputPadSDLProxyGetSimple(v) ) {
-//		return qkInputPadSDLProxyGetSimple(v);
-//		// Create a new table to store the data we want to return (will be an empty table on error) //
-//		sq_newtable(v);
-//
-//		// No Gamepad Connected? KEYBOARD PROXY! //
-//		sqslot_int(v,"Index", Index);
-//		sqslot_bool(v,"Connected", true);
-//		
-//		// Buttons //
-//		sqslot_int(v,"Button", Gel::KeyFakeButtons);
-//
-//		// LStick //
-//		Vector2D LStick;
-//		if ( Gel::KeyFakeLStick & Gel::KEY_UP )
-//			LStick.y = Real::One;
-//		else if ( Gel::KeyFakeLStick & Gel::KEY_DOWN )
-//			LStick.y = -Real::One;
-//				
-//		if ( Gel::KeyFakeLStick & Gel::KEY_LEFT )
-//			LStick.x = -Real::One;
-//		else if ( Gel::KeyFakeLStick & Gel::KEY_RIGHT )
-//			LStick.x = Real::One;
-//		
-//		sq_pushstring(v,"LStick",-1);
-//		sq_newtable(v);
-//		sqslot_float(v,"x", LStick.x.ToFloat());
-//		sqslot_float(v,"y", LStick.y.ToFloat());
-//		sq_newslot(v,-3,SQFalse);
-//
-//		// RStick //			
-//		Vector2D RStick;
-//		if ( Gel::KeyFakeRStick & Gel::KEY_UP )
-//			RStick.y = Real::One;
-//		else if ( Gel::KeyFakeRStick & Gel::KEY_DOWN )
-//			RStick.y = -Real::One;
-//				
-//		if ( Gel::KeyFakeRStick & Gel::KEY_LEFT )
-//			RStick.x = -Real::One;
-//		else if ( Gel::KeyFakeRStick & Gel::KEY_RIGHT )
-//			RStick.x = Real::One;
-//
-//		sq_pushstring(v,"RStick",-1);
-//		sq_newtable(v);
-//		sqslot_float(v,"x", RStick.x.ToFloat());
-//		sqslot_float(v,"y", RStick.y.ToFloat());
-//		sq_newslot(v,-3,SQFalse);
-	}
+	if ( qkInputPadSDLGetSimple(v) != SQ_ERROR ) { /* Success */ }
+	else if ( qkInputPadSDLProxyGetSimple(v) != SQ_ERROR ) { /* Success (Never Fails) - Proxy Gamepad (Keyboard) */ }
 	else
 #endif // USES_SDL2 //
 	{
-		return qkInputPadStubGetSimple(v);
-//		// Stub //
-//		sqslot_int(v,"Index", Index);
-//		sqslot_bool(v,"Connected", false);
-//		
-//		// Buttons //
-//		sqslot_int(v,"Button", 0);
-//
-//		// LStick //			
-//		sq_pushstring(v,"LStick",-1);
-//		sq_newtable(v);
-//		sqslot_float(v,"x", 0.0f);
-//		sqslot_float(v,"y", 0.0f);		
-//		sq_newslot(v,-3,SQFalse);
-//
-//		// RStick //			
-//		sq_pushstring(v,"RStick",-1);
-//		sq_newtable(v);
-//		sqslot_float(v,"x", 0.0f);
-//		sqslot_float(v,"y", 0.0f);		
-//		sq_newslot(v,-3,SQFalse);
+		// Return a Stub Gamepad if none of the above succeeded //
+		qkInputPadStubGetSimple(v);
 	}
 
 	return SQ_RETURN;
@@ -247,10 +43,13 @@ SQRegFunction qkInput_funcs[] = {
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	_DECL_FUNC(qkInputPadXInputGet,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadXInputGetSimple,2,_SC(".i")),
-//	_DECL_FUNC(qkInputPadSDLGet,2,_SC(".i")),
-//	_DECL_FUNC(qkInputPadSDLGetSimple,2,_SC(".i")),
+
+	_DECL_FUNC(qkInputPadSDLGet,2,_SC(".i")),
+	_DECL_FUNC(qkInputPadSDLGetSimple,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadSDLProxyGetSimple,2,_SC(".i")),
+
 	_DECL_FUNC(qkInputPadStubGetSimple,2,_SC(".i")),
+
 	_DECL_FUNC(qkInputPadGet,2,_SC(".i")),
 	{0,0,0,0}
 };
