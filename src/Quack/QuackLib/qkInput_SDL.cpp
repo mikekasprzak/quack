@@ -72,6 +72,8 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 
 	// Create a new table to store the data we want to return (will be an empty table on error) //
 	sq_newtable(v);
+	
+	// TODO: Add "Raw" member here, containing the return of qkInputPadSDLGet //
 
 	sqslot_int(v,"Index", Index);
 	sqslot_bool(v,"Connected", true); // Not Optional //
@@ -96,10 +98,10 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 		
 		// PS4 Driver has L2+R2 as buttons, in addition to as Analogs //
 		if ( Gel::Input::SDLInput::GamePad[Index].Button & (PS4_L1 | PS4_L2) ) {
-			ButtonMask |= 0x10;	// L //
+			ButtonMask |= 0x10;	// L1 //
 		}
 		if ( Gel::Input::SDLInput::GamePad[Index].Button & (PS4_R1 | PS4_R2) ) {
-			ButtonMask |= 0x20;	// R //
+			ButtonMask |= 0x20;	// R1 //
 		}
 
 		if ( Gel::Input::SDLInput::GamePad[Index].Button & (PS4_OPTION | PS4_PS) ) {
@@ -110,6 +112,7 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 		}
 	}
 //	else if ( Gel::Input::SDLInput::Is360(Index) ) {
+//		// TODO: Look at the SDL Axis 2 and 5, and convert to L2/R2 buttons
 //	}
 	else {
 		ButtonMask = Gel::Input::SDLInput::GamePad[Index].Button;
@@ -117,7 +120,7 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 		
 	sqslot_int(v,"Button", ButtonMask);
 
-	// LStick //
+	// Sticks //
 	Vector2D LStick;
 	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 0 )
 		LStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[0];
@@ -135,6 +138,7 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 3 )
 		RStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[3];
 
+	// LStick //
 	sq_pushstring(v,"LStick",-1);
 	sq_newtable(v);
 	sqslot_float(v,"x", LStick.x.ToFloat());
@@ -148,81 +152,6 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 	sqslot_float(v,"y", RStick.y.ToFloat());		
 	sq_newslot(v,-3,SQFalse);
 
-//	// LStick //			
-//	sq_pushstring(v,"LStick",-1);
-//	sq_newtable(v);
-//
-//	Vector2D LStick( Gel::Input::SDLInput::GamePad[Index].Axis[0], -Gel::Input::SDLInput::GamePad[Index].Axis[1] );
-//	// TODO: Convert to MagnitudeSquared() //
-//	if ( LStick.Magnitude() < Real(0.1f) ) {
-//		LStick = Gel::Input::SDLInput::GamePad[Index].DPad;
-//	}
-//	// TODO: Fit 0.95<->0.1 range to 1.0<->0.0 //
-//	// TODO: Convert to MagnitudeSquared() //
-//	// Clip Ranges above 1.0. I.e. DPad diagonals //
-////	if ( LStick.Magnitude() > Real(1.0f) ) {
-////		LStick.Normalize();
-////	}
-//	
-//	sqslot_float(v,"x", LStick.x.ToFloat());
-//	sqslot_float(v,"y", LStick.y.ToFloat());	
-//	sq_newslot(v,-3,SQFalse);
-//
-//	// RStick //			
-//	sq_pushstring(v,"RStick",-1);
-//	sq_newtable(v);
-//
-//	Vector2D RStick( Gel::Input::SDLInput::GamePad[Index].Axis[2], -Gel::Input::SDLInput::GamePad[Index].Axis[3] );
-//	// TODO: Fit 0.95<->0.1 range to 1.0<->0.0 //
-//	// TODO: Convert to MagnitudeSquared() //
-//	// Clip Ranges above 1.0 //
-//	if ( RStick.Magnitude() > Real(1.0f) ) {
-//		RStick.Normalize();
-//	}
-//
-//	sqslot_float(v,"x", RStick.x.ToFloat());
-//	sqslot_float(v,"y", RStick.y.ToFloat());		
-//	sq_newslot(v,-3,SQFalse);			
-
-//	}
-//	else {
-//		// Create a new table to store the data we want to return (will be an empty table on error) //
-//		sq_newtable(v);
-//
-//		// a Normal controller //
-//		sqslot_int(v,"Index", Index);
-//		sqslot_bool(v,"Connected", true); // Not Optional //
-//		
-//		// Buttons //
-//		sqslot_int(v,"Button", Gel::Input::SDLInput::GamePad[Index].Button);
-//
-//		// LStick //			
-//		Vector2D LStick;
-//		if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 0 )
-//			LStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[0];
-//		if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 1 )
-//			LStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[1];
-//
-//		Vector2D RStick;
-//		if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 2 )
-//			RStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[2];
-//		if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 3 )
-//			RStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[3];
-//
-//		sq_pushstring(v,"LStick",-1);
-//		sq_newtable(v);
-//		sqslot_float(v,"x", LStick.x.ToFloat());
-//		sqslot_float(v,"y", LStick.y.ToFloat());		
-//		sq_newslot(v,-3,SQFalse);
-//
-//		// RStick //			
-//		sq_pushstring(v,"RStick",-1);
-//		sq_newtable(v);
-//		sqslot_float(v,"x", RStick.x.ToFloat());
-//		sqslot_float(v,"y", RStick.y.ToFloat());		
-//		sq_newslot(v,-3,SQFalse);
-//	}
-	
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //

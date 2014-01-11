@@ -8,7 +8,7 @@
 /Close Fold Strings = "}" 
 /C1"Keywords" 
 break 
-case catch class clone continue 
+case catch class clone const continue 
 default delegate delete 
 else extends 
 false for function 

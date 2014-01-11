@@ -105,6 +105,7 @@ void QuackVMInit() {
 		Log("* qkFont"); register_qkFont( vm );
 		Log("* qkModel"); register_qkModel( vm );
 		Log("* qkInput"); register_qkInput( vm );
+		Log("* qkInput (nut)"); sqext_load_nut( vm, "qkInput.nut" );
 		Log("* qkColor"); register_qkColor( vm );
 		Log("* qkVector"); register_qkVector( vm );
 		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
