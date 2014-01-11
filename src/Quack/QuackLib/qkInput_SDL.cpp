@@ -139,11 +139,29 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 		RStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[3];
 
 	// LStick //
-	sq_pushstring(v,"LStick",-1);
-	sq_newtable(v);
-	sqslot_float(v,"x", LStick.x.ToFloat());
-	sqslot_float(v,"y", LStick.y.ToFloat());		
-	sq_newslot(v,-3,SQFalse);
+	{
+//		int Table = sq_gettop(v);
+//		sq_pushstring(v,"LStick",-1);	// +1 //
+//		sq_newtable(v); 				// +1 //
+//		sqslot_float(v,"x", LStick.x.ToFloat());
+//		sqslot_float(v,"y", LStick.y.ToFloat());
+//		sq_newslot(v,Table,SQFalse);		// -2 //
+
+		int TableIndex = sq_gettop(v);
+
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"vec2",4);			// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_pushstring(v,"LStick",-1);		// +1 //
+		sq_createinstance(v,-2);			// +1 //
+
+		Vector2D* Vec;
+		sq_getinstanceup(v,-1,(void**)&Vec,0);
+		*Vec = LStick;
+
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+		sq_pop(v,2);						// -2 //	
+	}
 
 	// RStick //			
 	sq_pushstring(v,"RStick",-1);

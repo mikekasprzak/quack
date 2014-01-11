@@ -97,6 +97,13 @@ void QuackVMInit() {
 	sq_pushroottable( vm );	// +1 //
 		Log("* qkSystem"); register_qkSystem( vm );
 		Log("* qkLib (nut)"); sqext_load_nut( vm, "qkLib.nut" );
+
+		Log("* qkVector"); register_qkVector( vm );
+		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
+		Log("* qkMatrix"); register_qkMatrix( vm );
+		Log("* qkFloat"); register_qkFloat( vm );
+		Log("* qkGrid"); register_qkGrid( vm );
+
 		Log("* qkScreen"); register_qkScreen( vm );
 		Log("* qkBlending"); register_qkBlending( vm );
 		Log("* qkDepth"); register_qkDepth( vm );
@@ -107,11 +114,6 @@ void QuackVMInit() {
 		Log("* qkInput"); register_qkInput( vm );
 		Log("* qkInput (nut)"); sqext_load_nut( vm, "qkInput.nut" );
 		Log("* qkColor"); register_qkColor( vm );
-		Log("* qkVector"); register_qkVector( vm );
-		Log("* qkVector (nut)"); sqext_load_nut( vm, "qkVector.nut" );
-		Log("* qkMatrix"); register_qkMatrix( vm );
-		Log("* qkFloat"); register_qkFloat( vm );
-		Log("* qkGrid"); register_qkGrid( vm );
 	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	
