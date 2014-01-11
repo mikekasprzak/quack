@@ -15,10 +15,16 @@ class qkPad {
 	LStick8Way = null;
 	RStick8Way = null;
 	
+	ButtonAge = null;
+	
 	constructor( _Index, _InputFunc ) {
 		Index = _Index;
 		InputFunc = _InputFunc;
 		Current = InputFunc( Index );
+		ButtonAge = array(12);
+		for ( local idx = 0; idx < 12; idx++ ) {
+			ButtonAge[idx] = 0;
+		}
 		
 		Update();
 	}
@@ -32,6 +38,9 @@ class qkPad {
 		}
 		else if ( _Index == "Released" ) {
 			return (Current.Button ^ Old.Button) & Old.Button;
+		}
+		else if ( _Index == "Changed" ) {
+			return (Current.Button ^ Old.Button);
 		}
 		throw null;
 	}
@@ -129,6 +138,18 @@ class qkPad {
 				RStick = Current.RStick / RStickMag;
 			}
 		}
+		
+		// We want to increment here, because it makes the math later easier //
+		local ButtonState = Changed;
+		for ( local idx = 0; idx < 12; idx++ ) {
+			if ( ButtonState & (1<<idx) )
+				ButtonAge[idx] = 0;
+			else
+				ButtonAge[idx]++;
+		}
+		
+		// idx to bit = (1<<idx)
+		// bit to idx = ??
 	}
 };
 // - -------------------------------------------------------------------------------------------------------------- - //
