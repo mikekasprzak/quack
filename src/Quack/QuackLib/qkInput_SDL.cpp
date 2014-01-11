@@ -140,13 +140,6 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 
 	// LStick //
 	{
-//		int Table = sq_gettop(v);
-//		sq_pushstring(v,"LStick",-1);	// +1 //
-//		sq_newtable(v); 				// +1 //
-//		sqslot_float(v,"x", LStick.x.ToFloat());
-//		sqslot_float(v,"y", LStick.y.ToFloat());
-//		sq_newslot(v,Table,SQFalse);		// -2 //
-
 		int TableIndex = sq_gettop(v);
 
 		sq_pushroottable(v);				// +1 //
@@ -164,11 +157,22 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 	}
 
 	// RStick //			
-	sq_pushstring(v,"RStick",-1);
-	sq_newtable(v);
-	sqslot_float(v,"x", RStick.x.ToFloat());
-	sqslot_float(v,"y", RStick.y.ToFloat());		
-	sq_newslot(v,-3,SQFalse);
+	{
+		int TableIndex = sq_gettop(v);
+
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"vec2",4);			// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_pushstring(v,"RStick",-1);		// +1 //
+		sq_createinstance(v,-2);			// +1 //
+
+		Vector2D* Vec;
+		sq_getinstanceup(v,-1,(void**)&Vec,0);
+		*Vec = RStick;
+
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+		sq_pop(v,2);						// -2 //	
+	}
 
 	return SQ_RETURN;
 }
@@ -203,12 +207,6 @@ SQInteger qkInputPadSDLProxyGetSimple( HSQUIRRELVM v ) {
 	else if ( Gel::KeyFakeLStick & Gel::KEY_RIGHT )
 		LStick.x = Real::One;
 	
-	sq_pushstring(v,"LStick",-1);
-	sq_newtable(v);
-	sqslot_float(v,"x", LStick.x.ToFloat());
-	sqslot_float(v,"y", LStick.y.ToFloat());
-	sq_newslot(v,-3,SQFalse);
-
 	// RStick //			
 	Vector2D RStick;
 	if ( Gel::KeyFakeRStick & Gel::KEY_UP )
@@ -221,11 +219,41 @@ SQInteger qkInputPadSDLProxyGetSimple( HSQUIRRELVM v ) {
 	else if ( Gel::KeyFakeRStick & Gel::KEY_RIGHT )
 		RStick.x = Real::One;
 
-	sq_pushstring(v,"RStick",-1);
-	sq_newtable(v);
-	sqslot_float(v,"x", RStick.x.ToFloat());
-	sqslot_float(v,"y", RStick.y.ToFloat());
-	sq_newslot(v,-3,SQFalse);
+	// LStick //
+	{
+		int TableIndex = sq_gettop(v);
+
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"vec2",4);			// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_pushstring(v,"LStick",-1);		// +1 //
+		sq_createinstance(v,-2);			// +1 //
+
+		Vector2D* Vec;
+		sq_getinstanceup(v,-1,(void**)&Vec,0);
+		*Vec = LStick;
+
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+		sq_pop(v,2);						// -2 //	
+	}
+
+	// RStick //			
+	{
+		int TableIndex = sq_gettop(v);
+
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"vec2",4);			// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_pushstring(v,"RStick",-1);		// +1 //
+		sq_createinstance(v,-2);			// +1 //
+
+		Vector2D* Vec;
+		sq_getinstanceup(v,-1,(void**)&Vec,0);
+		*Vec = RStick;
+
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+		sq_pop(v,2);						// -2 //	
+	}
 
 	return SQ_RETURN;
 }
