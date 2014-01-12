@@ -252,124 +252,88 @@ extern "C" int main( int argc, char* argv[] ) {
 	// Otherwise, we're a Game Loop //
 	Log( "-=- Game Loop Begins -=-" );
 	App::FrameTime = 0;
+	App::WorkTime = get_us_GelTime();
+	int FramesOfWorkComplete = 1; 		// We're beginning with 1 frame of work (Steps) complete //
+	GelTime FrameOfWork = 1000000 / 60;	// A single unit of work, as a GelTime //
+
+	Log("Start Time: %llu -- Work %i", App::WorkTime, FramesOfWorkComplete);
+
+	// First Step //
 	MainInput();	// Poll Input Devices //
 	AppStep();		// Do an initial Step, beacuse we're going to do a Draw,Step,Flip loop //
+	App::FrameTime++;
+	App::WorkTime += FrameOfWork;
+		
+	int FPS_Step = 0;
+	int FPS_Draw = 0;
 	
 	// A Draw, Step, Flip loop. Optimal for GPUs because good GPU code executes in parallel to the CPU. //
 	while ( !App::Exit ) {
-		AppDraw();				// *** DRAW *** //
-		if ( !App::Exit ) {
-			App::FrameTime++;
-			MainInput();		// Poll Input Devices //
-			AppStep();			// *** STEP *** //
+		bool DrawCalled = false;
+		if ( FramesOfWorkComplete > 0 ) {
+			AppDraw();				// *** DRAW *** //
+			DrawCalled = true;
+			FPS_Draw++;
 		}
-		gelSwapScreens();		// *** FLIP *** //
-		//gelSysYield();
-		gelSysMSleep(5);
-		// TODO: Move this in to an overlay //
-//		if ( (App::FrameTime & 63) == 0 ) {
-//			Log( "%05i - Step: %i us (%i us, %i us)\tDraw: %i us (%i us, %i us)", 
-//				App::FrameTime,
-//				App::StepProfiler.GetAverage(),
-//				App::StepProfiler.GetMin(),
-//				App::StepProfiler.GetMax(),
-//				App::DrawProfiler.GetAverage(),
-//				App::DrawProfiler.GetMin(),
-//				App::DrawProfiler.GetMax()
-//			);
-//		}
+
+		GelTime TimeDiff = 0;
+		GelTime TimeStamp = get_us_GelTime();
+		if ( TimeStamp > App::WorkTime ) {
+			TimeDiff = TimeStamp - App::WorkTime;
+			FramesOfWorkComplete = TimeDiff / FrameOfWork;
+		}
+		else {
+			FramesOfWorkComplete = 0;
+		}
+		
+		//Log("%i Time: %llu (%llu - %llu) -- Work %i", App::FrameTime, TimeDiff, App::WorkTime, get_us_GelTime(), FramesOfWorkComplete);
+		
+		for ( int Frame = 0; Frame < FramesOfWorkComplete; Frame++ ) {
+			if ( !App::Exit ) {
+				MainInput();		// Poll Input Devices //
+				AppStep();			// *** STEP *** //
+				App::FrameTime++;
+				App::WorkTime += FrameOfWork;
+			}
+			else {
+				break;
+			}
+		}
+		FPS_Step += FramesOfWorkComplete;
+
+		bool Slept = false;
+		
+		if ( DrawCalled ) {
+//			GelTime YeildTime = get_us_GelTime();
+//			TimeDiff = FrameOfWork - (YeildTime - App::WorkTime);
+//			TimeDiff -= 1000;
+//			if ( TimeDiff < FrameOfWork ) {
+//				gelSysUSleep(TimeDiff);
+//				Slept = true;
+//			}
+//			Log("%i Time: %llu (%llu - %llu) -- Work %i", App::FrameTime, TimeDiff, App::WorkTime, get_us_GelTime(), FramesOfWorkComplete);
+
+			gelSwapScreens();		// *** FLIP *** //
+		}
+
+		if ( FPS_Step > 60 ) {
+			FPS_Step -= 60;
+			App::FPS = FPS_Draw;
+			FPS_Draw = 0;
+		}
+
+		if ( !Slept ) {
+//			gelSysYield();
+			gelSysMSleep(3);
+		}
 	}
+
+	// *** //
 	
 	AppExit();		// Do Shutdown //
 	
+	// *** //
 
-//	
-//	// **** //
-//	
-//	Log( "+ Creating Primary Window..." );
-//	Screen::InitNative();
-//	Log( "- Primary Window Created.\n" );
-//
-//	// **** //
-//
-//	System::Init();
-//	Search::Init();
-//	Input::Init();
-//	Render::Init();
-//	
-//	// **** //
-//
-//	LogMemoryUsage();
-//
-//	{
-//		cApp* App = new cApp();
-//		SDL_SetEventFilter( EventHandler, 0 );
-//		
-//		LogMemoryUsage();
-//
-//		int FPS_Step = 0;
-//		int FPS_Draw = 0;
-//
-//		SetFramesPerSecond( 60 );
-//		WorkTime = GetTimeNow();
-//		
-//		extern bool KillSignal;
-//		while ( !KillSignal ) {
-//			TIMEVALUE TimeDiff = SubtractTime( GetTimeNow(), WorkTime );
-//			int FramesOfWork = GetFrames( &TimeDiff );
-//
-//			if ( FramesOfWork >= 30 ) {
-//				Log("! WARNING: FramesOfWork is high (%i)! Skipping Work...", FramesOfWork );
-//				AddFrames( &WorkTime, FramesOfWork-1 );
-//				FramesOfWork = 1;
-//			}
-//			
-//			if ( Gel::KeyESC ) {
-//				delete App;
-//				App = new cApp();
-//			}
-//
-//			for ( int Frame = 0; Frame < (FramesOfWork); Frame++ ) {
-//				Input::Poll();
-//				SDL_PumpEvents();
-//				App->Step();
-//
-//				AddFrame( &WorkTime );
-//			}
-//			FPS_Step += FramesOfWork;
-//
-//			if ( (FramesOfWork > 0) ) {
-//				// For All Screens //
-//				for ( size_t idx = 0; idx < Screen::Native.Size(); idx++ ) {
-//					if ( Screen::Native[idx].pWindow ) {
-//						Screen::Native[idx].MakeCurrent(); // Memory Leak //
-//						
-//						App->Draw( Screen::Native[idx] );
-//						
-//						Screen::Native[idx].Swap(); // Memory Leak //
-//					}
-//				}
-//				FPS_Draw++;
-//
-//				{
-//					static int MemDrop = 0;
-//					MemDrop++;
-//					if ( (MemDrop & 255) == 255 ) {
-//						LogMemoryUsage();
-//					}
-//				}
-//			}
-//
-//			if ( FPS_Step > 60 ) {
-//				FPS_Step -= 60;
-//				FramesPerSecond = FPS_Draw;
-//				FPS_Draw = 0;
-//			}
-//			
-//			Wait(5);
-//		}
-//	}
-//
 //	// **** //
 //	
 //	Log( "+ Shutdown Started..." );

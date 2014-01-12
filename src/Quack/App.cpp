@@ -47,7 +47,9 @@ const char* GetModeName() {
 
 // - ------------------------------------------------------------------------------------------ - //
 bool Exit = false;
-GelTime FrameTime = 0;
+GelTime FrameTime = 0;	// Time in Frames //
+GelTime WorkTime = 0;	// Time is usec //
+int FPS = 0;			// How many actual frames were rendered in a second //
 // - ------------------------------------------------------------------------------------------ - //
 GelProfiler StepProfiler;
 GelProfiler DrawProfiler;
@@ -106,6 +108,7 @@ void AppInit() {
 	App::Mode = App::AM_NULL;
 	App::Exit = false;
 	App::FrameTime = 0;
+	App::WorkTime = 0;
 
 	// **** //
 
@@ -295,6 +298,25 @@ void AppDraw() {
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,128,128), GEL_ALIGN_TOP_LEFT,
 			"*");			
+	}
+
+	// Draw FPS Counter //
+	{
+		Vector3D MessagePos = Vector3D(+254,+254,0);
+		MessagePos.y /= App::AspectRatio;
+			
+		Gel::FontPool[App::RuntimeErrorFont].printf( 
+			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
+			"FPS: %i (%llu)", App::FPS, App::FrameTime);
+				
+		MessagePos.y -= Real(12);
+		Gel::FontPool[App::RuntimeErrorFont].printf( 
+			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
+			"Step: %ius [%ius,%ius]", App::StepProfiler.GetAverage(),App::StepProfiler.GetMin(),App::StepProfiler.GetMax());
+		MessagePos.y -= Real(12);		
+		Gel::FontPool[App::RuntimeErrorFont].printf( 
+			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
+			"Draw: %ius [%ius,%ius]", App::DrawProfiler.GetAverage(),App::DrawProfiler.GetMin(),App::DrawProfiler.GetMax());
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //

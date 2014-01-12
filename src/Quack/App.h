@@ -22,6 +22,8 @@ const char* GetModeName( const int _Mode );
 // - ------------------------------------------------------------------------------------------ - //
 extern bool Exit;				// Do we Exit? //
 extern GelTime FrameTime;		// Current Frame Executed (according to GameLoop Step) //
+extern GelTime WorkTime;		// Time (work) completed, in usec //
+extern int FPS;					// How many actual frames were rendered in a second //
 // - ------------------------------------------------------------------------------------------ - //
 // For recording profiling information about the two functions //
 extern GelProfiler StepProfiler;
