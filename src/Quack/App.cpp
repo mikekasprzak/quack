@@ -284,19 +284,19 @@ void AppDraw() {
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
 		App::HadVMError = true;
-		Vector3D MessagePos = Vector3D(-256,+256,0);
+		Vector3D MessagePos = Vector3D(-254,+254,0);
 		MessagePos.y /= App::AspectRatio;
 			
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
-			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,128,128), GEL_ALIGN_TOP_LEFT,
+			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,64,64), GEL_ALIGN_TOP_LEFT,
 			"Runtime Error Detected (see log). Execution Stopped.");
 	}
 	else if ( App::HadVMError ) {
-		Vector3D MessagePos = Vector3D(-256,+256,0);
+		Vector3D MessagePos = Vector3D(-254,+254,0);
 		MessagePos.y /= App::AspectRatio;
 			
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
-			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,128,128), GEL_ALIGN_TOP_LEFT,
+			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,64,64), GEL_ALIGN_TOP_LEFT,
 			"*");			
 	}
 
@@ -312,11 +312,11 @@ void AppDraw() {
 		MessagePos.y -= Real(12);
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
-			"Step: %ius [%ius,%ius]", App::StepProfiler.GetAverage(),App::StepProfiler.GetMin(),App::StepProfiler.GetMax());
+			"Step: %.2f%% - %ius [%ius,%ius]", App::StepProfiler.GetAverage() / (float)(1000000/60) * 100.0f, App::StepProfiler.GetAverage(),App::StepProfiler.GetMin(),App::StepProfiler.GetMax());
 		MessagePos.y -= Real(12);		
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
-			"Draw: %ius [%ius,%ius]", App::DrawProfiler.GetAverage(),App::DrawProfiler.GetMin(),App::DrawProfiler.GetMax());
+			"Draw: %.2f%% - %ius [%ius,%ius]", App::DrawProfiler.GetAverage() / (float)(1000000/60) * 100.0f, App::DrawProfiler.GetAverage(),App::DrawProfiler.GetMin(),App::DrawProfiler.GetMax());
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
