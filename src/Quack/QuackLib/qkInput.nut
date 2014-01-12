@@ -149,7 +149,13 @@ class qkPad {
 		}
 		
 		// idx to bit = (1<<idx)
-		// bit to idx = ??
+		// bit to idx = log2(bit) or log(bit)/log(2)
+		//   or the "bsr" instruction (x86), 
+		
+		// http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog
+		
+		// Or the "bsr" instruction (x86), other wise some sort of ffs intrinsic
+		// http://en.wikipedia.org/wiki/Find_first_set
 	}
 };
 // - -------------------------------------------------------------------------------------------------------------- - //
