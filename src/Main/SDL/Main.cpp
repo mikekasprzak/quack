@@ -1,4 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
+// TODO: Timer Code
+// - ------------------------------------------------------------------------------------------ - //
 #ifdef USES_SDL2
 // - ------------------------------------------------------------------------------------------ - //
 #include <API/API_SDL2.h>
@@ -264,6 +266,7 @@ extern "C" int main( int argc, char* argv[] ) {
 		gelSwapScreens();		// *** FLIP *** //
 		//gelSysYield();
 		gelSysMSleep(5);
+		// TODO: Move this in to an overlay //
 //		if ( (App::FrameTime & 63) == 0 ) {
 //			Log( "%05i - Step: %i us (%i us, %i us)\tDraw: %i us (%i us, %i us)", 
 //				App::FrameTime,
