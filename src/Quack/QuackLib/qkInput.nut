@@ -1,4 +1,14 @@
 // - -------------------------------------------------------------------------------------------------------------- - //
+const COS0125 = 0.92387953251128675613; // cos(0.125*PI), i.e. 22.5 degrees //
+const COS025 = 0.7071067811865475244;   // cos(0.25*PI), i.e. 45 degrees //
+// - -------------------------------------------------------------------------------------------------------------- - //
+const QK_PAD_STICK_FAST = 1.0;			// What Fast Speed is (for reference, not actually used) //
+const QK_PAD_STICK_SLOW = 0.25;			// What Slow Speed is //
+// - -------------------------------------------------------------------------------------------------------------- - //
+const QK_PAD_STICK_DEADZONE = 0.1;		// Analog Stick threshold before any inputs are recieved //
+const QK_PAD_STICK_FASTZONE = 0.7;		// Analog Stick threshold before we cross in to the Fast Speed Zone. //
+										// Everything Else is the Slow Zone //
+// - -------------------------------------------------------------------------------------------------------------- - //
 class qkPad {
 	Index = 0;
 	InputFunc = null;
@@ -56,8 +66,10 @@ class qkPad {
 		Old = Current;
 		Current = InputFunc(Index);
 		
+		// Aww. Can't switch this to a foreach, because it's not only reading but writing //
+				
 		local LStickMag = Current.LStick.magnitude();
-		if ( LStickMag < 0.1 ) { // Handles division by zero case //
+		if ( LStickMag < QK_PAD_STICK_DEADZONE ) { // Handles division by zero case //
 			LStick = vec2(0,0);
 			LStick4Way = vec2(0,0);
 			LStick8Way = vec2(0,0);
@@ -75,10 +87,10 @@ class qkPad {
 			}
 			
 			// Calculate 8 Way //
-			if ( LStickAbs < 0.92387953251128675613 ) { // cos(0.125*pi) -- i.e. 22.5 degrees //
+			if ( LStickAbs < COS0125 ) { // cos(0.125*pi) -- i.e. 22.5 degrees //
 				// Diagonal //
 				LStick8Way = vec2(Current.LStick.x/Current.LStick.x.abs(),Current.LStick.y/Current.LStick.y.abs());
-				LStick8Way *= 0.7071067811865475244; // cos(0.25*pi) -- i.e. 45 degrees //
+				LStick8Way *= COS025; // cos(0.25*pi) -- i.e. 45 degrees //
 			}
 			else {
 				// Axis //
@@ -86,11 +98,11 @@ class qkPad {
 			}
 			
 			// Fast and Slow speed //
-			if ( LStickMag < 0.7 ) {
+			if ( LStickMag < QK_PAD_STICK_FASTZONE ) {
 				LStick = Current.LStick / LStickMag;
-				LStick *= 0.25;
-				LStick4Way *= 0.25;
-				LStick8Way *= 0.25;
+				LStick *= QK_PAD_STICK_SLOW;
+				LStick4Way *= QK_PAD_STICK_SLOW;
+				LStick8Way *= QK_PAD_STICK_SLOW;
 			}
 			else {
 				LStick = Current.LStick / LStickMag;
@@ -99,7 +111,7 @@ class qkPad {
 		
 
 		local RStickMag = Current.RStick.magnitude();
-		if ( RStickMag < 0.1 ) { // Handles division by zero case //
+		if ( RStickMag < QK_PAD_STICK_DEADZONE ) { // Handles division by zero case //
 			RStick = vec2(0,0);
 			RStick4Way = vec2(0,0);
 			RStick8Way = vec2(0,0);
@@ -117,10 +129,10 @@ class qkPad {
 			}
 
 			// Calculate 8 Way //
-			if ( RStickAbs < 0.92387953251128675613 ) { // cos(0.125*pi) -- i.e. 22.5 degrees //
+			if ( RStickAbs < COS0125 ) { // cos(0.125*pi) -- i.e. 22.5 degrees //
 				// Diagonal //
 				RStick8Way = vec2(Current.RStick.x/Current.RStick.x.abs(),Current.RStick.y/Current.RStick.y.abs());
-				RStick8Way *= 0.7071067811865475244; // cos(0.25*pi) -- i.e. 45 degrees //
+				RStick8Way *= COS025; // cos(0.25*pi) -- i.e. 45 degrees //
 			}
 			else {
 				// Axis //
@@ -128,11 +140,11 @@ class qkPad {
 			}
 
 			// Fast and Slow speed //
-			if ( RStickMag < 0.7 ) {
+			if ( RStickMag < QK_PAD_STICK_FASTZONE ) {
 				RStick = Current.RStick / RStickMag;
-				RStick *= 0.25;
-				RStick4Way *= 0.25;
-				RStick8Way *= 0.25;
+				RStick *= QK_PAD_STICK_SLOW;
+				RStick4Way *= QK_PAD_STICK_SLOW;
+				RStick8Way *= QK_PAD_STICK_SLOW;
 			}
 			else {
 				RStick = Current.RStick / RStickMag;
@@ -177,7 +189,7 @@ function qkInputMasterPadGet( Index /* Ignored */ ) {
 	
 	Ret.LStick <- clone Pads[0].LStick;
 	for ( local idx = 1; idx < Pads.len(); idx++ ) {
-		if ( Ret.LStick.magnitude() < 0.1 )
+		if ( Ret.LStick.magnitude() < QK_PAD_STICK_DEADZONE )
 			Ret.LStick = clone Pads[idx].LStick;
 		else
 			break;
@@ -185,7 +197,7 @@ function qkInputMasterPadGet( Index /* Ignored */ ) {
 
 	Ret.RStick <- clone Pads[0].RStick;
 	for ( local idx = 1; idx < Pads.len(); idx++ ) {
-		if ( Ret.RStick.magnitude() < 0.1 )
+		if ( Ret.RStick.magnitude() < QK_PAD_STICK_DEADZONE )
 			Ret.RStick = clone Pads[idx].RStick;
 		else
 			break;

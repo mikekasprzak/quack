@@ -97,11 +97,11 @@ function ceilbit( n ) {
 // Convert a power of two (bit) back in to a number. i.e. Undo 1<<bit. //
 function bitlog2( n ) {
 	local ret = (n & 0xAAAAAAAA) != 0;
-	ret |= ((n & 0xFFFF0000) != 0) << 4;
-	ret |= ((n & 0xFF00FF00) != 0) << 3;
-	ret |= ((n & 0xF0F0F0F0) != 0) << 2;
-	ret |= ((n & 0xCCCCCCCC) != 0) << 1;
-	ret |= ((n & 0xAAAAAAAA) != 0) << 0;
+	ret = ret | ((n & 0xFFFF0000) != 0) << 4;
+	ret = ret | ((n & 0xFF00FF00) != 0) << 3;
+	ret = ret | ((n & 0xF0F0F0F0) != 0) << 2;
+	ret = ret | ((n & 0xCCCCCCCC) != 0) << 1;
+	ret = ret | ((n & 0xAAAAAAAA) != 0) << 0;
 	return ret;
 }
 // - -------------------------------------------------------------------------------------------------------------- - //
