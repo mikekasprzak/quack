@@ -11,7 +11,7 @@ break
 case catch class clone const continue 
 default delegate delete 
 else extends 
-false for function 
+false for foreach function 
 if in instanceof 
 local 
 null 
