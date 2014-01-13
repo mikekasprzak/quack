@@ -24,6 +24,9 @@ class qkPad {
 	// 8 way aligned Rigid Stick (Diagonals too) //
 	LStick8Way = null;
 	RStick8Way = null;
+	// Heavy Sticks. Diagonals always present. //
+	LStickHeavy = null;
+	RStickHeavy = null;
 	
 	ButtonAge = null;
 	
@@ -73,6 +76,7 @@ class qkPad {
 			LStick = vec2(0,0);
 			LStick4Way = vec2(0,0);
 			LStick8Way = vec2(0,0);
+			LStickHeavy = vec2(0,0);
 		}
 		else {
 			// Calculate 4 Way //
@@ -97,12 +101,19 @@ class qkPad {
 				LStick8Way = clone LStick4Way;
 			}
 			
+			// Calculate Heavy Stick //
+			LStickHeavy = vec2( Current.LStick.x.normal(), Current.LStick.y.normal() );
+//			if ( (LStickHeavy.x != 0) && LStickHeavy.y != 0 ) {
+//				LStickHeavy *= COS025; // cos(0.25*pi) -- i.e. 45 degrees //
+//			}
+			
 			// Fast and Slow speed //
 			if ( LStickMag < QK_PAD_STICK_FASTZONE ) {
 				LStick = Current.LStick / LStickMag;
 				LStick *= QK_PAD_STICK_SLOW;
 				LStick4Way *= QK_PAD_STICK_SLOW;
 				LStick8Way *= QK_PAD_STICK_SLOW;
+				LStickHeavy *= QK_PAD_STICK_SLOW;
 			}
 			else {
 				LStick = Current.LStick / LStickMag;
@@ -115,6 +126,7 @@ class qkPad {
 			RStick = vec2(0,0);
 			RStick4Way = vec2(0,0);
 			RStick8Way = vec2(0,0);
+			RStickHeavy = vec2(0,0);
 		}
 		else {
 			// Calculate 4 Way //
@@ -139,12 +151,19 @@ class qkPad {
 				RStick8Way = clone RStick4Way;
 			}
 
+			// Calculate Heavy Stick //
+			RStickHeavy = vec2( Current.RStick.x.normal(), Current.RStick.y.normal() );
+//			if ( (RStickHeavy.x != 0) && RStickHeavy.y != 0 ) {
+//				RStickHeavy *= COS025; // cos(0.25*pi) -- i.e. 45 degrees //
+//			}
+
 			// Fast and Slow speed //
 			if ( RStickMag < QK_PAD_STICK_FASTZONE ) {
 				RStick = Current.RStick / RStickMag;
 				RStick *= QK_PAD_STICK_SLOW;
 				RStick4Way *= QK_PAD_STICK_SLOW;
 				RStick8Way *= QK_PAD_STICK_SLOW;
+				RStickHeavy *= QK_PAD_STICK_SLOW;
 			}
 			else {
 				RStick = Current.RStick / RStickMag;
@@ -152,7 +171,7 @@ class qkPad {
 		}
 		
 		// We want to increment here, because it makes the math later easier //
-		local ButtonState = Changed;
+		local ButtonState = Pressed;//Changed;
 		for ( local idx = 0; idx < 12; idx++ ) {
 			if ( ButtonState & (1<<idx) )
 				ButtonAge[idx] = 0;
