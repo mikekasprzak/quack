@@ -2,12 +2,84 @@
 const COS0125 = 0.92387953251128675613; // cos(0.125*PI), i.e. 22.5 degrees //
 const COS025 = 0.7071067811865475244;   // cos(0.25*PI), i.e. 45 degrees //
 // - -------------------------------------------------------------------------------------------------------------- - //
-const QK_PAD_STICK_FAST = 1.0;			// What Fast Speed is (for reference, not actually used) //
-const QK_PAD_STICK_SLOW = 0.25;			// What Slow Speed is //
+const QK_STICK_FAST = 1.0;				// What Fast Speed is (for reference, not actually used) //
+const QK_STICK_SLOW = 0.25;				// What Slow Speed is //
 // - -------------------------------------------------------------------------------------------------------------- - //
-const QK_PAD_STICK_DEADZONE = 0.1;		// Analog Stick threshold before any inputs are recieved //
-const QK_PAD_STICK_FASTZONE = 0.7;		// Analog Stick threshold before we cross in to the Fast Speed Zone. //
+const QK_STICK_DEADZONE = 0.1;			// Analog Stick threshold before any inputs are recieved //
+const QK_STICK_FASTZONE = 0.7;			// Analog Stick threshold before we cross in to the Fast Speed Zone. //
 										// Everything Else is the Slow Zone //
+// - -------------------------------------------------------------------------------------------------------------- - //
+const QK_STICK_ZONE = 0.4;				// Constant between both the Fast and Slow zone. //
+										// Works on Magnitude, MagnitudeSquared, and individual axis. //
+// - -------------------------------------------------------------------------------------------------------------- - //
+// Convert a vec2 Stick in to a bit number //
+function StickToBit( Stick ) {
+	local Bit = 0;
+	
+	if ( Stick.y < -QK_STICK_ZONE )
+		Bit = 6;
+	else if ( Stick.y > QK_STICK_ZONE )
+		Bit = 3;
+	else if ( Stick.y < 0 )
+		Bit = 12;
+	else if ( Stick.y > 0 )
+		Bit = 9;
+//	else
+//		Bit += 0;
+
+	if ( Stick.x < -QK_STICK_ZONE )
+		Bit += 1;
+	else if ( Stick.x > QK_STICK_ZONE )
+		Bit += 2;
+	else if ( Bit == 0 ) {
+		if ( Stick.x < 0 )
+			Bit += 0 + 15;
+		else if ( Stick.x > 0 )
+			Bit += 1 + 15;
+	}
+	else if ( Stick.x < 0 )
+		Bit += 1;
+	else if ( Stick.x > 0 )
+		Bit += 2;
+//	else
+//		Bit = 0;
+
+	return Bit;	
+}
+// - -------------------------------------------------------------------------------------------------------------- - //
+local _BitToStickVectors = [
+	// Fast Zone - Middle //
+	vec2(0,0),
+	vec2(-1,0),
+	vec2(1,0),
+	// Fast Zone - Top //
+	vec2(0,1),
+	vec2(-COS025,COS025),
+	vec2(COS025,COS025),
+	// Fast Zone - Bottom //
+	vec2(0,-1),
+	vec2(-COS025,-COS025),
+	vec2(COS025,-COS025),
+
+	// Slow Zone - Top //
+	vec2(0,1)*QK_STICK_SLOW,
+	vec2(-COS025,COS025)*QK_STICK_SLOW,
+	vec2(COS025,COS025)*QK_STICK_SLOW,
+	// Slow Zone - Bottom //
+	vec2(0,-1)*QK_STICK_SLOW,
+	vec2(-COS025,-COS025)*QK_STICK_SLOW,
+	vec2(COS025,-COS025)*QK_STICK_SLOW,
+	// Slow Zone - Middle //
+	vec2(-1,0)*QK_STICK_SLOW,
+	vec2(1,0)*QK_STICK_SLOW,
+];
+// - -------------------------------------------------------------------------------------------------------------- - //
+// Back the other way, convert a Bit in to an equivalent vec2 //
+function BitToStick( Bit ) {
+	return _BitToStickVectors[Bit];
+}
+// - -------------------------------------------------------------------------------------------------------------- - //
+
 // - -------------------------------------------------------------------------------------------------------------- - //
 class qkPad {
 	Index = 0;
@@ -77,7 +149,7 @@ class qkPad {
 		// Aww. Can't switch this to a foreach, because it's not only reading but writing //
 				
 		local LStickMag = Current.LStick.magnitude();
-		if ( LStickMag < QK_PAD_STICK_DEADZONE ) { // Handles division by zero case //
+		if ( LStickMag < QK_STICK_DEADZONE ) { // Handles division by zero case //
 			LStick = vec2(0,0);
 			LStick4Way = vec2(0,0);
 			LStick8Way = vec2(0,0);
@@ -116,12 +188,12 @@ class qkPad {
 //			}
 			
 			// Fast and Slow speed //
-			if ( LStickMag < QK_PAD_STICK_FASTZONE ) {
+			if ( LStickMag < QK_STICK_FASTZONE ) {
 				LStick = Current.LStick / LStickMag;
-				LStick *= QK_PAD_STICK_SLOW;
-				LStick4Way *= QK_PAD_STICK_SLOW;
-				LStick8Way *= QK_PAD_STICK_SLOW;
-				LStickHeavy *= QK_PAD_STICK_SLOW;
+				LStick *= QK_STICK_SLOW;
+				LStick4Way *= QK_STICK_SLOW;
+				LStick8Way *= QK_STICK_SLOW;
+				LStickHeavy *= QK_STICK_SLOW;
 			}
 			else {
 				LStick = Current.LStick / LStickMag;
@@ -138,7 +210,7 @@ class qkPad {
 		
 
 		local RStickMag = Current.RStick.magnitude();
-		if ( RStickMag < QK_PAD_STICK_DEADZONE ) { // Handles division by zero case //
+		if ( RStickMag < QK_STICK_DEADZONE ) { // Handles division by zero case //
 			RStick = vec2(0,0);
 			RStick4Way = vec2(0,0);
 			RStick8Way = vec2(0,0);
@@ -177,12 +249,12 @@ class qkPad {
 //			}
 
 			// Fast and Slow speed //
-			if ( RStickMag < QK_PAD_STICK_FASTZONE ) {
+			if ( RStickMag < QK_STICK_FASTZONE ) {
 				RStick = Current.RStick / RStickMag;
-				RStick *= QK_PAD_STICK_SLOW;
-				RStick4Way *= QK_PAD_STICK_SLOW;
-				RStick8Way *= QK_PAD_STICK_SLOW;
-				RStickHeavy *= QK_PAD_STICK_SLOW;
+				RStick *= QK_STICK_SLOW;
+				RStick4Way *= QK_STICK_SLOW;
+				RStick8Way *= QK_STICK_SLOW;
+				RStickHeavy *= QK_STICK_SLOW;
 			}
 			else {
 				RStick = Current.RStick / RStickMag;
@@ -235,7 +307,7 @@ function qkInputMasterPadGet( Index /* Ignored */ ) {
 	
 	Ret.LStick <- clone Pads[0].LStick;
 	for ( local idx = 1; idx < Pads.len(); idx++ ) {
-		if ( Ret.LStick.magnitude() < QK_PAD_STICK_DEADZONE )
+		if ( Ret.LStick.magnitude() < QK_STICK_DEADZONE )
 			Ret.LStick = clone Pads[idx].LStick;
 		else
 			break;
@@ -243,7 +315,7 @@ function qkInputMasterPadGet( Index /* Ignored */ ) {
 
 	Ret.RStick <- clone Pads[0].RStick;
 	for ( local idx = 1; idx < Pads.len(); idx++ ) {
-		if ( Ret.RStick.magnitude() < QK_PAD_STICK_DEADZONE )
+		if ( Ret.RStick.magnitude() < QK_STICK_DEADZONE )
 			Ret.RStick = clone Pads[idx].RStick;
 		else
 			break;
