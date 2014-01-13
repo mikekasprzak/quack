@@ -53,6 +53,8 @@ int FPS = 0;			// How many actual frames were rendered in a second //
 // - ------------------------------------------------------------------------------------------ - //
 GelProfiler StepProfiler;
 GelProfiler DrawProfiler;
+GelProfiler SqStepProfiler;
+GelProfiler SqDrawProfiler;
 // - ------------------------------------------------------------------------------------------ - //
 bool AppStarted = false;	// Flag that is set only after Init is called (for the these Focus functions).
 GelSignal GainFocus;
@@ -259,7 +261,9 @@ void AppStep() {
 	
 	GelAsset::SetTimeStamp( App::FrameTime );
 
+	App::SqStepProfiler.Start();
 	QuackVMCallStep();
+	App::SqStepProfiler.Stop();
 	
 	// *** //
 	App::StepProfiler.Stop();
@@ -268,11 +272,12 @@ void AppStep() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppDraw() {
-	App::DrawProfiler.Start();	
+	App::DrawProfiler.Start();
+	App::SqDrawProfiler.Start();	
 	// *** //
 	QuackVMCallDraw();
 	// *** //
-	App::DrawProfiler.Stop();
+	App::SqDrawProfiler.Stop();
 	
 	Matrix4x4 Doof = App::InfoMatrix;
 	Doof[0] *= Real(0.5f);
@@ -305,19 +310,42 @@ void AppDraw() {
 		Vector3D MessagePos = Vector3D(+254,+254,0);
 		MessagePos.y /= App::AspectRatio;
 			
+		GelColor Color = GEL_RGB(255,255,255);
+		GelAlign Align = GEL_ALIGN_TOP_RIGHT;
+		Real YStep(12);
+		Real FontSize(1);
+		float PercentConstant = (float)(1000000/60) / 100.0f;
+			
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
-			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
-			"FPS: %i (%llu)", App::FPS, App::FrameTime);
+			App::InfoMatrix, MessagePos, FontSize, Color, Align,
+			"FPS: %i (%02i:%02i:%02i [%02i] - %llu)", App::FPS, App::FrameTime/60/60/60, App::FrameTime/60/60%60, App::FrameTime/60%60, App::FrameTime%60, App::FrameTime);
 				
-		MessagePos.y -= Real(12);
+		MessagePos.y -= YStep;
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
-			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
-			"Step: %.2f%% - %ius [%ius,%ius]", App::StepProfiler.GetAverage() / (float)(1000000/60) * 100.0f, App::StepProfiler.GetAverage(),App::StepProfiler.GetMin(),App::StepProfiler.GetMax());
-		MessagePos.y -= Real(12);		
+			App::InfoMatrix, MessagePos, FontSize, Color, Align,
+			"Step [Sq]: %.2f%% - %ius [%ius,%ius]", 
+			App::SqStepProfiler.GetAverage() / PercentConstant,
+			App::SqStepProfiler.GetAverage(),App::SqStepProfiler.GetMin(),App::SqStepProfiler.GetMax());
+		MessagePos.y -= YStep;
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
-			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,255,255), GEL_ALIGN_TOP_RIGHT,
-			"Draw: %.2f%% - %ius [%ius,%ius]", App::DrawProfiler.GetAverage() / (float)(1000000/60) * 100.0f, App::DrawProfiler.GetAverage(),App::DrawProfiler.GetMin(),App::DrawProfiler.GetMax());
+			App::InfoMatrix, MessagePos, FontSize, Color, Align,
+			"Step: %.2f%% - %ius [%ius,%ius]", 
+			App::StepProfiler.GetAverage() / PercentConstant,
+			App::StepProfiler.GetAverage(),App::StepProfiler.GetMin(),App::StepProfiler.GetMax());
+		MessagePos.y -= YStep;		
+		Gel::FontPool[App::RuntimeErrorFont].printf( 
+			App::InfoMatrix, MessagePos, FontSize, Color, Align,
+			"Draw [Sq]: %.2f%% - %ius [%ius,%ius]", 
+			App::SqDrawProfiler.GetAverage() / PercentConstant,
+			App::SqDrawProfiler.GetAverage(),App::SqDrawProfiler.GetMin(),App::SqDrawProfiler.GetMax());
+		MessagePos.y -= YStep;		
+		Gel::FontPool[App::RuntimeErrorFont].printf( 
+			App::InfoMatrix, MessagePos, FontSize, Color, Align,
+			"Draw: %.2f%% - %ius [%ius,%ius]", 
+			App::DrawProfiler.GetAverage() / PercentConstant,
+			App::DrawProfiler.GetAverage(),App::DrawProfiler.GetMin(),App::DrawProfiler.GetMax());
 	}
+	App::DrawProfiler.Stop();
 }
 // - ------------------------------------------------------------------------------------------ - //
 
