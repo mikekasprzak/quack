@@ -119,13 +119,17 @@ class qkPad {
 		for ( local idx = 0; idx < 12; idx++ ) {
 			ButtonAge[idx] = 0;
 		}
-		
+	
 		LStickAge = array(8+8+1);
 		RStickAge = array(8+8+1);
 		for ( local idx = 0; idx < LStickAge.len(); idx++ ) {
 			LStickAge[idx] = 0;
 			RStickAge[idx] = 0;
 		}
+
+		// Because code in Update requires the 8-way's to exist //
+		LStick8Way = vec2(0,0);
+		RStick8Way = vec2(0,0);
 		
 		Update();
 	}
@@ -157,6 +161,10 @@ class qkPad {
 		Old = Current;
 		Current = InputFunc(Index);
 
+		// We throw away the originals, so lets take a copy (reference) to them //
+		local OldLStick8Way = LStick8Way; 
+		local OldRStick8Way = RStick8Way;
+
 		// Ages //
 		for ( local idx = 0; idx < LStickAge.len(); idx++ ) {
 			LStickAge[idx]++;
@@ -171,11 +179,8 @@ class qkPad {
 			LStick4Way = vec2(0,0);
 			LStick8Way = vec2(0,0);
 			LStickHeavy = vec2(0,0);
-			LStickPressed = vec2(0,0);
 		}
-		else {
-			local OldLStick8Way = LStick8Way; // Throwing away original here anyway //
-			
+		else {			
 			// Calculate 4 Way //
 			local LStickAbs = 0;
 			if ( Current.LStick.x.abs() > Current.LStick.y.abs() ) {
@@ -215,20 +220,19 @@ class qkPad {
 			else {
 				LStick = Current.LStick / LStickMag;
 			}
+		}
+		// Outside, so we can detect Released states too //
+		if ( (LStick8Way.x == OldLStick8Way.x) && (LStick8Way.y == OldLStick8Way.y) ) {
+			// None Pressed //
+			LStickPressed = vec2(0,0);
+		}
+		else {
+			// Something was Pressed! //
+			LStickPressed = LStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
 			
-			// Newly Pressed Stick States //
-			if ( (LStick8Way.x == OldLStick8Way.x) && (LStick8Way.y == OldLStick8Way.y) ) {
-				// None Pressed //
-				LStickPressed = vec2(0,0);
-			}
-			else {
-				// Something was Pressed! //
-				LStickPressed = LStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
-				
-				// NOTE: Detect Gestures Here (Double Tap, at least) //
-				
-				LStickAge[ StickToBit(LStick8Way) ] = 0;
-			}
+			// NOTE: Detect Gestures Here (Double Tap, at least) //
+			
+			LStickAge[ StickToBit(LStick8Way) ] = 0;
 		}
 		
 
@@ -238,11 +242,8 @@ class qkPad {
 			RStick4Way = vec2(0,0);
 			RStick8Way = vec2(0,0);
 			RStickHeavy = vec2(0,0);
-			RStickPressed = vec2(0,0);
 		}
-		else {
-			local OldRStick8Way = RStick8Way; // Throwing away original here anyway //
-			
+		else {			
 			// Calculate 4 Way //
 			local RStickAbs = 0;
 			if ( Current.RStick.x.abs() > Current.RStick.y.abs() ) {
@@ -282,20 +283,19 @@ class qkPad {
 			else {
 				RStick = Current.RStick / RStickMag;
 			}
+		}
+		// Outside, so we can detect Released states too //
+		if ( (RStick8Way.x == OldRStick8Way.x) && (RStick8Way.y == OldRStick8Way.y) ) {
+			// None Pressed //
+			RStickPressed = vec2(0,0);
+		}
+		else {
+			// Something was Pressed! //
+			RStickPressed = RStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
 			
-			// Newly Pressed Stick States //
-			if ( (RStick8Way.x == OldRStick8Way.x) && (RStick8Way.y == OldRStick8Way.y) ) {
-				// None Pressed //
-				RStickPressed = vec2(0,0);
-			}
-			else {
-				// Something was Pressed! //
-				RStickPressed = RStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
-
-				// NOTE: Detect Gestures Here (Double Tap, at least) //
-
-				RStickAge[ StickToBit(RStick8Way) ] = 0;
-			}
+			// NOTE: Detect Gestures Here (Double Tap, at least) //
+			
+			RStickAge[ StickToBit(RStick8Way) ] = 0;
 		}
 		
 		// We want to increment here, because it makes the math later easier //
