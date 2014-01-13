@@ -103,6 +103,9 @@ class qkPad {
 	// Newly Pressed directions on the Sticks //
 	LStickPressed = null;
 	RStickPressed = null;
+	// Age of each Stick Press // 
+	LStickAge = null;
+	RStickAge = null;
 
 	// Age of each button push //
 	ButtonAge = null;
@@ -111,9 +114,17 @@ class qkPad {
 		Index = _Index;
 		InputFunc = _InputFunc;
 		Current = InputFunc( Index );
+
 		ButtonAge = array(12);
 		for ( local idx = 0; idx < 12; idx++ ) {
 			ButtonAge[idx] = 0;
+		}
+		
+		LStickAge = array(8+8+1);
+		RStickAge = array(8+8+1);
+		for ( local idx = 0; idx < LStickAge.len(); idx++ ) {
+			LStickAge[idx] = 0;
+			RStickAge[idx] = 0;
 		}
 		
 		Update();
@@ -145,6 +156,12 @@ class qkPad {
 	function Update() {
 		Old = Current;
 		Current = InputFunc(Index);
+
+		// Ages //
+		for ( local idx = 0; idx < LStickAge.len(); idx++ ) {
+			LStickAge[idx]++;
+			RStickAge[idx]++;
+		}
 		
 		// Aww. Can't switch this to a foreach, because it's not only reading but writing //
 				
@@ -201,10 +218,16 @@ class qkPad {
 			
 			// Newly Pressed Stick States //
 			if ( (LStick8Way.x == OldLStick8Way.x) && (LStick8Way.y == OldLStick8Way.y) ) {
+				// None Pressed //
 				LStickPressed = vec2(0,0);
 			}
 			else {
-				LStickPressed = clone LStick8Way; // May not need a clone //				
+				// Something was Pressed! //
+				LStickPressed = LStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
+				
+				// NOTE: Detect Gestures Here (Double Tap, at least) //
+				
+				LStickAge[ StickToBit(LStick8Way) ] = 0;
 			}
 		}
 		
@@ -262,10 +285,16 @@ class qkPad {
 			
 			// Newly Pressed Stick States //
 			if ( (RStick8Way.x == OldRStick8Way.x) && (RStick8Way.y == OldRStick8Way.y) ) {
+				// None Pressed //
 				RStickPressed = vec2(0,0);
 			}
 			else {
-				RStickPressed = clone RStick8Way; // May not need a clone //
+				// Something was Pressed! //
+				RStickPressed = RStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
+
+				// NOTE: Detect Gestures Here (Double Tap, at least) //
+
+				RStickAge[ StickToBit(RStick8Way) ] = 0;
 			}
 		}
 		
