@@ -28,6 +28,11 @@ class qkPad {
 	LStickHeavy = null;
 	RStickHeavy = null;
 	
+	// Newly Pressed directions on the Sticks //
+	LStickPressed = null;
+	RStickPressed = null;
+
+	// Age of each button push //
 	ButtonAge = null;
 	
 	constructor( _Index, _InputFunc ) {
@@ -77,8 +82,11 @@ class qkPad {
 			LStick4Way = vec2(0,0);
 			LStick8Way = vec2(0,0);
 			LStickHeavy = vec2(0,0);
+			LStickPressed = vec2(0,0);
 		}
 		else {
+			local OldLStick8Way = LStick8Way; // Throwing away original here anyway //
+			
 			// Calculate 4 Way //
 			local LStickAbs = 0;
 			if ( Current.LStick.x.abs() > Current.LStick.y.abs() ) {
@@ -118,6 +126,14 @@ class qkPad {
 			else {
 				LStick = Current.LStick / LStickMag;
 			}
+			
+			// Newly Pressed Stick States //
+			if ( (LStick8Way.x == OldLStick8Way.x) && (LStick8Way.y == OldLStick8Way.y) ) {
+				LStickPressed = vec2(0,0);
+			}
+			else {
+				LStickPressed = clone LStick8Way; // May not need a clone //				
+			}
 		}
 		
 
@@ -127,8 +143,11 @@ class qkPad {
 			RStick4Way = vec2(0,0);
 			RStick8Way = vec2(0,0);
 			RStickHeavy = vec2(0,0);
+			RStickPressed = vec2(0,0);
 		}
 		else {
+			local OldRStick8Way = RStick8Way; // Throwing away original here anyway //
+			
 			// Calculate 4 Way //
 			local RStickAbs = 0;
 			if ( Current.RStick.x.abs() > Current.RStick.y.abs() ) {
@@ -167,6 +186,14 @@ class qkPad {
 			}
 			else {
 				RStick = Current.RStick / RStickMag;
+			}
+			
+			// Newly Pressed Stick States //
+			if ( (RStick8Way.x == OldRStick8Way.x) && (RStick8Way.y == OldRStick8Way.y) ) {
+				RStickPressed = vec2(0,0);
+			}
+			else {
+				RStickPressed = clone RStick8Way; // May not need a clone //
 			}
 		}
 		
