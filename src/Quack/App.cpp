@@ -264,11 +264,11 @@ void AppStep() {
 	App::SqStepProfiler.Start();
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
+
+	App::MySkel.Step();
 	
 	// *** //
 	App::StepProfiler.Stop();
-
-	App::MySkel.Step();
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppDraw() {
@@ -279,10 +279,10 @@ void AppDraw() {
 	// *** //
 	App::SqDrawProfiler.Stop();
 	
-	Matrix4x4 Doof = App::InfoMatrix;
-	Doof[0] *= Real(0.5f);
-	Doof[5] *= Real(0.5f);
-	App::MySkel.Draw( Doof );
+//	Matrix4x4 Doof = App::InfoMatrix;
+//	Doof[0] *= Real(0.5f);
+//	Doof[5] *= Real(0.5f);
+//	App::MySkel.Draw( Doof );
 
 	DrawLayout( App::Layout.Root );
 

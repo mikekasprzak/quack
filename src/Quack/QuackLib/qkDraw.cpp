@@ -75,6 +75,11 @@ _PRIMITIVE_DRAW_RADIUS(qkDrawDiamond,Diamond,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_RADIUS(qkDrawTriangle,Circle,GEL_LINE_LOOP,3);
 _PRIMITIVE_DRAW_RADIUS(qkDrawCross,Cross,GEL_LINES);
 _PRIMITIVE_DRAW_RADIUS(qkDrawX,X,GEL_LINES);
+
+_PRIMITIVE_DRAW_RADIUS(qkDrawCircleFill,Circle,GEL_TRIANGLE_FAN);
+_PRIMITIVE_DRAW_RADIUS(qkDrawSquareFill,RadiusRect,GEL_TRIANGLE_FAN);
+_PRIMITIVE_DRAW_RADIUS(qkDrawDiamondFill,Diamond,GEL_TRIANGLE_FAN);
+_PRIMITIVE_DRAW_RADIUS(qkDrawTriangleFill,Circle,GEL_TRIANGLE_FAN,3);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -149,6 +154,10 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 _PRIMITIVE_DRAW_CAPSULE(qkDrawCapsule,Capsule,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_CAPSULE(qkDrawDiamondCapsule,DiamondCapsule,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_CAPSULE(qkDrawFlatCapsule,FlatCapsule,GEL_LINE_LOOP);
+
+_PRIMITIVE_DRAW_CAPSULE(qkDrawCapsuleFill,Capsule,GEL_TRIANGLE_FAN);
+_PRIMITIVE_DRAW_CAPSULE(qkDrawDiamondCapsuleFill,DiamondCapsule,GEL_TRIANGLE_FAN);
+_PRIMITIVE_DRAW_CAPSULE(qkDrawFlatCapsuleFill,FlatCapsule,GEL_TRIANGLE_FAN);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -379,9 +388,18 @@ SQRegFunction qkDraw_funcs[] = {
 	_DECL_FUNC(qkDrawCross,-2,NULL),
 	_DECL_FUNC(qkDrawX,-2,NULL),
 
+	_DECL_FUNC(qkDrawCircleFill,-2,NULL),
+	_DECL_FUNC(qkDrawSquareFill,-2,NULL),
+	_DECL_FUNC(qkDrawDiamondFill,-2,NULL),
+	_DECL_FUNC(qkDrawTriangleFill,-2,NULL),
+
 	_DECL_FUNC(qkDrawCapsule,-2,NULL),
 	_DECL_FUNC(qkDrawDiamondCapsule,-2,NULL),
 	_DECL_FUNC(qkDrawFlatCapsule,-2,NULL),
+
+	_DECL_FUNC(qkDrawCapsuleFill,-2,NULL),
+	_DECL_FUNC(qkDrawDiamondCapsuleFill,-2,NULL),
+	_DECL_FUNC(qkDrawFlatCapsuleFill,-2,NULL),
 
 	// 3D Shapes //
 //	_DECL_FUNC(qkDrawCube,-2,NULL),
