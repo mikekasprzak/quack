@@ -111,6 +111,7 @@ void QuackVMInit() {
 		Log("* qkScreen"); register_qkScreen( vm );
 		Log("* qkBlending"); register_qkBlending( vm );
 		Log("* qkDepth"); register_qkDepth( vm );
+		Log("* qkShader"); register_qkShader( vm );
 		Log("* qkDraw"); register_qkDraw( vm );
 		Log("* qkTexture"); register_qkTexture( vm );
 		Log("* qkFont"); register_qkFont( vm );
