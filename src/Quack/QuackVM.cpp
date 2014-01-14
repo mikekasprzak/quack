@@ -114,9 +114,10 @@ void QuackVMInit() {
 		Log("* qkDraw"); register_qkDraw( vm );
 		Log("* qkTexture"); register_qkTexture( vm );
 		Log("* qkFont"); register_qkFont( vm );
-		Log("* qkModel"); register_qkModel( vm );
+		Log("* qkAtlas"); register_qkAtlas( vm );
 		Log("* qkSkel"); register_qkSkel( vm );
 		Log("* qkSkelAnimator"); register_qkSkelAnimator( vm );
+		Log("* qkModel"); register_qkModel( vm );
 	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	

@@ -16,9 +16,10 @@ SQInteger register_qkDepth(HSQUIRRELVM v);
 SQInteger register_qkDraw(HSQUIRRELVM v);
 SQInteger register_qkTexture(HSQUIRRELVM v);
 SQInteger register_qkFont(HSQUIRRELVM v);
-SQInteger register_qkModel(HSQUIRRELVM v);
+SQInteger register_qkAtlas(HSQUIRRELVM v);
 SQInteger register_qkSkel(HSQUIRRELVM v);
 SQInteger register_qkSkelAnimator(HSQUIRRELVM v);
+SQInteger register_qkModel(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkInput(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
