@@ -21,13 +21,19 @@ protected:
 
 	GelAssetPool::UID AssetUID;	
 
-	spAtlas* Atlas;	
+	spAtlas* Atlas;
+	
+	// Regions Array //
+	st32 RegionCount;
+	spAtlasRegion** Region;
 	
 public:
 	inline GelAtlas( const st32 _MyID ) :
 		MyID( _MyID ),
 		AssetUID( 0 ),
-		Atlas( 0 )
+		Atlas( 0 ),
+		RegionCount( 0 ),
+		Region( 0 )
 	{	
 	}
 	
@@ -58,10 +64,35 @@ public:
 			// Need a way of getting a Region Handle. GelAtlasRegion ?
 			
 			// If an Atlas changes, any pointers (spAtlasRegion's) break. 
+			
+			// *** //
+			
+			// Iterate over all regions, to count them //
+			RegionCount = 0;
+			spAtlasRegion* CurrentRegion = Atlas->regions;
+			while (CurrentRegion) {
+				RegionCount++;
+				CurrentRegion = CurrentRegion->next;
+			};
+			
+			// Create an array of Regions //
+			Region = new spAtlasRegion*[RegionCount];
+			
+			// Iterate over all regions, to copy pointers to them //
+			CurrentRegion = Atlas->regions;
+			for ( st idx = 0; CurrentRegion; idx++ ) {
+				Region[idx] = CurrentRegion;
+				CurrentRegion = CurrentRegion->next;
+			};
 		}
 	}
 	
 	inline void Unload() {
+		if ( Region ) {
+			delete [] Region;
+			Region = 0;
+		}
+		
 		// NOTE: Disposal is currently broken (Dec 20th) //
 //		if ( Atlas ) {
 //			spAtlas_dispose(Atlas);
@@ -72,34 +103,33 @@ public:
 	inline void Draw( const Matrix4x4& Matrix, int Index ) {
 		GelColor Color = GEL_RGB(255,255,255);
 		
-		// TODO: Find region //
-		spAtlasRegion* Region = Atlas->regions->next;
+		spAtlasRegion* Reg = Region[Index];//Atlas->regions->next;
 
 		const st32 VertCount = 6;
 		Vector3D Verts[ VertCount ];
-		Verts[0] = Vector3D(0,Region->height,0);
-		Verts[1] = Vector3D(Region->width,Region->height,0);
-		Verts[2] = Vector3D(Region->width,0,0);
+		Verts[0] = Vector3D(0,Reg->height,0);
+		Verts[1] = Vector3D(Reg->width,Reg->height,0);
+		Verts[2] = Vector3D(Reg->width,0,0);
 
-		Verts[3] = Vector3D(Region->width,0,0);
+		Verts[3] = Vector3D(Reg->width,0,0);
 		Verts[4] = Vector3D(0,0,0);
-		Verts[5] = Vector3D(0,Region->height,0);
+		Verts[5] = Vector3D(0,Reg->height,0);
 		
 		for ( st32 idx = 0; idx < VertCount; idx++ ) {
 			// Add Offsets and subtract half the original width (i.e. center) //
-			Verts[idx] += Vector3D(Region->offsetX-(Region->originalWidth>>1),Region->offsetY-(Region->originalHeight>>1));
+			Verts[idx] += Vector3D(Reg->offsetX-(Reg->originalWidth>>1),Reg->offsetY-(Reg->originalHeight>>1));
 		}
 
-		GelTexture& Tex = Gel::TexturePool[(st)Region->page->rendererObject];
+		GelTexture& Tex = Gel::TexturePool[(st)Reg->page->rendererObject];
 
 		UVSet<Gel::UVType> UVs[ VertCount ];
-		UVs[0] = UVSet<Gel::UVType>(Region->u,Region->v);
-		UVs[1] = UVSet<Gel::UVType>(Region->u2,Region->v);
-		UVs[2] = UVSet<Gel::UVType>(Region->u2,Region->v2);
+		UVs[0] = UVSet<Gel::UVType>(Reg->u,Reg->v);
+		UVs[1] = UVSet<Gel::UVType>(Reg->u2,Reg->v);
+		UVs[2] = UVSet<Gel::UVType>(Reg->u2,Reg->v2);
 
-		UVs[3] = UVSet<Gel::UVType>(Region->u2,Region->v2);
-		UVs[4] = UVSet<Gel::UVType>(Region->u,Region->v2);
-		UVs[5] = UVSet<Gel::UVType>(Region->u,Region->v);
+		UVs[3] = UVSet<Gel::UVType>(Reg->u2,Reg->v2);
+		UVs[4] = UVSet<Gel::UVType>(Reg->u,Reg->v2);
+		UVs[5] = UVSet<Gel::UVType>(Reg->u,Reg->v);
 
 //		vertexArray->append(vertices[0]);
 //		vertexArray->append(vertices[1]);

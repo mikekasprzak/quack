@@ -287,7 +287,7 @@ void AppDraw() {
 	// *** //
 	App::SqDrawProfiler.Stop();
 	
-	Gel::AtlasPool[App::MyAtlasID].Draw( App::InfoMatrix, 0 );
+	Gel::AtlasPool[App::MyAtlasID].Draw( App::InfoMatrix, 4 );
 	
 	DrawLayout( App::Layout.Root );
 
