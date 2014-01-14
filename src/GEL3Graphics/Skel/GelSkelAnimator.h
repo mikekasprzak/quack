@@ -28,6 +28,12 @@ public:
 	{
 	}
 	
+	inline void _Constructor() {
+		AssetUID = 0;
+		Skeleton = 0;
+		AnimState = 0;
+	}
+	
 	inline ~GelSkelAnimator() {
 		Unload();
 	}

@@ -16,25 +16,20 @@ SQInteger qk_skelanimator_constructor( HSQUIRRELVM v ) {
 	
 	// Check the number of arguments //
 	int Top = sq_gettop(v);
-	
-//	// Build our color channels //
-//	SQInteger r,g,b;
-//	SQInteger a = 255;
-//	sq_getinteger(v,2,&r);
-//	sq_getinteger(v,3,&g);
-//	sq_getinteger(v,4,&b);
-//	if ( Top > 4 )
-//		sq_getinteger(v,5,&a);
-//	
-//	// Clamp Colors to 0-255 range //
-//	r = GEL_CLAMP_COLOR_COMPONENT(r);
-//	g = GEL_CLAMP_COLOR_COMPONENT(g);
-//	b = GEL_CLAMP_COLOR_COMPONENT(b);
-//	a = GEL_CLAMP_COLOR_COMPONENT(a);
-//	
-//	// Write Data //
-//	*SkelAnimator = GEL_RGBA(r,g,b,a);
 
+	//new(GelSkelAnimator,SkelAnimator);
+	SkelAnimator->_Constructor();
+
+	if ( Top > 1 ) {
+		const char* SkelFile;
+		sq_getstring(v,2,&SkelFile);
+//		Log( "VVVVVVVV %s %x", SkelFile, SkelAnimator );
+	
+		SkelAnimator->Load( Gel::SkelPool.Load( SkelFile ) );
+			
+		SkelAnimator->Set( "walk" );
+	}
+	
 	// Finished //
 	return SQ_VOID;
 }
@@ -149,6 +144,39 @@ _FUNC_TYPEOF(GelSkelAnimator,qk_skelanimator_typeof,"QkSkelAnimator",14);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_skelanimator_step( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelSkelAnimator* SkelAnimator;
+	sq_getinstanceup(v,1,(void**)&SkelAnimator,0);
+
+	// Check the number of arguments //
+	//int Top = sq_gettop(v);
+	
+	SkelAnimator->Step();
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_skelanimator_draw( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelSkelAnimator* SkelAnimator;
+	sq_getinstanceup(v,1,(void**)&SkelAnimator,0);
+
+	// Check the number of arguments //
+	//int Top = sq_gettop(v);
+
+	Matrix4x4* Matrix;
+	sq_getinstanceup(v,2,(void**)&Matrix,0);
+	
+//	Log( "MAT: %x", Matrix );
+	
+	SkelAnimator->Draw( *Matrix );
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 //SQInteger qk_skelanimator_RGB( HSQUIRRELVM v ) {
 //	// Check the number of arguments //
 //	int Top = sq_gettop(v);
@@ -198,7 +226,10 @@ SQRegFunction qkSkelAnimator_funcs[] = {
 //	_DECL_FUNC(qk_skelanimator_set,3,NULL),
 	_DECL_FUNC(qk_skelanimator_typeof,0,NULL),
 	_DECL_FUNC(qk_skelanimator_tostring,1,NULL),
-	_DECL_FUNC(qk_skelanimator_cloned,2,NULL),	
+	_DECL_FUNC(qk_skelanimator_cloned,2,NULL),
+	
+	_DECL_FUNC(qk_skelanimator_step,1,NULL),
+	_DECL_FUNC(qk_skelanimator_draw,2,NULL),	
 
 //	_DECL_FUNC_ALT("RGB",qk_skelanimator_RGB,-4,NULL),
 //	_DECL_FUNC_ALT("RGBA",qk_skelanimator_RGB,5,NULL),
@@ -228,6 +259,8 @@ SQInteger register_qkSkelAnimator(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC_STATIC(qk_skelanimator_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_skelanimator_tostring,_tostring);
 		_CLASS_ADDFUNC(qk_skelanimator_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_skelanimator_step,Step);
+		_CLASS_ADDFUNC(qk_skelanimator_draw,Draw);
 		_ADD_CLASS_END(GelSkelAnimator);
 	}
 	
