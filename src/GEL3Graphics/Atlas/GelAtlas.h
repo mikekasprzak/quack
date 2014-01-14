@@ -10,6 +10,7 @@
 #include <Lib/Lib.h>
 #include <Asset/Asset.h>
 #include <Texture/Texture.h>
+#include <Render/Render.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <spine/spine.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -66,6 +67,58 @@ public:
 //			spAtlas_dispose(Atlas);
 //			Atlas = 0;
 //		}
+	}
+	
+	inline void Draw( const Matrix4x4& Matrix, int Index ) {
+		GelColor Color = GEL_RGB(255,255,255);
+		
+		// TODO: Find region //
+		spAtlasRegion* Region = Atlas->regions;
+
+		const st32 VertCount = 6;
+		Vector3D Verts[ VertCount ];
+		Verts[0] = Vector3D(-32,+32,0);
+		Verts[1] = Vector3D(+32,+32,0);
+		Verts[2] = Vector3D(+32,-32,0);
+
+		Verts[3] = Vector3D(+32,-32,0);
+		Verts[4] = Vector3D(-32,-32,0);
+		Verts[5] = Vector3D(-32,+32,0);
+//		Verts[0] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
+//		Verts[1] = Vector3D(worldVertices[VERTEX_X2],worldVertices[VERTEX_Y2],0);
+//		Verts[2] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
+//		
+//		Verts[3] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
+//		Verts[4] = Vector3D(worldVertices[VERTEX_X4],worldVertices[VERTEX_Y4],0);
+//		Verts[5] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
+
+		GelTexture& Tex = Gel::TexturePool[(st)Region->page->rendererObject];
+
+		UVSet<Gel::UVType> UVs[ VertCount ];
+		UVs[0] = UVSet<Gel::UVType>(0,0);
+		UVs[1] = UVSet<Gel::UVType>(1,0);
+		UVs[2] = UVSet<Gel::UVType>(1,1);
+
+		UVs[3] = UVSet<Gel::UVType>(1,1);
+		UVs[4] = UVSet<Gel::UVType>(0,1);
+		UVs[5] = UVSet<Gel::UVType>(0,0);
+//		UVs[0] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+//		UVs[1] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X2],regionAttachment->uvs[VERTEX_Y2]);
+//		UVs[2] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
+//
+//		UVs[3] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
+//		UVs[4] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X4],regionAttachment->uvs[VERTEX_Y4]);
+//		UVs[5] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+
+//		vertexArray->append(vertices[0]);
+//		vertexArray->append(vertices[1]);
+//		vertexArray->append(vertices[2]);
+//		vertexArray->append(vertices[3]);
+
+		// TODO: Do batching cleverness here. If same texture, continue batching. If different, render the current batch.
+		//       Advance poniter, so further render ops don't re-draw prior data.
+		Tex.Bind();
+		Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
