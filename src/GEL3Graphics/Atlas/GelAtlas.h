@@ -77,13 +77,18 @@ public:
 
 		const st32 VertCount = 6;
 		Vector3D Verts[ VertCount ];
-		Verts[0] = Vector3D(0,Region->originalHeight,0);
-		Verts[1] = Vector3D(Region->originalWidth,Region->originalHeight,0);
-		Verts[2] = Vector3D(Region->originalWidth,0,0);
+		Verts[0] = Vector3D(0,Region->height,0);
+		Verts[1] = Vector3D(Region->width,Region->height,0);
+		Verts[2] = Vector3D(Region->width,0,0);
 
-		Verts[3] = Vector3D(Region->originalWidth,0,0);
+		Verts[3] = Vector3D(Region->width,0,0);
 		Verts[4] = Vector3D(0,0,0);
-		Verts[5] = Vector3D(0,+Region->originalHeight,0);
+		Verts[5] = Vector3D(0,Region->height,0);
+		
+		for ( st32 idx = 0; idx < VertCount; idx++ ) {
+			// Add Offsets and subtract half the original width (i.e. center) //
+			Verts[idx] += Vector3D(Region->offsetX-(Region->originalWidth>>1),Region->offsetY-(Region->originalHeight>>1));
+		}
 
 		GelTexture& Tex = Gel::TexturePool[(st)Region->page->rendererObject];
 
