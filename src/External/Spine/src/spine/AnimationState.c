@@ -209,6 +209,12 @@ void _spAnimationState_setCurrent (spAnimationState* self, int index, spTrackEnt
 		if (current->listener) current->listener(self, index, ANIMATION_END, 0, 0);
 		if (self->listener) self->listener(self, index, ANIMATION_END, 0, 0);
 
+		// MK Start //
+		if ( self->data == 0 ) {
+			entry->mixDuration = 0;
+		}
+		else
+		// MK End //
 		entry->mixDuration = spAnimationStateData_getMix(self->data, current->animation, entry->animation);
 		if (entry->mixDuration > 0) {
 			entry->mixTime = 0;

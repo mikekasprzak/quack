@@ -70,7 +70,7 @@ bool HadVMError;
 //GelSkelPool::UID	SpineUID;
 //spSkeleton*				SpineSkeleton;
 //spAnimationState*		SpineAnimState;
-GelSkelAnimator MySkel;
+//GelSkelAnimator MySkel;
 
 GlayLayout Layout;
 // - ------------------------------------------------------------------------------------------ - //
@@ -161,19 +161,19 @@ void AppInit() {
 //		Log("**** DONE");
 //	}
 
-	{	
-		Log("**** LOADING SPINE");
-		App::MySkel.Load( Gel::SkelPool.Load( "Creature/QuadrupedA.json" ) );//"SpineTest/spineboy.json" ) );
-//		App::SpineUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
-//		App::SpineSkeleton = spSkeleton_create( Gel::SkelPool[App::SpineUID].GetSkeletonData() );
-//		App::SpineAnimState = spAnimationState_create(0);//stateData);
-//			
-//		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");
-//		spAnimationState_setAnimation( App::SpineAnimState, 0, Animation, true );
-
-		App::MySkel.Set( "Walk" );//"walk" );
-		Log("**** DONE");
-	}
+//	{	
+//		Log("**** LOADING SPINE");
+//		App::MySkel.Load( Gel::SkelPool.Load( "Creature/QuadrupedA.json" ) );//"SpineTest/spineboy.json" ) );
+////		App::SpineUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
+////		App::SpineSkeleton = spSkeleton_create( Gel::SkelPool[App::SpineUID].GetSkeletonData() );
+////		App::SpineAnimState = spAnimationState_create(0);//stateData);
+////			
+////		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");
+////		spAnimationState_setAnimation( App::SpineAnimState, 0, Animation, true );
+//
+//		App::MySkel.Set( "Walk" );//"walk" );
+//		Log("**** DONE");
+//	}
 	
 	{
 		Log("**** GLAYOUT");		
@@ -265,7 +265,7 @@ void AppStep() {
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
 
-	App::MySkel.Step();
+//	App::MySkel.Step();
 	
 	// *** //
 	App::StepProfiler.Stop();
@@ -279,10 +279,10 @@ void AppDraw() {
 	// *** //
 	App::SqDrawProfiler.Stop();
 	
-	Matrix4x4 Doof = App::InfoMatrix;
-	Doof[0] *= Real(0.5f);
-	Doof[5] *= Real(0.5f);
-	App::MySkel.Draw( Doof );
+//	Matrix4x4 Doof = App::InfoMatrix;
+//	Doof[0] *= Real(0.5f);
+//	Doof[5] *= Real(0.5f);
+//	App::MySkel.Draw( Doof );
 
 	DrawLayout( App::Layout.Root );
 

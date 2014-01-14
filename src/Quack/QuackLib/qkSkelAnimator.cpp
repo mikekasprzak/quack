@@ -23,11 +23,8 @@ SQInteger qk_skelanimator_constructor( HSQUIRRELVM v ) {
 	if ( Top > 1 ) {
 		const char* SkelFile;
 		sq_getstring(v,2,&SkelFile);
-//		Log( "VVVVVVVV %s %x", SkelFile, SkelAnimator );
 	
 		SkelAnimator->Load( Gel::SkelPool.Load( SkelFile ) );
-			
-		SkelAnimator->Set( "walk" );
 	}
 	
 	// Finished //
@@ -177,6 +174,21 @@ SQInteger qk_skelanimator_draw( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_skelanimator_set( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelSkelAnimator* SkelAnimator;
+	sq_getinstanceup(v,1,(void**)&SkelAnimator,0);
+
+	const char* AnimName;
+	sq_getstring(v,2,&AnimName);
+	
+	SkelAnimator->Set( AnimName );
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 //SQInteger qk_skelanimator_RGB( HSQUIRRELVM v ) {
 //	// Check the number of arguments //
 //	int Top = sq_gettop(v);
@@ -229,11 +241,9 @@ SQRegFunction qkSkelAnimator_funcs[] = {
 	_DECL_FUNC(qk_skelanimator_cloned,2,NULL),
 	
 	_DECL_FUNC(qk_skelanimator_step,1,NULL),
-	_DECL_FUNC(qk_skelanimator_draw,2,NULL),	
+	_DECL_FUNC(qk_skelanimator_draw,2,NULL),
+	_DECL_FUNC(qk_skelanimator_set,2,NULL),
 
-//	_DECL_FUNC_ALT("RGB",qk_skelanimator_RGB,-4,NULL),
-//	_DECL_FUNC_ALT("RGBA",qk_skelanimator_RGB,5,NULL),
-	
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
@@ -261,6 +271,7 @@ SQInteger register_qkSkelAnimator(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_skelanimator_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_skelanimator_step,Step);
 		_CLASS_ADDFUNC(qk_skelanimator_draw,Draw);
+		_CLASS_ADDFUNC(qk_skelanimator_set,Set);
 		_ADD_CLASS_END(GelSkelAnimator);
 	}
 	
