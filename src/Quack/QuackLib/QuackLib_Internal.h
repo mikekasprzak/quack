@@ -23,7 +23,7 @@ enum {
 	QK_TAG_TEXTURE,
 	QK_TAG_FONT,
 	QK_TAG_MODEL, // 3D //
-	QK_TAG_SPINE, // 2D //
+	QK_TAG_SKEL, // 2D //
 	QK_TAG_SHADER,
 	
 	QK_TAG_GRID2,

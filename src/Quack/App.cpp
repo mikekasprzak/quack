@@ -177,7 +177,7 @@ void AppInit() {
 	
 	{
 		Log("**** GLAYOUT");		
-//		App::Layout.Root.SetPos(5,0);
+		App::Layout.Root.SetPos(128+16,-128);
 		App::Layout.Root.SetShape(100,100);
 		App::Layout.Root.AddChild( GLAY_FILL_WIDTH );
 		App::Layout.Root.Child.back().SetPos(40,60);
@@ -279,10 +279,10 @@ void AppDraw() {
 	// *** //
 	App::SqDrawProfiler.Stop();
 	
-//	Matrix4x4 Doof = App::InfoMatrix;
-//	Doof[0] *= Real(0.5f);
-//	Doof[5] *= Real(0.5f);
-//	App::MySkel.Draw( Doof );
+	Matrix4x4 Doof = App::InfoMatrix;
+	Doof[0] *= Real(0.5f);
+	Doof[5] *= Real(0.5f);
+	App::MySkel.Draw( Doof );
 
 	DrawLayout( App::Layout.Root );
 
