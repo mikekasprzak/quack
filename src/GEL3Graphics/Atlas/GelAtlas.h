@@ -73,42 +73,28 @@ public:
 		GelColor Color = GEL_RGB(255,255,255);
 		
 		// TODO: Find region //
-		spAtlasRegion* Region = Atlas->regions;
+		spAtlasRegion* Region = Atlas->regions->next;
 
 		const st32 VertCount = 6;
 		Vector3D Verts[ VertCount ];
-		Verts[0] = Vector3D(-32,+32,0);
-		Verts[1] = Vector3D(+32,+32,0);
-		Verts[2] = Vector3D(+32,-32,0);
+		Verts[0] = Vector3D(0,Region->originalHeight,0);
+		Verts[1] = Vector3D(Region->originalWidth,Region->originalHeight,0);
+		Verts[2] = Vector3D(Region->originalWidth,0,0);
 
-		Verts[3] = Vector3D(+32,-32,0);
-		Verts[4] = Vector3D(-32,-32,0);
-		Verts[5] = Vector3D(-32,+32,0);
-//		Verts[0] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
-//		Verts[1] = Vector3D(worldVertices[VERTEX_X2],worldVertices[VERTEX_Y2],0);
-//		Verts[2] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
-//		
-//		Verts[3] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
-//		Verts[4] = Vector3D(worldVertices[VERTEX_X4],worldVertices[VERTEX_Y4],0);
-//		Verts[5] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
+		Verts[3] = Vector3D(Region->originalWidth,0,0);
+		Verts[4] = Vector3D(0,0,0);
+		Verts[5] = Vector3D(0,+Region->originalHeight,0);
 
 		GelTexture& Tex = Gel::TexturePool[(st)Region->page->rendererObject];
 
 		UVSet<Gel::UVType> UVs[ VertCount ];
-		UVs[0] = UVSet<Gel::UVType>(0,0);
-		UVs[1] = UVSet<Gel::UVType>(1,0);
-		UVs[2] = UVSet<Gel::UVType>(1,1);
+		UVs[0] = UVSet<Gel::UVType>(Region->u,Region->v);
+		UVs[1] = UVSet<Gel::UVType>(Region->u2,Region->v);
+		UVs[2] = UVSet<Gel::UVType>(Region->u2,Region->v2);
 
-		UVs[3] = UVSet<Gel::UVType>(1,1);
-		UVs[4] = UVSet<Gel::UVType>(0,1);
-		UVs[5] = UVSet<Gel::UVType>(0,0);
-//		UVs[0] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
-//		UVs[1] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X2],regionAttachment->uvs[VERTEX_Y2]);
-//		UVs[2] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-//
-//		UVs[3] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-//		UVs[4] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X4],regionAttachment->uvs[VERTEX_Y4]);
-//		UVs[5] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+		UVs[3] = UVSet<Gel::UVType>(Region->u2,Region->v2);
+		UVs[4] = UVSet<Gel::UVType>(Region->u,Region->v2);
+		UVs[5] = UVSet<Gel::UVType>(Region->u,Region->v);
 
 //		vertexArray->append(vertices[0]);
 //		vertexArray->append(vertices[1]);
