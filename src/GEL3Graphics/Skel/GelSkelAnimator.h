@@ -64,6 +64,7 @@ public:
 public:
 	// What Animation to set, by name //
 	inline void Set( const char* Name ) {
+		spSkeleton_setToSetupPose( Skeleton );
 		const bool Loop = true;
 		spAnimationState_setAnimation( AnimState, 0, spSkeletonData_findAnimation( Skeleton->data, Name), Loop );
 	}
