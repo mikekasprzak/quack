@@ -68,6 +68,11 @@ public:
 		spAnimationState_setAnimation( AnimState, 0, spSkeletonData_findAnimation( Skeleton->data, Name), Loop );
 	}
 	
+	inline void SetFlips( const bool _x = false, const bool _y = false ) {
+		Skeleton->flipX = _x;
+		Skeleton->flipY = _y;		
+	}
+	
 	inline void Step() {
 		float deltaTime = 1000.0f/60.0f;
 		float timeScale = 0.001f;
