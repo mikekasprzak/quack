@@ -17,6 +17,39 @@ _FUNC_LOAD_POOL(qkAtlasLoad,"QkAtlas",7,"qk_atlas_constructor");
 _FUNC_TYPEOF(GelAtlasPool::UID,qk_atlas_typeof,"QkAtlas",7);
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_atlas_Draw( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelAtlasPool::UID* AtlasID;
+	sq_getinstanceup(v,1,(void**)&AtlasID,0);
+
+	// Check the number of arguments //
+	int Top = sq_gettop(v);
+
+	Matrix4x4* Matrix;
+	sq_getinstanceup(v,2,(void**)&Matrix,0);
+	
+	SQInteger Index = 0;
+	
+	if ( Top >= 3 ) {
+		sq_getinteger(v,3,&Index);
+	}
+	
+	Gel::AtlasPool[*AtlasID].Draw( *Matrix, Index );
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_atlas_len( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelAtlasPool::UID* AtlasID;
+	sq_getinstanceup(v,1,(void**)&AtlasID,0);
+
+	sq_pushinteger(v,Gel::AtlasPool[*AtlasID].Size());
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -27,6 +60,9 @@ SQRegFunction qkAtlas_funcs[] = {
 
 	_DECL_FUNC(qk_atlas_constructor,-1,NULL),
 	_DECL_FUNC(qk_atlas_typeof,1,NULL),
+
+	_DECL_FUNC(qk_atlas_Draw,-2,NULL),
+	_DECL_FUNC(qk_atlas_len,1,NULL),
 
 	_DECL_FUNC(qkAtlasLoad,-1,NULL),
 	
@@ -53,6 +89,8 @@ SQInteger register_qkAtlas(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC_STATIC(qk_atlas_typeof,_typeof);
 //		_CLASS_ADDFUNC(qk_atlas_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_atlas_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_atlas_Draw,Draw);
+		_CLASS_ADDFUNC(qk_atlas_len,len);
 		_ADD_CLASS_END(GelAtlasPool::UID);
 	}
 	

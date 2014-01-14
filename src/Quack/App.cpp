@@ -71,7 +71,7 @@ bool HadVMError;
 //spSkeleton*				SpineSkeleton;
 //spAnimationState*		SpineAnimState;
 //GelSkelAnimator MySkel;
-GelAtlasPool::UID MyAtlasID;
+//GelAtlasPool::UID MyAtlasID;
 	
 GlayLayout Layout;
 // - ------------------------------------------------------------------------------------------ - //
@@ -176,12 +176,12 @@ void AppInit() {
 //		Log("**** DONE");
 //	}
 
-	{
-		Log("**** LOADING ATLAS");
-		App::MyAtlasID = Gel::AtlasPool.Load( "ItemIcons.atlas" );
-		//App::MySkel.Set( "Walk" );//"walk" );
-		Log("**** DONE");		
-	}
+//	{
+//		Log("**** LOADING ATLAS");
+//		App::MyAtlasID = Gel::AtlasPool.Load( "ItemIcons.atlas" );
+//		//App::MySkel.Set( "Walk" );//"walk" );
+//		Log("**** DONE");		
+//	}
 	
 	{
 		Log("**** GLAYOUT");		
@@ -287,7 +287,7 @@ void AppDraw() {
 	// *** //
 	App::SqDrawProfiler.Stop();
 	
-	Gel::AtlasPool[App::MyAtlasID].Draw( App::InfoMatrix, 4 );
+//	Gel::AtlasPool[App::MyAtlasID].Draw( App::InfoMatrix, 4 );
 	
 	DrawLayout( App::Layout.Root );
 

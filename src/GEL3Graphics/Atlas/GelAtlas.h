@@ -91,6 +91,7 @@ public:
 		if ( Region ) {
 			delete [] Region;
 			Region = 0;
+			RegionCount = 0;
 		}
 		
 		// NOTE: Disposal is currently broken (Dec 20th) //
@@ -103,7 +104,7 @@ public:
 	inline void Draw( const Matrix4x4& Matrix, int Index ) {
 		GelColor Color = GEL_RGB(255,255,255);
 		
-		spAtlasRegion* Reg = Region[Index];//Atlas->regions->next;
+		spAtlasRegion* Reg = Region[Index];//Atlas->regions->next; // ...
 
 		const st32 VertCount = 6;
 		Vector3D Verts[ VertCount ];
@@ -140,6 +141,10 @@ public:
 		//       Advance poniter, so further render ops don't re-draw prior data.
 		Tex.Bind();
 		Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
+	}
+	
+	inline st32 Size() const {
+		return RegionCount;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
