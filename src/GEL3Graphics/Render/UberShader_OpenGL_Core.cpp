@@ -15,9 +15,9 @@
 // TODO: Add support to the JSON file to load multiple files containing code (thus allowing me
 //   to have seperate files for the Vertex and Fragment shaders, if I wanted).
 // Consider making CurrentShader a static member of the class, so that there is only 1 current
-//   accross all instances of the cUberShader class.
+//   accross all instances of the GelUberShader class.
 // - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
+//namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 inline std::string DefineSymbol( const char* InStr ) {
 	return std::string("#define ") + std::string(InStr) + std::string("\n");
@@ -56,8 +56,8 @@ GLuint GLSLCompile( const char* ShaderSrc, GLenum type ) {
 	return GLShader;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline cUberShader_Shader BuildShader( const char* Defines, const char* ShaderSource, const bool UseGeometryShader = false, const bool UseTessellationShader = false ) {
-	cUberShader_Shader Program;
+inline GelUberShader_Shader BuildShader( const char* Defines, const char* ShaderSource, const bool UseGeometryShader = false, const bool UseTessellationShader = false ) {
+	GelUberShader_Shader Program;
 	
 	std::string ProgramCode;
 	// NOTE: The symbol "GL_ES" is already defined by the shader compilers. //
@@ -133,7 +133,7 @@ inline cUberShader_Shader BuildShader( const char* Defines, const char* ShaderSo
 	return Program;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void LinkShader( const cUberShader_Shader& Program ) {
+inline void LinkShader( const GelUberShader_Shader& Program ) {
 	VVLog( "* Linking..." );
 	
 	glLinkProgram( Program.Program );
@@ -142,7 +142,7 @@ inline void LinkShader( const cUberShader_Shader& Program ) {
 	VVLog( "* Program Linked. Done." );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribute ) {
+inline void _AssignShaderAttributes( GelUberShader_Shader& Program, cJSON* Attribute ) {
 	cJSON* Attrib = Attribute->child;
 	
 	// OpenGL requires an Index and a Name. Other Data is Optional //
@@ -172,7 +172,7 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 			Program.Attrib.resize( Index+1 ); // Index 5 is only available if Size is 6 //
 		}
 
-		cUberShader_Shader::cAttrib* Attr = &(Program.Attrib.back());
+		GelUberShader_Shader::cAttrib* Attr = &(Program.Attrib.back());
 		
 		// Store a copy of all attributes, so they can be enabled correctly //
 		// NOTE: A negative explicitly disables requested Attribute //
@@ -198,11 +198,11 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 			// NOTE: Unsigned's should come first, because of pattern matching //
 			char* Type = cJSON_GetObjectItem( Attrib, "Type" )->valuestring;
 			if ( strcmp( Type, "float" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_FLOAT;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_FLOAT;
 				Attr->GLType = GL_FLOAT;
 			}
 			else if ( strcmp( Type, "hfloat" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_HFLOAT;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_HFLOAT;
 #ifdef USES_OPENGL_ES2
 				Attr->GLType = GL_HALF_FLOAT_OES;
 #else // USES_OPENGL_ES2 //
@@ -211,38 +211,38 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 			}
 			else if ( strcmp( Type, "fixed" ) == 0 ) {
 				// Legacy //
-				Attr->Type = cUberShader_Shader::cAttrib::AI_FIXED;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_FIXED;
 				Attr->GLType = GL_FIXED;
 			}
 			else if ( strcmp( Type, "uchar" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_UCHAR;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_UCHAR;
 				Attr->GLType = GL_UNSIGNED_BYTE;
 			}
 			else if ( strcmp( Type, "char" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_CHAR;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_CHAR;
 				Attr->GLType = GL_BYTE;
 			}
 			else if ( strcmp( Type, "ushort" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_USHORT;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_USHORT;
 				Attr->GLType = GL_UNSIGNED_SHORT;
 			}
 			else if ( strcmp( Type, "short" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_SHORT;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_SHORT;
 				Attr->GLType = GL_SHORT;
 			}
 			#if defined(USES_OPENGL3)
 				else if ( strcmp( Type, "double" ) == 0 ) {
-					Attr->Type = cUberShader_Shader::cAttrib::AI_DOUBLE;
+					Attr->Type = GelUberShader_Shader::cAttrib::AI_DOUBLE;
 					Attr->GLType = GL_DOUBLE;
 				}
 			#endif // defined(USES_OPENGL3) //
 			#if defined(USES_OPENGL_3_FAMILY)
 				else if ( strcmp( Type, "uint" ) == 0 ) {
-					Attr->Type = cUberShader_Shader::cAttrib::AI_UINT;
+					Attr->Type = GelUberShader_Shader::cAttrib::AI_UINT;
 					Attr->GLType = GL_UNSIGNED_INT;
 				}
 				else if ( strcmp( Type, "int" ) == 0 ) {
-					Attr->Type = cUberShader_Shader::cAttrib::AI_INT;
+					Attr->Type = GelUberShader_Shader::cAttrib::AI_INT;
 					Attr->GLType = GL_INT;
 				}
 				
@@ -251,22 +251,22 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 				// NOTE: Other types like GL_SHORT_4_4_4_4 are Texture Only //
 
 				else if ( strcmp( Type, "uint_10_10_10_2" ) == 0 ) {
-					Attr->Type = cUberShader_Shader::cAttrib::AI_UINT_10_10_10_2;
+					Attr->Type = GelUberShader_Shader::cAttrib::AI_UINT_10_10_10_2;
 					Attr->GLType = GL_UNSIGNED_INT_2_10_10_10_REV;	// Reversed format //
 				}
 				else if ( strcmp( Type, "int_10_10_10_2" ) == 0 ) {
-					Attr->Type = cUberShader_Shader::cAttrib::AI_INT_10_10_10_2;
+					Attr->Type = GelUberShader_Shader::cAttrib::AI_INT_10_10_10_2;
 					Attr->GLType = GL_INT_2_10_10_10_REV; // Reversed Format //
 				}
 			#endif // defined(USES_OPENGL_3_FAMILY)
 
 			// Special Names //
 			else if ( strcmp( Type, "UVType" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_UVType;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_UVType;
 				Attr->GLType = GL_UVType;
 			}
 			else if ( strcmp( Type, "pad" ) == 0 ) {
-				Attr->Type = cUberShader_Shader::cAttrib::AI_PAD;
+				Attr->Type = GelUberShader_Shader::cAttrib::AI_PAD;
 			}
 			
 			// Errors //
@@ -285,7 +285,7 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 		
 		// Flags //
 		if ( cJSON_GetObjectItem( Attrib, "Normalize" ) ) {
-			Attr->Flags |= cJSON_GetObjectItem( Attrib, "Normalize" )->valueint ? cUberShader_Shader::cAttrib::FL_NORMALIZE : 0;
+			Attr->Flags |= cJSON_GetObjectItem( Attrib, "Normalize" )->valueint ? GelUberShader_Shader::cAttrib::FL_NORMALIZE : 0;
 		}
 		
 		// Next Attribute //
@@ -319,7 +319,7 @@ inline void _AssignShaderAttributes( cUberShader_Shader& Program, cJSON* Attribu
 	VVLog( "* Total Attribute Size: %i bytes (Data per vertex)", Program.GetTotalAttribSize() );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms ) {
+inline void _AssignShaderUniforms( GelUberShader_Shader& Program, cJSON* Uniforms ) {
 	cJSON* Uniform = Uniforms->child;
 	
 	while ( Uniform ) {
@@ -345,7 +345,7 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 			Program.Uniform.resize( Index+1 ); // Index 5 is only available if Size is 6 //
 		}
 
-		cUberShader_Shader::cUniform* Uni = &(Program.Uniform.back());
+		GelUberShader_Shader::cUniform* Uni = &(Program.Uniform.back());
 
 		Uni->UniformLocation = Location;
 
@@ -364,76 +364,76 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 			// NOTE: Unsigned's should come first, because of pattern matching //
 			char* Type = cJSON_GetObjectItem( Uniform, "Type" )->valuestring;
 			if ( strcmp( Type, "float" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_FLOAT;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_FLOAT;
 			}
 			else if ( strcmp( Type, "float2" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_FLOAT2;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_FLOAT2;
 			}
 			else if ( strcmp( Type, "float3" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_FLOAT3;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_FLOAT3;
 			}
 			else if ( strcmp( Type, "float4" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_FLOAT4;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_FLOAT4;
 			}
 			else if ( strcmp( Type, "color" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_COLOR;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_COLOR;
 			}
 
 			#if defined(USES_OPENGL_3_FAMILY)
 				else if ( strcmp( Type, "uint" ) == 0 ) {
-					Uni->Type = cUberShader_Shader::cUniform::UI_UINT;
+					Uni->Type = GelUberShader_Shader::cUniform::UI_UINT;
 				}
 			#endif // defined(USES_OPENGL_3_FAMILY) //			
 			
 			else if ( strcmp( Type, "int" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_INT;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_INT;
 			}
 			else if ( strcmp( Type, "int2" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_INT2;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_INT2;
 			}
 			else if ( strcmp( Type, "int3" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_INT3;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_INT3;
 			}
 			else if ( strcmp( Type, "int4" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_INT4;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_INT4;
 			}
 
 			// These first, because mat4 is a valid name otherwise //
 			#if defined(USES_OPENGL_3_FAMILY)
 				else if ( strcmp( Type, "mat2x3" ) == 0 ) {
-					Uni->Type = cUberShader_Shader::cUniform::UI_MAT2x3;
+					Uni->Type = GelUberShader_Shader::cUniform::UI_MAT2x3;
 				}
 				else if ( strcmp( Type, "mat3x2" ) == 0 ) {
-					Uni->Type = cUberShader_Shader::cUniform::UI_MAT3x2;
+					Uni->Type = GelUberShader_Shader::cUniform::UI_MAT3x2;
 				}
 				else if ( strcmp( Type, "mat2x4" ) == 0 ) {
-					Uni->Type = cUberShader_Shader::cUniform::UI_MAT2x4;
+					Uni->Type = GelUberShader_Shader::cUniform::UI_MAT2x4;
 				}
 				else if ( strcmp( Type, "mat4x2" ) == 0 ) {
-					Uni->Type = cUberShader_Shader::cUniform::UI_MAT4x2;
+					Uni->Type = GelUberShader_Shader::cUniform::UI_MAT4x2;
 				}
 				else if ( strcmp( Type, "mat3x4" ) == 0 ) {
-					Uni->Type = cUberShader_Shader::cUniform::UI_MAT3x4;
+					Uni->Type = GelUberShader_Shader::cUniform::UI_MAT3x4;
 				}
 				else if ( strcmp( Type, "mat4x3" ) == 0 ) {
-					Uni->Type = cUberShader_Shader::cUniform::UI_MAT4x3;
+					Uni->Type = GelUberShader_Shader::cUniform::UI_MAT4x3;
 				}
 			#endif // defined(USES_OPENGL_3_FAMILY) //
 
 			// These after, because mat4 is a valid name //
 			else if ( (strcmp( Type, "mat2" ) == 0) || strcmp( Type, "mat2x2" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_MAT2x2;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_MAT2x2;
 			}
 			else if ( (strcmp( Type, "mat3" ) == 0) || strcmp( Type, "mat3x3" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_MAT3x3;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_MAT3x3;
 			}
 			else if ( (strcmp( Type, "mat4" ) == 0) || strcmp( Type, "mat4x4" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_MAT4x4;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_MAT4x4;
 			}
 
 			// Special Names //
 			else if ( strcmp( Type, "pad" ) == 0 ) {
-				Uni->Type = cUberShader_Shader::cUniform::UI_PAD;
+				Uni->Type = GelUberShader_Shader::cUniform::UI_PAD;
 			}
 						
 			// Errors //
@@ -477,25 +477,25 @@ inline void _AssignShaderUniforms( cUberShader_Shader& Program, cJSON* Uniforms 
 	Program.UniformData = new_DataBlock( Program.GetTotalUniformSize() );
 }
 // - ------------------------------------------------------------------------------------------ - //
-cUberShader::cUberShader( const char* InFile ) :
+GelUberShader::GelUberShader( const char* InFile ) :
 	CurrentShader( 0 )
 {
 	ProcessShader( InFile );
 }
 // - ------------------------------------------------------------------------------------------ - //
-cUberShader::cUberShader( const char* JSONFile, const char* GLSLFile ) :
+GelUberShader::GelUberShader( const char* JSONFile, const char* GLSLFile ) :
 	CurrentShader( 0 )
 {
 	ProcessShader( JSONFile, GLSLFile );
 }
 // - ------------------------------------------------------------------------------------------ - //
-cUberShader::cUberShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize ) :
+GelUberShader::GelUberShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize ) :
 	CurrentShader( 0 )
 {
 	ProcessShader( JSONData, JSONSize, GLSLData, GLSLSize );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::ProcessShader( const char* InFile ) {
+void GelUberShader::ProcessShader( const char* InFile ) {
 //	ShaderLookup.clear();
 
 	VLog( "+ Loading UberShader Permutations File..." );
@@ -543,7 +543,7 @@ void cUberShader::ProcessShader( const char* InFile ) {
 	VLog( "- Done with UberShader Permutations File." );	
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::ProcessShader( const char* JSONFile, const char* GLSLFile ) {
+void GelUberShader::ProcessShader( const char* JSONFile, const char* GLSLFile ) {
 //	ShaderLookup.clear();
 
 	VLog( "+ Loading UberShader Permutations File..." );
@@ -586,7 +586,7 @@ void cUberShader::ProcessShader( const char* JSONFile, const char* GLSLFile ) {
 	VLog( "- Done with UberShader Permutations File." );	
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::ProcessShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize ) {
+void GelUberShader::ProcessShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize ) {
 //	ShaderLookup.clear();
 
 	VLog( "+ Loading UberShader Permutations File (Embedded)..." );	
@@ -619,7 +619,7 @@ void cUberShader::ProcessShader( const char* JSONData, const size_t JSONSize, co
 	VLog( "- Done with UberShader Permutations File." );	
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
+void GelUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 	cJSON* ShaderList = cJSON_GetObjectItem( root, "Shaders" );
 	
 	VVVLog( "* %s", ShaderList->string );
@@ -669,7 +669,7 @@ void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 #endif // USES_TESSELLATION_SHADER //
 
 		// Build the Shader //
-		cUberShader_Shader Program = BuildShader( DefineList.c_str(), ShaderSource, HasGeometryShader, HasTessellationShader );
+		GelUberShader_Shader Program = BuildShader( DefineList.c_str(), ShaderSource, HasGeometryShader, HasTessellationShader );
 		// Assign Attributes //
 		cJSON* Attribute = cJSON_GetObjectItem( ShaderObj, "Attribute" );
 		if ( Attribute ) {
@@ -706,7 +706,7 @@ void cUberShader::ProcessShader( cJSON* root, const char* ShaderSource ) {
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
-cUberShader::~cUberShader() {
+GelUberShader::~GelUberShader() {
 	for ( size_t idx = 0; idx < Shader.size(); idx++ ) {
 		if ( Shader[idx].Program )
 			glDeleteProgram( Shader[idx].Program );
@@ -731,20 +731,20 @@ cUberShader::~cUberShader() {
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::EnableAttrib( const int Index ) {
+void GelUberShader::EnableAttrib( const int Index ) {
 	glEnableVertexAttribArray( Index );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::DisableAttrib( const int Index ) {
+void GelUberShader::DisableAttrib( const int Index ) {
 	glDisableVertexAttribArray( Index );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::_Bind( const ShaderHandle Index ) {
+void GelUberShader::_Bind( const GelShaderHandle Index ) {
 	CurrentShader = &Shader[Index];
 	glUseProgram( Shader[Index].Program );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void cUberShader::Bind( const ShaderHandle Index ) {
+void GelUberShader::Bind( const GelShaderHandle Index ) {
 	CurrentShader = &Shader[Index];
 	glUseProgram( Shader[Index].Program );
 
@@ -759,11 +759,11 @@ void cUberShader::Bind( const ShaderHandle Index ) {
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
-ShaderHandle cUberShader::Find( const char* ShaderName ) {
+GelShaderHandle GelUberShader::Find( const char* ShaderName ) {
 	VLog( "+ Searching for Shader \"%s\"", ShaderName );
 
 	// Search the map for the specific pattern //
-	std::map<std::string, ShaderHandle>::iterator SearchIterator = ShaderLookup.find( ShaderName );
+	std::map<std::string, GelShaderHandle>::iterator SearchIterator = ShaderLookup.find( ShaderName );
 	
 	// If it was found, return the Id //
 	if ( SearchIterator != ShaderLookup.end() ) {
@@ -777,7 +777,7 @@ ShaderHandle cUberShader::Find( const char* ShaderName ) {
 	return 0;
 }
 // - ------------------------------------------------------------------------------------------ - //
-}; // namespace Gel //
+//}; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // defined(USES_OPENGL_2_FAMILY) //
 // - ------------------------------------------------------------------------------------------ - //

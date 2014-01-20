@@ -6,50 +6,50 @@
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-cUberShader* Default;
+GelUberShader* Default;
 // - ------------------------------------------------------------------------------------------ - //
-ShaderHandle FlatShader;
-ShaderHandle FlatShader2D;
-ShaderHandle FlatShader_Packed;
-ShaderHandle FlatShader2D_Packed;
-ShaderHandle ColorShader;
-ShaderHandle ColorShader2D;
-ShaderHandle TextureShader;
-ShaderHandle TextureShader2D;
-ShaderHandle TextureShader_Packed;
-ShaderHandle TextureShader2D_Packed;
-ShaderHandle ColorTextureShader;
-ShaderHandle ColorTextureShader2D;
-ShaderHandle ColorTextureShader_Packed;
-ShaderHandle ColorTextureShader2D_Packed;
-ShaderHandle TextureAlphaShader;
-ShaderHandle TextureAlphaShader2D;
-ShaderHandle TextureAlphaShader_Packed;
-ShaderHandle TextureAlphaShader2D_Packed;
-ShaderHandle ColorTextureAlphaShader;
-ShaderHandle ColorTextureAlphaShader2D;
-ShaderHandle ColorTextureAlphaShader_Packed;
-ShaderHandle ColorTextureAlphaShader2D_Packed;
-ShaderHandle NoiseShader;
-ShaderHandle ColorNoiseShader;
-ShaderHandle Noise1BitShader;
-ShaderHandle ColorNoise1BitShader;
-ShaderHandle NoiseShader_Packed;
-ShaderHandle ColorNoiseShader_Packed;
-ShaderHandle Noise1BitShader_Packed;
-ShaderHandle ColorNoise1BitShader_Packed;
+GelShaderHandle FlatShader;
+GelShaderHandle FlatShader2D;
+GelShaderHandle FlatShader_Packed;
+GelShaderHandle FlatShader2D_Packed;
+GelShaderHandle ColorShader;
+GelShaderHandle ColorShader2D;
+GelShaderHandle TextureShader;
+GelShaderHandle TextureShader2D;
+GelShaderHandle TextureShader_Packed;
+GelShaderHandle TextureShader2D_Packed;
+GelShaderHandle ColorTextureShader;
+GelShaderHandle ColorTextureShader2D;
+GelShaderHandle ColorTextureShader_Packed;
+GelShaderHandle ColorTextureShader2D_Packed;
+GelShaderHandle TextureAlphaShader;
+GelShaderHandle TextureAlphaShader2D;
+GelShaderHandle TextureAlphaShader_Packed;
+GelShaderHandle TextureAlphaShader2D_Packed;
+GelShaderHandle ColorTextureAlphaShader;
+GelShaderHandle ColorTextureAlphaShader2D;
+GelShaderHandle ColorTextureAlphaShader_Packed;
+GelShaderHandle ColorTextureAlphaShader2D_Packed;
+GelShaderHandle NoiseShader;
+GelShaderHandle ColorNoiseShader;
+GelShaderHandle Noise1BitShader;
+GelShaderHandle ColorNoise1BitShader;
+GelShaderHandle NoiseShader_Packed;
+GelShaderHandle ColorNoiseShader_Packed;
+GelShaderHandle Noise1BitShader_Packed;
+GelShaderHandle ColorNoise1BitShader_Packed;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 void gelShaderInit() {
 #ifdef USES_DESKTOP
 	// Use Files //	
-	Gel::Default = new Gel::cUberShader( "src/GEL3Graphics/Render/Embedded/GLSL/DefaultShader.json" );
+	Gel::Default = new GelUberShader( "src/GEL3Graphics/Render/Embedded/GLSL/DefaultShader.json" );
 #endif // USES DESKTOP //
 
 #ifdef USES_MOBILE
 	// Use Embedded //
-	Gel::Default = new Gel::cUberShader( DefaultShader_json, DefaultShader_json_Size, DefaultShader_glsl, DefaultShader_glsl_Size );
+	Gel::Default = new GelUberShader( DefaultShader_json, DefaultShader_json_Size, DefaultShader_glsl, DefaultShader_glsl_Size );
 #endif // USES_MOBILE //
 
 	// Find all the shaders //
@@ -86,7 +86,7 @@ void gelShaderInit() {
 	
 	// Enable this here, since all shaders will always require Attrib 0 to be enabled //
 	//glEnableVertexAttribArray( 0 );
-	Gel::cUberShader::EnableAttrib( 0 );
+	GelUberShader::EnableAttrib( 0 );
 }
 // - ------------------------------------------------------------------------------------------ - //
 void gelShaderExit() {

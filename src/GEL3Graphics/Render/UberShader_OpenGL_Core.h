@@ -17,11 +17,11 @@
 
 #include <Math/Matrix.h>
 // - ------------------------------------------------------------------------------------------ - //
-namespace Gel {
+//namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-typedef st32 ShaderHandle;
+typedef st32 GelShaderHandle;
 // - ------------------------------------------------------------------------------------------ - //
-class cUberShader_Shader {
+class GelUberShader_Shader {
 public:
 	// Program Parts //
 	GLuint Vertex;			// GL 2.0+ and GLSL 1.1+ -- Code: #version 110 -- GLES 2.0+ //
@@ -318,7 +318,7 @@ public:
 	}
 	
 public:		
-	cUberShader_Shader() :
+	GelUberShader_Shader() :
 		Vertex( 0 ),
 		Fragment( 0 ),
 #ifdef USES_GEOMETRY_SHADERS
@@ -335,29 +335,29 @@ public:
 	// No Destructor! //
 };
 // - ------------------------------------------------------------------------------------------ - //
-class cUberShader {
+class GelUberShader {
 public:
 	std::string FileName;
 	
-	std::vector<cUberShader_Shader> Shader;
-	std::map<std::string, ShaderHandle> ShaderLookup;
+	std::vector<GelUberShader_Shader> Shader;
+	std::map<std::string, GelShaderHandle> ShaderLookup;
 		
-	cUberShader_Shader* CurrentShader;
+	GelUberShader_Shader* CurrentShader;
 public:
-	cUberShader( const char* InFile );
-	cUberShader( const char* JSONFile, const char* GLSLFile );
-	cUberShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize );
-	~cUberShader();
+	GelUberShader( const char* InFile );
+	GelUberShader( const char* JSONFile, const char* GLSLFile );
+	GelUberShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize );
+	~GelUberShader();
 
 	void ProcessShader( const char* InFile );
 	void ProcessShader( const char* JSONFile, const char* GLSLFile );
 	void ProcessShader( const char* JSONData, const size_t JSONSize, const char* GLSLData, const size_t GLSLSize );
 	void ProcessShader( cJSON* root, const char* ShaderSource );
 	
-	ShaderHandle Find( const char* ShaderName );
-	void Bind( const ShaderHandle Index = 0 );
+	GelShaderHandle Find( const char* ShaderName );
+	void Bind( const GelShaderHandle Index = 0 );
 
-	void _Bind( const ShaderHandle Index = 0 );			// Doesn't Enable Attributes //
+	void _Bind( const GelShaderHandle Index = 0 );			// Doesn't Enable Attributes //
 	static void EnableAttrib( const int Index = 0 );
 	static void DisableAttrib( const int Index = 0 );
 
@@ -409,7 +409,7 @@ public:
 	inline void Attrib( const GLuint Index, const void* Ptr ) {
 		const GLint Size = CurrentShader->Attrib[Index].Count;	// Can be GL_BGRA, but not in GL ES //
 		const GLenum Type = CurrentShader->Attrib[Index].GLType;
-		const GLboolean Normalized = CurrentShader->Attrib[Index].Flags & cUberShader_Shader::cAttrib::FL_NORMALIZE;
+		const GLboolean Normalized = CurrentShader->Attrib[Index].Flags & GelUberShader_Shader::cAttrib::FL_NORMALIZE;
 		const GLsizei Stride = CurrentShader->Attrib[Index].Stride;
 
 		glVertexAttribPointer( Index, Size, Type, Normalized, Stride, Ptr );
@@ -514,7 +514,7 @@ public:
 	inline int BindUniformSColor( const char* Name, const GelSColor Color );	// 16 bit signed color  (255=1.0) //
 };
 // - ------------------------------------------------------------------------------------------ - //
-}; // namespace Gel //
+//}; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_OPENGL_2_FAMILY //
 // - ------------------------------------------------------------------------------------------ - //
