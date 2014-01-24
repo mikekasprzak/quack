@@ -65,6 +65,10 @@ SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 		sq_getinstanceup(v,-1,(void**)&Vec,0);
 		*Vec = Gel::Input::Steam::SteamPad[Index].LStick;
 
+		*Vec *= Real(1.4); // Simple Only! //
+		if ( Vec->Magnitude() < Real(0.14) )
+			*Vec = Vector2D::Zero;
+
 		sq_newslot(v,TableIndex,SQFalse);	// -2 //
 		sq_pop(v,2);						// -2 //	
 	}
@@ -83,6 +87,10 @@ SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 		sq_getinstanceup(v,-1,(void**)&Vec,0);
 		*Vec = Gel::Input::Steam::SteamPad[Index].RStick;
 
+		*Vec *= Real(1.4); // Simple Only! //
+		if ( Vec->Magnitude() < Real(0.14) )
+			*Vec = Vector2D::Zero;
+		
 		sq_newslot(v,TableIndex,SQFalse);	// -2 //
 		sq_pop(v,2);						// -2 //	
 	}
