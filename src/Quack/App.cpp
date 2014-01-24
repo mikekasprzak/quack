@@ -1,3 +1,4 @@
+#include "steam/steam_api.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "App.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -182,6 +183,18 @@ void AppInit() {
 //		//App::MySkel.Set( "Walk" );//"walk" );
 //		Log("**** DONE");		
 //	}
+
+	if ( SteamAPI_IsSteamRunning() ) {
+		Log("**** LOADING STEAM API");
+		SteamAPI_Init();
+		ISteamController* Ctr = SteamController();
+		Ctr->Init( "" );
+		Ctr->TriggerHapticPulse( 0, k_ESteamControllerPad_Left, 2000 );
+//		ISteamController Ctr = new ISteamController;
+//		Ctr.Init();
+//		delete Ctr;	
+		Log("**** DONE");		
+	}
 	
 	{
 		Log("**** GLAYOUT");		
@@ -272,6 +285,25 @@ void AppStep() {
 	App::SqStepProfiler.Start();
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
+
+	if ( SteamAPI_IsSteamRunning() ) {
+		static int Boof = 0;
+		Boof++;
+		if ( (Boof & 15) == 0 ) {
+			SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Left, 2000 );
+		}
+		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 100 );
+	//
+	//	if ( (Boof & 15) == 4 ) {
+	//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 1000 );
+	//	}
+	//	if ( (Boof & 15) == 8 ) {
+	//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 1000 );
+	//	}
+	//	if ( (Boof & 15) == 12 ) {
+	//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 1000 );
+	//	}
+	}
 
 //	App::MySkel.Step();
 	

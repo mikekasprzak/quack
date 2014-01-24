@@ -7,7 +7,7 @@
 #include <Texture/Texture.h>
 #include <Render/Render.h>
 // - ------------------------------------------------------------------------------------------ - //
-//#include <spine/spine.h>
+#include <Render/UberShader.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelShader {
 protected:
@@ -15,7 +15,7 @@ protected:
 
 	GelAssetPool::UID AssetUID;	
 
-//	spAtlas* Atlas;
+	GelUberShader* Shader;
 	
 public:
 	inline GelShader( const st32 _MyID ) :

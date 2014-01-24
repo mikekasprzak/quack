@@ -1,0 +1,30 @@
+
+# - ------------------------------------------------------------------------ - #
+ifdef USES_STEAM
+# - ------------------------------------------------------------------------ - #
+# Places to pull code and include files from #
+SRC_FOLDERS			+=	src/External/SteamWorks
+# - ------------------------------------------------------------------------ - #
+# Places to ONLY include from #
+INCLUDE_FOLDERS		+=	src/External/SteamWorks/include
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+# Libraries specific to this file (full include path or -l) #
+LIBRARIES			+=	src/External/SteamWorks/lib/linux64/libsteam_api.so
+# - ------------------------------------------------------------------------ - #
+# Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
+COPY_FILES			+=	src/External/SteamWorks/lib/linux64/libsteam_api.so
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+# Files to ignore (fully qualified paths only). src/Dummy/HackFolder/%.cpp #
+IGNORE_LIST			+=	
+# - ------------------------------------------------------------------------ - #
+
+# - ------------------------------------------------------------------------ - #
+# Defines specific to this file #
+DEFINES				+=	USES_STEAM
+# - ------------------------------------------------------------------------ - #
+endif # USES_STEAM #
+# - ------------------------------------------------------------------------ - #
