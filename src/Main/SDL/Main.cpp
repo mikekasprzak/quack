@@ -184,8 +184,65 @@ void MainInput() {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+namespace Gel {
+	char BaseDir[4096];	
+	char SaveDir[4096];	
+}; // namespace Gel //
+// - ------------------------------------------------------------------------------------------ - //
+// TODO: Rename this. ArgInit? SystemInit? Only non arg is the PID
+void ArgInit( int argc, char* argv[] ) {
+	Log( "-=- Application Execution Info -=-" );
+	
+	// Show Command Line //
+	{
+		Log( "Command Line Arguments: %i", argc );
+		for ( int idx = 0; idx < argc; idx++ ) {
+			Log( "argv[%i]: \"%s\"", idx, argv[idx] );	
+		}
+	}
+
+	// Get Base Directory //
+	{	
+//		// TODO: Add Arg Decomposer //
+//		if ( argc > 1 ) {
+//			// HACK: if more than 1 args, assume higher Log Level //
+//			LogLevel = 3;
+//		}
+
+		bool DetermineContentPath = true;
+		if ( argc > 2 ) {
+			if ( strcmp( argv[1], "-DIR" ) == 0 ) {
+				strcpy( Gel::BaseDir, argv[2] );
+				DetermineContentPath = false;
+			}
+		}
+
+		bool DetermineSavePath = true;
+		if ( argc > 4 ) {
+			if ( strcmp( argv[3], "-SAVE" ) == 0 ) {
+				strcpy( Gel::SaveDir, argv[4] );
+				DetermineSavePath = false;
+			}
+		}
+		
+		if ( DetermineContentPath )
+			sysGetContentPath( Gel::BaseDir, sizeof(Gel::BaseDir) );
+
+		if ( DetermineSavePath )
+			sysGetStoragePath( Gel::SaveDir, sizeof(Gel::SaveDir) );
+		
+		Log( "Content Base Directory: %s", Gel::BaseDir );
+		Log( "Storage Save Directory: %s", Gel::SaveDir );
+		Log( "" );
+	}
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 extern "C" int main( int argc, char* argv[] ) {
 	LogInit();
+
+	ArgInit( argc, argv );
 	
 	// Install C/Unix Signals //
 	signal( SIGTERM, term_func );

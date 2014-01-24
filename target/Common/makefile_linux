@@ -6,7 +6,8 @@ USES_GCC			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
 USES_STAT			:=	true		# Uses standard Unix Style File Info Lookups #
 USES_UNIX_TIME		:=	true		# Use Unix Timer Code #
-USES_UNIX_DIR		:=	true		# Use Unix Directory Code #
+USES_UNIX_DIR		:=	true		# Use Unix Directory Searching Code #
+USES_UNIX_PATH		:=	true		# Use Unix Base File Path Detection Code #
 # - ------------------------------------------------------------------------ - #
 USES_STDOUT			:=	true		# FileLog Output to use #
 USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
@@ -14,7 +15,7 @@ USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_UNIX USES_DESKTOP USES_GCC
-DEFINES				+=	USES_STAT USES_UNIX_TIME USES_UNIX_DIR
+DEFINES				+=	USES_STAT USES_UNIX_TIME USES_UNIX_DIR USES_UNIX_PATH
 DEFINES				+=	USES_STDOUT USES_FLOG_COLORS
 # - ------------------------------------------------------------------------ - #
 

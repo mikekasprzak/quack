@@ -72,6 +72,7 @@ public:
 				Assets.push_back( GelAsset() );
 				
 				std::string FullFileName;
+				FullFileName += Gel::BaseDir;
 #ifdef USES_ANDROID
 				FullFileName += "/mnt/sdcard/work/";
 #endif // USES_ANDROID //

@@ -1,6 +1,8 @@
 // - ------------------------------------------------------------------------------------------ - //
 #if defined(USES_OPENGL_2_FAMILY)
 // - ------------------------------------------------------------------------------------------ - //
+#include <System/System.h>
+
 #include "DefaultShader.h"
 #include "Embedded/GLSL/EmbeddedShaders.h"	// DefaultShader_json, etc //
 // - ------------------------------------------------------------------------------------------ - //
@@ -44,7 +46,10 @@ GelShaderHandle ColorNoise1BitShader_Packed;
 void gelShaderInit() {
 #ifdef USES_DESKTOP
 	// Use Files //	
-	Gel::Default = new GelUberShader( "src/GEL3Graphics/Render/Embedded/GLSL/DefaultShader.json" );
+	std::string ShaderFile;
+	ShaderFile += Gel::BaseDir;
+	ShaderFile += "src/GEL3Graphics/Render/Embedded/GLSL/DefaultShader.json";
+	Gel::Default = new GelUberShader( ShaderFile.c_str() );
 #endif // USES DESKTOP //
 
 #ifdef USES_MOBILE
