@@ -58,9 +58,6 @@ public:
 			{
 				std::string TheDir;
 				TheDir += Gel::BaseDir;
-#ifdef USES_ANDROID
-				TheDir += "/mnt/sdcard/work/";
-#endif // USES_ANDROID //
 				TheDir += DirName;
 				// Create a GelDirectory, and populate it //
 				GelDirectory* Dir = new_GelDirectory( TheDir.c_str() );//DirName );
