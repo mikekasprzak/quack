@@ -15,3 +15,5 @@ src/Main/Android/libs
 src/Main/Android/obj
 src/Main/Android/local.properties
 src/Main/Android/project.properties
+src/External/SteamWorks/include
+src/External/SteamWorks/lib
