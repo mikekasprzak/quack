@@ -1,6 +1,3 @@
-#ifdef USES_STEAM
-#include "steam/steam_api.h"
-#endif // USES_STEAM //
 // - ------------------------------------------------------------------------------------------ - //
 #include "App.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -185,20 +182,6 @@ void AppInit() {
 //		//App::MySkel.Set( "Walk" );//"walk" );
 //		Log("**** DONE");		
 //	}
-
-#ifdef USES_STEAM
-	if ( SteamAPI_IsSteamRunning() ) {
-		Log("**** LOADING STEAM API");
-		SteamAPI_Init();
-		ISteamController* Ctr = SteamController();
-		Ctr->Init( "" );
-		Ctr->TriggerHapticPulse( 0, k_ESteamControllerPad_Left, 2000 );
-//		ISteamController Ctr = new ISteamController;
-//		Ctr.Init();
-//		delete Ctr;	
-		Log("**** DONE");		
-	}
-#endif // USES_STEAM //
 	
 	{
 		Log("**** GLAYOUT");		
@@ -290,7 +273,7 @@ void AppStep() {
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
 
-#ifdef USES_STEAM
+/*#ifdef USES_STEAM
 	if ( SteamAPI_IsSteamRunning() ) {
 		static int Boof = 0;
 		Boof++;
@@ -310,7 +293,7 @@ void AppStep() {
 	//	}
 	}
 #endif // USES_STEAM //
-
+*/
 //	App::MySkel.Step();
 	
 	// *** //
