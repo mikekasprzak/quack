@@ -1,36 +1,38 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_INPUT_INPUT_DEVICE_CONTROLLER_XINPUT_H__
-#define __GEL_INPUT_INPUT_DEVICE_CONTROLLER_XINPUT_H__
+#ifndef __GEL_INPUT_INPUT_CONTROLLER_STEAMCONTROLLER_H__
+#define __GEL_INPUT_INPUT_CONTROLLER_STEAMCONTROLLER_H__
 // - ------------------------------------------------------------------------------------------ - //
-#ifdef USES_XINPUT
-// - ------------------------------------------------------------------------------------------ - //
-#include <Math/Vector.h>
+#include <Lib/Lib.h>
+#include <Math/Math.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
+	extern bool IsSteamRunning;
+// - ------------------------------------------------------------------------------------------ - //
 namespace Input {
 // - ------------------------------------------------------------------------------------------ - //
-namespace XInput {
+namespace Steam {
 // - ------------------------------------------------------------------------------------------ - //
-// This exists so all the internal XInput stuff can be completely hidden away //
-struct XGamePad {
+// This exists so all the internal SteamController stuff can be completely hidden away //
+struct GelSteamPad {
 	st32 Button;
 	Vector2D LStick;
 	Vector2D RStick;
-	Real LTrigger;
-	Real RTrigger;
-	Vector2D DPad;
+//	Real LTrigger;
+//	Real RTrigger;
+//	Vector2D DPad;
 };
 // - ------------------------------------------------------------------------------------------ - //
-extern XGamePad GamePad[4];
+extern GelSteamPad SteamPad[16];
 // - ------------------------------------------------------------------------------------------ - //
 void Init();
 void InitEvent( void* = 0 );
-
 void Poll();
 void PollEvent( void* = 0 );
+void Exit();
+void ExitEvent( void* = 0 );
 
-void LoseFocusEvent( void* = 0 );
-void GainFocusEvent( void* = 0 );
+//void LoseFocusEvent( void* = 0 );
+//void GainFocusEvent( void* = 0 );
 
 size_t Size();
 
@@ -42,12 +44,11 @@ bool IsConnected();
 bool HasConnectionChanged( const int Index );
 bool HasConnectionChanged();
 // - ------------------------------------------------------------------------------------------ - //
-}; // namespace XInput //
+}; // namespace Steam //
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Input //
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // USES_XINPUT //
-// - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_INPUT_INPUT_DEVICE_CONTROLLER_XINPUT_H__ //
+#endif // __GEL_INPUT_INPUT_CONTROLLER_STEAMCONTROLLER_H__ //
 // - ------------------------------------------------------------------------------------------ - //

@@ -5,16 +5,16 @@
 #include "Input_Core.h"
 
 // ** Individual Devices ** //
-//#include "Input_Device_Keyboard.h"
-//#include "Input_Device_Mouse.h"
-//#include "Input_Device_Touch.h"
-//#include "Input_Device_Pen.h"
-//#include "Input_Device_Accelerometer.h"
-#include "Input_Device_Controller.h"
-//#include "Input_Device_Camera.h"
-//#include "Input_Device_DepthCamera.h"
-//#include "Input_Device_MotionController.h"
-//#include "Input_Device_3DMouse.h"
+//#include "Input_Keyboard.h"
+//#include "Input_Mouse.h"
+//#include "Input_Touch.h"
+//#include "Input_Pen.h"
+//#include "Input_Accelerometer.h"
+#include "Input_Controller.h"
+//#include "Input_Camera.h"
+//#include "Input_DepthCamera.h"
+//#include "Input_MotionController.h"
+//#include "Input_3DMouse.h"
 
 // ** High Level Macro Devices ** //
 //#include "Input_Pointer.h"	// Mice, Pens, Touch, pointing Motion Controllers, (junk) Accelerometer //

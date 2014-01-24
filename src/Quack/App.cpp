@@ -274,7 +274,7 @@ void AppStep() {
 	App::SqStepProfiler.Stop();
 
 #ifdef USES_STEAM
-	{
+	if ( Gel::IsSteamRunning ) {
 		static int Boof = 0;
 		Boof++;
 		if ( (Boof & 63) == 0 ) {
