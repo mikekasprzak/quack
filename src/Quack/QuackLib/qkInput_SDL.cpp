@@ -22,6 +22,8 @@ SQInteger qkInputPadSDLGet( HSQUIRRELVM v ) {
 	
 	// Create a new table to store the data we want to return //
 	sq_newtable(v);
+	
+	// TODO: Store Data //
 
 	return SQ_RETURN;
 }

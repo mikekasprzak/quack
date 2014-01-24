@@ -17,6 +17,10 @@
 // - One Menu button (Start or Option)
 // - One Extra button (Select or RStick Click)
 SQInteger qkInputPadGet( HSQUIRRELVM v ) {	
+#ifdef USES_STEAM
+	if ( qkInputPadSteamGetSimple(v) != SQ_ERROR ) { /* Success */ }
+	else
+#endif // USES_STEAM //
 #ifdef USES_XINPUT
 	if ( qkInputPadXInputGetSimple(v) != SQ_ERROR ) { /* Success */ }
 	else
@@ -47,6 +51,9 @@ SQRegFunction qkInput_funcs[] = {
 	_DECL_FUNC(qkInputPadSDLGet,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadSDLGetSimple,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadSDLProxyGetSimple,2,_SC(".i")),
+
+	_DECL_FUNC(qkInputPadSteamGet,2,_SC(".i")),
+	_DECL_FUNC(qkInputPadSteamGetSimple,2,_SC(".i")),
 
 	_DECL_FUNC(qkInputPadStubGetSimple,2,_SC(".i")),
 

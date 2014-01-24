@@ -11,6 +11,9 @@ SQInteger qkInputPadSDLGet( HSQUIRRELVM v );
 SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v );
 SQInteger qkInputPadSDLProxyGetSimple( HSQUIRRELVM v );	// Keyboard (Simulated Pad) //
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadSteamGet( HSQUIRRELVM v );
+SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v );
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadStubGetSimple( HSQUIRRELVM v );
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_QUACKLIB_QKINPUT_H__ //
