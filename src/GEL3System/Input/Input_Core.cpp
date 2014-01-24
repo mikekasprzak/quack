@@ -10,6 +10,10 @@ void Init() {
 	#ifdef USES_XINPUT
 	XInput::InitEvent();
 	#endif // USES_XINPUT //
+
+	#ifdef USES_STEAM
+	Steam::InitEvent();
+	#endif // USES_STEAM //
 	
 	#ifdef USES_SDL2
 	SDLInput::InitEvent();
@@ -20,6 +24,10 @@ void Exit() {
 	#ifdef USES_XINPUT
 //	XInput::ExitEvent();
 	#endif // USES_XINPUT //
+
+	#ifdef USES_STEAM
+	Steam::ExitEvent();
+	#endif // USES_STEAM //
 	
 	#ifdef USES_SDL2
 	SDLInput::ExitEvent();

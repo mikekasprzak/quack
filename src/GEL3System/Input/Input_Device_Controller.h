@@ -4,6 +4,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "Input_Device_Controller_XInput.h"
 #include "Input_Device_Controller_SDLInput.h"
+#include "Input_Device_Controller_SteamController.h"
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_INPUT_INPUT_DEVICE_CONTROLLER_H__ //
 // - ------------------------------------------------------------------------------------------ - //

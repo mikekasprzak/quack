@@ -273,14 +273,29 @@ void AppStep() {
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
 
-/*#ifdef USES_STEAM
-	if ( SteamAPI_IsSteamRunning() ) {
+#ifdef USES_STEAM
+	{
 		static int Boof = 0;
 		Boof++;
-		if ( (Boof & 15) == 0 ) {
-			SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Left, 2000 );
+		if ( (Boof & 63) == 0 ) {
+			for (st idx = 0; idx < Gel::Input::Steam::Size(); idx++ ) {
+				if ( Gel::Input::Steam::IsConnected( idx ) ) {
+					Log("%i -- L: %f,%f  R: %f,%f  B:%x",
+						idx, 
+						Gel::Input::Steam::SteamPad[idx].LStick.x.ToFloat(),
+						Gel::Input::Steam::SteamPad[idx].LStick.y.ToFloat(),
+						Gel::Input::Steam::SteamPad[idx].RStick.x.ToFloat(),
+						Gel::Input::Steam::SteamPad[idx].RStick.y.ToFloat(),
+						Gel::Input::Steam::SteamPad[idx].Button
+						);
+				}
+			}
 		}
-		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 100 );
+
+//		if ( (Boof & 15) == 0 ) {
+//			SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Left, 2000 );
+//		}
+//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 100 );
 	//
 	//	if ( (Boof & 15) == 4 ) {
 	//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 1000 );
@@ -293,7 +308,7 @@ void AppStep() {
 	//	}
 	}
 #endif // USES_STEAM //
-*/
+
 //	App::MySkel.Step();
 	
 	// *** //

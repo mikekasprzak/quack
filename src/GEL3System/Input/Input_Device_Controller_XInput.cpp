@@ -110,7 +110,7 @@ void PollEvent( void* ) {
 				Log( "** XInput Controller %i %s", idx, IsConnected(idx) ? "Connected" : "Disconnected" );
 			}
 		}
-	}	
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void LoseFocusEvent( void* ) {
