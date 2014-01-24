@@ -14,7 +14,8 @@ INCLUDE_FOLDERS		+=	src/External/SteamWorks/include
 LIBRARIES			+=	src/External/SteamWorks/lib/linux64/libsteam_api.so
 # - ------------------------------------------------------------------------ - #
 # Files to be copied specific to this build (.dll's, .so's, .sh's, etc) #
-COPY_FILES			+=	src/External/SteamWorks/lib/linux64/libsteam_api.so
+COPY_FILES			+=	src/External/SteamWorks/lib/linux64/libsteam_api.so \
+						src/External/SteamWorks/steam_appid.txt
 # - ------------------------------------------------------------------------ - #
 
 # - ------------------------------------------------------------------------ - #

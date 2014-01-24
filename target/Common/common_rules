@@ -1,9 +1,9 @@
 # - ------------------------------------------------------------------------ - #
 ifndef NON_STANDARD_RUN
 run: $(TARGET)
-	$(RUN_PREFIX) ./$(TARGET) -DIR ./ -SAVE $(TARGET_DIR)/ $(RUN_SUFFIX)
+	$(RUN_PREFIX) ./run.sh $(RUN_SUFFIX)
 debug: $(TARGET)
-	gdb --args $(RUN_PREFIX) ./$(TARGET) -DIR ./ -SAVE $(TARGET_DIR)/ $(RUN_SUFFIX)
+	$(RUN_PREFIX) ./debug.sh $(RUN_SUFFIX)
 endif # NON_STANDARD_RUN #
 # - ------------------------------------------------------------------------ - #
 clean:
