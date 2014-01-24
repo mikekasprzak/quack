@@ -265,6 +265,8 @@ extern "C" int main( int argc, char* argv[] ) {
 	gelLogCompilerDetails();
 
 	// *** //
+	
+	Gel::IsSteamRunning = false;
 
 #ifdef USES_STEAM
 	Log( "-=- Steam Info -=-" );
@@ -373,6 +375,11 @@ extern "C" int main( int argc, char* argv[] ) {
 		
 		for ( int Frame = 0; Frame < FramesOfWorkComplete; Frame++ ) {
 			if ( !App::Exit ) {
+				#ifdef USES_STEAM
+				if ( Gel::IsSteamRunning ) {
+					SteamAPI_RunCallbacks();
+				}
+				#endif // USES_STEAM //
 				MainInput();		// Poll Input Devices //
 				AppStep();			// *** STEP *** //
 				App::FrameTime++;
@@ -416,6 +423,12 @@ extern "C" int main( int argc, char* argv[] ) {
 	AppExit();		// Do Shutdown //
 	
 	// *** //
+
+#ifdef USES_STEAM
+	if ( Gel::IsSteamRunning ) {
+		SteamAPI_Shutdown();
+	}
+#endif // USES_STEAM //
 
 //	// **** //
 //	
