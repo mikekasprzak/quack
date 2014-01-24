@@ -131,6 +131,14 @@ SQInteger qkInputPadXInputGetSimple( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadXInputPulse( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadXInputVibrate( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
 #else // USES_XINPUT //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadXInputGet( HSQUIRRELVM v ) {
@@ -138,6 +146,12 @@ SQInteger qkInputPadXInputGet( HSQUIRRELVM v ) {
 }
 SQInteger qkInputPadXInputGetSimple( HSQUIRRELVM v ) {
 	return SQ_VOID;
+}
+SQInteger qkInputPadXInputPulse( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+SQInteger qkInputPadXInputVibrate( HSQUIRRELVM v ) {
+	return SQ_VOID;	
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_XINPUT //

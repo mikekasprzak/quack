@@ -229,6 +229,14 @@ class qkPad {
 		else {
 			// Something was Pressed! //
 			LStickPressed = LStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
+
+			local PadIndex = 1; //Index; //
+			local Amount = 200;
+			if ( LStickMag > QK_STICK_FASTZONE )
+				Amount = 1600;
+			else if ( LStickMag > 0 )
+				Amount = 400;
+			qkInputPadPulse(PadIndex,0,Amount);
 			
 			// NOTE: Detect Gestures Here (Double Tap, at least) //
 			
@@ -292,6 +300,14 @@ class qkPad {
 		else {
 			// Something was Pressed! //
 			RStickPressed = RStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
+			
+			local PadIndex = 1; //Index; //
+			local Amount = 200;
+			if ( RStickMag > QK_STICK_FASTZONE )
+				Amount = 1600;
+			else if ( RStickMag > 0 )
+				Amount = 400;
+			qkInputPadPulse(PadIndex,1,Amount);
 			
 			// NOTE: Detect Gestures Here (Double Tap, at least) //
 			

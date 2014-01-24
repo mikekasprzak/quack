@@ -37,6 +37,9 @@ void InitEvent( void* = 0 );
 void Poll();
 void PollEvent( void* = 0 );
 
+void Pulse( const int Index, const int Motor, const int Amount );
+void Vibrate( const int Index, const int Motor, const int Amount );
+
 size_t Size();
 size_t DevicesConnected();
 

@@ -260,6 +260,14 @@ SQInteger qkInputPadSDLProxyGetSimple( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadSDLPulse( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadSDLVibrate( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
 #else // USES_SDL2 //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSDLGet( HSQUIRRELVM v ) {
@@ -270,6 +278,12 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 }
 SQInteger qkInputPadSDLProxyGetSimple( HSQUIRRELVM v ) {
 	return SQ_VOID;
+}
+SQInteger qkInputPadSDLPulse( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+SQInteger qkInputPadSDLVibrate( HSQUIRRELVM v ) {
+	return SQ_VOID;	
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_SDL2 //

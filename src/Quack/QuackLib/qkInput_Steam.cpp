@@ -98,6 +98,38 @@ SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadSteamPulse( HSQUIRRELVM v ) {
+	SQInteger Index = 0;
+	int NumArgs = sq_gettop(v);
+	if ( NumArgs >= 2 ) {
+		sq_getinteger(v,2,&Index);
+		if ( Index >= (int)Gel::Input::Steam::Size() ) {
+			return SQ_ERROR;
+		}
+	}
+
+	SQInteger Motor = 0;
+	if ( NumArgs >= 3 ) {
+		sq_getinteger(v,3,&Motor);
+		if ( Index > 1 ) {
+			return SQ_ERROR;
+		}
+	}
+
+	SQInteger Amount = 1000;
+	if ( NumArgs >= 4 ) {
+		sq_getinteger(v,4,&Amount);
+	}
+
+	Gel::Input::Steam::Pulse( Index, Motor, Amount );
+	
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadSteamVibrate( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
 #else // USES_STEAM //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
@@ -105,6 +137,12 @@ SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
 }
 SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 	return SQ_VOID;
+}
+SQInteger qkInputPadSteamPulse( HSQUIRRELVM v ) {
+	return SQ_VOID;	
+}
+SQInteger qkInputPadSteamVibrate( HSQUIRRELVM v ) {
+	return SQ_VOID;	
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_STEAM //

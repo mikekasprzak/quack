@@ -40,6 +40,46 @@ SQInteger qkInputPadGet( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadPulse( HSQUIRRELVM v ) {	
+#ifdef USES_STEAM
+	if ( qkInputPadSteamPulse(v) != SQ_ERROR ) { /* Success */ }
+	else
+#endif // USES_STEAM //
+#ifdef USES_XINPUT
+	if ( qkInputPadXInputPulse(v) != SQ_ERROR ) { /* Success */ }
+	else
+#endif // USES_XINPUT //
+#ifdef USES_SDL2
+	if ( qkInputPadSDLPulse(v) != SQ_ERROR ) { /* Success */ }
+	else
+#endif // USES_SDL2 //
+	{
+	}
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadVibrate( HSQUIRRELVM v ) {	
+#ifdef USES_STEAM
+	if ( qkInputPadSteamVibrate(v) != SQ_ERROR ) { /* Success */ }
+	else
+#endif // USES_STEAM //
+#ifdef USES_XINPUT
+	if ( qkInputPadXInputVibrate(v) != SQ_ERROR ) { /* Success */ }
+	else
+#endif // USES_XINPUT //
+#ifdef USES_SDL2
+	if ( qkInputPadSDLVibrate(v) != SQ_ERROR ) { /* Success */ }
+	else
+#endif // USES_SDL2 //
+	{
+	}
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
 SQRegFunction qkInput_funcs[] = {
 	// 1: Function Name.
@@ -47,17 +87,25 @@ SQRegFunction qkInput_funcs[] = {
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	_DECL_FUNC(qkInputPadXInputGet,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadXInputGetSimple,2,_SC(".i")),
+	_DECL_FUNC(qkInputPadXInputPulse,-2,_SC(".i")),
+	_DECL_FUNC(qkInputPadXInputVibrate,-2,_SC(".i")),
 
 	_DECL_FUNC(qkInputPadSDLGet,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadSDLGetSimple,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadSDLProxyGetSimple,2,_SC(".i")),
+	_DECL_FUNC(qkInputPadSDLPulse,-2,_SC(".i")),
+	_DECL_FUNC(qkInputPadSDLVibrate,-2,_SC(".i")),
 
 	_DECL_FUNC(qkInputPadSteamGet,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadSteamGetSimple,2,_SC(".i")),
+	_DECL_FUNC(qkInputPadSteamPulse,-2,_SC(".i")),
+	_DECL_FUNC(qkInputPadSteamVibrate,-2,_SC(".i")),
 
 	_DECL_FUNC(qkInputPadStubGetSimple,2,_SC(".i")),
 
 	_DECL_FUNC(qkInputPadGet,2,_SC(".i")),
+	_DECL_FUNC(qkInputPadPulse,-2,_SC(".i")),
+	_DECL_FUNC(qkInputPadVibrate,-2,_SC(".i")),
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
