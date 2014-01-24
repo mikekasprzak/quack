@@ -1,5 +1,5 @@
 #!/bin/sh
-# run.sh - Run the currently built game
+# debug.sh - Debug the currently built game
 
 CONFIGDIR=config
 OUTPUTDIR=output
@@ -41,6 +41,6 @@ TARGET_DIR=$OUTPUTDIR/$SKU_NAME-$TARGET_NAME
 
 CURRENT_DIR=`pwd`
 
-(cd $TARGET_DIR/ && ./$PROJECT.$EXT -DIR $CURRENT_DIR/ -SAVE ./ $@)
+(cd $TARGET_DIR/ && cgdb --args ./$PROJECT.$EXT -DIR $CURRENT_DIR/ -SAVE ./)
 
 exit 0
