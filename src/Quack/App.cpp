@@ -291,21 +291,6 @@ void AppStep() {
 				}
 			}
 		}
-
-//		if ( (Boof & 15) == 0 ) {
-//			SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Left, 2000 );
-//		}
-//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 100 );
-	//
-	//	if ( (Boof & 15) == 4 ) {
-	//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 1000 );
-	//	}
-	//	if ( (Boof & 15) == 8 ) {
-	//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 1000 );
-	//	}
-	//	if ( (Boof & 15) == 12 ) {
-	//		SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Right, 1000 );
-	//	}
 	}
 #endif // USES_STEAM //
 

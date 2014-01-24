@@ -1,6 +1,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 #ifdef USES_STEAM
 // - ------------------------------------------------------------------------------------------ - //
+//SteamController()->TriggerHapticPulse( 0, k_ESteamControllerPad_Left, 2000 );
+// 0 = the controller Id //
+// - ------------------------------------------------------------------------------------------ - //
 #include "steam/steam_api.h"
 #include "Input_Core.h"
 #include "Input_Controller_SteamController.h"
