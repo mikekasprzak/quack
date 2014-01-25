@@ -18,7 +18,8 @@ enum {
 };
 // - ------------------------------------------------------------------------------------------ - //
 st32 IndexBase;
-SDLGamePad GamePad[MAX_GAMEPADS];
+st32 ProxyIndexBase;
+SDLGamePad Pad[MAX_GAMEPADS+1];
 // - ------------------------------------------------------------------------------------------ - //
 SDL_Joystick* State[MAX_GAMEPADS];
 // - ------------------------------------------------------------------------------------------ - //
@@ -43,7 +44,7 @@ void Init() {
 	// Open All Joysticks //
 	for ( st32 idx = 0; idx < DevicesConnected(); idx++ ) {
 		State[idx] = SDL_JoystickOpen( idx );
-		GamePad[idx].NumAxis = SDL_JoystickNumAxes(State[idx]);
+		Pad[idx].NumAxis = SDL_JoystickNumAxes(State[idx]);
 	}
 	
 	// Connect Signals (Functions to be called) //		
@@ -52,6 +53,7 @@ void Init() {
 // - ------------------------------------------------------------------------------------------ - //
 void InitEvent( void* _IndexBase ) {
 	IndexBase = (st)_IndexBase;
+	ProxyIndexBase = IndexBase + MAX_GAMEPADS;
 
 	Init();
 	Poll();
@@ -61,6 +63,7 @@ void InitEvent( void* _IndexBase ) {
 	for ( st32 idx = 0; idx < DevicesConnected(); idx++ ) {
         Log( "%i - %s", idx, SDL_JoystickName(State[idx]) );
 	}
+    Log( "%i - %s", MAX_GAMEPADS, "Proxy Gamepad (keyboard)" );
 }
 // - ------------------------------------------------------------------------------------------ - //
 void Poll() {
@@ -71,39 +74,39 @@ void Poll() {
 		SDL_Joystick* Joy = State[idx];
 		
 		// Buttons //
-		GamePad[idx].Button = 0;
+		Pad[idx].Button = 0;
 		for ( int idx2 = 0; idx2 < SDL_JoystickNumButtons(Joy); idx2++ ) {
-			GamePad[idx].Button |= SDL_JoystickGetButton( Joy, idx2 ) << idx2;
+			Pad[idx].Button |= SDL_JoystickGetButton( Joy, idx2 ) << idx2;
 		}
 		
 		// Axis //
 		for ( int idx2 = 0; idx2 < SDL_JoystickNumAxes(Joy); idx2++ ) {
-			GamePad[idx].Axis[idx2] = SDL_JoystickGetAxis( Joy, idx2 ) / 32768.0f;
+			Pad[idx].Axis[idx2] = SDL_JoystickGetAxis( Joy, idx2 ) / 32768.0f;
 		}
 		
 		// Hat //
 		if ( SDL_JoystickNumHats(Joy) ) {
-			GamePad[idx].Hat = SDL_JoystickGetHat( Joy, 0 );
+			Pad[idx].Hat = SDL_JoystickGetHat( Joy, 0 );
 		}
 		else {
-			GamePad[idx].Hat = 0;
+			Pad[idx].Hat = 0;
 		}
 		
 		// DPad (Modified Hat) //
-		GamePad[idx].DPad.x = 0.0f;
-		GamePad[idx].DPad.y = 0.0f;
-		if ( GamePad[idx].Hat & SDL_HAT_LEFT ) {
-			GamePad[idx].DPad.x = -1.0f;
+		Pad[idx].DPad.x = 0.0f;
+		Pad[idx].DPad.y = 0.0f;
+		if ( Pad[idx].Hat & SDL_HAT_LEFT ) {
+			Pad[idx].DPad.x = -1.0f;
 		}
-		else if ( GamePad[idx].Hat & SDL_HAT_RIGHT ) {
-			GamePad[idx].DPad.x = +1.0f;
+		else if ( Pad[idx].Hat & SDL_HAT_RIGHT ) {
+			Pad[idx].DPad.x = +1.0f;
 		}
 
-		if ( GamePad[idx].Hat & SDL_HAT_UP ) {
-			GamePad[idx].DPad.y = +1.0f;
+		if ( Pad[idx].Hat & SDL_HAT_UP ) {
+			Pad[idx].DPad.y = +1.0f;
 		}
-		else if ( GamePad[idx].Hat & SDL_HAT_DOWN ) {
-			GamePad[idx].DPad.y = -1.0f;
+		else if ( Pad[idx].Hat & SDL_HAT_DOWN ) {
+			Pad[idx].DPad.y = -1.0f;
 		}			
 	}
 }
@@ -113,7 +116,7 @@ void PollEvent( void* ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 st32 Size() {
-	return MAX_GAMEPADS;
+	return MAX_GAMEPADS+1;
 }
 // - ------------------------------------------------------------------------------------------ - //
 st32 DevicesConnected() {

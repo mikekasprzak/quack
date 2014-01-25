@@ -343,7 +343,7 @@ function qkInputMasterPadGet( Index /* Ignored */ ) {
 
 	Ret.Pads <- [];
 	local Pads = Ret.Pads;
-	for ( local idx = 0; idx < 4; idx++ ) {
+	for ( local idx = 0; idx < qkInputPadCount(); idx++ ) {
 		local Pad = qkInputPadGet(idx);
 		if ( Pad.Connected ) {
 			Pads.push( Pad );

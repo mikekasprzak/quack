@@ -11,6 +11,8 @@ void Init();
 void Exit();
 
 extern GelSignal Poll;	// Was void Poll(), but a Signal is cleaner //
+
+extern st32 Devices;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Input //
 }; // namespace Gel //

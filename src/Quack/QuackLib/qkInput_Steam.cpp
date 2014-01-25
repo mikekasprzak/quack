@@ -22,7 +22,7 @@ SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
 		TrueIndex = Index - Gel::Input::Steam::IndexBase;
 		if ( TrueIndex < 0 )
 			return SQ_ERROR;
-		else if ( TrueIndex > (int)Gel::Input::Steam::Size() ) {
+		else if ( TrueIndex >= (int)Gel::Input::Steam::Size() ) {
 			return SQ_ERROR;
 		}
 	}
@@ -85,7 +85,7 @@ SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 		TrueIndex = Index - Gel::Input::Steam::IndexBase;
 		if ( TrueIndex < 0 )
 			return SQ_ERROR;
-		else if ( TrueIndex > (int)Gel::Input::Steam::Size() ) {
+		else if ( TrueIndex >= (int)Gel::Input::Steam::Size() ) {
 			return SQ_ERROR;
 		}
 	}
@@ -164,7 +164,7 @@ SQInteger qkInputPadSteamPulse( HSQUIRRELVM v ) {
 		TrueIndex = Index - Gel::Input::Steam::IndexBase;
 		if ( TrueIndex < 0 )
 			return SQ_ERROR;
-		else if ( TrueIndex > (int)Gel::Input::Steam::Size() ) {
+		else if ( TrueIndex >= (int)Gel::Input::Steam::Size() ) {
 			return SQ_ERROR;
 		}
 	}

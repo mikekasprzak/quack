@@ -23,7 +23,8 @@ struct SDLGamePad {
 };
 // - ------------------------------------------------------------------------------------------ - //
 extern st32 IndexBase;
-extern SDLGamePad GamePad[];
+extern st32 ProxyIndexBase;
+extern SDLGamePad Pad[];
 // - ------------------------------------------------------------------------------------------ - //
 void Exit();
 void ExitEvent( void* = 0 );

@@ -4,7 +4,7 @@
 #include "QuackLib_Internal.h"
 // - ------------------------------------------------------------------------------------------ - //
 //#include <System/System.h>
-//#include <Input/Input.h>
+#include <Input/Input.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include "qkInput.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -27,7 +27,7 @@ SQInteger qkInputPadGet( HSQUIRRELVM v ) {
 #endif // USES_XINPUT //
 #ifdef USES_SDL2
 	if ( qkInputPadSDLGetSimple(v) != SQ_ERROR ) { /* Success */ }
-	else if ( qkInputPadSDLProxyGetSimple(v) != SQ_ERROR ) { /* Success (Never Fails) - Proxy Gamepad (Keyboard) */ }
+	else if ( qkInputPadSDLProxyGetSimple(v) != SQ_ERROR ) { /* Success */ }
 	else
 #endif // USES_SDL2 //
 	{
@@ -80,6 +80,13 @@ SQInteger qkInputPadVibrate( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qkInputPadCount( HSQUIRRELVM v ) {
+	sq_pushinteger(v,Gel::Input::Devices);
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
 SQRegFunction qkInput_funcs[] = {
 	// 1: Function Name.
@@ -102,6 +109,8 @@ SQRegFunction qkInput_funcs[] = {
 	_DECL_FUNC(qkInputPadSteamVibrate,-2,_SC(".i")),
 
 	_DECL_FUNC(qkInputPadStubGetSimple,2,_SC(".i")),
+	
+	_DECL_FUNC(qkInputPadCount,0,NULL),
 
 	_DECL_FUNC(qkInputPadGet,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadPulse,-2,_SC(".i")),

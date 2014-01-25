@@ -14,7 +14,7 @@ void _spAtlasPage_createTexture( spAtlasPage* self, const char* path ) {
 	
 	// TODO: Read Atlas information to determine if we should smooth or not //
 	
-	GelTexturePool::UID Asset = Gel::TexturePool.Load( path, true, false );
+	/*GelTexturePool::UID*/ st Asset = Gel::TexturePool.Load( path, true, false );
 	self->rendererObject = (void*)Asset;
 	self->width = Gel::TexturePool[Asset].GetWidth();
 	self->height = Gel::TexturePool[Asset].GetHeight();
