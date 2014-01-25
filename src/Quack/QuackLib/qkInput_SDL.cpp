@@ -26,8 +26,92 @@ SQInteger qkInputPadSDLGet( HSQUIRRELVM v ) {
 	
 	// Create a new table to store the data we want to return //
 	sq_newtable(v);
+	int TableIndex = sq_gettop(v);
 	
-	// TODO: Store Data //
+	sqslot_int(v,"Index", Index);
+	sqslot_bool(v,"Connected", true); // Not Optional //
+	
+	// Buttons //
+	u32 ButtonMask = Gel::Input::SDLInput::Pad[TrueIndex].Button;		
+	sqslot_int(v,"Button", ButtonMask);
+
+	// Sticks (NOT FLIPPED!) //
+	Vector2D LStick;
+	if ( Gel::Input::SDLInput::Pad[TrueIndex].NumAxis > 0 )
+		LStick.x = Gel::Input::SDLInput::Pad[TrueIndex].Axis[0];
+	if ( Gel::Input::SDLInput::Pad[TrueIndex].NumAxis > 1 )
+		LStick.y = Gel::Input::SDLInput::Pad[TrueIndex].Axis[1];
+
+	Vector2D DPad = Gel::Input::SDLInput::Pad[TrueIndex].DPad;
+
+	Vector2D RStick;
+	if ( Gel::Input::SDLInput::Pad[TrueIndex].NumAxis > 3 )
+		RStick.x = Gel::Input::SDLInput::Pad[TrueIndex].Axis[3];
+	if ( Gel::Input::SDLInput::Pad[TrueIndex].NumAxis > 4 )
+		RStick.y = Gel::Input::SDLInput::Pad[TrueIndex].Axis[4];
+
+	// Analogs //
+	Real Analog[2];
+	if ( Gel::Input::SDLInput::Pad[TrueIndex].NumAxis > 2 )
+		Analog[0] = Gel::Input::SDLInput::Pad[TrueIndex].Axis[2];
+	else
+		Analog[0] = Real::Zero;
+
+	if ( Gel::Input::SDLInput::Pad[TrueIndex].NumAxis > 5 )
+		Analog[1] = Gel::Input::SDLInput::Pad[TrueIndex].Axis[5];
+	else
+		Analog[1] = Real::Zero;
+
+	sqslot_float(v,"LAnalog",Analog[0].ToFloat());
+	sqslot_float(v,"RAnalog",Analog[1].ToFloat());
+
+	// LStick //
+	{
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"vec2",4);			// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_pushstring(v,"LStick",-1);		// +1 //
+		sq_createinstance(v,-2);			// +1 //
+
+		Vector2D* Vec;
+		sq_getinstanceup(v,-1,(void**)&Vec,0);
+		*Vec = LStick;
+
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+		sq_pop(v,2);						// -2 //	
+	}
+
+	// RStick //			
+	{
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"vec2",4);			// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_pushstring(v,"RStick",-1);		// +1 //
+		sq_createinstance(v,-2);			// +1 //
+
+		Vector2D* Vec;
+		sq_getinstanceup(v,-1,(void**)&Vec,0);
+		*Vec = RStick;
+
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+		sq_pop(v,2);						// -2 //	
+	}
+
+	// DPad //
+	{
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"vec2",4);			// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_pushstring(v,"DPad",-1);			// +1 //
+		sq_createinstance(v,-2);			// +1 //
+
+		Vector2D* Vec;
+		sq_getinstanceup(v,-1,(void**)&Vec,0);
+		*Vec = DPad;
+
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+		sq_pop(v,2);						// -2 //	
+	}
 
 	return SQ_RETURN;
 }
@@ -37,7 +121,6 @@ enum {
 	XINPUT_B2 = 0x2,
 	XINPUT_B3 = 0x4,
 	XINPUT_B4 = 0x8,
-	
 	
 	// Face Buttons //
 	PS4_B1 = 0x2,
@@ -82,8 +165,14 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 
 	// Create a new table to store the data we want to return (will be an empty table on error) //
 	sq_newtable(v);
+	int TableIndex = sq_gettop(v);
 	
-	// TODO: Add "Raw" member here, containing the return of qkInputPadSDLGet //
+	// Add "Raw" member //
+	{
+		sq_pushstring(v,"Raw",-1);			// +1 //
+		qkInputPadSDLGet(v);				// +1 //
+		sq_newslot(v,TableIndex,SQFalse);	// -2 //
+	}
 
 	sqslot_int(v,"Index", Index);
 	sqslot_bool(v,"Connected", true); // Not Optional //
@@ -150,8 +239,6 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 
 	// LStick //
 	{
-		int TableIndex = sq_gettop(v);
-
 		sq_pushroottable(v);				// +1 //
 		sq_pushstring(v,"vec2",4);			// +1 //
 		sq_get(v,-2);						// =0 (-1 then +1) //
@@ -168,8 +255,6 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 
 	// RStick //			
 	{
-		int TableIndex = sq_gettop(v);
-
 		sq_pushroottable(v);				// +1 //
 		sq_pushstring(v,"vec2",4);			// +1 //
 		sq_get(v,-2);						// =0 (-1 then +1) //
