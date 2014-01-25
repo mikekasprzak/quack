@@ -23,7 +23,7 @@ struct GelSteamPad {
 };
 // - ------------------------------------------------------------------------------------------ - //
 extern st32 IndexBase;
-extern GelSteamPad SteamPad[16];
+extern GelSteamPad Pad[];
 // - ------------------------------------------------------------------------------------------ - //
 void Init();
 void InitEvent( void* = 0 );

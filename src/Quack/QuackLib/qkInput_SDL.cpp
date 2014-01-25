@@ -11,11 +11,15 @@
 #include "qkInput.h"
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSDLGet( HSQUIRRELVM v ) {
-	SQInteger Index = 0;
+	SQInteger Index = Gel::Input::SDLInput::IndexBase;
+	int TrueIndex = 0;
 	int NumArgs = sq_gettop(v);
-	if ( NumArgs > 0 ) {
+	if ( NumArgs >= 2 ) {
 		sq_getinteger(v,2,&Index);
-		if ( Index < (int)Gel::Input::SDLInput::DevicesConnected() ) {
+		TrueIndex = Index - Gel::Input::SDLInput::IndexBase;
+		if ( TrueIndex < 0 )
+			return SQ_ERROR;
+		else if ( TrueIndex > (int)Gel::Input::SDLInput::DevicesConnected() ) {//(int)Gel::Input::SDLInput::Size() ) {
 			return SQ_ERROR;
 		}
 	}
@@ -56,17 +60,21 @@ enum {
 };
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
-	SQInteger Index = 0;
+	SQInteger Index = Gel::Input::SDLInput::IndexBase;
+	int TrueIndex = 0;
 	int NumArgs = sq_gettop(v);
-	if ( NumArgs > 0 ) {
+	if ( NumArgs >= 2 ) {
 		sq_getinteger(v,2,&Index);
-		if ( Index >= (int)Gel::Input::SDLInput::DevicesConnected() ) {
+		TrueIndex = Index - Gel::Input::SDLInput::IndexBase;
+		if ( TrueIndex < 0 )
+			return SQ_ERROR;
+		else if ( TrueIndex > (int)Gel::Input::SDLInput::DevicesConnected() ) {
 			return SQ_ERROR;
 		}
 	}
 	
 #ifndef USES_XINPUT
-	if ( Gel::Input::SDLInput::Is360(Index) ) {
+	if ( Gel::Input::SDLInput::Is360(TrueIndex) ) {
 		// Do Nothing (MinGW XInput/SDL Compatibility Mode) //
 		return SQ_ERROR;
 	}
@@ -83,62 +91,62 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 	// Buttons //
 	u32 ButtonMask = 0;
 
-	if ( Gel::Input::SDLInput::IsPS4(Index) ) {		
+	if ( Gel::Input::SDLInput::IsPS4(TrueIndex) ) {		
 		// Convert to ABXY order (was XABY, or SQ X O TRI) //
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & PS4_B1 ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & PS4_B1 ) {
 			ButtonMask |= 0x1;
 		}
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & PS4_B2 ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & PS4_B2 ) {
 			ButtonMask |= 0x2;
 		}
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & PS4_B3 ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & PS4_B3 ) {
 			ButtonMask |= 0x4;
 		}
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & PS4_B4 ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & PS4_B4 ) {
 			ButtonMask |= 0x8;
 		}
 		
 		// PS4 Driver has L2+R2 as buttons, in addition to as Analogs //
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & (PS4_L1 | PS4_L2) ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & (PS4_L1 | PS4_L2) ) {
 			ButtonMask |= 0x10;	// L1 //
 		}
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & (PS4_R1 | PS4_R2) ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & (PS4_R1 | PS4_R2) ) {
 			ButtonMask |= 0x20;	// R1 //
 		}
 
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & (PS4_OPTION | PS4_PS) ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & (PS4_OPTION | PS4_PS) ) {
 			ButtonMask |= 0x40;	// Menu //
 		}
-		if ( Gel::Input::SDLInput::GamePad[Index].Button & (PS4_R3) ) {
+		if ( Gel::Input::SDLInput::GamePad[TrueIndex].Button & (PS4_R3) ) {
 			ButtonMask |= 0x80;	// Extra //
 		}
 	}
-//	else if ( Gel::Input::SDLInput::Is360(Index) ) {
+//	else if ( Gel::Input::SDLInput::Is360(TrueIndex) ) {
 //		// TODO: Look at the SDL Axis 2 and 5, and convert to L2/R2 buttons
 //	}
 	else {
-		ButtonMask = Gel::Input::SDLInput::GamePad[Index].Button;
+		ButtonMask = Gel::Input::SDLInput::GamePad[TrueIndex].Button;
 	}
 		
 	sqslot_int(v,"Button", ButtonMask);
 
 	// Sticks //
 	Vector2D LStick;
-	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 0 )
-		LStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[0];
-	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 1 )
-		LStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[1];
+	if ( Gel::Input::SDLInput::GamePad[TrueIndex].NumAxis > 0 )
+		LStick.x = Gel::Input::SDLInput::GamePad[TrueIndex].Axis[0];
+	if ( Gel::Input::SDLInput::GamePad[TrueIndex].NumAxis > 1 )
+		LStick.y = -Gel::Input::SDLInput::GamePad[TrueIndex].Axis[1];
 
 	// TODO: Convert to MagnitudeSquared() //
 	if ( LStick.Magnitude() < Real(0.1f) ) {
-		LStick = Gel::Input::SDLInput::GamePad[Index].DPad;
+		LStick = Gel::Input::SDLInput::GamePad[TrueIndex].DPad;
 	}
 
 	Vector2D RStick;
-	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 3 )
-		RStick.x = Gel::Input::SDLInput::GamePad[Index].Axis[3];
-	if ( Gel::Input::SDLInput::GamePad[Index].NumAxis > 4 )
-		RStick.y = -Gel::Input::SDLInput::GamePad[Index].Axis[4];
+	if ( Gel::Input::SDLInput::GamePad[TrueIndex].NumAxis > 3 )
+		RStick.x = Gel::Input::SDLInput::GamePad[TrueIndex].Axis[3];
+	if ( Gel::Input::SDLInput::GamePad[TrueIndex].NumAxis > 4 )
+		RStick.y = -Gel::Input::SDLInput::GamePad[TrueIndex].Axis[4];
 
 	// LStick //
 	{
@@ -180,7 +188,7 @@ SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSDLProxyGetSimple( HSQUIRRELVM v ) {
-	SQInteger Index = 0;
+	SQInteger Index = Gel::Input::SDLInput::IndexBase;
 	int NumArgs = sq_gettop(v);
 	if ( NumArgs > 0 ) {
 		sq_getinteger(v,2,&Index);

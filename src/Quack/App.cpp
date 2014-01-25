@@ -273,26 +273,26 @@ void AppStep() {
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
 
-#ifdef USES_STEAM
-	if ( Gel::IsSteamRunning ) {
-		static int Boof = 0;
-		Boof++;
-		if ( (Boof & 63) == 0 ) {
-			for (st idx = 0; idx < Gel::Input::Steam::Size(); idx++ ) {
-				if ( Gel::Input::Steam::IsConnected( idx ) ) {
-					Log("%i -- L: %f,%f  R: %f,%f  B:%x",
-						idx, 
-						Gel::Input::Steam::SteamPad[idx].LStick.x.ToFloat(),
-						Gel::Input::Steam::SteamPad[idx].LStick.y.ToFloat(),
-						Gel::Input::Steam::SteamPad[idx].RStick.x.ToFloat(),
-						Gel::Input::Steam::SteamPad[idx].RStick.y.ToFloat(),
-						Gel::Input::Steam::SteamPad[idx].Button
-						);
-				}
-			}
-		}
-	}
-#endif // USES_STEAM //
+//#ifdef USES_STEAM
+//	if ( Gel::IsSteamRunning ) {
+//		static int Boof = 0;
+//		Boof++;
+//		if ( (Boof & 63) == 0 ) {
+//			for (st idx = 0; idx < Gel::Input::Steam::Size(); idx++ ) {
+//				if ( Gel::Input::Steam::IsConnected( idx ) ) {
+//					Log("%i -- L: %f,%f  R: %f,%f  B:%x",
+//						idx, 
+//						Gel::Input::Steam::Pad[idx].LStick.x.ToFloat(),
+//						Gel::Input::Steam::Pad[idx].LStick.y.ToFloat(),
+//						Gel::Input::Steam::Pad[idx].RStick.x.ToFloat(),
+//						Gel::Input::Steam::Pad[idx].RStick.y.ToFloat(),
+//						Gel::Input::Steam::Pad[idx].Button
+//						);
+//				}
+//			}
+//		}
+//	}
+//#endif // USES_STEAM //
 
 //	App::MySkel.Step();
 	

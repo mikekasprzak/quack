@@ -12,7 +12,7 @@ namespace Input {
 namespace Steam {
 // - ------------------------------------------------------------------------------------------ - //
 st32 IndexBase;
-GelSteamPad SteamPad[16];
+GelSteamPad Pad[MAX_STEAM_CONTROLLERS];
 // - ------------------------------------------------------------------------------------------ - //
 bool Connected[MAX_STEAM_CONTROLLERS];
 bool OldConnected[MAX_STEAM_CONTROLLERS];
@@ -73,10 +73,10 @@ void Poll() {
 	for ( st32 idx = 0; idx < MAX_STEAM_CONTROLLERS; idx++ ) {
 		Connected[idx] = SteamController()->GetControllerState( idx, &(State[idx]) );
 
-		// Populate SteamPad data //
-		SteamPad[idx].LStick = Vector2D( State[idx].sLeftPadX / 32767.0f, State[idx].sLeftPadY / 32767.0f );
-		SteamPad[idx].RStick = Vector2D( State[idx].sRightPadX / 32767.0f, State[idx].sRightPadY / 32767.0f );
-		SteamPad[idx].Button = State[idx].ulButtons;
+		// Populate Pad data //
+		Pad[idx].LStick = Vector2D( State[idx].sLeftPadX / 32767.0f, State[idx].sLeftPadY / 32767.0f );
+		Pad[idx].RStick = Vector2D( State[idx].sRightPadX / 32767.0f, State[idx].sRightPadY / 32767.0f );
+		Pad[idx].Button = State[idx].ulButtons;
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //

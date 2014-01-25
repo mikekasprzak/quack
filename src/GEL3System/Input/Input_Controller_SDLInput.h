@@ -22,11 +22,8 @@ struct SDLGamePad {
 	st32 NumAxis;	// An Axis Count //
 };
 // - ------------------------------------------------------------------------------------------ - //
-enum { 
-	MAX_GAMEPADS = 32
-};
-// - ------------------------------------------------------------------------------------------ - //
-extern SDLGamePad GamePad[MAX_GAMEPADS];
+extern st32 IndexBase;
+extern SDLGamePad GamePad[];
 // - ------------------------------------------------------------------------------------------ - //
 void Exit();
 void ExitEvent( void* = 0 );
@@ -40,8 +37,8 @@ void PollEvent( void* = 0 );
 void Pulse( const int Index, const int Motor, const int Amount );
 void Vibrate( const int Index, const int Motor, const int Amount );
 
-size_t Size();
-size_t DevicesConnected();
+st32 Size();
+st32 DevicesConnected();
 
 bool Is360( int Index );
 bool IsPS4( int Index );

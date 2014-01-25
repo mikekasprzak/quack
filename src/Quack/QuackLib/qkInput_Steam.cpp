@@ -35,7 +35,7 @@ SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
 	sqslot_bool(v,"Connected", Gel::Input::Steam::IsConnected(TrueIndex) );
 	
 	// Buttons //
-	u32 ButtonMask = Gel::Input::Steam::SteamPad[TrueIndex].Button;		
+	u32 ButtonMask = Gel::Input::Steam::Pad[TrueIndex].Button;		
 	sqslot_int(v,"Button", ButtonMask);
 
 	// LStick //
@@ -48,7 +48,7 @@ SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
 
 		Vector2D* Vec;
 		sq_getinstanceup(v,-1,(void**)&Vec,0);
-		*Vec = Gel::Input::Steam::SteamPad[TrueIndex].LStick;
+		*Vec = Gel::Input::Steam::Pad[TrueIndex].LStick;
 
 		sq_newslot(v,TableIndex,SQFalse);	// -2 //
 		sq_pop(v,2);						// -2 (class,roottable) //	
@@ -64,7 +64,7 @@ SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
 
 		Vector2D* Vec;
 		sq_getinstanceup(v,-1,(void**)&Vec,0);
-		*Vec = Gel::Input::Steam::SteamPad[TrueIndex].RStick;
+		*Vec = Gel::Input::Steam::Pad[TrueIndex].RStick;
 		
 		sq_newslot(v,TableIndex,SQFalse);	// -2 //
 		sq_pop(v,2);						// -2 //	
@@ -106,7 +106,7 @@ SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 	
 	// Buttons //
 	u32 ButtonMask = 0;
-	ButtonMask = Gel::Input::Steam::SteamPad[TrueIndex].Button;		
+	ButtonMask = Gel::Input::Steam::Pad[TrueIndex].Button;		
 	sqslot_int(v,"Button", ButtonMask);
 
 	// LStick //
@@ -119,7 +119,7 @@ SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 
 		Vector2D* Vec;
 		sq_getinstanceup(v,-1,(void**)&Vec,0);
-		*Vec = Gel::Input::Steam::SteamPad[TrueIndex].LStick;
+		*Vec = Gel::Input::Steam::Pad[TrueIndex].LStick;
 
 		*Vec *= Real(1.4); // Simple Only! //
 		if ( Vec->Magnitude() < Real(0.14) )
@@ -139,7 +139,7 @@ SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
 
 		Vector2D* Vec;
 		sq_getinstanceup(v,-1,(void**)&Vec,0);
-		*Vec = Gel::Input::Steam::SteamPad[TrueIndex].RStick;
+		*Vec = Gel::Input::Steam::Pad[TrueIndex].RStick;
 
 		*Vec *= Real(1.4); // Simple Only! //
 		if ( Vec->Magnitude() < Real(0.14) )

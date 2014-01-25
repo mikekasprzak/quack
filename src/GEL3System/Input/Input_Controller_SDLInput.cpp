@@ -13,12 +13,18 @@ namespace Input {
 // - ------------------------------------------------------------------------------------------ - //
 namespace SDLInput {
 // - ------------------------------------------------------------------------------------------ - //
-SDL_Joystick* State[MAX_GAMEPADS];
+enum { 
+	MAX_GAMEPADS = 32
+};
+// - ------------------------------------------------------------------------------------------ - //
+st32 IndexBase;
 SDLGamePad GamePad[MAX_GAMEPADS];
+// - ------------------------------------------------------------------------------------------ - //
+SDL_Joystick* State[MAX_GAMEPADS];
 // - ------------------------------------------------------------------------------------------ - //
 void Exit() {
 	// Close All Joysticks //
-	for ( size_t idx = 0; idx < DevicesConnected(); idx++ ) {
+	for ( st32 idx = 0; idx < DevicesConnected(); idx++ ) {
 		SDL_JoystickClose( State[idx] );
 	}	
 	
@@ -35,7 +41,7 @@ void Init() {
 	SDL_InitSubSystem( SDL_INIT_JOYSTICK );
 	
 	// Open All Joysticks //
-	for ( size_t idx = 0; idx < DevicesConnected(); idx++ ) {
+	for ( st32 idx = 0; idx < DevicesConnected(); idx++ ) {
 		State[idx] = SDL_JoystickOpen( idx );
 		GamePad[idx].NumAxis = SDL_JoystickNumAxes(State[idx]);
 	}
@@ -44,16 +50,17 @@ void Init() {
 	Gel::Input::Poll.Connect( PollEvent );
 }
 // - ------------------------------------------------------------------------------------------ - //
-void InitEvent( void* ) {
+void InitEvent( void* _IndexBase ) {
+	IndexBase = (st)_IndexBase;
+
 	Init();
 	Poll();
 	
 	Log( "" );
-	Log( "-=- SDLInput -- %i Device(s) Connected -=-", DevicesConnected() );
-	for ( size_t idx = 0; idx < DevicesConnected(); idx++ ) {
+	Log( "-=- SDLInput -- %i Device(s) Connected [%i] -=-", DevicesConnected(), Size() );
+	for ( st32 idx = 0; idx < DevicesConnected(); idx++ ) {
         Log( "%i - %s", idx, SDL_JoystickName(State[idx]) );
 	}
-	Log( "" );
 }
 // - ------------------------------------------------------------------------------------------ - //
 void Poll() {
@@ -105,11 +112,11 @@ void PollEvent( void* ) {
 	Poll();
 }
 // - ------------------------------------------------------------------------------------------ - //
-size_t Size() {
+st32 Size() {
 	return MAX_GAMEPADS;
 }
 // - ------------------------------------------------------------------------------------------ - //
-size_t DevicesConnected() {
+st32 DevicesConnected() {
 	return SDL_NumJoysticks();
 }
 // - ------------------------------------------------------------------------------------------ - //
