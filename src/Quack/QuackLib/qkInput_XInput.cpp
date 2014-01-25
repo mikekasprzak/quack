@@ -142,16 +142,16 @@ SQInteger qkInputPadXInputVibrate( HSQUIRRELVM v ) {
 #else // USES_XINPUT //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadXInputGet( HSQUIRRELVM v ) {
-	return SQ_VOID;
+	return SQ_ERROR;
 }
 SQInteger qkInputPadXInputGetSimple( HSQUIRRELVM v ) {
-	return SQ_VOID;
+	return SQ_ERROR;
 }
 SQInteger qkInputPadXInputPulse( HSQUIRRELVM v ) {
-	return SQ_VOID;	
+	return SQ_ERROR;	
 }
 SQInteger qkInputPadXInputVibrate( HSQUIRRELVM v ) {
-	return SQ_VOID;	
+	return SQ_ERROR;	
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_XINPUT //

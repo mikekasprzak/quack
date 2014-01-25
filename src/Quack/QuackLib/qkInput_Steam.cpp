@@ -11,6 +11,9 @@
 #include "qkInput.h"
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
+	if ( !Gel::IsSteamRunning )
+		return SQ_ERROR;
+
 	SQInteger Index = 0;
 	int NumArgs = sq_gettop(v);
 	if ( NumArgs > 0 ) {
@@ -29,6 +32,9 @@ SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
+	if ( !Gel::IsSteamRunning )
+		return SQ_ERROR;
+	
 	SQInteger Index = 0;
 	int NumArgs = sq_gettop(v);
 	if ( NumArgs > 0 ) {
@@ -133,16 +139,16 @@ SQInteger qkInputPadSteamVibrate( HSQUIRRELVM v ) {
 #else // USES_STEAM //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSteamGet( HSQUIRRELVM v ) {
-	return SQ_VOID;
+	return SQ_ERROR;
 }
 SQInteger qkInputPadSteamGetSimple( HSQUIRRELVM v ) {
-	return SQ_VOID;
+	return SQ_ERROR;
 }
 SQInteger qkInputPadSteamPulse( HSQUIRRELVM v ) {
-	return SQ_VOID;	
+	return SQ_ERROR;	
 }
 SQInteger qkInputPadSteamVibrate( HSQUIRRELVM v ) {
-	return SQ_VOID;	
+	return SQ_ERROR;	
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_STEAM //

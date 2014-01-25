@@ -271,19 +271,19 @@ SQInteger qkInputPadSDLVibrate( HSQUIRRELVM v ) {
 #else // USES_SDL2 //
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadSDLGet( HSQUIRRELVM v ) {
-	return SQ_VOID;
+	return SQ_ERROR;
 }
 SQInteger qkInputPadSDLGetSimple( HSQUIRRELVM v ) {
-	return SQ_VOID;
+	return SQ_ERROR;
 }
 SQInteger qkInputPadSDLProxyGetSimple( HSQUIRRELVM v ) {
-	return SQ_VOID;
+	return SQ_ERROR;
 }
 SQInteger qkInputPadSDLPulse( HSQUIRRELVM v ) {
-	return SQ_VOID;	
+	return SQ_ERROR;	
 }
 SQInteger qkInputPadSDLVibrate( HSQUIRRELVM v ) {
-	return SQ_VOID;	
+	return SQ_ERROR;	
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_SDL2 //
