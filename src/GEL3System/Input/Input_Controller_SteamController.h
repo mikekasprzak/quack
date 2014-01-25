@@ -22,6 +22,7 @@ struct GelSteamPad {
 //	Vector2D DPad;
 };
 // - ------------------------------------------------------------------------------------------ - //
+extern st32 IndexBase;
 extern GelSteamPad SteamPad[16];
 // - ------------------------------------------------------------------------------------------ - //
 void Init();
@@ -37,9 +38,8 @@ void ExitEvent( void* = 0 );
 void Pulse( const int Index, const int Motor, const int Amount );
 void Vibrate( const int Index, const int Motor, const int Amount );
 
-size_t Size();
-
-size_t DevicesConnected();
+st32 Size();
+st32 DevicesConnected();
 
 bool IsConnected( const int Index );
 bool IsConnected();

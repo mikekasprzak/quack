@@ -47,11 +47,7 @@ function print_table( table, level = 0, name = "" ) {
 				print_table( val, level+1, idx + " " );
 			}
 			else if ( typeof(val) == "array" ) {
-				print( Prefix + "+ " + name + "[" + typeof(val) + "]: " + val.len() + " elements" );
-				for ( local idx = 0; idx < val.len(); idx++ ) {
-					print( Prefix + Indent + "* " + idx + " [" + typeof val[idx] + "]: " + val[idx] );
-				}
-				print( Prefix + "- " + name + "[" + typeof(val) + "]" );
+				print_table( val, level+1, idx + " " );
 			}
 			else {
 				print( Prefix + Indent + "* " + idx + " [" + typeof(val) + "]: " + val );
@@ -62,7 +58,15 @@ function print_table( table, level = 0, name = "" ) {
 	else if ( typeof(table) == "array" ) {
 		print( Prefix + "+ " + name + "[" + typeof(table) + "]: " + table.len() + " elements" );
 		for ( local idx = 0; idx < table.len(); idx++ ) {
-			print( Prefix + Indent + "* " + idx + " [" + typeof table[idx] + "]: " + table[idx] );
+			if ( typeof(table[idx]) == "table" ) {
+				print_table( table[idx], level+1, idx + " " );
+			}
+			else if ( typeof(table[idx]) == "array" ) {
+				print_table( table[idx], level+1, idx + " " );
+			}
+			else {
+				print( Prefix + Indent + "* " + idx + " [" + typeof table[idx] + "]: " + table[idx] );
+			}
 		}
 		print( Prefix + "- " + name + "[" + typeof(table) + "]" );
 	}

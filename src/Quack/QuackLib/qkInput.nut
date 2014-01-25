@@ -230,13 +230,12 @@ class qkPad {
 			// Something was Pressed! //
 			LStickPressed = LStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
 
-			local PadIndex = 1; //Index; //
 			local Amount = 200;
 			if ( LStickMag > QK_STICK_FASTZONE )
 				Amount = 1600;
 			else if ( LStickMag > 0 )
 				Amount = 400;
-			qkInputPadPulse(PadIndex,0,Amount);
+			qkInputPadPulse(Index,0,Amount);
 			
 			// NOTE: Detect Gestures Here (Double Tap, at least) //
 			
@@ -301,13 +300,12 @@ class qkPad {
 			// Something was Pressed! //
 			RStickPressed = RStick8Way; // NOTE: BE CAREFUL! NOT A CLONE! //
 			
-			local PadIndex = 1; //Index; //
 			local Amount = 200;
 			if ( RStickMag > QK_STICK_FASTZONE )
 				Amount = 1600;
 			else if ( RStickMag > 0 )
 				Amount = 400;
-			qkInputPadPulse(PadIndex,1,Amount);
+			qkInputPadPulse(Index,1,Amount);
 			
 			// NOTE: Detect Gestures Here (Double Tap, at least) //
 			
@@ -341,14 +339,18 @@ function qkPadGet( Index ) {
 
 // - -------------------------------------------------------------------------------------------------------------- - //
 function qkInputMasterPadGet( Index /* Ignored */ ) {
-	local Pads = [];
+	local Ret = {};
+
+	Ret.Pads <- [];
+	local Pads = Ret.Pads;
 	for ( local idx = 0; idx < 4; idx++ ) {
-		Pads.push( qkInputPadGet(idx) );
+		local Pad = qkInputPadGet(idx);
+		if ( Pad.Connected ) {
+			Pads.push( Pad );
+		}
 	}
 	
-	local Ret = {};
-	
-	Ret.Connected <- true;
+	Ret.Connected <- (Pads.len() >= 1);
 	
 	Ret.LStick <- clone Pads[0].LStick;
 	for ( local idx = 1; idx < Pads.len(); idx++ ) {
