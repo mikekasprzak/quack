@@ -213,6 +213,7 @@ public:
 		Used++;
 
 		// TODO: Assert Capacity == 0
+		// TODO: Assert Index < 0
 		while ( Index >= Capacity ) {
 			Index -= Capacity;
 		}
@@ -255,13 +256,25 @@ public:
 	inline st Size() const {
 		return Data.MaxSize();
 	}
+	// You should iterate over all elements //
+	inline st GetTime() const {
+		return Time;
+	}
 
 	// Use -> operator to set the current element //
 	inline T* operator -> () {
-		return operator->();
+		return Data.operator->();
 	}
 	inline const T* operator -> () const {
-		return operator->();
+		return Data.operator->();
+	}
+
+	// Retrieve individual elements (as if it was a GelVertX type) //
+	inline T& operator [] ( const st Index ) {
+		return Data[Index];
+	}
+	inline const T& operator [] ( const st Index ) const {
+		return Data[Index];
 	}
 
 public:
@@ -288,7 +301,7 @@ public:
 	}
 	// Check how long the particle has left until it dies //
 	inline GelTime Life( const st _Index ) const {
-		if ( IsAlive )
+		if ( IsAlive(_Index) )
 			return DeathTime[_Index] - Time;
 		return 0;
 	}
@@ -308,29 +321,53 @@ public:
 		Kill( Data.GetIndex() );
 	}
 
+	// Return how many objects are alive in the system //
+	inline st Living() const {
+		st Count = 0;
+		for ( st idx = 0; idx < Size(); idx++ ) {
+			if ( IsAlive(idx) ) {
+				Count++;
+			}
+		}
+		return Count;
+	}
+	// Return how much life the oldest object has //
+	inline st Oldest() const {
+		st Age = 0;
+		
+		for ( st idx = 0; idx < Size(); idx++ ) {
+			if ( Life(idx) > Age ) {
+				Age = Life(idx);
+			}
+		}
+		return Age;
+	}
+
 
 	// Add! Loops until the free element is found. //
 	inline T* Add( const GelTime Age ) {
 		st Count = 0;
+		// TODO: Assert Capacity == 0 (will cause age setting to fail)
 		do {
 			Data.Next();
-			// Bail if we've tried all elements (and failed) //
 			Count++;
-			if ( Count == Data.MaxSize() ) {
+			
+			// Bail if we've tried all elements (and failed) //
+			if ( Count >= Size() ) {
 				// Advance to the next element and overwrite //
 				Data.Next();
 				#ifndef NDEBUG
-				Log("GelParticle [%x] of capacity %i has no room left to add new particles. Overwriting...", this, Data.MaxSize() );
+				Log("WARNING: GelParticle [%x] of capacity %i has no room left to Add(). Overwriting...", this, Data.MaxSize() );
 				#endif // NDEBUG //
-				// Bail //
+				// Bail from loop //
 				break;
 			}
-		} while( IsAlive(Data.GetIndex()) );
+		} while( IsAlive() );
 		
 		// Set the Age //
 		DeathTime[Data.GetIndex()] = Time + Age;
 		
-		return &Data;
+		return Data.operator->();
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //

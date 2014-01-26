@@ -185,16 +185,17 @@ void AppInit() {
 //	}
 
 	{
-		Log("**** GelVert");
-		GelVert2 Scrot(4);
-		Scrot[0].Pos = Vector2D(10,10);
-		Scrot.PushBack();
-		Scrot.Back().Pos.x = Real(14);
-		
-		GelVert2::Type Verr = Scrot[4];
-		Log("Verr [%i]: %f", Scrot.Size(), Verr.Pos.x.ToFloat() );
+		Log("**** GelVert, GelAlloc, GelParticle");
+//		GelVert2 Scrot(4);
+//		Scrot[0].Pos = Vector2D(10,10);
+//		Scrot.PushBack();
+//		Scrot.Back().Pos.x = Real(14);
+//		
+//		GelVert2::Type Verr = Scrot[4];
+//		Log("Verr [%i]: %f", Scrot.Size(), Verr.Pos.x.ToFloat() );
 		
 		GelAlloc2 Norb(4);	
+		Log("Norb: %i (%i) [%i]", Norb.MaxSize(), Norb.Size(), Norb.GetUsed());
 		
 		Norb.Next();
 		Norb->Pos = Vector2D(1,-1);
@@ -206,12 +207,62 @@ void AppInit() {
 		Norb->Pos = Vector2D(4,-4);
 		Norb.Next();
 		Norb->Pos = Vector2D(5,-5);
+		Norb.Next();
+		Norb->Pos = Vector2D(6,-6);
 		
-		for ( int idx = 0; idx < Norb.MaxSize(); idx++ ) {
+		for ( int idx = 0; idx < Norb.Size(); idx++ ) {
 			Log("%i -- %f,%f", idx, Norb[idx].Pos.x.ToFloat(), Norb[idx].Pos.y.ToFloat() );
 		}
+
+		Log("Norb: %i (%i) [%i]", Norb.MaxSize(), Norb.Size(), Norb.GetUsed());
 		
-		GelParticle<GelVert2> Pork(4);
+		GelParticle<GelVertex2> Pork(4);
+		Log("Pork: %i -- %i [%i]", Pork.Size(), Pork.Living(), Pork.Oldest());
+		
+		Pork.Add(4);
+		Pork->Pos = Vector2D(1,-1);
+		Pork.Add(5);
+		Pork->Pos = Vector2D(2,-2);
+		Pork.Add(2);
+		Pork->Pos = Vector2D(3,-3);
+
+		while ( Pork.Living() ) {
+			Log("Pork: %i -- %i [%i]", Pork.Size(), Pork.Living(), Pork.Oldest());
+			for ( int idx = 0; idx < Pork.Size(); idx++ ) {
+				if ( Pork.IsAlive(idx) ) {
+					Log("%i [%i] -- %f,%f", idx, Pork.Life(idx), Pork[idx].Pos.x.ToFloat(), Pork[idx].Pos.y.ToFloat() );
+				}
+			}
+			
+			if ( Pork.GetTime() == 3 ) {
+				Log("** NEW **");
+				Pork.Add(4);
+				Pork->Pos = Vector2D(4,-4);
+			}
+			if ( Pork.GetTime() == 4 ) {
+				Log("** NEW **");
+				Pork.Add(4);
+				Pork->Pos = Vector2D(5,-5);
+			}
+			if ( Pork.GetTime() == 5 ) {
+				Log("** NEW MANY **");
+				Pork.Add(2);
+				Pork->Pos = Vector2D(6,-6);
+				Pork.Add(1);
+				Pork->Pos = Vector2D(7,-7);
+				Pork.Add(2);
+				Pork->Pos = Vector2D(8,-8);
+			}
+			if ( Pork.GetTime() == 6 ) {
+				Log("** NEW **");
+				Pork.Add(4);
+				Pork->Pos = Vector2D(9,-9);
+			}
+			
+			Pork.Step();
+		};
+		Log("Pork: %i -- %i [%i]", Pork.Size(), Pork.Living(), Pork.Oldest());
+		
 		
 		Log("**** DONE");
 	}
