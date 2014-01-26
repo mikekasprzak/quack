@@ -61,126 +61,105 @@ typedef GelVert<GelVertex ## _sym> GelVert ## _sym;
 // - ------------------------------------------------------------------------------------------ - //
 // 2D Versions //
 // - ------------------------------------------------------------------------------------------ - //
-//struct GelVertex2 {
 __GelVertex_START( 2 )
 	Vector2D Pos;
 __GelVertex_END( 2 )
-//};
-//typedef GelVert<GelVertex2> GelVert2;
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2N {
+__GelVertex_START( 2N )
 	Vector2D Pos;
 	Vector2D Normal;
-};
-typedef GelVert<GelVertex2N> GelVert2N;
+__GelVertex_END( 2N )
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2U {
+__GelVertex_START( 2U )
 	Vector2D Pos;
 	GelUV UV;
-};
-typedef GelVert<GelVertex2U> GelVert2U;
+__GelVertex_END( 2U )
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2C {
+__GelVertex_START( 2C )
 	Vector2D Pos;
 	GelColor Color;
-};
-typedef GelVert<GelVertex2C> GelVert2C;
+__GelVertex_END( 2C )
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2R {
+__GelVertex_START( 2R )
 	Vector2D Pos;
 	Real Radius;
-};
-typedef GelVert<GelVertex2R> GelVert2R;
+__GelVertex_END( 2R )
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2NU {
+__GelVertex_START( 2NU )
 	Vector2D Pos;
 	Vector2D Normal;
 	GelUV UV;
-};
-typedef GelVert<GelVertex2NU> GelVert2NU;
+__GelVertex_END( 2NU )
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2NC {
+__GelVertex_START( 2NC )
 	Vector2D Pos;
 	Vector2D Normal;
 	GelColor Color;
-};
-typedef GelVert<GelVertex2NC> GelVert2NC;
+__GelVertex_END( 2NC )
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2NR {
+__GelVertex_START( 2NR )
 	Vector2D Pos;
 	Vector2D Normal;
 	Real Radius;
-};
-typedef GelVert<GelVertex2NR> GelVert2NR;
+__GelVertex_END( 2NR )
 // - ------------------------------------------------------------------------------------------ - //
-// - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2NUC {
+__GelVertex_START( 2UC )
 	Vector2D Pos;
-	Vector2D Normal;
 	GelUV UV;
 	GelColor Color;
-};
-typedef GelVert<GelVertex2NUC> GelVert2NUC;
+__GelVertex_END( 2UC )
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2NUR {
+__GelVertex_START( 2UR )
 	Vector2D Pos;
-	Vector2D Normal;
 	GelUV UV;
 	Real Radius;
-};
-typedef GelVert<GelVertex2NUR> GelVert2NUR;
+__GelVertex_END( 2UR )
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2NCR {
+__GelVertex_START( 2CR )
 	Vector2D Pos;
-	Vector2D Normal;
 	GelColor Color;
 	Real Radius;
-};
-typedef GelVert<GelVertex2NCR> GelVert2NCR;
+__GelVertex_END( 2CR )
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2NUCR {
+__GelVertex_START( 2NUC )
 	Vector2D Pos;
 	Vector2D Normal;
 	GelUV UV;
 	GelColor Color;
-	Real Radius;
-};
-typedef GelVert<GelVertex2NUCR> GelVert2NUCR;
+__GelVertex_END( 2NUC )
 // - ------------------------------------------------------------------------------------------ - //
-// - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2UC {
+__GelVertex_START( 2NUR )
 	Vector2D Pos;
+	Vector2D Normal;
 	GelUV UV;
+	Real Radius;
+__GelVertex_END( 2NUR )
+// - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( 2NCR )
+	Vector2D Pos;
+	Vector2D Normal;
 	GelColor Color;
-};
-typedef GelVert<GelVertex2UC> GelVert2UC;
-// - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2UR {
-	Vector2D Pos;
-	GelUV UV;
 	Real Radius;
-};
-typedef GelVert<GelVertex2UR> GelVert2UR;
+__GelVertex_END( 2NCR )
 // - ------------------------------------------------------------------------------------------ - //
-// - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2UCR {
+__GelVertex_START( 2UCR )
 	Vector2D Pos;
 	GelUV UV;
 	GelColor Color;
 	Real Radius;
-};
-typedef GelVert<GelVertex2UCR> GelVert2UCR;
+__GelVertex_END( 2UCR )
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
-struct GelVertex2CR {
+__GelVertex_START( 2NUCR )
 	Vector2D Pos;
+	Vector2D Normal;
+	GelUV UV;
 	GelColor Color;
 	Real Radius;
-};
-typedef GelVert<GelVertex2CR> GelVert2CR;
+__GelVertex_END( 2NUCR )
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
 
