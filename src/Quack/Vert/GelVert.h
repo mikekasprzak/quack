@@ -269,9 +269,15 @@ public:
 	inline bool IsAlive( const st _Index ) const {
 		return Time < DeathTime[_Index];
 	}
+	// Check how long the particle has left until it dies //
+	inline GelTime Life( const st _Index ) const {
+		if ( IsAlive )
+			return DeathTime[_Index] - Time;
+		return 0;
+	}
 
 	// Standard Add. Loops until the free element is found. //
-	inline void Add() {
+	inline void Add( const GelTime Age ) {
 		st Count = 0;
 		do {
 			Data.Next();
@@ -283,9 +289,13 @@ public:
 				#ifndef NDEBUG
 				Log("GelParticle [%x] of capacity %i has no room left to add new particles. Overwriting...", this, Data.MaxSize() );
 				#endif // NDEBUG //
+				// Bail //
 				break;
 			}
 		} while( IsAlive(Data.GetIndex()) );
+		
+		// Set the Age //
+		DeathTime[Data.GetIndex()] = Time + Age;
 	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
