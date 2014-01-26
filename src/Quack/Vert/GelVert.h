@@ -250,13 +250,14 @@ public:
 
 public:
 	inline void Clear() {
+		Time = 0;
 		Data.Clear();
 		DeathTime.assign(DeathTime.size(),0);
 	}
 
 	inline void Resize( const st _Size ) {
 		Data.Resize(_Size);
-		DeathTime.resize(_Size);
+		DeathTime.resize(_Size,0);
 	}
 		
 public:
@@ -275,8 +276,24 @@ public:
 			return DeathTime[_Index] - Time;
 		return 0;
 	}
+	// Kill a particle //
+	inline void Kill( const st _Index ) {
+		DeathTime[_Index] = 0;
+	}
 
-	// Standard Add. Loops until the free element is found. //
+	// Synonyms //
+	inline bool IsAlive() const {
+		return IsAlive( Data.GetIndex() );
+	}
+	inline GelTime Life() const {
+		return Life( Data.GetIndex() );
+	}
+	inline void Kill() {
+		Kill( Data.GetIndex() );
+	}
+
+
+	// Add! Loops until the free element is found. //
 	inline void Add( const GelTime Age ) {
 		st Count = 0;
 		do {
@@ -296,7 +313,7 @@ public:
 		
 		// Set the Age //
 		DeathTime[Data.GetIndex()] = Time + Age;
-	}	
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 
