@@ -188,16 +188,17 @@ void AppInit() {
 		Log("**** GelVert");
 		GelVert2 Scrot(4);
 		Scrot[0].Pos = Vector2D(10,10);
+		Scrot.PushBack();
+		Scrot.Back().Pos.x = Real(14);
 		
-		GelVert2::Type Verr = Scrot[0];
-		//typeof(Scrot[0]) Verr = Scrot[0];
-		Log("Verr: %f", Verr.Pos.x.ToFloat() );
+		GelVert2::Type Verr = Scrot[4];
+		Log("Verr [%i]: %f", Scrot.Size(), Verr.Pos.x.ToFloat() );
 		
 		Log("**** DONE");
 	}
 	
 	{
-		Log("**** GLAYOUT");		
+		Log("**** GLAYOUT");
 		App::Layout.Root.SetPos(128+16,-128);
 		App::Layout.Root.SetShape(100,100);
 		App::Layout.Root.AddChild( GLAY_FILL_WIDTH );

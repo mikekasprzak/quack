@@ -32,28 +32,264 @@
 template<typename T>
 class GelVert {
 	typedef GelVert thistype;
-	std::vector<T> Data;	
+	std::vector<T> Data;
+//	static T Dummy;
 public:
 	typedef T Type;
 	
-	inline GelVert( st _Size = 0 ) :
+	inline GelVert( const st _Size = 0 ) :
 		Data(_Size)
 	{
 	}
 	
-	inline T& operator [] ( st Index ) {
+	inline T& operator [] ( const st Index ) {
 		return Data[Index];
 	}
-	inline const T& operator [] ( st Index ) const {
+	inline const T& operator [] ( const st Index ) const {
+		return Data[Index];
+	}
+
+	inline T* Get() {
+		return &Data[0];
+	}
+	inline const T* Get() const {
+		return &Data[0];
+	}
+
+	inline T& Front() {
+		return Data.front();
+	}	
+	inline const T& Front() const {
+		return Data.front();
+	}	
+	inline T& Back() {
+		return Data.back();
+	}
+	inline const T& Back() const {
+		return Data.back();
+	}
+
+public:
+	inline st Size() const {
+		return Data.size();
+	}
+	inline st MaxSize() const {
+		return Data.capacity();
+	}
+
+public:
+	inline void Clear() {
+		Data.clear();
+	}
+	inline void Resize( const st _Size ) {
+		Data.resize(_Size);
+	}
+	// Make sure there's enough room //
+	inline void Reserve( const st _Size ) {
+		Data.reserve(_Size);
+	}
+	// Dispose-of and reallocate a new Data structure //
+	inline void Realloc( const st _Size = 0 ) {
+		std::vector<T>(_Size).swap(Data);
+	}
+	
+	inline void PushFront( const T& Val = T() ) {
+		Data.insert( Data.begin(), Val );
+	}
+	inline void PushBack( const T& Val = T() ) {
+		Data.push_back( Val );
+	}
+
+	inline T PopFront() {
+		T Ret = Data.front();
+		Data.erase( Data.begin() );
+		return Ret;
+	}
+	inline T PopBack() {
+		return Data.pop_back();
+	}
+	
+	inline void Insert( const st Index, const T& Val = T() ) {
+		Data.insert( Data.at(Index), Val );
+	}
+	inline void Delete( const st Index ) {
+		Data.erase( Data.at(Index) );
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
+//template <typename T> T GelVert<T>::Dummy;
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+// GelAlloc is a wrapper that provides different methods of automatically indexing a GelVert //
+// - ------------------------------------------------------------------------------------------ - //
+template <typename T>
+class GelAlloc {
+	typedef GelAlloc thistype;
+	st Capacity;
+	st Used;
+	int Index;
+	T Data;
+public:
+	inline GelAlloc( const st _Capacity ) :
+		Index( -1 ),
+		Capacity( _Capacity ),
+		Used( 0 ),
+		Data( _Capacity )
+	{
+	}
+	
+	inline T& Get() {
+		return Data;
+	}
+	inline const T& Get() const {
+		return Data;
+	}
+
+	inline int GetIndex() const {
+		return Index;
+	}
+	inline st GetUsed() const {
+		return Used;
+	}
+	inline st Size() const {
+		if ( Used > Capacity )
+			return Capacity;
+		return Used;
+	}
+	inline st MaxSize() const {
+		return Capacity;
+	}
+	
+	// Use -> operator to set the current element //
+	inline T& operator *() {
+		return Data[Index];
+	}
+	inline const T& operator *() const {
 		return Data[Index];
 	}
 
 public:
-	st Size() const {
-		return Data.size();
+	inline void Clear() {
+		Index = -1;
+		Used = 0;
+	}
+
+	inline void Resize( const st _Size ) {
+		Capacity = _Size;
+		Data.Resize(_Size);
+	}
+
+public:
+	// ** USE ONE AND ONLY ONE OF THE FOLLOWING FUNCTIONS ** //
+	
+	// Normal Add Mode (Increases capacity as needed) //
+	inline void Add() {
+		Index++;
+		Used++;
+		
+		// TODO: Assert Index > Capacity
+		if ( Capacity == Index ) {
+			Capacity++;
+			Data.PushBack();
+		}
+	}
+
+	// Wrapping Add Mode (Allocator) -- For ease of understanding, no optional initializer. //
+	inline void Next() {
+		Index++;
+		Used++;
+
+		// TODO: Assert Capacity == 0
+		while ( Index >= Capacity ) {
+			Index -= Capacity;
+		}
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+// GelParticle - Particle System, based on GelAlloc. Particles are allocated things with a lifetime. //
+// - ------------------------------------------------------------------------------------------ - //
+template <typename T>
+class GelParticle {
+	typedef GelParticle thistype;
+
+	GelTime Time;
+	
+	GelAlloc<T> Data;
+	std::vector<GelTime> DeathTime;
+public:
+	inline GelParticle( const st _Capacity ) :
+		Time( 0 ),
+		Data( _Capacity ),
+		DeathTime( _Capacity, 0 )
+	{
+	}
+
+	// Get the GelVert //
+	inline T& Get() {
+		return Data.Get();
+	}
+	inline const T& Get() const {
+		return Data.Get();
+	}
+
+	// You should iterate over all elements //
+	inline st Size() const {
+		return Data.MaxSize();
+	}
+
+	// Use -> operator to set the current element //
+	inline T& operator *() {
+		return operator*();
+	}
+	inline const T& operator *() const {
+		return operator*();
+	}
+
+public:
+	inline void Clear() {
+		Data.Clear();
+		DeathTime.assign(DeathTime.size(),0);
+	}
+
+	inline void Resize( const st _Size ) {
+		Data.Resize(_Size);
+		DeathTime.resize(_Size);
+	}
+		
+public:
+	// Advance the clock //
+	inline void Step() {
+		Time++;
+	}
+	
+	// Check if an element is alive //
+	inline bool IsAlive( const st _Index ) const {
+		return Time < DeathTime[_Index];
+	}
+
+	// Standard Add. Loops until the free element is found. //
+	inline void Add() {
+		st Count = 0;
+		do {
+			Data.Next();
+			// Bail if we've tried all elements (and failed) //
+			Count++;
+			if ( Count == Data.MaxSize() ) {
+				// Advance to the next element and overwrite //
+				Data.Next();
+				#ifndef NDEBUG
+				Log("GelParticle [%x] of capacity %i has no room left to add new particles. Overwriting...", this, Data.MaxSize() );
+				#endif // NDEBUG //
+				break;
+			}
+		} while( IsAlive(Data.GetIndex()) );
+	}	
+};
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 #define __CAT(a, ...) __PRIMITIVE_CAT(a, __VA_ARGS__)
