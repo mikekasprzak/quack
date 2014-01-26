@@ -184,7 +184,7 @@ public:
 	// ** USE ONE AND ONLY ONE OF THE FOLLOWING FUNCTIONS ** //
 	
 	// Normal Add Mode (Increases capacity as needed) //
-	inline void Add() {
+	inline T& Add() {
 		Index++;
 		Used++;
 		
@@ -193,10 +193,12 @@ public:
 			Capacity++;
 			Data.PushBack();
 		}
+
+		return operator*();
 	}
 
 	// Wrapping Add Mode (Allocator) -- For ease of understanding, no optional initializer. //
-	inline void Next() {
+	inline T& Next() {
 		Index++;
 		Used++;
 
@@ -204,6 +206,8 @@ public:
 		while ( Index >= Capacity ) {
 			Index -= Capacity;
 		}
+		
+		return operator*();
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -294,7 +298,7 @@ public:
 
 
 	// Add! Loops until the free element is found. //
-	inline void Add( const GelTime Age ) {
+	inline T& Add( const GelTime Age ) {
 		st Count = 0;
 		do {
 			Data.Next();
@@ -313,6 +317,8 @@ public:
 		
 		// Set the Age //
 		DeathTime[Data.GetIndex()] = Time + Age;
+		
+		return *Data;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
