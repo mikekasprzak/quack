@@ -1,4 +1,23 @@
 // - ------------------------------------------------------------------------------------------ - //
+// USAGE: 
+//   GelVert2 for an array of 2D elements containing just a Position
+//   GelVert3NC for an array of 3D elements containing Position, a Normal, and a Color
+// - ------------------------------------------------------------------------------------------ - //
+// GUIDE:
+// 1 -- 1D Position (Real)
+// 2 -- 2D Position (Vector2D)
+// 3 -- 3D Position (Vector3D)
+// 4 -- 4D Position (Vector4D)
+// N -- Normal (same as Position)
+// U -- UV Coordinate (GelUV)
+// C -- Color (GelColor)
+// R -- Radius (Real)
+// NN UU CC RR -- Include 2 sets of the primary types (Normal and Normal2, etc)
+// - ------------------------------------------------------------------------------------------ - //
+// TODO: //
+// D? - Data, where ? is a number from 1-4 (Real to Vector4D)
+// MultiPairs -- Currently only a single NN UU CC RR can be used.
+// - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_VERT_GELVERT_H__
 #define __GEL_VERT_GELVERT_H__
 // - ------------------------------------------------------------------------------------------ - //
@@ -6,9 +25,9 @@
 #include <Graphics/Graphics.h>
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
-// GelVert??   - Array of elements
-// GelVertex?? - Single element
-// GelVert     - Base Template of all GelVert?? types
+// GelVert?    - Array of elements. I.e. GelVert2 (Pos), GelVert3NC (Pos,Normal,Color)
+// GelVertex?  - Single element (same naming scheme)
+// GelVert     - Base Template of all GelVert? types
 // - ------------------------------------------------------------------------------------------ - //
 template<typename T>
 class GelVert {
@@ -34,23 +53,6 @@ public:
 		return Data.size();
 	}
 };
-// - ------------------------------------------------------------------------------------------ - //
-
-// - ------------------------------------------------------------------------------------------ - //
-// GUIDE: //
-// 1 -- 1D Position (Real)
-// 2 -- 2D Position (Vector2D)
-// 3 -- 3D Position (Vector3D)
-// 4 -- 4D Position (Vector4D)
-// N -- Normal (same as Position)
-// U -- UV Coordinate (GelUV)
-// C -- Color (GelColor)
-// R -- Radius (Real)
-// - ------------------------------------------------------------------------------------------ - //
-// TODO: //
-// UU - Dual UV Coordinates
-// CC - Dual Colors
-// D? - Data, where ? is a number from 1-4 (Real to Vector4D)
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
