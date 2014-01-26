@@ -129,8 +129,10 @@ class GelAlloc {
 	st Capacity;
 	st Used;
 	int Index;
-	T Data;
+	GelVert<T> Data;
 public:
+	typedef T Type;
+
 	inline GelAlloc( const st _Capacity ) :
 		Index( -1 ),
 		Capacity( _Capacity ),
@@ -162,10 +164,18 @@ public:
 	}
 	
 	// Use -> operator to set the current element //
-	inline T& operator *() {
+	inline T* operator -> () {
+		return &(Data[Index]);
+	}
+	inline const T* operator -> () const {
+		return &(Data[Index]);
+	}
+
+	// Retrieve individual elements (as if it was a GelVertX type) //
+	inline T& operator [] ( const st Index ) {
 		return Data[Index];
 	}
-	inline const T& operator *() const {
+	inline const T& operator [] ( const st Index ) const {
 		return Data[Index];
 	}
 
@@ -184,7 +194,7 @@ public:
 	// ** USE ONE AND ONLY ONE OF THE FOLLOWING FUNCTIONS ** //
 	
 	// Normal Add Mode (Increases capacity as needed) //
-	inline T& Add() {
+	inline T* Add() {
 		Index++;
 		Used++;
 		
@@ -194,11 +204,11 @@ public:
 			Data.PushBack();
 		}
 
-		return operator*();
+		return operator->();
 	}
 
 	// Wrapping Add Mode (Allocator) -- For ease of understanding, no optional initializer. //
-	inline T& Next() {
+	inline T* Next() {
 		Index++;
 		Used++;
 
@@ -207,7 +217,7 @@ public:
 			Index -= Capacity;
 		}
 		
-		return operator*();
+		return operator->();
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -224,6 +234,8 @@ class GelParticle {
 	GelAlloc<T> Data;
 	std::vector<GelTime> DeathTime;
 public:
+	typedef T Type;
+
 	inline GelParticle( const st _Capacity ) :
 		Time( 0 ),
 		Data( _Capacity ),
@@ -245,11 +257,11 @@ public:
 	}
 
 	// Use -> operator to set the current element //
-	inline T& operator *() {
-		return operator*();
+	inline T* operator -> () {
+		return operator->();
 	}
-	inline const T& operator *() const {
-		return operator*();
+	inline const T* operator -> () const {
+		return operator->();
 	}
 
 public:
@@ -298,7 +310,7 @@ public:
 
 
 	// Add! Loops until the free element is found. //
-	inline T& Add( const GelTime Age ) {
+	inline T* Add( const GelTime Age ) {
 		st Count = 0;
 		do {
 			Data.Next();
@@ -318,7 +330,7 @@ public:
 		// Set the Age //
 		DeathTime[Data.GetIndex()] = Time + Age;
 		
-		return *Data;
+		return &Data;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -335,7 +347,8 @@ struct __CAT(GelVertex,__CAT(_num,_sym)) {
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_END(_num,_sym) \
 }; \
-typedef GelVert<__CAT(GelVertex,__CAT(_num,_sym))> __CAT(GelVert,__CAT(_num,_sym));
+typedef GelVert<__CAT(GelVertex,__CAT(_num,_sym))> __CAT(GelVert,__CAT(_num,_sym)); \
+typedef GelAlloc<__CAT(GelVertex,__CAT(_num,_sym))> __CAT(GelAlloc,__CAT(_num,_sym));
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //

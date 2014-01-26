@@ -194,9 +194,24 @@ void AppInit() {
 		GelVert2::Type Verr = Scrot[4];
 		Log("Verr [%i]: %f", Scrot.Size(), Verr.Pos.x.ToFloat() );
 		
-		GelAlloc<GelVert2> Norb(10);
-		GelParticle<GelVert2> Pork(10);
+		GelAlloc2 Norb(4);	
 		
+		Norb.Next();
+		Norb->Pos = Vector2D(1,-1);
+		Norb.Next();
+		Norb->Pos = Vector2D(2,-2);
+		Norb.Next();
+		Norb->Pos = Vector2D(3,-3);
+		Norb.Next();
+		Norb->Pos = Vector2D(4,-4);
+		Norb.Next();
+		Norb->Pos = Vector2D(5,-5);
+		
+		for ( int idx = 0; idx < Norb.MaxSize(); idx++ ) {
+			Log("%i -- %f,%f", idx, Norb[idx].Pos.x.ToFloat(), Norb[idx].Pos.y.ToFloat() );
+		}
+		
+		GelParticle<GelVert2> Pork(4);
 		
 		Log("**** DONE");
 	}
