@@ -194,6 +194,10 @@ void AppInit() {
 		GelVert2::Type Verr = Scrot[4];
 		Log("Verr [%i]: %f", Scrot.Size(), Verr.Pos.x.ToFloat() );
 		
+		GelAlloc<GelVert2> Norb(10);
+		GelParticle<GelVert2> Pork(10);
+		
+		
 		Log("**** DONE");
 	}
 	
