@@ -19,6 +19,7 @@
 #include <Model/Model.h>
 
 #include "Glayout/Glayout.h"
+#include "Vert/GelVert.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -182,6 +183,18 @@ void AppInit() {
 //		//App::MySkel.Set( "Walk" );//"walk" );
 //		Log("**** DONE");		
 //	}
+
+	{
+		Log("**** GelVert");
+		GelVert2 Scrot(4);
+		Scrot[0].Pos = Vector2D(10,10);
+		
+		GelVert2::Type Verr = Scrot[0];
+		//typeof(Scrot[0]) Verr = Scrot[0];
+		Log("Verr: %f", Verr.Pos.x.ToFloat() );
+		
+		Log("**** DONE");
+	}
 	
 	{
 		Log("**** GLAYOUT");		

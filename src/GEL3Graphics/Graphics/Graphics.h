@@ -5,6 +5,7 @@
 #include "Log/LogGraphicsAPIDetails.h"
 #include "GraphicsInit/GraphicsInit.h"
 #include "GelColor.h"
+#include "GelUV.h"
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_GRAPHICS_GRAPHICS_H__ //
 // - ------------------------------------------------------------------------------------------ - //
