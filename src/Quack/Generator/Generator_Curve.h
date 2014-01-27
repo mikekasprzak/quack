@@ -31,11 +31,21 @@ inline void GenCurve( const IN& In, OUT& Out ) {
 
 		Out.PushBack().Pos = In[idx+1].Pos - (Ray*(Radius2*Skew));
 		Out.PushBack().Pos = In[idx+1].Pos + (Ray*(Radius2));
+		Out.PushBack().Pos = In[idx+0].Pos + (OldRay*(Radius*UnSkew));
+
+		Out.PushBack().Pos = In[idx+0].Pos + (OldRay*(Radius*Skew));
+		Out.PushBack().Pos = In[idx+0].Pos - (OldRay*(Radius*Skew));
+		Out.PushBack().Pos = In[idx+1].Pos - (Ray*(Radius2));
+
+/*
+		Out.PushBack().Pos = In[idx+1].Pos - (Ray*(Radius2*Skew));
+		Out.PushBack().Pos = In[idx+1].Pos + (Ray*(Radius2));
 		Out.PushBack().Pos = In[idx+0].Pos + (Ray*(Radius*UnSkew));
 
 		Out.PushBack().Pos = In[idx+0].Pos + (Ray*(Radius*Skew));
 		Out.PushBack().Pos = In[idx+0].Pos - (Ray*(Radius*Skew));
 		Out.PushBack().Pos = In[idx+1].Pos - (Ray*(Radius2));
+*/
 
 /*		
 		// Fill Gap //
