@@ -19,7 +19,7 @@
 #include <Model/Model.h>
 
 #include "Glayout/Glayout.h"
-#include "Vert/GelVert.h"
+#include <Vert/GelVert.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -184,6 +184,7 @@ void AppInit() {
 //		Log("**** DONE");		
 //	}
 
+/*
 	{
 		Log("**** GelVert, GelAlloc, GelParticle");
 //		GelVert2 Scrot(4);
@@ -266,6 +267,7 @@ void AppInit() {
 		
 		Log("**** DONE");
 	}
+*/
 	
 	{
 		Log("**** GLAYOUT");
