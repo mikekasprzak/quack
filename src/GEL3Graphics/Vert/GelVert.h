@@ -54,10 +54,10 @@ public:
 	}
 
 	inline T* Get() {
-		return &Data[0];
+		return &(Data[0]);
 	}
 	inline const T* Get() const {
-		return &Data[0];
+		return &(Data[0]);
 	}
 
 	inline T& Front() {
@@ -145,11 +145,11 @@ public:
 	{
 	}
 	
-	inline T& Get() {
-		return Data;
+	inline T* Get() {
+		return &(Data[0]);
 	}
-	inline const T& Get() const {
-		return Data;
+	inline const T* Get() const {
+		return &(Data[0]);
 	}
 
 	inline int GetIndex() const {
@@ -249,10 +249,10 @@ public:
 	}
 
 	// Get the GelVert //
-	inline T& Get() {
+	inline T* Get() {
 		return Data.Get();
 	}
-	inline const T& Get() const {
+	inline const T* Get() const {
 		return Data.Get();
 	}
 

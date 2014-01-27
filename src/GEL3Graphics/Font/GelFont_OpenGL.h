@@ -15,6 +15,7 @@
 #include <Graphics/Allocator/Allocator.h>
 #include <Graphics/Allocator/Vector3DAllocator.h>
 #include <Graphics/Allocator/UVAllocator.h>
+#include <Vert/Vert.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 #include <stdio.h>
@@ -145,13 +146,15 @@ public:
 			Pos.y -= Real(BaseLine * Scalar.ToFloat() * ScaleH_R_F);
 		}
 
-		Vector3DAllocator Vert( Length * 6 );
-		UVAllocator UV( Length * 6 );
+//		Vector3DAllocator Vert( Length * 6 );
+//		UVAllocator UV( Length * 6 );
+		
+		GelAlloc3U Vert( Length*6 );
 
 		// Assume Matrix and texture mode are set correctly outside this function //
 		for ( size_t Tex = 0; Tex < TexturePage.size(); Tex++ ) {
 			Vert.Clear();
-			UV.Clear();
+//			UV.Clear();
 			
 			Vector3D CurPos = Pos;
 			
@@ -175,6 +178,20 @@ public:
 					float UV2_x = (Glyph[Ch]->x + Glyph[Ch]->Width) * UV_ONE / ScaleW;
 					float UV2_y = (Glyph[Ch]->y + Glyph[Ch]->Height) * UV_ONE / ScaleH;
 					
+					Vert.Next()->Pos = Vector3D( V1.x, V1.y, 0) + CurPos;
+					Vert->UV = GelUV( UV1_x, UV1_y );
+					Vert.Next()->Pos = Vector3D( V2.x, V1.y, 0) + CurPos;
+					Vert->UV = GelUV( UV2_x, UV1_y );
+					Vert.Next()->Pos = Vector3D( V2.x, V2.y, 0) + CurPos;
+					Vert->UV = GelUV( UV2_x, UV2_y );
+					Vert.Next()->Pos = Vector3D( V2.x, V2.y, 0) + CurPos;
+					Vert->UV = GelUV( UV2_x, UV2_y );
+					Vert.Next()->Pos = Vector3D( V1.x, V2.y, 0) + CurPos;
+					Vert->UV = GelUV( UV1_x, UV2_y );
+					Vert.Next()->Pos = Vector3D( V1.x, V1.y, 0) + CurPos;
+					Vert->UV = GelUV( UV1_x, UV1_y );
+
+/*					
 					Vert.Add( Vector3D( V1.x, V1.y, 0) + CurPos );
 					Vert.Add( Vector3D( V2.x, V1.y, 0) + CurPos );
 					Vert.Add( Vector3D( V2.x, V2.y, 0) + CurPos );
@@ -188,7 +205,7 @@ public:
 					UV.Add( UVSet<Gel::UVType>( UV2_x, UV2_y ) );
 					UV.Add( UVSet<Gel::UVType>( UV1_x, UV2_y ) );
 					UV.Add( UVSet<Gel::UVType>( UV1_x, UV1_y ) );
-				
+*/				
 					CharsDrawn++;
 				}
 				
@@ -202,15 +219,15 @@ public:
 //				Vert.Size()
 //				);
 			
-			Gel::Default->Bind( Gel::TextureAlphaShader );
+			Gel::Default->Bind( Gel::TextureAlphaShader_Packed );
 			Gel::Default->UniformMatrix4x4( 0, Mat );
 			Gel::Default->UniformColor( 1, Color );
 			Gel::Default->Uniform1i( 2, 0 ); // "TexImage0" //
 			Gel::Default->BindUniforms();
 			//Bind( TexturePage[Tex], 0 );
 			Gel::TexturePool[TexturePage[Tex]].Bind( 0 );
-			Gel::Default->Attrib( 0, Vert.Get() );
-			Gel::Default->Attrib( 1, UV.Get() );
+			Gel::Default->Attrib( 0, &(Vert.Get()->Pos) );
+			Gel::Default->Attrib( 1, &(Vert.Get()->UV) );
 			Gel::Default->DrawArrays( GL_TRIANGLES, Vert.Size() );
 			
 			if ( Length == CharsDrawn )
