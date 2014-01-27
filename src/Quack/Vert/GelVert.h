@@ -12,11 +12,12 @@
 // U -- UV Coordinate (GelUV)
 // C -- Color (GelColor)
 // R -- Radius (Real)
+// D -- Data (int)
 // NN UU CC RR -- Include 2 sets of the primary types (Normal and Normal2, etc)
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: //
-// D? - Data, where ? is a number from 1-4 (Real to Vector4D)
 // MultiPairs -- Currently only a single NN UU CC RR can be used.
+// Finish Data -- Currently only non-multipairs can use Data. Also no DD multipair.
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_VERT_GELVERT_H__
 #define __GEL_VERT_GELVERT_H__
@@ -25,9 +26,12 @@
 #include <Graphics/Graphics.h>
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
-// GelVert?    - Array of elements. I.e. GelVert2 (Pos), GelVert3NC (Pos,Normal,Color)
-// GelVertex?  - Single element (same naming scheme)
-// GelVert     - Base Template of all GelVert? types
+// GelVertX    - Array of elements. I.e. GelVert2 (Pos), GelVert3NC (Pos,Normal,Color)
+// GelAllocX   - Like GelVertX, but for allocting from a pool of a fixed capacity.
+// GelVertexX  - Single element (same naming scheme)
+// GelVert     - Base Template of all GelVertX types
+// GelAlloc    - Base Template of all GelAllocX types
+// GelParticle - Adds 'Life Time' to GelAlloc, making it suiatble for particle simulations. No GelParticleX!
 // - ------------------------------------------------------------------------------------------ - //
 template<typename T>
 class GelVert {

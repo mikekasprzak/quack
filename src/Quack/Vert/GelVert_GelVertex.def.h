@@ -28,6 +28,11 @@ __GelVertex_START( __GelVertex_NUMBER, R )
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, R )
 // - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, D )
+	__GelVertex_TYPE Pos;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, D )
+// - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
 __GelVertex_START( __GelVertex_NUMBER, NU )
 	__GelVertex_TYPE Pos;
@@ -47,6 +52,12 @@ __GelVertex_START( __GelVertex_NUMBER, NR )
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, NR )
 // - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, ND )
+	__GelVertex_TYPE Pos;
+	__GelVertex_TYPE Normal;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, ND )
+// - ------------------------------------------------------------------------------------------ - //
 __GelVertex_START( __GelVertex_NUMBER, UC )
 	__GelVertex_TYPE Pos;
 	GelUV UV;
@@ -59,11 +70,23 @@ __GelVertex_START( __GelVertex_NUMBER, UR )
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, UR )
 // - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, UD )
+	__GelVertex_TYPE Pos;
+	GelUV UV;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, UD )
+// - ------------------------------------------------------------------------------------------ - //
 __GelVertex_START( __GelVertex_NUMBER, CR )
 	__GelVertex_TYPE Pos;
 	GelColor Color;
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, CR )
+// - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, CD )
+	__GelVertex_TYPE Pos;
+	GelColor Color;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, CD )
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
 __GelVertex_START( __GelVertex_NUMBER, NUC )
@@ -80,6 +103,13 @@ __GelVertex_START( __GelVertex_NUMBER, NUR )
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, NUR )
 // - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, NUD )
+	__GelVertex_TYPE Pos;
+	__GelVertex_TYPE Normal;
+	GelUV UV;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, NUD )
+// - ------------------------------------------------------------------------------------------ - //
 __GelVertex_START( __GelVertex_NUMBER, NCR )
 	__GelVertex_TYPE Pos;
 	__GelVertex_TYPE Normal;
@@ -87,12 +117,26 @@ __GelVertex_START( __GelVertex_NUMBER, NCR )
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, NCR )
 // - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, NCD )
+	__GelVertex_TYPE Pos;
+	__GelVertex_TYPE Normal;
+	GelColor Color;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, NCD )
+// - ------------------------------------------------------------------------------------------ - //
 __GelVertex_START( __GelVertex_NUMBER, UCR )
 	__GelVertex_TYPE Pos;
 	GelUV UV;
 	GelColor Color;
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, UCR )
+// - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, UCD )
+	__GelVertex_TYPE Pos;
+	GelUV UV;
+	GelColor Color;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, UCD )
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
 __GelVertex_START( __GelVertex_NUMBER, NUCR )
@@ -102,6 +146,40 @@ __GelVertex_START( __GelVertex_NUMBER, NUCR )
 	GelColor Color;
 	Real Radius;
 __GelVertex_END( __GelVertex_NUMBER, NUCR )
+// - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, NUCD )
+	__GelVertex_TYPE Pos;
+	__GelVertex_TYPE Normal;
+	GelUV UV;
+	GelColor Color;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, NUCD )
+// - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, NCRD )
+	__GelVertex_TYPE Pos;
+	__GelVertex_TYPE Normal;
+	GelColor Color;
+	Real Radius;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, NCRD )
+// - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, NURD )
+	__GelVertex_TYPE Pos;
+	__GelVertex_TYPE Normal;
+	GelUV UV;
+	Real Radius;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, NURD )
+// - ------------------------------------------------------------------------------------------ - //
+// - ------------------------------------------------------------------------------------------ - //
+__GelVertex_START( __GelVertex_NUMBER, NUCRD )
+	__GelVertex_TYPE Pos;
+	__GelVertex_TYPE Normal;
+	GelUV UV;
+	GelColor Color;
+	Real Radius;
+	int Data;
+__GelVertex_END( __GelVertex_NUMBER, NUCRD )
 // - ------------------------------------------------------------------------------------------ - //
 // - ------------------------------------------------------------------------------------------ - //
 
