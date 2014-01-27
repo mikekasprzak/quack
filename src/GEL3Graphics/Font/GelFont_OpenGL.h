@@ -12,9 +12,6 @@
 #include <Texture/Texture.h>
 #include <Render/Render.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include <Graphics/Allocator/Allocator.h>
-#include <Graphics/Allocator/Vector3DAllocator.h>
-#include <Graphics/Allocator/UVAllocator.h>
 #include <Vert/Vert.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
@@ -145,16 +142,12 @@ public:
 		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_BASELINE ) {
 			Pos.y -= Real(BaseLine * Scalar.ToFloat() * ScaleH_R_F);
 		}
-
-//		Vector3DAllocator Vert( Length * 6 );
-//		UVAllocator UV( Length * 6 );
 		
 		GelAlloc3U Vert( Length*6 );
 
 		// Assume Matrix and texture mode are set correctly outside this function //
 		for ( size_t Tex = 0; Tex < TexturePage.size(); Tex++ ) {
 			Vert.Clear();
-//			UV.Clear();
 			
 			Vector3D CurPos = Pos;
 			
@@ -191,33 +184,11 @@ public:
 					Vert.Next()->Pos = Vector3D( V1.x, V1.y, 0) + CurPos;
 					Vert->UV = GelUV( UV1_x, UV1_y );
 
-/*					
-					Vert.Add( Vector3D( V1.x, V1.y, 0) + CurPos );
-					Vert.Add( Vector3D( V2.x, V1.y, 0) + CurPos );
-					Vert.Add( Vector3D( V2.x, V2.y, 0) + CurPos );
-					Vert.Add( Vector3D( V2.x, V2.y, 0) + CurPos );
-					Vert.Add( Vector3D( V1.x, V2.y, 0) + CurPos );
-					Vert.Add( Vector3D( V1.x, V1.y, 0) + CurPos );
-					 					
-					UV.Add( UVSet<Gel::UVType>( UV1_x, UV1_y ) );
-					UV.Add( UVSet<Gel::UVType>( UV2_x, UV1_y ) );
-					UV.Add( UVSet<Gel::UVType>( UV2_x, UV2_y ) );
-					UV.Add( UVSet<Gel::UVType>( UV2_x, UV2_y ) );
-					UV.Add( UVSet<Gel::UVType>( UV1_x, UV2_y ) );
-					UV.Add( UVSet<Gel::UVType>( UV1_x, UV1_y ) );
-*/				
 					CharsDrawn++;
 				}
 				
 				CurPos.x += Glyph[Ch]->AdvanceX * Scalar.ToFloat() * ScaleW_R_F;
 			}
-
-			// Draw! //
-//			gelDrawTrianglesTextured(
-//				(const Vector3D*)Vert.Get(),
-//				(GelUV*)UV.Get(),
-//				Vert.Size()
-//				);
 			
 			Gel::Default->Bind( Gel::TextureAlphaShader_Packed );
 			Gel::Default->UniformMatrix4x4( 0, Mat );
