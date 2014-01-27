@@ -20,6 +20,7 @@
 
 #include "Glayout/Glayout.h"
 #include <Vert/Vert.h>
+#include "Generator/Generator.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -75,6 +76,9 @@ bool HadVMError;
 //GelAtlasPool::UID MyAtlasID;
 	
 GlayLayout Layout;
+
+GelVert2 InCurve;
+GelVert2 OutCurve;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -268,6 +272,27 @@ void AppInit() {
 		Log("**** DONE");
 	}
 */
+
+	{
+		Log("**** Generator");
+		App::InCurve.PushBack().Pos = Vector2D(0,0);
+		App::InCurve.PushBack().Pos = Vector2D(0,20);
+		App::InCurve.PushBack().Pos = Vector2D(10,40);
+		App::InCurve.PushBack().Pos = Vector2D(15,60);
+		App::InCurve.PushBack().Pos = Vector2D(10,80);
+		App::InCurve.PushBack().Pos = Vector2D(0,100);
+		App::InCurve.PushBack().Pos = Vector2D(-5,120);
+		
+		GenCurve( App::InCurve, App::OutCurve );
+
+		for ( st idx = 0; idx < App::OutCurve.Size(); idx++ ) {
+			Log("%i -- %f,%f", idx, App::OutCurve[idx].Pos.x.ToFloat(),App::OutCurve[idx].Pos.y.ToFloat());
+			if ( (idx % 6) == 5 )
+				Log("");
+		}
+	
+		Log("**** DONE");
+	}
 	
 	{
 		Log("**** GLAYOUT");
@@ -397,6 +422,8 @@ void AppDraw() {
 //	Gel::AtlasPool[App::MyAtlasID].Draw( App::InfoMatrix, 4 );
 	
 	DrawLayout( App::Layout.Root );
+		
+	Gel::RenderFlat2D(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB(200,20,100),&(App::OutCurve.Get()->Pos),App::OutCurve.Size());
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {

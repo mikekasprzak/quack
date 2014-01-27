@@ -53,6 +53,15 @@ inline void RenderFlat( const int Mode, const Matrix4x4& Matrix, const GelColor 
 	Default->DrawArrays( Mode, VertCount );
 }
 // - ------------------------------------------------------------------------------------------ - //
+inline void RenderFlat2D( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const st32 VertCount ) {
+	Default->Bind( FlatShader2D );
+	Default->UniformMatrix4x4( 0, Matrix );
+	Default->UniformColor( 1, Color ); // GlobalColor //
+	Default->BindUniforms();
+	Default->Attrib( 0, Verts );
+	Default->DrawArrays( Mode, VertCount );
+}
+// - ------------------------------------------------------------------------------------------ - //
 inline void RenderFlatIndexed( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const st32 VertCount, const void* Indexes, const st32 IndexCount ) {
 	Default->Bind( FlatShader );
 	Default->UniformMatrix4x4( 0, Matrix );

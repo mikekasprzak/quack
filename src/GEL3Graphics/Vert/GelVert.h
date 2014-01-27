@@ -97,11 +97,13 @@ public:
 		std::vector<T>(_Size).swap(Data);
 	}
 	
-	inline void PushFront( const T& Val = T() ) {
+	inline T& PushFront( const T& Val = T() ) {
 		Data.insert( Data.begin(), Val );
+		return Front();
 	}
-	inline void PushBack( const T& Val = T() ) {
+	inline T& PushBack( const T& Val = T() ) {
 		Data.push_back( Val );
+		return Back();
 	}
 
 	inline T PopFront() {
@@ -384,7 +386,8 @@ public:
 
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_START(_num,_sym) \
-struct __CAT(GelVertex,__CAT(_num,_sym)) {
+struct __CAT(GelVertex,__CAT(_num,_sym)) { \
+	typedef __GelVertex_TYPE Type;
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_END(_num,_sym) \
 }; \
