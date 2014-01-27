@@ -16,20 +16,30 @@ inline void GenCurve( const IN& In, OUT& Out ) {
 		Real Mag = Ray.NormalizeRet();
 		Ray = Ray.Tangent();
 		
-		Real Radius2 = Radius - Real::One;
+		Real Radius2 = Radius - Real::Half;
 
-		Out.PushBack().Pos = In[idx+1].Pos - (Ray*Radius2);
-		Out.PushBack().Pos = In[idx+1].Pos + (Ray*Radius2);
-		Out.PushBack().Pos = In[idx+0].Pos + (Ray*Radius);
+//		Out.PushBack().Pos = In[idx+1].Pos - (Ray*Radius2);
+//		Out.PushBack().Pos = In[idx+1].Pos + (Ray*Radius2);
+//		Out.PushBack().Pos = In[idx+0].Pos + (Ray*Radius);
+//
+//		Out.PushBack().Pos = In[idx+0].Pos + (Ray*Radius);
+//		Out.PushBack().Pos = In[idx+0].Pos - (Ray*Radius);
+//		Out.PushBack().Pos = In[idx+1].Pos - (Ray*Radius2);
 
-		Out.PushBack().Pos = In[idx+0].Pos + (Ray*Radius);
-		Out.PushBack().Pos = In[idx+0].Pos - (Ray*Radius);
-		Out.PushBack().Pos = In[idx+1].Pos - (Ray*Radius2);
+		Real Skew(2);
+		Real UnSkew(0.75);
 
-		
-		Real RaySide = dot(Ray.Tangent(),OldRay);
+		Out.PushBack().Pos = In[idx+1].Pos - (Ray*(Radius2*Skew));
+		Out.PushBack().Pos = In[idx+1].Pos + (Ray*(Radius2));
+		Out.PushBack().Pos = In[idx+0].Pos + (Ray*(Radius*UnSkew));
 
+		Out.PushBack().Pos = In[idx+0].Pos + (Ray*(Radius*Skew));
+		Out.PushBack().Pos = In[idx+0].Pos - (Ray*(Radius*Skew));
+		Out.PushBack().Pos = In[idx+1].Pos - (Ray*(Radius2));
+
+/*		
 		// Fill Gap //
+		Real RaySide = dot(Ray.Tangent(),OldRay);
 		if ( RaySide < Real::Zero ) {
 			Out.PushBack().Pos = In[idx+0].Pos - (Ray*Radius);
 			Out.PushBack().Pos = In[idx+0].Pos;
@@ -43,7 +53,7 @@ inline void GenCurve( const IN& In, OUT& Out ) {
 		else {
 			// Do nothing in Zero case (i.e. First time, axis aligned) //
 		}
-				
+*/				
 		OldRay = Ray;
 		Radius = Radius2;
 	}

@@ -275,21 +275,17 @@ void AppInit() {
 
 	{
 		Log("**** Generator");
-		App::InCurve.PushBack().Pos = Vector2D(0,0);
-		App::InCurve.PushBack().Pos = Vector2D(0,20);
-		App::InCurve.PushBack().Pos = Vector2D(10,40);
-		App::InCurve.PushBack().Pos = Vector2D(55,60);
-		App::InCurve.PushBack().Pos = Vector2D(10,80);
-		App::InCurve.PushBack().Pos = Vector2D(0,100);
-		App::InCurve.PushBack().Pos = Vector2D(15,120);
+		for ( int idx = -4; idx < 8; idx++ ) {
+			App::InCurve.PushBack().Pos = Vector2D(0,idx*(20-idx));
+		}
 		
 		GenCurve( App::InCurve, App::OutCurve );
 
-		for ( st idx = 0; idx < App::OutCurve.Size(); idx++ ) {
-			Log("%i -- %f,%f", idx, App::OutCurve[idx].Pos.x.ToFloat(),App::OutCurve[idx].Pos.y.ToFloat());
-			if ( (idx % 6) == 5 )
-				Log("");
-		}
+//		for ( st idx = 0; idx < App::OutCurve.Size(); idx++ ) {
+//			Log("%i -- %f,%f", idx, App::OutCurve[idx].Pos.x.ToFloat(),App::OutCurve[idx].Pos.y.ToFloat());
+//			if ( (idx % 6) == 5 )
+//				Log("");
+//		}
 	
 		Log("**** DONE");
 	}
@@ -383,6 +379,17 @@ void AppStep() {
 	App::SqStepProfiler.Start();
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
+
+	{
+		static Real Flow(0);
+		Flow += Real(0.01f);
+		for ( int idx = 0; idx < App::InCurve.Size(); idx++ ) {
+			App::InCurve[idx].Pos.x = (Flow+(Real(idx)*Real(0.1))).Sin() * Real(20);
+		}
+		
+		App::OutCurve.Clear();
+		GenCurve( App::InCurve, App::OutCurve );
+	}
 
 //#ifdef USES_STEAM
 //	if ( Gel::IsSteamRunning ) {
