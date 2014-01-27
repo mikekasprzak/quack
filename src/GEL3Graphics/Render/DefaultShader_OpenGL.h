@@ -19,6 +19,8 @@ extern GelShaderHandle FlatShader_Packed;
 extern GelShaderHandle FlatShader2D_Packed;
 extern GelShaderHandle ColorShader;
 extern GelShaderHandle ColorShader2D;
+extern GelShaderHandle ColorShader_Packed;
+extern GelShaderHandle ColorShader2D_Packed;
 extern GelShaderHandle TextureShader;
 extern GelShaderHandle TextureShader2D;
 extern GelShaderHandle TextureShader_Packed;
@@ -69,6 +71,16 @@ inline void RenderFlatIndexed( const int Mode, const Matrix4x4& Matrix, const Ge
 	Default->BindUniforms();
 	Default->Attrib( 0, Verts );
 	Default->DrawElements( Mode, VertCount, Indexes, IndexCount );
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline void RenderColor2D_Packed( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const void* Colors, const st32 VertCount ) {
+	Default->Bind( ColorShader2D_Packed );
+	Default->UniformMatrix4x4( 0, Matrix );
+	Default->UniformColor( 1, Color ); // GlobalColor //
+	Default->BindUniforms();
+	Default->Attrib( 0, Verts );
+	Default->Attrib( 2, Colors );
+	Default->DrawArrays( Mode, VertCount );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void RenderTexture( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const void* UVs, const st32 VertCount ) {

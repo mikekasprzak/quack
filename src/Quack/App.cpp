@@ -78,7 +78,7 @@ bool HadVMError;
 GlayLayout Layout;
 
 GelVert2 InCurve;
-GelVert2 OutCurve;
+GelVert2C OutCurve;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -276,7 +276,10 @@ void AppInit() {
 	{
 		Log("**** Generator");
 		for ( int idx = -4; idx < 8; idx++ ) {
-			App::InCurve.PushBack().Pos = Vector2D(0,idx*(20-idx));
+			int Scale = idx;
+			if ( Scale < 0 )
+				Scale *= -Scale;
+			App::InCurve.PushBack().Pos = Vector2D(0,idx*(20-Scale));
 		}
 		
 		GenCurve( App::InCurve, App::OutCurve );
@@ -384,8 +387,9 @@ void AppStep() {
 		static Real Flow(0);
 		Flow += Real(0.01f);
 		for ( int idx = 0; idx < App::InCurve.Size(); idx++ ) {
-			App::InCurve[idx].Pos.x = (Flow+(Real(idx)*Real(0.1))).Sin() * Real(20);
+			App::InCurve[idx].Pos.x = (Flow+(Real(idx)*Real(0.1))).Sin() * Real(20-idx);
 		}
+		App::InCurve[0].Pos.x = App::InCurve[1].Pos.x;
 		
 		App::OutCurve.Clear();
 		GenCurve( App::InCurve, App::OutCurve );
@@ -430,7 +434,8 @@ void AppDraw() {
 	
 	DrawLayout( App::Layout.Root );
 		
-	Gel::RenderFlat2D(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB(200,20,100),&(App::OutCurve.Get()->Pos),App::OutCurve.Size());
+//	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve.Get()->Pos),&(App::OutCurve.Get()->Color),App::OutCurve.Size());
+	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve[6].Pos),&(App::OutCurve[6].Color),App::OutCurve.Size()-6);
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {

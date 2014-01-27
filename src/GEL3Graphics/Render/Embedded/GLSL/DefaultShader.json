@@ -218,6 +218,82 @@
 				}
 			]
 		},
+
+		"Color_Packed" : {
+			"Define" : [
+				"SHADER_COLOR",
+				"SHADER_NONE"
+			],
+			"Attribute" : [
+				{
+					"Index" : 0,
+					"Group" : 0,
+					"Name" : "VertexPos",
+					"Type" : "float",
+					"Count" : 3
+				},
+				{
+					"Index" : 2,
+					"Group" : 0,
+					"Name" : "VertexColor",
+					"Type" : "uchar",
+					"Normalize" : true,
+					"Count" : 4
+				}
+			],
+			"Uniform" : [
+				{
+					"Index" : 0,
+					"Name" : "ViewMatrix",
+					"Type" : "mat4",
+					"Count" : 1
+				},
+				{
+					"Index" : 1,
+					"Name" : "GlobalColor",
+					"Type" : "color",
+					"Count" : 1
+				}
+			]
+		},
+		
+		"Color2D_Packed" : {
+			"Define" : [
+				"SHADER_COLOR",
+				"SHADER_NONE"
+			],
+			"Attribute" : [
+				{
+					"Index" : 0,
+					"Group" : 0,
+					"Name" : "VertexPos",
+					"Type" : "float",
+					"Count" : 2
+				},
+				{
+					"Index" : 2,
+					"Group" : 0,
+					"Name" : "VertexColor",
+					"Type" : "uchar",
+					"Normalize" : true,
+					"Count" : 4
+				}
+			],
+			"Uniform" : [
+				{
+					"Index" : 0,
+					"Name" : "ViewMatrix",
+					"Type" : "mat4",
+					"Count" : 1
+				},
+				{
+					"Index" : 1,
+					"Name" : "GlobalColor",
+					"Type" : "color",
+					"Count" : 1
+				}
+			]
+		},
 		
 		"Texture" : {
 			"Define" : [

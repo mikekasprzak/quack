@@ -16,6 +16,8 @@ GelShaderHandle FlatShader_Packed;
 GelShaderHandle FlatShader2D_Packed;
 GelShaderHandle ColorShader;
 GelShaderHandle ColorShader2D;
+GelShaderHandle ColorShader_Packed;
+GelShaderHandle ColorShader2D_Packed;
 GelShaderHandle TextureShader;
 GelShaderHandle TextureShader2D;
 GelShaderHandle TextureShader_Packed;
@@ -64,6 +66,8 @@ void gelShaderInit() {
 	Gel::FlatShader2D_Packed = Gel::Default->Find( "Flat2D_Packed" );
 	Gel::ColorShader = Gel::Default->Find( "Color" );
 	Gel::ColorShader2D = Gel::Default->Find( "Color2D" );
+	Gel::ColorShader_Packed = Gel::Default->Find( "Color_Packed" );
+	Gel::ColorShader2D_Packed = Gel::Default->Find( "Color2D_Packed" );
 	Gel::TextureShader = Gel::Default->Find( "Texture" );
 	Gel::TextureShader2D = Gel::Default->Find( "Texture2D" );
 	Gel::TextureShader_Packed = Gel::Default->Find( "Texture_Packed" );
