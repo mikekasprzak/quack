@@ -195,7 +195,6 @@ public:
 			Gel::Default->UniformColor( 1, Color );
 			Gel::Default->Uniform1i( 2, 0 ); // "TexImage0" //
 			Gel::Default->BindUniforms();
-			//Bind( TexturePage[Tex], 0 );
 			Gel::TexturePool[TexturePage[Tex]].Bind( 0 );
 			Gel::Default->Attrib( 0, &(Vert.Get()->Pos) );
 			Gel::Default->Attrib( 1, &(Vert.Get()->UV) );
