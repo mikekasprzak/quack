@@ -278,10 +278,10 @@ void AppInit() {
 		App::InCurve.PushBack().Pos = Vector2D(0,0);
 		App::InCurve.PushBack().Pos = Vector2D(0,20);
 		App::InCurve.PushBack().Pos = Vector2D(10,40);
-		App::InCurve.PushBack().Pos = Vector2D(15,60);
+		App::InCurve.PushBack().Pos = Vector2D(55,60);
 		App::InCurve.PushBack().Pos = Vector2D(10,80);
 		App::InCurve.PushBack().Pos = Vector2D(0,100);
-		App::InCurve.PushBack().Pos = Vector2D(-5,120);
+		App::InCurve.PushBack().Pos = Vector2D(15,120);
 		
 		GenCurve( App::InCurve, App::OutCurve );
 

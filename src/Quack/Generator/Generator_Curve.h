@@ -8,6 +8,9 @@ template <typename IN, typename OUT>
 inline void GenCurve( const IN& In, OUT& Out ) {
 	Out.Reserve( In.Size() * 6 );
 	Real Radius = 8;
+	
+	typename IN::Type::Type OldRay = IN::Type::Type::Zero;
+
 	for ( st idx = 0; idx < In.Size()-1; idx++ ) {
 		typename IN::Type::Type Ray = In[idx+1].Pos - In[idx+0].Pos;
 		Real Mag = Ray.NormalizeRet();
@@ -22,7 +25,26 @@ inline void GenCurve( const IN& In, OUT& Out ) {
 		Out.PushBack().Pos = In[idx+0].Pos + (Ray*Radius);
 		Out.PushBack().Pos = In[idx+0].Pos - (Ray*Radius);
 		Out.PushBack().Pos = In[idx+1].Pos - (Ray*Radius2);
+
 		
+		Real RaySide = dot(Ray.Tangent(),OldRay);
+
+		// Fill Gap //
+		if ( RaySide < Real::Zero ) {
+			Out.PushBack().Pos = In[idx+0].Pos - (Ray*Radius);
+			Out.PushBack().Pos = In[idx+0].Pos;
+			Out.PushBack().Pos = In[idx+0].Pos - (OldRay*Radius);
+		}
+		else if ( RaySide > Real::Zero ) {
+			Out.PushBack().Pos = In[idx+0].Pos;
+			Out.PushBack().Pos = In[idx+0].Pos + (Ray*Radius);
+			Out.PushBack().Pos = In[idx+0].Pos + (OldRay*Radius);
+		}
+		else {
+			// Do nothing in Zero case (i.e. First time, axis aligned) //
+		}
+				
+		OldRay = Ray;
 		Radius = Radius2;
 	}
 }
