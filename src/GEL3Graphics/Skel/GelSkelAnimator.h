@@ -7,6 +7,7 @@
 
 #include <Render/Render.h>
 #include <Texture/Texture.h>
+#include <Vert/Vert.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelSkelAnimator {
 protected:
@@ -84,8 +85,22 @@ public:
 		spSkeleton_updateWorldTransform( Skeleton ); // Build Matrix //
 	}
 	
+	inline void FlushDraw( const Matrix4x4& Matrix, const GelTexturePool::UID& TexIndex, GelAlloc3UC& Vert ) const {
+		if ( Vert.Size() ) {
+			Gel::TexturePool[TexIndex].Bind();
+			Gel::RenderTextureColorPacked( GEL_TRIANGLES, Matrix, GEL_RGB_WHITE, &(Vert.Get()->Pos), &(Vert.Get()->UV), &(Vert.Get()->Color), Vert.Size() );
+
+			Vert.Clear();
+		}
+	}
+	
 	inline void Draw( const Matrix4x4& Matrix ) {
 		spSkeleton* skeleton = Skeleton;
+		
+		GelAlloc3UC Vert( skeleton->slotCount * 6 );
+		GelTexturePool::UID TexIndex = 0;
+		int BlendState = 0;
+		gelBlendingEnable();
 		
 		float worldVertices[8];
 		for (int i = 0; i < skeleton->slotCount; ++i) {
@@ -96,9 +111,15 @@ public:
 			spRegionAttachment* regionAttachment = (spRegionAttachment*)attachment;
 	
 			if ( slot->data->additiveBlending ) {
+				if ( BlendState != 1 )
+					FlushDraw( Matrix, TexIndex, Vert );
+				BlendState = 1;
 				gelBlendingEnableAddative();
 			}
 			else {
+				if ( BlendState != 0 )
+					FlushDraw( Matrix, TexIndex, Vert );
+				BlendState = 0;
 				gelBlendingEnable();
 			}
 	
@@ -111,6 +132,11 @@ public:
 			GelColor Color = GEL_RGBA(r,g,b,a);
 			
 			// TODO: Use general vertex type (pos,uv,color), and write color to the vertices. //
+			GelTexturePool::UID OldTexIndex = TexIndex;
+			TexIndex = (st)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject;
+			if ( TexIndex != OldTexIndex ) {
+				FlushDraw( Matrix, OldTexIndex, Vert );
+			}
 	
 	//		sf::Vertex vertices[4];
 	//		vertices[0].color.r = r;
@@ -129,8 +155,28 @@ public:
 	//		vertices[3].color.g = g;
 	//		vertices[3].color.b = b;
 	//		vertices[3].color.a = a;
+
+			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
+			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+			Vert->Color = Color;
+			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X2],worldVertices[VERTEX_Y2],0);
+			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X2],regionAttachment->uvs[VERTEX_Y2]);
+			Vert->Color = Color;
+			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
+			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
+			Vert->Color = Color;
+			
+			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
+			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
+			Vert->Color = Color;
+			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X4],worldVertices[VERTEX_Y4],0);
+			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X4],regionAttachment->uvs[VERTEX_Y4]);
+			Vert->Color = Color;
+			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
+			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+			Vert->Color = Color;
 	
-	
+/*
 			const st32 VertCount = 6;
 			Vector3D Verts[ VertCount ];
 			Verts[0] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
@@ -140,22 +186,25 @@ public:
 			Verts[3] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
 			Verts[4] = Vector3D(worldVertices[VERTEX_X4],worldVertices[VERTEX_Y4],0);
 			Verts[5] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
-			
+*/			
 			// DO THIS WITH MATRIX //
 //			for ( st32 idx = 0; idx < VertCount; idx++ ) {
 //				Verts[idx] += Pos;
 //			}
+
+					
+//			TexIndex = (st)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject;
+
+/*	
+			GelUV UVs[ VertCount ];
+			UVs[0] = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+			UVs[1] = GelUV(regionAttachment->uvs[VERTEX_X2],regionAttachment->uvs[VERTEX_Y2]);
+			UVs[2] = GelUV(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
 	
-			GelTexture& Tex = Gel::TexturePool[(st)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject];
-	
-			UVSet<Gel::UVType> UVs[ VertCount ];
-			UVs[0] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
-			UVs[1] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X2],regionAttachment->uvs[VERTEX_Y2]);
-			UVs[2] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-	
-			UVs[3] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-			UVs[4] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X4],regionAttachment->uvs[VERTEX_Y4]);
-			UVs[5] = UVSet<Gel::UVType>(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+			UVs[3] = GelUV(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
+			UVs[4] = GelUV(regionAttachment->uvs[VERTEX_X4],regionAttachment->uvs[VERTEX_Y4]);
+			UVs[5] = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
+*/
 	
 	//		vertexArray->append(vertices[0]);
 	//		vertexArray->append(vertices[1]);
@@ -164,12 +213,15 @@ public:
 	
 			// TODO: Do batching cleverness here. If same texture, continue batching. If different, render the current batch.
 			//       Advance poniter, so further render ops don't re-draw prior data.
-			Tex.Bind();
-			Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
+//			Gel::TexturePool[TexIndex].Bind();
+//			Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
 	//		Gel::RenderFlat( GEL_TRIANGLES, Matrix, Color, Verts, VertCount );
 	
 		}
 		// Render everything in the final batch //
+		FlushDraw( Matrix, TexIndex, Vert );
+//		Gel::TexturePool[TexIndex].Bind();
+//		Gel::RenderTextureColorPacked( GEL_TRIANGLES, Matrix, GEL_RGB_WHITE, &(Vert.Get()->Pos), &(Vert.Get()->UV), &(Vert.Get()->Color), Vert.Size() );
 	
 	//	target.draw(*vertexArray, states);
 	}
