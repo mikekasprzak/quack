@@ -80,6 +80,9 @@ GlayLayout Layout;
 
 GelVert2 InCurve;
 GelVert2C OutCurve;
+
+GelVertTree<GenTreeNode> InTree;
+GelVert2C OutTree;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -285,14 +288,6 @@ void AppInit() {
 		
 		GenCurve( App::InCurve, App::OutCurve );
 
-
-		// NOTE: Need a "GenCurve" function that walks a tree. 
-		// OR: Need an array of Nodes, and walk the array of nodes instead (using values and things extracted from parent).
-		// Hmm.
-//		App::
-//		GenCurve( App::TreeCurve, App::OutCurve );
-
-
 //		for ( st idx = 0; idx < App::OutCurve.Size(); idx++ ) {
 //			Log("%i -- %f,%f", idx, App::OutCurve[idx].Pos.x.ToFloat(),App::OutCurve[idx].Pos.y.ToFloat());
 //			if ( (idx % 6) == 5 )
@@ -301,6 +296,24 @@ void AppInit() {
 	
 		Log("**** DONE");
 	}
+
+
+	{
+		Log("**** Tree Generator");
+
+		//GelVertTree<GenTreeNode> App::InTree;
+		
+//		App::InTree;
+
+		// NOTE: Need a "GenCurve" function that walks a tree. 
+		// OR: Need an array of Nodes, and walk the array of nodes instead (using values and things extracted from parent).
+		// Hmm.
+//		App::
+//		GenCurve( App::TreeCurve, App::OutCurve );
+	
+		Log("**** DONE");
+	}
+
 	
 	{
 		Log("**** GLAYOUT");
@@ -402,6 +415,10 @@ void AppStep() {
 		
 		App::OutCurve.Clear();
 		GenCurve( App::InCurve, App::OutCurve );
+	}
+	
+	{
+		// Step //	
 	}
 
 //#ifdef USES_STEAM
