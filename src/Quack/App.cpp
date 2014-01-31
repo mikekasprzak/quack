@@ -286,6 +286,9 @@ void AppInit() {
 		GenCurve( App::InCurve, App::OutCurve );
 
 
+		// NOTE: Need a "GenCurve" function that walks a tree. 
+		// OR: Need an array of Nodes, and walk the array of nodes instead (using values and things extracted from parent).
+		// Hmm.
 //		App::
 //		GenCurve( App::TreeCurve, App::OutCurve );
 
