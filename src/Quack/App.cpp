@@ -22,6 +22,8 @@
 #include <Vert/Vert.h>
 #include "Generator/Generator.h"
 #include "Generator/GenTree.h"
+
+#include "NewGrid/NewGrid.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -300,8 +302,6 @@ void AppInit() {
 
 	{
 		Log("**** Tree Generator");
-
-		//GelVertTree<GenTreeNode> App::InTree;
 		
 //		App::InTree;
 
@@ -311,6 +311,13 @@ void AppInit() {
 //		App::
 //		GenCurve( App::TreeCurve, App::OutCurve );
 	
+		Log("**** DONE");
+	}
+
+
+	{
+		Log("**** Grid Generator");
+		
 		Log("**** DONE");
 	}
 
