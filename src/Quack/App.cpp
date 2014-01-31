@@ -21,6 +21,7 @@
 #include "Glayout/Glayout.h"
 #include <Vert/Vert.h>
 #include "Generator/Generator.h"
+#include "Generator/GenTree.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -284,6 +285,11 @@ void AppInit() {
 		
 		GenCurve( App::InCurve, App::OutCurve );
 
+
+//		App::
+//		GenCurve( App::TreeCurve, App::OutCurve );
+
+
 //		for ( st idx = 0; idx < App::OutCurve.Size(); idx++ ) {
 //			Log("%i -- %f,%f", idx, App::OutCurve[idx].Pos.x.ToFloat(),App::OutCurve[idx].Pos.y.ToFloat());
 //			if ( (idx % 6) == 5 )
@@ -387,7 +393,7 @@ void AppStep() {
 		static Real Flow(0);
 		Flow += Real(0.01f);
 		for ( int idx = 0; idx < App::InCurve.Size(); idx++ ) {
-			App::InCurve[idx].Pos.x = (Flow+(Real(idx)*Real(0.1))).Sin() * Real(20-idx);
+			App::InCurve[idx].Pos.x = Real(200)+(Flow+(Real(idx)*Real(0.1))).Sin() * Real(20-idx);
 		}
 		App::InCurve[0].Pos.x = App::InCurve[1].Pos.x;
 		
