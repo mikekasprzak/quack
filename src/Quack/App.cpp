@@ -21,7 +21,7 @@
 #include "Glayout/Glayout.h"
 #include <Vert/Vert.h>
 #include "Generator/Generator.h"
-#include "Generator/GenTree.h"
+#include "Generator/VtTree.h"
 
 #include "NewGrid/NewGrid.h"
 // - ------------------------------------------------------------------------------------------ - //
