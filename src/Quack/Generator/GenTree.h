@@ -8,9 +8,9 @@ enum {
 	GT_MAX_CHILDREN = 4
 };
 // - ------------------------------------------------------------------------------------------ - //
-struct GenTree_Node {
-	GenTree_Node* Parent;
-	GenTree_Node* Child[GT_MAX_CHILDREN];
+struct GenTreeNode {
+	GenTreeNode* Parent;
+	GenTreeNode* Child[GT_MAX_CHILDREN];
 //	GenTree_Leaf* Leaf;
 	
 	Vector2D Pos;
@@ -22,7 +22,7 @@ struct GenTree_Node {
 //	Real Radius;
 
 public:
-	inline GenTree_Node( GenTree_Node* _Parent, const Vector2D& _Pos = Vector2D::Zero, const Vector2D& _Angle = Vector2D(0,1), const Real _Length = Real::One, const Real _InvMass = Real::One ) :
+	inline GenTreeNode( GenTreeNode* _Parent = 0, const Vector2D& _Pos = Vector2D::Zero, const Vector2D& _Angle = Vector2D(0,1), const Real _Length = Real::One, const Real _InvMass = Real::One ) :
 		Parent( _Parent ),
 		Pos( _Pos ),
 		Old( _Pos ),
@@ -66,14 +66,14 @@ public:
 	inline void AddChild( const Vector2D& _Pos = Vector2D::Zero, const Vector2D& _Angle = Vector2D(0,1), const Real _InvMass = Real::One ) {
 		int Index = NextIndex();
 		if ( Index >= 0 ) {
-			Child[Index] = new GenTree_Node( this, _Pos, _Angle, (_Pos-Pos).Magnitude(), _InvMass );
+			Child[Index] = new GenTreeNode( this, _Pos, _Angle, (_Pos-Pos).Magnitude(), _InvMass );
 		}
 	}
 };
 
 // - ------------------------------------------------------------------------------------------ - //
 struct GenTree {
-	GenTree_Node* Root;
+	GenTreeNode* Root;
 	
 public:
 	inline GenTree() :
@@ -87,8 +87,8 @@ public:
 inline GenTree new_GenTree() {
 	GenTree Ret;
 	
-	Ret.Root = new GenTree_Node( 0, Vector2D(-120,0) );
-	GenTree_Node* Node = Ret.Root;
+	Ret.Root = new GenTreeNode( 0, Vector2D(-120,0) );
+	GenTreeNode* Node = Ret.Root;
 	for ( int idx = 0; idx < 6; idx++ ) {
 		Node->AddChild( Vector2D(-120,10+((10-idx)*idx)) );
 		Node = Node->Child[0];
@@ -97,12 +97,12 @@ inline GenTree new_GenTree() {
 	return Ret;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void delete_GenTree_Node( GenTree_Node* Node ) {
+inline void delete_GenTreeNode( GenTreeNode* Node ) {
 	if ( Node ) {
 		for ( int idx = 0; idx < Node->MaxSize(); idx++ ) {
 			if ( Node->Child[idx] ) {
 				// Recursive -- Delete My Child's Children //
-				delete_GenTree_Node( Node->Child[idx] );
+				delete_GenTreeNode( Node->Child[idx] );
 				// Delete Child //
 				delete Node->Child[idx];
 				Node->Child[idx] = 0;
@@ -113,7 +113,7 @@ inline void delete_GenTree_Node( GenTree_Node* Node ) {
 
 // - ------------------------------------------------------------------------------------------ - //
 inline void delete_GenTree( GenTree& Tree ) {
-	delete_GenTree_Node( Tree.Root );
+	delete_GenTreeNode( Tree.Root );
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GENERATOR_GENTREE_H__ //
