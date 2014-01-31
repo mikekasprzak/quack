@@ -83,7 +83,8 @@ GlayLayout Layout;
 GelVert2 InCurve;
 GelVert2C OutCurve;
 
-GelVertTree<GenTreeNode> InTree;
+//GelTree<VtTreeNode> InTree;
+VtTree InTree;
 GelVert2C OutTree;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
