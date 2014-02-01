@@ -5,44 +5,54 @@
 #include <Vert/Vert.h>
 // - ------------------------------------------------------------------------------------------ - //
 struct VtTreeNode {
-	enum { MAX_CHILDREN = 4 };
-	
 	VtTreeNode* Parent;
+	enum { MAX_CHILDREN = 4 };
 	VtTreeNode* Child[MAX_CHILDREN];
+
 //	GenTree_Leaf* Leaf;
-	
+
+	// Values that Change //	
 	Vector2D Pos;
-	Vector2D Old;
+	Vector2D Old;		// Verlet //
+	Vector2D Normal;	// Direction Pointing //
 	
+	// Values that stay the same //
 	Vector2D Angle;		// Angular Constraint //
 	Real Length;		// Spring Constraint //
 	Real InvMass;
-//	Real Radius;
+	Real Radius;
 
 public:
-	inline VtTreeNode( VtTreeNode* _Parent = 0, const Vector2D& _Pos = Vector2D::Zero, const Vector2D& _Angle = Vector2D(0,1), const Real _Length = Real::One, const Real _InvMass = Real::One ) :
+	typedef Vector2D Type;
+	
+	inline VtTreeNode( VtTreeNode* _Parent = 0 ) :
 		Parent( _Parent ),
-		Pos( _Pos ),
-		Old( _Pos ),
-		Angle( _Angle ),
-		Length( _Length ),
-		InvMass( _InvMass )
+		Normal( Vector2D(0,1) ),
+		Angle( Vector2D(0,1) ),
+		Length( Real::One ),
+		InvMass( Real::One ),
+		Radius( Real::One )
 	{
 		// Clear Children Pointers //
 		for ( st idx = 0; idx < MAX_CHILDREN; idx++ ) {
 			Child[idx] = 0;
 		}
+
+		// If we have a parent, use it to determin our position //		
+		if ( Parent )
+			Pos = Parent->Pos + (Parent->Normal * Parent->Length);
+		else
+			Pos = Vector2D::Zero;
+
+		Old = Pos;
 	}
-	
+
 	inline st32 Size() const {
 		st32 Ret = 0;
 		for ( st idx = 0; idx < MAX_CHILDREN; idx++ ) {
-			if ( Child[idx] ) {
-				Ret++;
-			}
-			else {
-				break;
-			}
+			if ( Child[idx] == 0 )
+				return idx;
+			Ret++;
 		}
 		return Ret;
 	}
@@ -59,62 +69,42 @@ public:
 		}
 		return -1;
 	}
-
-public:
-	inline void AddChild( const Vector2D& _Pos = Vector2D::Zero, const Vector2D& _Angle = Vector2D(0,1), const Real _InvMass = Real::One ) {
-		int Index = NextIndex();
-		if ( Index >= 0 ) {
-			Child[Index] = new VtTreeNode( this, _Pos, _Angle, (_Pos-Pos).Magnitude(), _InvMass );
-		}
-	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 typedef GelTree<VtTreeNode> VtTree;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-struct GenTree {
-	VtTreeNode* Root;
+inline void Gen_VtTree( VtTree& Out, const st32 Segments = 12 ) {
+	Out.Clear();
+	Out.Reserve(Segments+1);
 	
-public:
-	inline GenTree() :
-		Root( 0 )
-	{
-	}
-};
-// - ------------------------------------------------------------------------------------------ - //
+	// Add Root Node //
+	VtTreeNode* Root = Out.Add(0);
+	VtTreeNode* Node = Root;
+	Node->Length = 16;
+	Node->Normal = Vector2D(0,1);
+	Node->Radius = 8;
+	
+	for ( st32 idx = 0; idx < Segments; idx++ ) {
+		Node = Out.Add( Node );
+		Node->Length = 16 - (Segments>>1);
+		Node->Radius = Node->Parent->Radius - Real::Half;
 
-// - ------------------------------------------------------------------------------------------ - //
-inline GenTree new_GenTree() {
-	GenTree Ret;
-	
-	Ret.Root = new VtTreeNode( 0, Vector2D(-120,0) );
-	VtTreeNode* Node = Ret.Root;
-	for ( int idx = 0; idx < 6; idx++ ) {
-		Node->AddChild( Vector2D(-120,10+((10-idx)*idx)) );
-		Node = Node->Child[0];
+		Node->Normal = Node->Parent->Normal;
+		Vector2D Twist(1,10);
+		if ( idx >= 3 ) 
+			Twist.x = -Twist.x;
+		Twist.Normalize();
+		Matrix2x2 MatTwist(Twist.Tangent(),Twist);
+		Node->Normal = Node->Normal.ApplyMatrix( MatTwist );
 	}
-	
-	return Ret;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void delete_VtTreeNode( VtTreeNode* Node ) {
-	if ( Node ) {
-		for ( int idx = 0; idx < Node->MaxSize(); idx++ ) {
-			if ( Node->Child[idx] ) {
-				// Recursive -- Delete My Child's Children //
-				delete_VtTreeNode( Node->Child[idx] );
-				// Delete Child //
-				delete Node->Child[idx];
-				Node->Child[idx] = 0;
-			}
-		}
-	}
+inline void Step_VtTree( VtTree& InOut ) {
 }
-
 // - ------------------------------------------------------------------------------------------ - //
-inline void delete_GenTree( GenTree& Tree ) {
-	delete_VtTreeNode( Tree.Root );
+inline void Grow_VtTree( VtTree& InOut ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __SEED_VTTREE_H__ //
