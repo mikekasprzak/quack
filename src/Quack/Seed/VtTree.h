@@ -75,33 +75,93 @@ typedef GelTree<VtTreeNode> VtTree;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void Gen_VtTree( VtTree& Out, const st32 Segments = 12 ) {
+inline void Gen_VtTree( VtTree& Out, const st32 Segments = 14 ) {
 	Out.Clear();
-	Out.Reserve(Segments+1);
+	Out.Reserve(Segments+1); // Any Resize will cause our Parent pointers to break //
 	
 	// Add Root Node //
-	VtTreeNode* Root = Out.Add(0);
-	VtTreeNode* Node = Root;
+	VtTreeNode* Node = Out.Add(0);
 	Node->Length = 16;
 	Node->Normal = Vector2D(0,1);
-	Node->Radius = 8;
+	Node->Angle = Node->Normal;
+	Node->Radius = 7;
 	
 	for ( st32 idx = 0; idx < Segments; idx++ ) {
+		int ParentIndex = Out.Size()-1;
+		
 		Node = Out.Add( Node );
-		Node->Length = 16 - (Segments>>1);
-		Node->Radius = Node->Parent->Radius - Real::Half;
+		VtTreeNode* Parent = &Out[ParentIndex]; // Because "Node->Parent" can potentially be wrong due to Resize //
 
-		Node->Normal = Node->Parent->Normal;
-		Vector2D Twist(1,10);
+		Node->Length = 15 - idx;
+		Node->Radius = Parent->Radius - Real::Half;
+
+		Vector2D Twist(5,10);
+		Twist.Normalize();
 		if ( idx >= 3 ) 
 			Twist.x = -Twist.x;
-		Twist.Normalize();
 		Matrix2x2 MatTwist(Twist.Tangent(),Twist);
-		Node->Normal = Node->Normal.ApplyMatrix( MatTwist );
+
+//		Node->Normal = Parent->Normal.ApplyMatrix( MatTwist );
+		Node->Angle = Twist;
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void Step_VtTree( VtTree& InOut ) {
+	typedef typename VtTree::Type VertType;
+	
+	// Step //
+	for ( st32 idx = 0; idx < InOut.Size(); idx++ ) {
+		VertType& A = InOut[idx];
+		
+		Vector2D Velocity = A.Pos - A.Old;
+		Velocity *= Real(0.998);
+		Velocity += Vector2D(0,-0.02);
+		
+		A.Old = A.Pos;
+		A.Pos += Velocity;// * Real(0.99);
+	}
+
+	// Spring Constraint //
+	for ( st32 idx = 1; idx < InOut.Size(); idx++ ) {
+		VertType& A = *InOut[idx].Parent;
+		VertType& B = InOut[idx];
+		
+		Vector2D Ray = B.Pos - A.Pos;
+		Real Mag = Ray.NormalizeRet();
+		
+		Real NewLen = A.Length - Mag;
+		
+		Real Weight(0.5);
+		
+		A.Pos -= Ray * NewLen * Weight;
+		B.Pos += Ray * NewLen * (Real::One - Weight);
+		A.Normal = (B.Pos - A.Pos).Normal();
+	}
+		
+	// Angle Constraint //
+	for ( st32 idx = 1; idx < InOut.Size(); idx++ ) {
+		VertType& A = *InOut[idx].Parent;
+		VertType& B = InOut[idx];
+
+		Vector2D TargetNormal = A.Angle;
+		Matrix2x2 Mat( A.Normal.Tangent(), A.Normal );
+		TargetNormal = TargetNormal.ApplyMatrix( Mat );
+				
+		Vector2D Ray = B.Pos - A.Pos;
+		Vector2D Ray2 = (TargetNormal*A.Length);
+		
+		Vector2D RayDiff = Ray2 - Ray;
+		
+		B.Pos += RayDiff;// * Real(0.95f);
+		B.Old += RayDiff;// * Real(0.95f);
+		B.Normal = (B.Pos - A.Pos).Normal();
+	}
+
+	// Pin Constraint //
+	InOut[0].Pos = Vector2D::Zero;
+	InOut[1].Pos = InOut[0].Pos + (InOut[0].Angle * InOut[0].Length);
+	InOut[0].Normal = (InOut[1].Pos - InOut[0].Pos).Normal();
+	InOut[1].Normal = (InOut[2].Pos - InOut[1].Pos).Normal();
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void Grow_VtTree( VtTree& InOut ) {
