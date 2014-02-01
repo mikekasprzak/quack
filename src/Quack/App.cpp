@@ -83,7 +83,6 @@ GlayLayout Layout;
 GelVert2 InCurve;
 GelVert2C OutCurve;
 
-//GelTree<VtTreeNode> InTree;
 VtTree InTree;
 GelVert2C OutTree;
 // - ------------------------------------------------------------------------------------------ - //
@@ -304,13 +303,8 @@ void AppInit() {
 	{
 		Log("**** Tree Generator");
 		
-//		App::InTree;
-
-		// NOTE: Need a "GenCurve" function that walks a tree. 
-		// OR: Need an array of Nodes, and walk the array of nodes instead (using values and things extracted from parent).
-		// Hmm.
-//		App::
-//		GenCurve( App::TreeCurve, App::OutCurve );
+		Gen_VtTree( App::InTree );
+		Gen_GelVert2C_from_GelTree( App::OutTree, App::InTree );
 	
 		Log("**** DONE");
 	}
@@ -470,6 +464,8 @@ void AppDraw() {
 		
 //	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve.Get()->Pos),&(App::OutCurve.Get()->Color),App::OutCurve.Size());
 	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve[6].Pos),&(App::OutCurve[6].Color),App::OutCurve.Size()-6);
+
+	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
