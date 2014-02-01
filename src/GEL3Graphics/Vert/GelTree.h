@@ -87,20 +87,40 @@ inline void Gen_GelVert2C_from_GelTree( OUT& Out, IN& In ) { // GelVert2C, GelTr
 		Out.Back().Color = Color;
 */
 
-		// Lower Triangle //
-		Out.PushBack().Pos = A.Pos + (A.Normal.Tangent()*A.Radius);
-		Out.Back().Color = Color;
-		Out.PushBack().Pos = A.Pos - (A.Normal.Tangent()*A.Radius);
-		Out.Back().Color = Color;
-		Out.PushBack().Pos = B.Pos - (B.Normal.Tangent()*B.Radius);
-		Out.Back().Color = Color;
-		// Upper Triangle //
-		Out.PushBack().Pos = B.Pos - (B.Normal.Tangent()*B.Radius);
-		Out.Back().Color = Color;
-		Out.PushBack().Pos = B.Pos + (B.Normal.Tangent()*B.Radius);
-		Out.Back().Color = Color;
-		Out.PushBack().Pos = A.Pos + (A.Normal.Tangent()*A.Radius);
-		Out.Back().Color = Color;
+		// Gapless (Using both A and B Tangents) //
+		if ( dot( A.Normal, B.Normal ) > Real(0.75) ) {
+			// Lower Triangle //
+			Out.PushBack().Pos = A.Pos + (A.Normal.Tangent()*A.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = A.Pos - (A.Normal.Tangent()*A.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = B.Pos - (B.Normal.Tangent()*B.Radius);
+			Out.Back().Color = Color;
+			// Upper Triangle //
+			Out.PushBack().Pos = B.Pos - (B.Normal.Tangent()*B.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = B.Pos + (B.Normal.Tangent()*B.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = A.Pos + (A.Normal.Tangent()*A.Radius);
+			Out.Back().Color = Color;
+		}
+		// B Tangent Weighted //
+		else {
+			// Lower Triangle //
+			Out.PushBack().Pos = A.Pos + (B.Normal.Tangent()*A.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = A.Pos - (B.Normal.Tangent()*A.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = B.Pos - (B.Normal.Tangent()*B.Radius);
+			Out.Back().Color = Color;
+			// Upper Triangle //
+			Out.PushBack().Pos = B.Pos - (B.Normal.Tangent()*B.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = B.Pos + (B.Normal.Tangent()*B.Radius);
+			Out.Back().Color = Color;
+			Out.PushBack().Pos = A.Pos + (B.Normal.Tangent()*A.Radius);
+			Out.Back().Color = Color;
+		}
 
 /*
 		// Fill Gap //
