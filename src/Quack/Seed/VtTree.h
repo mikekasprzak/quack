@@ -77,7 +77,7 @@ typedef GelTree<VtTreeNode> VtTree;
 // - ------------------------------------------------------------------------------------------ - //
 inline void Gen_VtTree( VtTree& Out, const st32 Segments = 13 ) {
 	Out.Clear();
-	Out.Reserve(Segments+1+Segments); // Any Resize will cause our Parent pointers to break //
+	Out.Reserve(Segments+1+Segments+Segments); // Any Resize will cause our Parent pointers to break //
 	
 	// Add Root Node //
 	VtTreeNode* Node = Out.Add(0);
@@ -121,7 +121,70 @@ inline void Gen_VtTree( VtTree& Out, const st32 Segments = 13 ) {
 		if ( idx == 7 ) {
 			Node->Angle = Vector2D(25,10).Normal();
 			Node->Length = 4+Segments-7;
-			Node->Radius = Real(7) - (Real(idx)*Real::Half);
+			Node->Radius = Real(6.5) - (Real(idx)*Real::Half);
+		}
+
+		Node->InvMass = Real::One / Real( Node->Length * Node->Radius );
+
+//		Node->Pos = Parent->Pos + (Node->Normal * Parent->Length);
+
+		Vector2D Twist(-1,10);
+		Twist.Normalize();
+//		if ( idx >= 3 ) 
+//			Twist.x = -Twist.x;
+		Matrix2x2 MatTwist(Twist.Tangent(),Twist);
+
+		Node->Normal = Node->Normal.ApplyMatrix( MatTwist );
+		Node->Angle = Node->Angle.ApplyMatrix(MatTwist);//Twist;
+	}
+
+	for ( st32 idx = 9; idx < Segments; idx++ ) {
+		int ParentIndex = Out.Size()-1;//-8;
+		if ( idx == 9 )
+			ParentIndex = 3;
+		VtTreeNode* Parent = &Out[ParentIndex]; // Because "Node->Parent" can potentially be wrong due to Resize //
+		
+		Node = Out.Add( Parent );
+
+		Node->Length = Parent->Length - 1;//15 - idx;
+		Node->Radius = Parent->Radius - Real::Half;
+
+		if ( idx == 9 ) {
+			Node->Angle = Vector2D(-25,10).Normal();
+			Node->Length = 4+Segments-7;
+			Node->Radius = Real(6.5) - (Real(idx)*Real::Half);
+		}
+
+		Node->InvMass = Real::One / Real( Node->Length * Node->Radius );
+
+//		Node->Pos = Parent->Pos + (Node->Normal * Parent->Length);
+
+		Vector2D Twist(1,10);
+		Twist.Normalize();
+//		if ( idx >= 3 ) 
+//			Twist.x = -Twist.x;
+		Matrix2x2 MatTwist(Twist.Tangent(),Twist);
+
+		Node->Normal = Node->Normal.ApplyMatrix( MatTwist );
+		Node->Angle = Node->Angle.ApplyMatrix(MatTwist);//Twist;
+	}
+
+
+	for ( st32 idx = 10; idx < Segments; idx++ ) {
+		int ParentIndex = Out.Size()-1;//-8;
+		if ( idx == 10 )
+			ParentIndex = 6;
+		VtTreeNode* Parent = &Out[ParentIndex]; // Because "Node->Parent" can potentially be wrong due to Resize //
+		
+		Node = Out.Add( Parent );
+
+		Node->Length = Parent->Length - 1;//15 - idx;
+		Node->Radius = Parent->Radius - Real::Half;
+
+		if ( idx == 10 ) {
+			Node->Angle = Vector2D(25,10).Normal();
+			Node->Length = 4+Segments-7;
+			Node->Radius = Real(6.5) - (Real(idx)*Real::Half);
 		}
 
 		Node->InvMass = Real::One / Real( Node->Length * Node->Radius );
