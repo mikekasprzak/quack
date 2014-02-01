@@ -135,7 +135,7 @@ inline void Step_VtTree( VtTree& InOut ) {
 		
 		A.Pos -= Ray * NewLen * Weight;
 		B.Pos += Ray * NewLen * (Real::One - Weight);
-		A.Normal = (B.Pos - A.Pos).Normal();
+		B.Normal = (B.Pos - A.Pos).Normal();
 	}
 		
 	// Angle Constraint //
@@ -151,10 +151,12 @@ inline void Step_VtTree( VtTree& InOut ) {
 		Vector2D Ray2 = (TargetNormal*A.Length);
 		
 		Vector2D RayDiff = Ray2 - Ray;
-		
-		B.Pos += RayDiff;// * Real(0.95f);
-		B.Old += RayDiff;// * Real(0.95f);
-		B.Normal = (B.Pos - A.Pos).Normal();
+//		RayDiff -= RayDiff.Normal() * Real(0.5f);
+//		if ( RayDiff.Magnitude() > Real(0.5f) ) {
+			B.Pos += RayDiff;// * Real(0.95f);
+			B.Old += RayDiff;// * Real(0.95f);
+			B.Normal = (B.Pos - A.Pos).Normal();
+//		}
 	}
 
 	// Pin Constraint //
