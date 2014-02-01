@@ -419,8 +419,13 @@ void AppStep() {
 		GenCurve( App::InCurve, App::OutCurve );
 	}
 	
+//	static int bort = 0;
+//	bort++;
+//	if ( (bort % 6) == 0 )
 	{
 		// Step //	
+		Step_VtTree( App::InTree );
+		Gen_GelVert2C_from_GelTree( App::OutTree, App::InTree );
 	}
 
 //#ifdef USES_STEAM
@@ -465,7 +470,8 @@ void AppDraw() {
 //	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve.Get()->Pos),&(App::OutCurve.Get()->Color),App::OutCurve.Size());
 	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve[6].Pos),&(App::OutCurve[6].Color),App::OutCurve.Size()-6);
 
-	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
+	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_BLUE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
+	Gel::RenderColor2D_Packed(GEL_LINES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
