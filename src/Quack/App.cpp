@@ -423,11 +423,11 @@ void AppStep() {
 //	bort++;
 //	if ( (bort % 6) == 0 )
 	{
-		static Real Nerf(0);
-		Nerf+=Real(0.005);
-		for ( int idx = 1; idx < App::InTree.Size(); idx++ ) {
-			App::InTree[idx].Angle = Vector2D((Nerf+Real(idx)*Real(0.01)).Cos(),1).Normal();
-		}		
+//		static Real Nerf(0);
+//		Nerf+=Real(0.005);
+//		for ( int idx = 1; idx < App::InTree.Size(); idx++ ) {
+//			App::InTree[idx].Angle = Vector2D((Nerf+Real(idx)*Real(0.01)).Cos(),1).Normal();
+//		}		
 		// Step //	
 		Step_VtTree( App::InTree );
 		Gen_GelVert2C_from_GelTree( App::OutTree, App::InTree );
