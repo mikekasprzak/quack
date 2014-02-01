@@ -75,7 +75,7 @@ typedef GelTree<VtTreeNode> VtTree;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void Gen_VtTree( VtTree& Out, const st32 Segments = 14 ) {
+inline void Gen_VtTree( VtTree& Out, const st32 Segments = 13 ) {
 	Out.Clear();
 	Out.Reserve(Segments+1); // Any Resize will cause our Parent pointers to break //
 	
@@ -85,6 +85,7 @@ inline void Gen_VtTree( VtTree& Out, const st32 Segments = 14 ) {
 	Node->Normal = Vector2D(0,1);
 	Node->Angle = Node->Normal;
 	Node->Radius = 7;
+	Node->InvMass = Real::One / Real( Node->Length * Node->Radius );
 	
 	for ( st32 idx = 0; idx < Segments; idx++ ) {
 		int ParentIndex = Out.Size()-1;
@@ -94,6 +95,7 @@ inline void Gen_VtTree( VtTree& Out, const st32 Segments = 14 ) {
 
 		Node->Length = 15 - idx;
 		Node->Radius = Parent->Radius - Real::Half;
+		Node->InvMass = Real::One / Real( Node->Length * Node->Radius );
 
 		Vector2D Twist(-5,10);
 		Twist.Normalize();
@@ -114,13 +116,13 @@ inline void Step_VtTree( VtTree& InOut ) {
 		VertType& A = InOut[idx];
 		
 		Vector2D Velocity = A.Pos - A.Old;
-//		Velocity *= Real(0.998);
+		Velocity *= Real(0.998);
 		Velocity += Vector2D(0,-0.03);
 		
 		A.Old = A.Pos;
 		A.Pos += Velocity;// * Real(0.99);
 	}
-
+/*
 	// Spring Constraint //
 	for ( st32 idx = 1; idx < InOut.Size(); idx++ ) {
 		VertType& A = *InOut[idx].Parent;
@@ -137,29 +139,29 @@ inline void Step_VtTree( VtTree& InOut ) {
 		B.Pos += Ray * NewLen * (Real::One - Weight);
 		A.Normal = (B.Pos - A.Pos).Normal();
 	}
-		
+*/		
 	// Angle Constraint //
 	for ( st32 idx = 1; idx < InOut.Size(); idx++ ) {
 		VertType& A = *InOut[idx].Parent;
 		VertType& B = InOut[idx];
-		
-//		A.Normal = (B.Pos - A.Pos).Normal();
 
-		Vector2D TargetNormal = A.Angle;
-		Matrix2x2 Mat( A.Normal.Tangent(), A.Normal );
-		TargetNormal = TargetNormal.ApplyMatrix( Mat );
-				
-		Vector2D Ray = B.Pos - A.Pos;
-		Vector2D Ray2 = (TargetNormal*A.Length);
-		
-		Vector2D RayDiff = Ray2 - Ray;
-		B.Pos += RayDiff * Real(0.5f);
-//		B.Old += RayDiff * Real(0.5f);
+		Real MassSum = A.InvMass + B.InvMass;
 
-		A.Pos -= RayDiff * Real(0.5f);
-//		A.Old -= RayDiff * Real(0.5f);
+		if ( MassSum > Real::Zero ) {
+			Vector2D TargetNormal = A.Angle;
+			Matrix2x2 Mat( A.Normal.Tangent(), A.Normal );
+			TargetNormal = TargetNormal.ApplyMatrix( Mat );
+					
+			Vector2D Ray = B.Pos - A.Pos;
+			Vector2D Ray2 = (TargetNormal*A.Length);
 
-		B.Normal = (B.Pos - A.Pos).Normal();
+			MassSum = Real::One / MassSum;
+			Vector2D RayDiff = Ray2 - Ray;
+			B.Pos += RayDiff * (B.InvMass * MassSum);// / MassSum);// * Real(0.5f);
+			A.Pos -= RayDiff * (A.InvMass * MassSum);// / MassSum);// * Real(0.5f);
+	
+			B.Normal = (B.Pos - A.Pos).Normal();
+		}
 	}
 
 	// Pin Constraint //
