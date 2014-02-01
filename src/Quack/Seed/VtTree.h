@@ -153,10 +153,10 @@ inline void Step_VtTree( VtTree& InOut ) {
 		Vector2D Ray2 = (TargetNormal*A.Length);
 		
 		Vector2D RayDiff = Ray2 - Ray;
-		RayDiff -= RayDiff.Normal() * Real(0.5f);
+//		RayDiff -= RayDiff.Normal() * Real(0.5f);
 //		if ( RayDiff.Magnitude() > Real(0.5f) ) {
 			B.Pos += RayDiff;// * Real(0.95f);
-			B.Old += RayDiff * Real(0.25f);
+//			B.Old += RayDiff * Real(0.25f);
 			B.Normal = (B.Pos - A.Pos).Normal();
 //		}
 	}
