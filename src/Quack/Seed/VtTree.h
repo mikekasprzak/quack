@@ -95,15 +95,15 @@ inline void Gen_VtTree( VtTree& Out, const st32 Segments = 14 ) {
 		Node->Length = 15 - idx;
 		Node->Radius = Parent->Radius - Real::Half;
 
-		Vector2D Twist(5,10);
+		Vector2D Twist(-5,10);
 		Twist.Normalize();
 		if ( idx >= 3 ) 
 			Twist.x = -Twist.x;
 		Matrix2x2 MatTwist(Twist.Tangent(),Twist);
 
-//		Node->Normal = Parent->Normal.ApplyMatrix( MatTwist );
+		Node->Normal = Parent->Normal.ApplyMatrix( MatTwist );
 		Node->Angle = Twist;
-	}
+	}	
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void Step_VtTree( VtTree& InOut ) {
@@ -114,8 +114,8 @@ inline void Step_VtTree( VtTree& InOut ) {
 		VertType& A = InOut[idx];
 		
 		Vector2D Velocity = A.Pos - A.Old;
-		Velocity *= Real(0.998);
-		Velocity += Vector2D(0,-0.02);
+//		Velocity *= Real(0.998);
+		Velocity += Vector2D(0,-0.03);
 		
 		A.Old = A.Pos;
 		A.Pos += Velocity;// * Real(0.99);
@@ -153,12 +153,13 @@ inline void Step_VtTree( VtTree& InOut ) {
 		Vector2D Ray2 = (TargetNormal*A.Length);
 		
 		Vector2D RayDiff = Ray2 - Ray;
-//		RayDiff -= RayDiff.Normal() * Real(0.5f);
-//		if ( RayDiff.Magnitude() > Real(0.5f) ) {
-			B.Pos += RayDiff;// * Real(0.95f);
-//			B.Old += RayDiff * Real(0.25f);
-			B.Normal = (B.Pos - A.Pos).Normal();
-//		}
+		B.Pos += RayDiff * Real(0.5f);
+//		B.Old += RayDiff * Real(0.5f);
+
+		A.Pos -= RayDiff * Real(0.5f);
+//		A.Old -= RayDiff * Real(0.5f);
+
+		B.Normal = (B.Pos - A.Pos).Normal();
 	}
 
 	// Pin Constraint //
