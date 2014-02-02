@@ -62,10 +62,6 @@ public:
 	inline st SizeOf() const {
 		return Size() * sizeof(T);
 	}
-	// Same thing (really) //
-	inline st Area() const {
-		return w*h;
-	}
 
 	// Width and Height //
 	inline st32 Width() const {
@@ -80,12 +76,15 @@ public:
 	inline st32 HalfHeight() const {
 		return h >> 1;
 	}
+	inline st32 Area() const {
+		return w*h;
+	}
 	
 public:
-	// NOTE: Invalidates Data //
 	inline void Resize( const st _w, const st _h ) {
 		w = _w;
 		h = _h;
+		// NOTE: Invalidates Data. If you want to preserve, copy to new, use a .swap() //
 		Data.resize(_w*_h);
 	}
 
@@ -136,7 +135,7 @@ public:
 	
 public:
 	// Generate a Sub Grid //
-	inline GelSubGrid2<T> Sub( const st _x, const st _y, const st _w, const st _h );
+	inline GelSubGrid2<T> GetSubGrid( const int _x, const int _y, const st _w, const st _h );
 };
 // - ------------------------------------------------------------------------------------------ - //
 

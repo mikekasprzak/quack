@@ -10,12 +10,12 @@ class GelSubGrid2 {
 	typedef GelGrid2<T> ParentType;
 
 	st32 w,h;		// Shape (first, to be consistent with GelGrid2) //
-	st32 x,y;		// Offset //
+	int x,y;		// Offset //
 	ParentType* Parent;
 public:
 	typedef T Type;
 
-	inline GelSubGrid2( ParentType* _Parent, const st _x = 0, const st _y = 0, const st _w = 0, const st _h = 0 ) :
+	inline GelSubGrid2( ParentType* _Parent, const int _x = 0, const int _y = 0, const st _w = 0, const st _h = 0 ) :
 		w(_w),
 		h(_h),
 		x(_x),
@@ -24,25 +24,28 @@ public:
 	{
 	}
 	
-	// Fast Version //
-	inline st _Index( const st _x, const st _y ) const {
-		return (x+_x) + ((y+_y) * Parent->w);
+	// Fast Version (No Wrapping) //
+	inline st __Index( const int _x, const int _y ) const {
+		return Parent._Index(x+_x,y+_y);
 	}
-	// The default behavior is Wrapping //
-	inline st Index( st _x, st _y ) const {
+	// Parent Wrapping //
+	inline st _Index( const int _x, const int _y ) const {
+		return Parent.Index(x+_x,y+_y);
+	}
+	// Local Wrapping //
+	inline st Index( int _x, int _y ) const {
 		while ( _x > w ) { _x -= w; };
 		while ( _x < 0 ) { _x += w; };
 		while ( _y > h ) { _y -= h; };
 		while ( _y < 0 ) { _y += h; };
-		// TODO: Should I wrap to main map too? or Call parent's Index? //
 		return _Index(_x,_y);
 	}
 
 	// Function Operator -- i.e. Normal Usage //	
-	inline T& operator () ( const st _x, const st _y ) {
+	inline T& operator () ( const int _x, const int _y ) {
 		return (*Parent)[ Index(_x,_y) ];
 	}
-	inline const T& operator () ( const st _x, const st _y ) const {
+	inline const T& operator () ( const int _x, const int _y ) const {
 		return (*Parent)[ Index(_x,_y) ];
 	}
 	
@@ -61,10 +64,6 @@ public:
 	inline st SizeOf() const {
 		return Size() * sizeof(T);
 	}
-	// Same thing (really) //
-	inline st Area() const {
-		return w*h;
-	}
 
 	// Width and Height //
 	inline st32 Width() const {
@@ -79,6 +78,9 @@ public:
 	inline st32 HalfHeight() const {
 		return h >> 1;
 	}
+	inline st32 Area() const {
+		return w*h;
+	}
 	
 public:
 	// NOTE: DOES NOT Invalidate Data //
@@ -91,19 +93,72 @@ public:
 		y = _y;
 	}
 
-	inline void Set( ParentType* _Parent, const st _x = 0, const st _y = 0, const st _w = 0, const st _h = 0 ) {
+	inline void Set( ParentType* _Parent, const int _x = 0, const int _y = 0, const st _w = 0, const st _h = 0 ) {
 		w = _w;
 		h = _h;
 		x = _x;
 		y = _y;
 		Parent = _Parent;
 	}
-	
+
+public:
+	// Wrap Around as if the data looped back to the start after the end //
+	inline st LoopIndex( int _x, int _y ) const {
+		while ( _x > w ) { _x -= w; _y++; };
+		while ( _x < 0 ) { _x += w; _y--; };
+		return Parent->LoopIndex(x+_x,y+_y);
+	}
+	// Align to edges instead of wrapping //
+	inline st SaturateIndex( int _x, int _y ) const {
+		if ( _x >= Width() )
+			_x = Width() - 1;
+		else if ( _x < 0 )
+			_x = 0;
+			
+		if ( _y >= Height() )
+			_y = Height() - 1;
+		else if ( _y < 0 )
+			_y = 0;
+			
+		return _Index( _x, _y );
+	}
+	// Return a specific value if outside //
+	inline st DeadIndex( const int _x, const int _y, const st DeadValue = ST_MAX ) const {
+		if ( _x >= (int)Width() )
+			return DeadValue;
+		else if ( _x < 0 )
+			return DeadValue;
+			
+		if ( _y >= (int)Height() )
+			return DeadValue;
+		else if ( _y < 0 )
+			return DeadValue;
+			
+		return _Index( _x, _y );
+	}
+
+	// Extract X or Y values from an Index //
+	inline int IndexToX( const st _idx ) const {
+		return Parent->IndexToX(_idx) - x;
+	}
+	inline int IndexToY( const st _idx ) const {
+		return Parent->IndexToY(_idx) - y;
+	}
+
+public:
+	inline GelSubGrid2<T> GetSubGrid( const int _x, const int _y, const st _w, const st _h );	
 };
 // - ------------------------------------------------------------------------------------------ - //
+// Sub Grids of a Grid //
 template<typename T>
-GelSubGrid2<T> GelGrid2<T>::Sub( const st _x, const st _y, const st _w, const st _h ) {
+GelSubGrid2<T> GelGrid2<T>::GetSubGrid( const int _x, const int _y, const st _w, const st _h ) {
 	return Ret( this, _x, _y, _w, _h );
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Sub Grids of Sub Grids //
+template<typename T>
+GelSubGrid2<T> GelSubGrid2<T>::GetSubGrid( const int _x, const int _y, const st _w, const st _h ) {
+	return Ret( Parent, x+_x, y+_y, _w, _h );
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_GRID_GELSUBGRID2_H__ //
