@@ -305,6 +305,7 @@ void AppInit() {
 		
 		Gen_VtTree( App::InTree );
 		Gen_GelVert2C_from_GelTree( App::OutTree, App::InTree );
+		// Gen_Curve_GelVert2C_from_GelTree
 	
 		Log("**** DONE");
 	}
@@ -312,6 +313,11 @@ void AppInit() {
 
 	{
 		Log("**** Grid Generator");
+
+		//GelTileMap MyMap("Blah.map"); // Use Search and Asset, but no Pool //
+		//Gen_TileMap_GelVert2U_from_GelGrid2( App::OutMap, MyMap.Layer[0], TileWidth, TileHeight );
+		
+		//GelGrid2<int>
 		
 		Log("**** DONE");
 	}
