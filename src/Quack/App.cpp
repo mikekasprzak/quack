@@ -317,7 +317,12 @@ void AppInit() {
 		//GelTileMap MyMap("Blah.map"); // Use Search and Asset, but no Pool //
 		//Gen_TileMap_GelVert2U_from_GelGrid2( App::OutMap, MyMap.Layer[0], TileWidth, TileHeight );
 		
-		//GelGrid2<int>
+		GelGrid2<int> MyMap(16,16);
+		GelImage Mimage( "TestFile.png" );
+		
+		Log("MIMA: %i, %i (%i)", Mimage.Width(), Mimage.Height(), Mimage.BPP() );
+		
+//		Gen_GelGrid2_from_GelImage( App::Out, 
 		
 		Log("**** DONE");
 	}
