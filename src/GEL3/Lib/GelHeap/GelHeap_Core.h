@@ -5,11 +5,11 @@
 #define __Library_Data_GelHeap_Core_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/DataBlock/DataBlock_Core.h>
-#include <Lib/GelArray/GelArray_Core.h>
+#include <Lib/GelDataArray/GelDataArray_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
 struct GelHeap {
-	GelArray<size_t>* Index;
-	GelArray<char>* Data;
+	GelDataArray<size_t>* Index;
+	GelDataArray<char>* Data;
 	
 	// Since this is a complicated struct, I've added this //
 	inline char* operator [] ( const size_t _Index ) {
@@ -27,10 +27,10 @@ inline GelHeap* new_GelHeap() {
 	GelHeap* p = new GelHeap;
 
 	// Allocate an array for our entries //
-	p->Index = new_GelArray<size_t>(0);
+	p->Index = new_GelDataArray<size_t>(0);
 	
 	// Allocate a mass of data //
-	p->Data = new_GelArray<char>(0);
+	p->Data = new_GelDataArray<char>(0);
 
 	return p;
 }
@@ -39,20 +39,20 @@ inline GelHeap* new_GelHeap() {
 //	GelHeap* p = new GelHeap;
 //
 //	// Allocate an array for our entries //
-//	p->Index = newmax_GelArray<size_t>(_IndexMax);
+//	p->Index = newmax_GelDataArray<size_t>(_IndexMax);
 //	
 //	// Allocate a mass of data //
-//	p->Data = newmax_GelArray<char>(_DataMax);
+//	p->Data = newmax_GelDataArray<char>(_DataMax);
 //
 //	return p;
 //}
 // - ------------------------------------------------------------------------------------------ - //
 inline void delete_GelHeap( GelHeap* p ) {
 	if ( p->Index )
-		delete_GelArray<size_t>( p->Index );
+		delete_GelDataArray<size_t>( p->Index );
 	
 	if ( p->Data )
-		delete_GelArray<char>( p->Data );
+		delete_GelDataArray<char>( p->Data );
 	
 	delete p;
 }
@@ -75,10 +75,10 @@ inline const size_t heapsize_GelHeap( GelHeap* p ) {
 inline size_t allocate_GelHeap( GelHeap* p, const size_t _AllocationSize ) {
 	// Allocate a key //
 	size_t Key = p->Index->Size;
-	pushback_GelArray<size_t>( &p->Index, p->Data->Size );
+	pushback_GelDataArray<size_t>( &p->Index, p->Data->Size );
 	
 	// Allocate memory //
-	pushblockback_GelArray<char>( &p->Data, _AllocationSize );
+	pushblockback_GelDataArray<char>( &p->Data, _AllocationSize );
 	
 	// Return key //
 	return Key;
@@ -87,10 +87,10 @@ inline size_t allocate_GelHeap( GelHeap* p, const size_t _AllocationSize ) {
 inline size_t allocate_GelHeap( GelHeap* p, const char* Src, const size_t _AllocationSize ) {
 	// Allocate a key //
 	size_t Key = p->Index->Size;
-	pushback_GelArray<size_t>( &p->Index, p->Data->Size );
+	pushback_GelDataArray<size_t>( &p->Index, p->Data->Size );
 	
 	// Allocate memory //
-	pushblockback_GelArray<char>( &p->Data, _AllocationSize );
+	pushblockback_GelDataArray<char>( &p->Data, _AllocationSize );
 	
 	// Copy Data //
 	copy_Data( Src, index_GelHeap( p, Key ), _AllocationSize );

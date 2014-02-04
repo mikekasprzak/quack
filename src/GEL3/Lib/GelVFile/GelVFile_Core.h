@@ -8,13 +8,13 @@
 // TODO: Add functions for converting/writing floats to fixed point numbers (a cheat)
 // - ------------------------------------------------------------------------------------------ - //
 #include "../Data/Data_Core.h"
-#include "../GelArray/GelArray_Core.h"
+#include "../GelDataArray/GelDataArray_Core.h"
 
 #include "../GelFile/Endian.h"
 // - ------------------------------------------------------------------------------------------ - //
 struct GelVFile {
 	size_t Position;
-	GelArray<char>* Data;
+	GelDataArray<char>* Data;
 };
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -33,7 +33,7 @@ inline const size_t size_GelVFile( GelVFile* fp ) {
 inline GelVFile* open_GelVFile( const char* = "rb" ) {
 	GelVFile* MyFile = new GelVFile;
 	MyFile->Position = 0;
-	MyFile->Data = new GelArray<char>();
+	MyFile->Data = new GelDataArray<char>();
 	return MyFile;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -56,14 +56,14 @@ inline GelVFile* open_writeonly_GelVFile( ) {
 // Closing Files //
 // - ------------------------------------------------------------------------------------------ - //
 inline void close_GelVFile( GelVFile* fp ) {
-	delete_GelArray<char>( fp->Data );
+	delete_GelDataArray<char>( fp->Data );
 	
 	delete fp;
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Special Function -- Destroyes the shell. Returns the important data part. // 
-inline GelArray<char>* close_skeleton_GelVFile( GelVFile* fp ) {
-	GelArray<char>* Ret = fp->Data;
+inline GelDataArray<char>* close_skeleton_GelVFile( GelVFile* fp ) {
+	GelDataArray<char>* Ret = fp->Data;
 	
 	delete fp;
 	
@@ -77,7 +77,7 @@ inline GelArray<char>* close_skeleton_GelVFile( GelVFile* fp ) {
 inline GelVFile* copy_GelVFile( const char* In, const size_t Size ) {
 	GelVFile* MyFile = new GelVFile;
 	MyFile->Position = 0;
-	MyFile->Data = new_GelArray<char>( Size );
+	MyFile->Data = new_GelDataArray<char>( Size );
 	copy_Data( In, MyFile->Data->Data, Size );
 	return MyFile;
 }
@@ -85,15 +85,15 @@ inline GelVFile* copy_GelVFile( const char* In, const size_t Size ) {
 inline GelVFile* copy_GelVFile( const DataBlock* In ) {
 	GelVFile* MyFile = new GelVFile;
 	MyFile->Position = 0;
-	MyFile->Data = new_GelArray<char>( In->Size );
+	MyFile->Data = new_GelDataArray<char>( In->Size );
 	copy_Data( In->Data, MyFile->Data->Data, In->Size );
 	return MyFile;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline GelVFile* copy_GelVFile( GelArray<char>* In ) {
+inline GelVFile* copy_GelVFile( GelDataArray<char>* In ) {
 	GelVFile* MyFile = new GelVFile;
 	MyFile->Position = 0;
-	MyFile->Data = new_copy_GelArray<char>( In );
+	MyFile->Data = new_copy_GelDataArray<char>( In );
 	return MyFile;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -150,7 +150,7 @@ inline const size_t read_GelVFile( GelVFile* fp, char* Data, const size_t Size )
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
 inline const size_t write_GelVFile( GelVFile* fp, const Type Data ) {
-	pushblockback_GelArray( &(fp->Data), sizeof(Data) );
+	pushblockback_GelDataArray( &(fp->Data), sizeof(Data) );
 
 	copy_Data( (char*)&Data, &(fp->Data->Data[fp->Position]), sizeof( Data ) );
 	fp->Position += sizeof( Data );
@@ -162,7 +162,7 @@ template< class Type >
 inline const size_t writeswap_GelVFile( GelVFile* fp, const Type Data ) {
 	Type Copy = byteswap(Data);
 	
-	pushblockback_GelArray( &(fp->Data), sizeof(Copy) );
+	pushblockback_GelDataArray( &(fp->Data), sizeof(Copy) );
 	
 	copy_Data( (char*)&Copy, &(fp->Data->Data[fp->Position]), sizeof( Copy ) );
 	fp->Position += sizeof( Copy );
@@ -174,7 +174,7 @@ template< class Type >
 inline const size_t writebe_GelVFile( GelVFile* fp, const Type Data ) {
 	Type Copy = beswap(Data);
 	
-	pushblockback_GelArray( &(fp->Data), sizeof(Copy) );
+	pushblockback_GelDataArray( &(fp->Data), sizeof(Copy) );
 	
 	copy_Data( (char*)&Copy, &(fp->Data->Data[fp->Position]), sizeof( Copy ) );
 	fp->Position += sizeof( Copy );
@@ -186,7 +186,7 @@ template< class Type >
 inline const size_t writele_GelVFile( GelVFile* fp, const Type Data ) {
 	Type Copy = leswap(Data);
 	
-	pushblockback_GelArray( &(fp->Data), sizeof(Copy) );
+	pushblockback_GelDataArray( &(fp->Data), sizeof(Copy) );
 	
 	copy_Data( (char*)&Copy, &(fp->Data->Data[fp->Position]), sizeof( Copy ) );
 	fp->Position += sizeof( Copy );
@@ -197,7 +197,7 @@ inline const size_t writele_GelVFile( GelVFile* fp, const Type Data ) {
 
 // - ------------------------------------------------------------------------------------------ - //
 inline const size_t write_GelVFile( GelVFile* fp, const char* Data, const size_t Size ) {
-	pushblockback_GelArray( &(fp->Data), Size );
+	pushblockback_GelDataArray( &(fp->Data), Size );
 	
 	copy_Data( Data, &(fp->Data->Data[fp->Position]), Size );
 	fp->Position += Size;

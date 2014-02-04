@@ -7,7 +7,7 @@
 
 #include <Render/Render.h>
 #include <Texture/Texture.h>
-#include <Vert/Vert.h>
+#include <Array/Array.h>
 // - ------------------------------------------------------------------------------------------ - //
 class GelSkelAnimator {
 protected:

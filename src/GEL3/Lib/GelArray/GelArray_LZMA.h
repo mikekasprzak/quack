@@ -1,20 +1,20 @@
 // - ------------------------------------------------------------------------------------------ - //
-// ArrayCompression - Compression code for GelArray library //
+// ArrayCompression - Compression code for GelDataArray library //
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __Library_Data_GelArray_LZMA_H__
-#define __Library_Data_GelArray_LZMA_H__
+#ifndef __Library_Data_GelDataArray_LZMA_H__
+#define __Library_Data_GelDataArray_LZMA_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include "DataBlock_Core.h"
 #include "DataBlock_LZMA.h"
 
-#include "GelArray_Core.h"
+#include "GelDataArray_Core.h"
 // - ------------------------------------------------------------------------------------------ - //
 // This decompressor is done from scratch because it'll be used very often.  Other compressors //
 //   will mainly only be used for intermediary formats. //
 // - ------------------------------------------------------------------------------------------ - //
-// Decode packed LZMA data to a new GelArray //
+// Decode packed LZMA data to a new GelDataArray //
 template< class Type >
-inline GelArray<Type>* unpack_LZMA_GelArray( const DataBlock* _Src ) {
+inline GelDataArray<Type>* unpack_LZMA_GelDataArray( const DataBlock* _Src ) {
 	// Take a copy of the File Header (for some reason) //
 	unsigned char header[LZMA_PROPS_SIZE + 8];
 	copy_Data( &_Src->Data[0], &header[0], sizeof( header ) );
@@ -32,7 +32,7 @@ inline GelArray<Type>* unpack_LZMA_GelArray( const DataBlock* _Src ) {
 	}
 
 	// Allocate a new Array for our uncompressed Data //
-	GelArray<Type>* UBuffer = new_GelArray<Type>( UncompressedSize / sizeof(Type) );
+	GelDataArray<Type>* UBuffer = new_GelDataArray<Type>( UncompressedSize / sizeof(Type) );
 
 	// TODO: Assert if uncompressed size doesn't divide evenly by Type //
 
@@ -83,8 +83,8 @@ inline GelArray<Type>* unpack_LZMA_GelArray( const DataBlock* _Src ) {
 	CProb Probs[ LzmaGetNumProbs(&state.Properties) ];
 	state.Probs = (UInt16*)&Probs;
 	
-	// Allocate a new GelArray for our uncompressed Data //
-	GelArray<Type>* UBuffer = new_GelArray<Type>( UncompressedSize / sizeof(Type) );
+	// Allocate a new GelDataArray for our uncompressed Data //
+	GelDataArray<Type>* UBuffer = new_GelDataArray<Type>( UncompressedSize / sizeof(Type) );
 	
 	// TODO: Assert if uncompressed size doesn't divide evenly by Type //
 
@@ -111,16 +111,16 @@ inline GelArray<Type>* unpack_LZMA_GelArray( const DataBlock* _Src ) {
 
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline void cGelArray<Type>::UnpackLZMA( const cDataBlock& _Src ) {
-	*this = cGelArray<Type>( unpack_LZMA_GelArray<Type>( _Src.Data() ) );
+inline void cGelDataArray<Type>::UnpackLZMA( const cDataBlock& _Src ) {
+	*this = cGelDataArray<Type>( unpack_LZMA_GelDataArray<Type>( _Src.Data() ) );
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline void cGelArray<Type>::UnpackLZMA( const DataBlock* _Src ) {
-	*this = cGelArray<Type>( unpack_LZMA_GelArray<Type>( _Src ) );
+inline void cGelDataArray<Type>::UnpackLZMA( const DataBlock* _Src ) {
+	*this = cGelDataArray<Type>( unpack_LZMA_GelDataArray<Type>( _Src ) );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __Library_Data_GelArray_LZMA_H__ //
+#endif // __Library_Data_GelDataArray_LZMA_H__ //
 // - ------------------------------------------------------------------------------------------ - //

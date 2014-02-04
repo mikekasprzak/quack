@@ -1,19 +1,19 @@
 // - ------------------------------------------------------------------------------------------ - //
-// ArrayCompression - Compression code for GelArray library //
+// ArrayCompression - Compression code for GelDataArray library //
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __Library_Data_GelArray_LZO_H__
-#define __Library_Data_GelArray_LZO_H__
+#ifndef __Library_Data_GelDataArray_LZO_H__
+#define __Library_Data_GelDataArray_LZO_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include "DataBlock_Core.h"
 #include "DataBlock_LZO.h"
 
-#include "GelArray_Core.h"
+#include "GelDataArray_Core.h"
 // - ------------------------------------------------------------------------------------------ - //
-// Decode packed LZO data to a new GelArray //
+// Decode packed LZO data to a new GelDataArray //
 template< class Type >
-inline GelArray<Type>* unpack_LZO_GelArray( DataBlock* _Src ) {
+inline GelDataArray<Type>* unpack_LZO_GelDataArray( DataBlock* _Src ) {
 	DataBlock* Uncompressed = unpack_LZO_DataBlock( _Src );
-	GelArray<Type>* UncompressedArray = new_GelArray<Type>( Uncompressed );
+	GelDataArray<Type>* UncompressedArray = new_GelDataArray<Type>( Uncompressed );
 	
 	// Delet our intermediary //
 	delete_DataBlock( Uncompressed );
@@ -21,11 +21,11 @@ inline GelArray<Type>* unpack_LZO_GelArray( DataBlock* _Src ) {
 	return UncompressedArray;
 }
 // - ------------------------------------------------------------------------------------------ - //
-// Decode packed LZO data to a new GelArray //
+// Decode packed LZO data to a new GelDataArray //
 template< class Type >
-inline GelArray<Type>* unpack_LZO_GelArray( char* _Src, const st32 _SrcSize ) {
+inline GelDataArray<Type>* unpack_LZO_GelDataArray( char* _Src, const st32 _SrcSize ) {
 	DataBlock* Uncompressed = unpack_LZO_DataBlock( _Src, _SrcSize );
-	GelArray<Type>* UncompressedArray = new_GelArray<Type>( Uncompressed );
+	GelDataArray<Type>* UncompressedArray = new_GelDataArray<Type>( Uncompressed );
 	
 	// Delet our intermediary //
 	delete_DataBlock( Uncompressed );
@@ -35,7 +35,7 @@ inline GelArray<Type>* unpack_LZO_GelArray( char* _Src, const st32 _SrcSize ) {
 // - ------------------------------------------------------------------------------------------ - //
 // Encode array data to a packed LZO DataBlock //
 template< class Type >
-inline DataBlock* pack_LZO_DataBlock( GelArray<Type>* _Src ) {
+inline DataBlock* pack_LZO_DataBlock( GelDataArray<Type>* _Src ) {
 	DataBlock* Source = copy_DataBlock( (char*)_Src->Data, _Src->Size * sizeof( Type ) );
 	DataBlock* Compressed = pack_LZO_DataBlock( Source );
 	
@@ -49,21 +49,21 @@ inline DataBlock* pack_LZO_DataBlock( GelArray<Type>* _Src ) {
 
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline void cGelArray<Type>::UnpackLZO( cDataBlock& _Src ) {
-	*this = cGelArray<Type>( unpack_LZO_GelArray<Type>( _Src._Data ) );
+inline void cGelDataArray<Type>::UnpackLZO( cDataBlock& _Src ) {
+	*this = cGelDataArray<Type>( unpack_LZO_GelDataArray<Type>( _Src._Data ) );
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline void cGelArray<Type>::UnpackLZO( DataBlock* _Src ) {
-	*this = cGelArray<Type>( unpack_LZO_GelArray<Type>( _Src ) );
+inline void cGelDataArray<Type>::UnpackLZO( DataBlock* _Src ) {
+	*this = cGelDataArray<Type>( unpack_LZO_GelDataArray<Type>( _Src ) );
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline DataBlock* cGelArray<Type>::PackLZO() {
+inline DataBlock* cGelDataArray<Type>::PackLZO() {
 	return pack_LZO_DataBlock( _Data );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __Library_Data_GelArray_LZO_H__ //
+#endif // __Library_Data_GelDataArray_LZO_H__ //
 // - ------------------------------------------------------------------------------------------ - //

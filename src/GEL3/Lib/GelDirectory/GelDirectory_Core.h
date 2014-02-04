@@ -24,7 +24,7 @@ struct GelDirectory {
 	
 	GelHeap* FileName;					// A GelHeap of filenames //
 	
-	GelArray<GelFileInfo>* FileInfo;
+	GelDataArray<GelFileInfo>* FileInfo;
 	
 	GelDirectory() :
 		BaseName( 0 ),
@@ -39,7 +39,7 @@ struct GelDirectory {
 inline const size_t add_GelDirectory( GelDirectory* p, const char* _String, const GelFileInfo& _FileInfo ) {
 	size_t StringLength = length_String( _String ) + 1;
 	
-	pushback_GelArray<GelFileInfo>( &p->FileInfo, _FileInfo );
+	pushback_GelDataArray<GelFileInfo>( &p->FileInfo, _FileInfo );
 	
 	return allocate_GelHeap( p->FileName, _String, StringLength );
 }
@@ -59,7 +59,7 @@ inline const char* index_GelDirectory( const GelDirectory* p, const size_t Index
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const GelFileInfo& info_GelDirectory( const GelDirectory* p, const size_t Index ) { 
-	return *index_GelArray<GelFileInfo>( p->FileInfo, Index );
+	return *index_GelDataArray<GelFileInfo>( p->FileInfo, Index );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -72,7 +72,7 @@ inline GelDirectory* new_GelDirectory() {
 	// Create and initalize an empty name string //
 	NewDir->BaseName = new_String("");
 	NewDir->FileName = new_GelHeap();
-	NewDir->FileInfo = new_GelArray<GelFileInfo>( 0 );
+	NewDir->FileInfo = new_GelDataArray<GelFileInfo>( 0 );
 
 	VVLog("* NEWDIR: \"%s\"  0x%x  0x%x\n", NewDir->BaseName, NewDir->FileName, NewDir->FileInfo );
 	
@@ -87,7 +87,7 @@ inline void delete_GelDirectory( GelDirectory* p ) {
 		delete_GelHeap( p->FileName );
 	
 	if ( p->FileInfo )
-		delete_GelArray( p->FileInfo );
+		delete_GelDataArray( p->FileInfo );
 }
 // - ------------------------------------------------------------------------------------------ - //
 

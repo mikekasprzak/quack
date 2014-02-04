@@ -1,15 +1,15 @@
 // - ------------------------------------------------------------------------------------------ - //
-// GelArray Hash32 - Data Hashing //
+// GelDataArray Hash32 - Data Hashing //
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __Library_Data_GelArray_Hash32_H__
-#define __Library_Data_GelArray_Hash32_H__
+#ifndef __Library_Data_GelDataArray_Hash32_H__
+#define __Library_Data_GelDataArray_Hash32_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Data/Data_Hash32.h>
 // - ------------------------------------------------------------------------------------------ - //
 //namespace Data {
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline unsigned int hash32_GelArray( const GelArray<Type>* Data ) {
+inline unsigned int hash32_GelDataArray( const GelDataArray<Type>* Data ) {
 	// TODO: Assert zero pointer //
 	if (!Data)
 		return 0;
@@ -19,5 +19,5 @@ inline unsigned int hash32_GelArray( const GelArray<Type>* Data ) {
 // - ------------------------------------------------------------------------------------------ - //
 //}; // namepsace Data //
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __Library_Data_GelArray_Hash32_H__ //
+#endif // __Library_Data_GelDataArray_Hash32_H__ //
 // - ------------------------------------------------------------------------------------------ - //

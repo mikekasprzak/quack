@@ -12,7 +12,7 @@
 #include <Texture/Texture.h>
 #include <Render/Render.h>
 // - ------------------------------------------------------------------------------------------ - //
-#include <Vert/Vert.h>
+#include <Array/Array.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 #include <stdio.h>

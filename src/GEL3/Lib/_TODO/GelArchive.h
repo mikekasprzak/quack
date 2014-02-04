@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <Core/GelArray.h>
+#include <Core/GelDataArray.h>
 #include "GelHeap.h"
 // - ------------------------------------------------------------------------------------------ - //
 // Archives are lists of file names with Data.  They can be populated manually, or be polled from
@@ -25,7 +25,7 @@ struct GelArchive {
 	GelHeap* FileName;
 	// A GelHeap of Data (DataBlocks?) //
 	//GelHeap* Data;
-	GelArray<DataBlock*> Data;
+	GelDataArray<DataBlock*> Data;
 };
 // - ------------------------------------------------------------------------------------------ - //
 

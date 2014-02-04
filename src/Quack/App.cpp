@@ -19,7 +19,7 @@
 #include <Model/Model.h>
 
 #include "Glayout/Glayout.h"
-#include <Vert/Vert.h>
+#include <Array/Array.h>
 #include "Generator/Generator.h"
 #include "Seed/VtTree.h"
 
