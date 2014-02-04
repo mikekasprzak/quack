@@ -2,7 +2,7 @@
 #ifndef __GENERATOR_GENERATOR_CURVE_H__
 #define __GENERATOR_GENERATOR_CURVE_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <Vert/Vert.h>
+//#include <Array/Array.h>
 // - ------------------------------------------------------------------------------------------ - //
 template <typename IN, typename OUT>
 inline void GenCurve( const IN& In, OUT& Out ) {

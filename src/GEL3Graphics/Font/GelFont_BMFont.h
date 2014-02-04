@@ -6,7 +6,7 @@
 
 #include <Lib/Data/Data.h>
 #include <Lib/DataBlock/DataBlock.h>
-#include <Lib/GelArray/GelArray.h>
+#include <Lib/GelDataArray/GelDataArray.h>
 #include <Lib/GelString/GelString.h>
 
 #include <Lib/StreamReader/StreamReader.h>
@@ -106,16 +106,16 @@ struct BMFont {
 	
 	BMFont_Info* Info;
 	BMFont_Common* Common;
-	GelArray<char*>* PageName;
+	GelDataArray<char*>* PageName;
 	DataBlock* PageNameData;
 
-	BMFont_Chars* DummyChar;					// Only created if no error char was included in the font //
+	BMFont_Chars* DummyChar;						// Only created if no error char was included in the font //
 	BMFont_Chars* ErrorChar;
-	GelArray<BMFont_Chars>* Chars;				// Packed table of Glyphs //
-	GelArray<BMFont_Chars*>* Glyph;			// Full linear table of Glyphs (Chars*'s) //
-	GelArray<BMFont_Kerning>* Kerning;
-	GelArray<BMFont_Kerning*>* FirstKerning;	// Full linear table of per Glyph Kerning Pointers // 
-	GelArray<BMFont_Kerning*>* LastKerning;	// Full linear table of per Glyph Kerning Pointers // 
+	GelDataArray<BMFont_Chars>* Chars;				// Packed table of Glyphs //
+	GelDataArray<BMFont_Chars*>* Glyph;				// Full linear table of Glyphs (Chars*'s) //
+	GelDataArray<BMFont_Kerning>* Kerning;
+	GelDataArray<BMFont_Kerning*>* FirstKerning;	// Full linear table of per Glyph Kerning Pointers // 
+	GelDataArray<BMFont_Kerning*>* LastKerning;		// Full linear table of per Glyph Kerning Pointers // 
 };
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -126,22 +126,22 @@ inline void delete_BMFont( BMFont* MyFont ) {
 	if ( MyFont->Common != 0 )
 		delete MyFont->Common;
 	if ( MyFont->PageName != 0 )
-		delete_GelArray<char*>( MyFont->PageName );
+		delete_GelDataArray<char*>( MyFont->PageName );
 	if ( MyFont->PageNameData != 0 )
 		delete_DataBlock( MyFont->PageNameData );
 	if ( MyFont->DummyChar != 0 )
 		delete MyFont->DummyChar;
 	// NOTE: Do not delete the Error Char, as it's just an extra pointer to data //
 	if ( MyFont->Chars != 0 )
-		delete_GelArray<BMFont_Chars>( MyFont->Chars );
+		delete_GelDataArray<BMFont_Chars>( MyFont->Chars );
 	if ( MyFont->Glyph != 0 )
-		delete_GelArray<BMFont_Chars*>( MyFont->Glyph );
+		delete_GelDataArray<BMFont_Chars*>( MyFont->Glyph );
 	if ( MyFont->Kerning != 0 )
-		delete_GelArray<BMFont_Kerning>( MyFont->Kerning );
+		delete_GelDataArray<BMFont_Kerning>( MyFont->Kerning );
 	if ( MyFont->FirstKerning != 0 )
-		delete_GelArray<BMFont_Kerning*>( MyFont->FirstKerning );
+		delete_GelDataArray<BMFont_Kerning*>( MyFont->FirstKerning );
 	if ( MyFont->LastKerning != 0 )
-		delete_GelArray<BMFont_Kerning*>( MyFont->LastKerning );
+		delete_GelDataArray<BMFont_Kerning*>( MyFont->LastKerning );
 	
 	delete MyFont;
 }
@@ -214,7 +214,7 @@ inline BMFont* new_read_BMFont( const DataBlock* InFile ) {
 			MyFont->PageNameData = new_DataBlock( DataSize );
 			copy_Data( Read.GetString(DataSize), MyFont->PageNameData->Data, DataSize );
 			
-			MyFont->PageName = new_GelArray<char*>( PageCount );
+			MyFont->PageName = new_GelDataArray<char*>( PageCount );
 			
 			char* PageOffset = MyFont->PageNameData->Data;
 			for ( int idx = 0; idx < PageCount; idx++ ) {
@@ -230,7 +230,7 @@ inline BMFont* new_read_BMFont( const DataBlock* InFile ) {
 			
 			VLog( "* %i characters found", CharCount );
 			
-			MyFont->Chars = new_GelArray<BMFont_Chars>( CharCount );
+			MyFont->Chars = new_GelDataArray<BMFont_Chars>( CharCount );
 			
 			for ( int idx = 0; idx < CharCount; idx ++ ) {
 				MyFont->Chars->Data[idx].Id = Read.GetInt(4);
@@ -269,7 +269,7 @@ inline BMFont* new_read_BMFont( const DataBlock* InFile ) {
 			// ** Populate Glyphs List ** //
 			// Create //
 			int GlyphCount = 256;
-			MyFont->Glyph = new_GelArray<BMFont_Chars*>( GlyphCount );
+			MyFont->Glyph = new_GelDataArray<BMFont_Chars*>( GlyphCount );
 			
 			// Empty list (ErrorChar, as it will be the included or a dummy) //
 			for ( int idx = 0; idx < GlyphCount; idx ++ ) {
@@ -290,7 +290,7 @@ inline BMFont* new_read_BMFont( const DataBlock* InFile ) {
 			
 			VLog( "* %i kerning instances found", KerningCount );
 			
-			MyFont->Kerning = new_GelArray<BMFont_Kerning>( KerningCount );
+			MyFont->Kerning = new_GelDataArray<BMFont_Kerning>( KerningCount );
 			
 			for ( int idx = 0; idx < KerningCount; idx ++ ) {
 				MyFont->Kerning->Data[idx].First = Read.GetInt(4);
@@ -303,8 +303,8 @@ inline BMFont* new_read_BMFont( const DataBlock* InFile ) {
 			// (Therefor, one just has to search linearly all kerning entries to check if a pair) //
 
 			int GlyphCount = 256;
-			MyFont->FirstKerning = new_GelArray<BMFont_Kerning*>( GlyphCount );
-			MyFont->LastKerning = new_GelArray<BMFont_Kerning*>( GlyphCount );
+			MyFont->FirstKerning = new_GelDataArray<BMFont_Kerning*>( GlyphCount );
+			MyFont->LastKerning = new_GelDataArray<BMFont_Kerning*>( GlyphCount );
 			
 			// Empty list //
 			for ( int idx = 0; idx < GlyphCount; idx ++ ) {
