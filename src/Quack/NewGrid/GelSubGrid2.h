@@ -26,11 +26,11 @@ public:
 	
 	// Fast Version (No Wrapping) //
 	inline st __Index( const int _x, const int _y ) const {
-		return Parent._Index(x+_x,y+_y);
+		return Parent->_Index(x+_x,y+_y);
 	}
 	// Parent Wrapping //
 	inline st _Index( const int _x, const int _y ) const {
-		return Parent.Index(x+_x,y+_y);
+		return Parent->Index(x+_x,y+_y);
 	}
 	// Local Wrapping //
 	inline st Index( int _x, int _y ) const {
@@ -152,13 +152,13 @@ public:
 // Sub Grids of a Grid //
 template<typename T>
 GelSubGrid2<T> GelGrid2<T>::GetSubGrid( const int _x, const int _y, const st _w, const st _h ) {
-	return Ret( this, _x, _y, _w, _h );
+	return GelSubGrid2<T>( this, _x, _y, _w, _h );
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Sub Grids of Sub Grids //
 template<typename T>
 GelSubGrid2<T> GelSubGrid2<T>::GetSubGrid( const int _x, const int _y, const st _w, const st _h ) {
-	return Ret( Parent, x+_x, y+_y, _w, _h );
+	return GelSubGrid2<T>( Parent, x+_x, y+_y, _w, _h );
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_GRID_GELSUBGRID2_H__ //
