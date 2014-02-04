@@ -14,9 +14,11 @@ public:
 	
 	// To be helpful, a place to store all of the data posibilities. //
 	std::string String;
-	int Integer;
-	float Float;
-	bool Bool;
+	union {
+		int Integer;
+		float Float;
+		bool Boolean;
+	};
 };
 // - ------------------------------------------------------------------------------------------ - //
 class GelTiledTileset {
@@ -74,7 +76,7 @@ public:
 	int DrawOrder;	// TODO: Flags. "topdown" (objectgroup only) 
 
 	std::vector<GelTiledObject> Object;	 	// Can be empty //
-	GelGrid2<st16> Data;					// Can be empty //
+	GelGrid<st16> Data;					// Can be empty //
 };
 // - ------------------------------------------------------------------------------------------ - //
 

@@ -316,15 +316,15 @@ void AppInit() {
 		Log("**** Grid Generator");
 
 		//GelTileMap MyMap("Blah.map"); // Use Search and Asset, but no Pool //
-		//Gen_TileMap_GelVert2U_from_GelGrid2( App::OutMap, MyMap.Layer[0], TileWidth, TileHeight );
+		//Gen_TileMap_GelVert2U_from_GelGrid( App::OutMap, MyMap.Layer[0], TileWidth, TileHeight );
 		
-		GelGrid2<st8> MyMap;
+		GelGrid<st8> MyMap;
 		GelImage Mimage( "TestFileNoAlpha.png" );
 		
 		Log("MIMA: %i, %i (%i)", Mimage.Width(), Mimage.Height(), Mimage.BPP() );
 		Log("GRID: %i, %i", MyMap.Width(), MyMap.Height() );
 		
-		Gen_GelGrid2_from_GelImage( MyMap, Mimage ); 
+		Gen_GelGrid_from_GelImage( MyMap, Mimage ); 
 
 		Log("GRID: %i, %i", MyMap.Width(), MyMap.Height() );
 
@@ -335,7 +335,7 @@ void AppInit() {
 //			Log("");
 //		}
 		
-		GelSubGrid2<st8> SubMap = MyMap.GetSubGrid( 60,60, 12,12 );
+		GelSubGrid<st8> SubMap = MyMap.GetSubGrid( 60,60, 12,12 );
 
 		Log("SUBGRID: %i, %i", SubMap.Width(), SubMap.Height() );
 		

@@ -1,11 +1,11 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_GRID_GELGRID2_FROM_GELIMAGE_H__
-#define __GEL_GRID_GELGRID2_FROM_GELIMAGE_H__
+#ifndef __GEL_GRID_GELGRID_FROM_GELIMAGE_H__
+#define __GEL_GRID_GELGRID_FROM_GELIMAGE_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Image/Image.h>
 // - ------------------------------------------------------------------------------------------ - //
 template<typename T>
-inline void Gen_GelGrid2_from_GelImage( GelGrid2<T>& Out, const GelImage& In, const int StepX = 1, const int StepY = 1 ) {
+inline void Gen_GelGrid_from_GelImage( GelGrid<T>& Out, const GelImage& In, const int StepX = 1, const int StepY = 1 ) {
 	st Width = In.Width() / StepX;
 	st Height = In.Height() / StepY;
 	st Size = Width * Height;
@@ -19,5 +19,5 @@ inline void Gen_GelGrid2_from_GelImage( GelGrid2<T>& Out, const GelImage& In, co
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_GRID_GELGRID2_FROM_GELIMAGE_H__ //
+#endif // __GEL_GRID_GELGRID_FROM_GELIMAGE_H__ //
 // - ------------------------------------------------------------------------------------------ - //
