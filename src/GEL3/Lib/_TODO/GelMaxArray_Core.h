@@ -2,7 +2,7 @@
 // GelMaxArray - A dynamically allocated array.  A C implementation, and a lightweight STL vector. //
 //
 // NOTE: resize2 is the double size function. Should really be "resize2x" //
-// Formerly GelArray
+// Formerly GelDataArray
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __Library_Data_GelMaxArray_Core_H__
 #define __Library_Data_GelMaxArray_Core_H__

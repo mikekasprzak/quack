@@ -4,7 +4,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 // Technically, this is inconsistent with Core. 
 //   Data and DataBlock deal with arbitrary byte arrays. 
-//   It's GelArray deals with arrays of types.
+//   It's GelDataArray deals with arrays of types.
 // - ------------------------------------------------------------------------------------------ - //
 #include "Data2D_Core.h"
 #include "Data2D_Geometry.h"

@@ -1,15 +1,15 @@
 // - ------------------------------------------------------------------------------------------ - //
-// GelArray File - Extended Array features, reading, writing, and initializing from a file/FILE* //
+// GelDataArray File - Extended Array features, reading, writing, and initializing from a file/FILE* //
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __Library_GELCore_GelArray_File_H__
-#define __Library_GELCore_GelArray_File_H__
+#ifndef __Library_GELCore_GelDataArray_File_H__
+#define __Library_GELCore_GelDataArray_File_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include "../GelFile/GelFile.h"
 #include "../GelVFile/GelVFile.h"
 //#include "GelContentHandle.h"
 //#include "GelStorageHandle.h"
 
-#include "../GelArray/GelArray_Core.h"
+#include "../GelDataArray/GelDataArray_Core.h"
 #include "../DataBlock/DataBlock_File.h"
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -17,12 +17,12 @@
 // Use this alternative "new" function when you don't know how big it is //
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline GelArray<Type>* new_read_GelArray( const char* _FileName ) {
+inline GelDataArray<Type>* new_read_GelDataArray( const char* _FileName ) {
 	// Open File //
 	GelFile* fp = open_readonly_GelFile( _FileName );
 	if ( fp == 0 ) {
 		// Return a dummy instance.  This might be bad, since an empty file will look the same. //
-		//return new_GelArray<Type>( (size_t)0 );
+		//return new_GelDataArray<Type>( (size_t)0 );
 		
 		// Or return a zero pointer.  Better, because it's clearer that allocation failed. //
 		return 0;
@@ -32,7 +32,7 @@ inline GelArray<Type>* new_read_GelArray( const char* _FileName ) {
 	size_t Size = size_GelFile( fp );
 	
 	// Allocate space (Size is automatically set inside new_DataBlock) //
-	GelArray<Type>* p = new_GelArray<Type>( Size / sizeof(Type) );
+	GelDataArray<Type>* p = new_GelDataArray<Type>( Size / sizeof(Type) );
 	
 	// Read data //
 	read_GelFile( fp, (char*)&p->Data[0], Size );
@@ -45,12 +45,12 @@ inline GelArray<Type>* new_read_GelArray( const char* _FileName ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline GelArray<Type>* new_read_GelArray( GelFile* fp ) {
+inline GelDataArray<Type>* new_read_GelDataArray( GelFile* fp ) {
 	// Read Size (in bytes) //
 	size_t Size = read_GelFile<size_t>( fp );
 	
 	// Allocate space (size in bytes divided by the size of a type) //
-	GelArray<Type>* p = new_GelArray<Type>( Size / sizeof(Type) );
+	GelDataArray<Type>* p = new_GelDataArray<Type>( Size / sizeof(Type) );
 	
 	// Read data (in bytes) //
 	read_GelFile( fp, (char*)&p->Data[0], Size );
@@ -60,12 +60,12 @@ inline GelArray<Type>* new_read_GelArray( GelFile* fp ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline GelArray<Type>* new_read_GelArray( GelVFile* fp ) {
+inline GelDataArray<Type>* new_read_GelDataArray( GelVFile* fp ) {
 	// Read Size (in bytes) //
 	size_t Size = read_GelVFile<size_t>( fp );
 	
 	// Allocate space (size in bytes divided by the size of a type) //
-	GelArray<Type>* p = new_GelArray<Type>( Size / sizeof(Type) );
+	GelDataArray<Type>* p = new_GelDataArray<Type>( Size / sizeof(Type) );
 	
 	// Read data (in bytes) //
 	read_GelVFile( fp, (char*)&p->Data[0], Size );
@@ -75,13 +75,13 @@ inline GelArray<Type>* new_read_GelArray( GelVFile* fp ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline GelArray<Type>* read_GelArray( GelFile* fp ) {
-	return new_read_GelArray<Type>( fp );
+inline GelDataArray<Type>* read_GelDataArray( GelFile* fp ) {
+	return new_read_GelDataArray<Type>( fp );
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline GelArray<Type>* read_GelArray( GelVFile* fp ) {
-	return new_read_GelArray<Type>( fp );
+inline GelDataArray<Type>* read_GelDataArray( GelVFile* fp ) {
+	return new_read_GelDataArray<Type>( fp );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -93,7 +93,7 @@ inline GelArray<Type>* read_GelArray( GelVFile* fp ) {
 // NOTE: The above should be part of the streaming library? //
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline const size_t read_GelArray( GelArray<Type>* p, const char* _FileName ) {
+inline const size_t read_GelDataArray( GelDataArray<Type>* p, const char* _FileName ) {
 	// Open File //
 	GelFile* fp = open_readonly_GelFile( _FileName );
 	if ( fp == 0 ) {
@@ -118,7 +118,7 @@ inline const size_t read_GelArray( GelArray<Type>* p, const char* _FileName ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline const size_t write_GelArray( const GelArray<Type>* p, const char* _FileName ) {
+inline const size_t write_GelDataArray( const GelDataArray<Type>* p, const char* _FileName ) {
 	// Open File //
 	GelFile* fp = open_writeonly_GelFile( _FileName );
 	if ( fp == 0 ) {
@@ -141,8 +141,8 @@ inline const size_t write_GelArray( const GelArray<Type>* p, const char* _FileNa
 // Note: This is bad, as it's unclear allocation is done.  new_DataBlock() is preferred. //
 // - ------------------------------------------------------------------------------------------ - //
 //template< class Type >
-//inline GelArray<Type>* read_GelArray( const char* _FileName ) {
-//	return new_GelArray<Type>( _FileName );
+//inline GelDataArray<Type>* read_GelDataArray( const char* _FileName ) {
+//	return new_GelDataArray<Type>( _FileName );
 //}
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -151,7 +151,7 @@ inline const size_t write_GelArray( const GelArray<Type>* p, const char* _FileNa
 // GelFile* Versions read and write sizes //
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline const size_t read_GelArray( GelArray<Type>* p, GelFile* fp ) {
+inline const size_t read_GelDataArray( GelDataArray<Type>* p, GelFile* fp ) {
 	// Read Size (in bytes) //
 	size_t Size = read_GelFile<size_t>( fp );
 	
@@ -166,7 +166,7 @@ inline const size_t read_GelArray( GelArray<Type>* p, GelFile* fp ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline const size_t write_GelArray( const GelArray<Type>* p, GelFile* fp ) {
+inline const size_t write_GelDataArray( const GelDataArray<Type>* p, GelFile* fp ) {
 	// Write Size (Size multiplied by size of a type) //
 	size_t BytesWritten = write_GelFile( fp, p->Size * sizeof(Type) );
 
@@ -185,7 +185,7 @@ inline const size_t write_GelArray( const GelArray<Type>* p, GelFile* fp ) {
 // GelVFile* Versions read and write sizes //
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline const size_t read_GelArray( GelArray<Type>* p, GelVFile* fp ) {
+inline const size_t read_GelDataArray( GelDataArray<Type>* p, GelVFile* fp ) {
 	// Read Size (in bytes) //
 	size_t Size = read_GelVFile<size_t>( fp );
 	
@@ -200,7 +200,7 @@ inline const size_t read_GelArray( GelArray<Type>* p, GelVFile* fp ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class Type >
-inline const size_t write_GelArray( const GelArray<Type>* p, GelVFile* fp ) {
+inline const size_t write_GelDataArray( const GelDataArray<Type>* p, GelVFile* fp ) {
 	// Write Size (Size multiplied by size of a type) //
 	size_t BytesWritten = write_GelVFile( fp, p->Size * sizeof(Type) );
 
@@ -215,5 +215,5 @@ inline const size_t write_GelArray( const GelArray<Type>* p, GelVFile* fp ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __Library_Data_GelArray_File_H__ //
+#endif // __Library_Data_GelDataArray_File_H__ //
 // - ------------------------------------------------------------------------------------------ - //

@@ -2,7 +2,7 @@
 #ifndef __Grid_Data2D_Geometry_H__
 #define __Grid_Data2D_Geometry_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <Core/GelArray.h>
+#include <Core/GelDataArray.h>
 #include "Data2D_Core.h"
 // - ------------------------------------------------------------------------------------------ - //
 // Optimized_TriangleStrips are ordered in cache friendly columns (Y) //
@@ -182,39 +182,39 @@ inline void generate_Optimized_TriangleStrips( Data2D<tType>* Data, VertType* Ve
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class VertType, class tType >
-inline void new_Optimized_TriangleStrips( Data2D<tType>* Data, GelArray<VertType>** Vertex, GelArray<unsigned short>** Index, const Vector3D Scale = Vector3D(1,1,1), const bool PrimitiveRestart = false ) {
+inline void new_Optimized_TriangleStrips( Data2D<tType>* Data, GelDataArray<VertType>** Vertex, GelDataArray<unsigned short>** Index, const Vector3D Scale = Vector3D(1,1,1), const bool PrimitiveRestart = false ) {
 	size_t VertexCount;
 	size_t IndexCount;
 	calculate_Optimized_TriangleStrips( Data, &VertexCount, &IndexCount, PrimitiveRestart );
 
-	*Vertex = new_GelArray<VertType>(VertexCount);
-	*Index = new_GelArray<unsigned short>(IndexCount);
+	*Vertex = new_GelDataArray<VertType>(VertexCount);
+	*Index = new_GelDataArray<unsigned short>(IndexCount);
 	
 	generate_Optimized_TriangleStrips( Data, (*Vertex)->Data, (*Index)->Data, Scale, PrimitiveRestart );
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class VertType, class tType >
-inline void new_Optimized_Triangles( Data2D<tType>* Data, GelArray<VertType>** Vertex, GelArray<unsigned short>** Index, const Vector3D Scale = Vector3D(1,1,1) ) {
+inline void new_Optimized_Triangles( Data2D<tType>* Data, GelDataArray<VertType>** Vertex, GelDataArray<unsigned short>** Index, const Vector3D Scale = Vector3D(1,1,1) ) {
 	size_t VertexCount;
 	size_t IndexCount;
 	calculate_Optimized_Triangles( Data, &VertexCount, &IndexCount );
 
-	*Vertex = new_GelArray<VertType>(VertexCount);
-	*Index = new_GelArray<unsigned short>(IndexCount);
+	*Vertex = new_GelDataArray<VertType>(VertexCount);
+	*Index = new_GelDataArray<unsigned short>(IndexCount);
 	
 	generate_Optimized_Triangles( Data, (*Vertex)->Data, (*Index)->Data, Scale );
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class VertType >
-inline void delete_Triangles( GelArray<VertType>* Vertex, GelArray<unsigned short>* Index ) {
-	delete_GelArray( Vertex );
-	delete_GelArray( Index );	
+inline void delete_Triangles( GelDataArray<VertType>* Vertex, GelDataArray<unsigned short>* Index ) {
+	delete_GelDataArray( Vertex );
+	delete_GelDataArray( Index );	
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< class VertType >
-inline void delete_TriangleStrips( GelArray<VertType>* Vertex, GelArray<unsigned short>* Index ) {
-	delete_GelArray( Vertex );
-	delete_GelArray( Index );	
+inline void delete_TriangleStrips( GelDataArray<VertType>* Vertex, GelDataArray<unsigned short>* Index ) {
+	delete_GelDataArray( Vertex );
+	delete_GelDataArray( Index );	
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const size_t indexVertex_Optimized_TriangleStrips( const size_t Height, const size_t x, const size_t y ) {
@@ -259,7 +259,7 @@ inline const size_t indexIndex_Optimized_TriangleStrips( Data2D<tType>* Data, co
 
 
 // - ------------------------------------------------------------------------------------------ - //
-inline unsigned int count_PrimitiveRestarts( GelArray<unsigned short>* Index ) {
+inline unsigned int count_PrimitiveRestarts( GelDataArray<unsigned short>* Index ) {
 	unsigned int Count = 0;
 	for( size_t idx = 0; idx < Index->Size; idx++ ) {
 		if ( Index->Data[idx] == 0xFFFF )
@@ -268,7 +268,7 @@ inline unsigned int count_PrimitiveRestarts( GelArray<unsigned short>* Index ) {
 	return Count;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline unsigned int count_DegenerateTriangles( GelArray<unsigned short>* Index ) {
+inline unsigned int count_DegenerateTriangles( GelDataArray<unsigned short>* Index ) {
 	unsigned int Count = 0;
 	for( size_t idx = 0; idx < Index->Size-3; idx++ ) {
 		if ( Index->Data[idx] == Index->Data[idx+1] ) {
@@ -283,11 +283,11 @@ inline unsigned int count_DegenerateTriangles( GelArray<unsigned short>* Index )
 	return Count;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline unsigned int count_Triangles_Triangles( GelArray<unsigned short>* Index ) {
+inline unsigned int count_Triangles_Triangles( GelDataArray<unsigned short>* Index ) {
 	return Index->Size / 3;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline unsigned int count_Triangles_TriangleStrip( GelArray<unsigned short>* Index, const bool PrimitiveRestart = false ) {
+inline unsigned int count_Triangles_TriangleStrip( GelDataArray<unsigned short>* Index, const bool PrimitiveRestart = false ) {
 	unsigned int Count = 0;
 	
 	for( size_t idx = 2; idx < Index->Size; idx++ ) {
@@ -314,13 +314,13 @@ inline unsigned int count_Triangles_TriangleStrip( GelArray<unsigned short>* Ind
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Generate a list of outlines... not a line strip, since I need to jump //
-inline void new_Triangles_OutlineList( GelArray<unsigned short>* Index, GelArray<unsigned short>** NewIndex ) {
+inline void new_Triangles_OutlineList( GelDataArray<unsigned short>* Index, GelDataArray<unsigned short>** NewIndex ) {
 	unsigned int Triangles = count_Triangles_Triangles( Index );
 	Log( "Triangles Found: %i (%i)\n", Triangles, Index->Size );
 	
 	// This is +2 for a reason... not sure why... something to do with Triangles... rethink the math //
-	//*NewIndex = new_GelArray<unsigned short>((Triangles*2)+2);
-	*NewIndex = new_GelArray<unsigned short>(((Triangles*2)+2)*3);
+	//*NewIndex = new_GelDataArray<unsigned short>((Triangles*2)+2);
+	*NewIndex = new_GelDataArray<unsigned short>(((Triangles*2)+2)*3);
 	unsigned short* Write = &((*NewIndex)->Data[0]);
 
 //	int Count = 0;
@@ -357,13 +357,13 @@ inline void new_Triangles_OutlineList( GelArray<unsigned short>* Index, GelArray
 }
 // - ------------------------------------------------------------------------------------------ - //
 // Generate a list of outlines... not a line strip, since I need to jump //
-inline void new_TriangleStrip_OutlineList( GelArray<unsigned short>* Index, GelArray<unsigned short>** NewIndex, const bool PrimitiveRestart = false ) {
+inline void new_TriangleStrip_OutlineList( GelDataArray<unsigned short>* Index, GelDataArray<unsigned short>** NewIndex, const bool PrimitiveRestart = false ) {
 	unsigned int Triangles = count_Triangles_TriangleStrip( Index, PrimitiveRestart );
 	Log( "Triangles Found: %i (%i)\n", Triangles, Index->Size );
 	
 	// This is +2 for a reason... not sure why... something to do with Triangles... rethink the math //
-	//*NewIndex = new_GelArray<unsigned short>((Triangles*2)+2);
-	*NewIndex = new_GelArray<unsigned short>(((Triangles*2)+2)*2);
+	//*NewIndex = new_GelDataArray<unsigned short>((Triangles*2)+2);
+	*NewIndex = new_GelDataArray<unsigned short>(((Triangles*2)+2)*2);
 	unsigned short* Write = &((*NewIndex)->Data[0]);
 
 //	int Count = 0;
@@ -402,8 +402,8 @@ inline void new_TriangleStrip_OutlineList( GelArray<unsigned short>* Index, GelA
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline void delete_OutlineList( GelArray<unsigned short>* Index ) {
-	delete_GelArray( Index );	
+inline void delete_OutlineList( GelDataArray<unsigned short>* Index ) {
+	delete_GelDataArray( Index );	
 }
 // - ------------------------------------------------------------------------------------------ - //
 

@@ -7,8 +7,8 @@
 #include <Lib/GelFile/GelFile.h>
 #include <Lib/GelVFile/GelVFile.h>
 
-#include <Lib/GelArray/GelArray.h>
-#include <Lib/GelArray/GelArray_File.h>
+#include <Lib/GelDataArray/GelDataArray.h>
+#include <Lib/GelDataArray/GelDataArray_File.h>
 
 #include "GelHeap_Core.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -27,8 +27,8 @@ inline GelHeap* new_GelHeap( const char* _FileName ) {
 	//   and write a stored GelHeap in much the same way as we would to a FILE*. //
 	GelHeap* p = new GelHeap;
 	
-	p->Index = new_read_GelArray<size_t>( fp );
-	p->Data = new_read_GelArray<char>( fp );
+	p->Index = new_read_GelDataArray<size_t>( fp );
+	p->Data = new_read_GelDataArray<char>( fp );
 
 	
 	// Close file //
@@ -41,8 +41,8 @@ inline GelHeap* new_GelHeap( const char* _FileName ) {
 inline GelHeap* new_GelHeap( GelFile* fp ) {
 	GelHeap* p = new GelHeap;
 	
-	p->Index = new_read_GelArray<size_t>( fp );
-	p->Data = new_read_GelArray<char>( fp );
+	p->Index = new_read_GelDataArray<size_t>( fp );
+	p->Data = new_read_GelDataArray<char>( fp );
 	
 	// Return data //
 	return p;
@@ -51,8 +51,8 @@ inline GelHeap* new_GelHeap( GelFile* fp ) {
 inline GelHeap* new_GelHeap( GelVFile* fp ) {
 	GelHeap* p = new GelHeap;
 	
-	p->Index = new_read_GelArray<size_t>( fp );
-	p->Data = new_read_GelArray<char>( fp );
+	p->Index = new_read_GelDataArray<size_t>( fp );
+	p->Data = new_read_GelDataArray<char>( fp );
 	
 	// Return data //
 	return p;
@@ -69,8 +69,8 @@ inline const size_t read_GelHeap( GelHeap* p, const char* _FileName ) {
 		return 0;
 	}
 	
-	size_t BytesRead = read_GelArray( p->Index, fp );
-	BytesRead += read_GelArray( p->Data, fp ); 
+	size_t BytesRead = read_GelDataArray( p->Index, fp );
+	BytesRead += read_GelDataArray( p->Data, fp ); 
 
 	// Close file //
 	close_GelFile( fp );
@@ -86,8 +86,8 @@ inline const size_t write_GelHeap( const GelHeap* p, const char* _FileName ) {
 		return 0;
 	}
 
-	size_t BytesWritten = write_GelArray( p->Index, fp );
-	BytesWritten += write_GelArray( p->Data, fp ); 
+	size_t BytesWritten = write_GelDataArray( p->Index, fp );
+	BytesWritten += write_GelDataArray( p->Data, fp ); 
 
 	// TODO: Assert on fire write error //
 	
@@ -109,8 +109,8 @@ inline const size_t write_GelHeap( const GelHeap* p, const char* _FileName ) {
 // - ------------------------------------------------------------------------------------------ - //
 // This function is only so useful, as it rely's on the arrays being correctly allocated //
 inline const size_t read_GelHeap( GelHeap* p, GelFile* fp ) {
-	size_t BytesRead = read_GelArray( p->Index, fp );
-	BytesRead += read_GelArray( p->Data, fp ); 
+	size_t BytesRead = read_GelDataArray( p->Index, fp );
+	BytesRead += read_GelDataArray( p->Data, fp ); 
 		
 	// TODO: If I happen to only read some of the file, less than Size, that would be bad. //
 	
@@ -119,8 +119,8 @@ inline const size_t read_GelHeap( GelHeap* p, GelFile* fp ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const size_t write_GelHeap( const GelHeap* p, GelFile* fp ) {
-	size_t BytesWritten = write_GelArray( p->Index, fp );
-	BytesWritten += write_GelArray( p->Data, fp ); 
+	size_t BytesWritten = write_GelDataArray( p->Index, fp );
+	BytesWritten += write_GelDataArray( p->Data, fp ); 
 	
 	// TODO: Assert on fire write error //
 		
@@ -133,8 +133,8 @@ inline const size_t write_GelHeap( const GelHeap* p, GelFile* fp ) {
 // - ------------------------------------------------------------------------------------------ - //
 // This function is only so useful, as it rely's on the arrays being correctly allocated //
 inline const size_t read_GelHeap( GelHeap* p, GelVFile* fp ) {
-	size_t BytesRead = read_GelArray( p->Index, fp );
-	BytesRead += read_GelArray( p->Data, fp ); 
+	size_t BytesRead = read_GelDataArray( p->Index, fp );
+	BytesRead += read_GelDataArray( p->Data, fp ); 
 		
 	// TODO: If I happen to only read some of the file, less than Size, that would be bad. //
 	
@@ -143,8 +143,8 @@ inline const size_t read_GelHeap( GelHeap* p, GelVFile* fp ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const size_t write_GelHeap( const GelHeap* p, GelVFile* fp ) {
-	size_t BytesWritten = write_GelArray( p->Index, fp );
-	BytesWritten += write_GelArray( p->Data, fp ); 
+	size_t BytesWritten = write_GelDataArray( p->Index, fp );
+	BytesWritten += write_GelDataArray( p->Data, fp ); 
 	
 	// TODO: Assert on fire write error //
 		

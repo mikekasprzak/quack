@@ -122,7 +122,7 @@ public:
 
 // - ------------------------------------------------------------------------------------------ - //
 //#include "GelList.h"
-//#include <Core/GelArray.h>
+//#include <Core/GelDataArray.h>
 // - ------------------------------------------------------------------------------------------ - //
 //template< typename T = int >
 //class GelDisjointSet {
@@ -130,22 +130,22 @@ public:
 //	// a: Rank, b: Value //
 //	typedef NSet2<int,T> DType;
 //	typedef GelList<DType>* DisjointType;
-//	GelArray<DisjointType>* Set;
+//	GelDataArray<DisjointType>* Set;
 //	
 //	inline GelDisjointSet() :
-//		Set( new_GelArray<DisjointType>(0) )
+//		Set( new_GelDataArray<DisjointType>(0) )
 //	{
 //	}
 //	
 //	inline ~GelDisjointSet() {
-//		delete_GelArray<DisjointType>( Set );
+//		delete_GelDataArray<DisjointType>( Set );
 //	}
 //	
 //public:
 //	// Add a new Set containing a Rank and Value //
 //	inline void MakeSet( const T Val ) {
-//		pushback_GelArray<DisjointType>( Set, new_GelList<T>() );
-//		back_GelArray<DisjointType>(Set)->PushBack( DType(0,Val) );
+//		pushback_GelDataArray<DisjointType>( Set, new_GelList<T>() );
+//		back_GelDataArray<DisjointType>(Set)->PushBack( DType(0,Val) );
 //	}
 //	
 //	

@@ -27,13 +27,13 @@
 #ifndef __GEL_LIB_SIGNAL_H__
 #define __GEL_LIB_SIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <Lib/GelArray/GelArray_Core.h>
+#include <Lib/GelDataArray/GelDataArray_Core.h>
 // - ------------------------------------------------------------------------------------------ - //
 class Signal {
 public:
 	typedef void (*FVoidPtr)(void*);
 protected:
-	GelArray<FVoidPtr>* Funcs;
+	GelDataArray<FVoidPtr>* Funcs;
 public:
 	inline Signal() :
 		Funcs( 0 ) 
@@ -42,7 +42,7 @@ public:
 	
 	inline ~Signal() {
 		if ( Funcs ) {
-			delete_GelArray<FVoidPtr>( Funcs );
+			delete_GelDataArray<FVoidPtr>( Funcs );
 		}
 	}
 	
@@ -62,19 +62,19 @@ public:
 	// Now supports any pointer type as the argument //
 	template<class T>
 	inline void Connect( void (*_Func)(T*) ) {
-		pushback_GelArray<FVoidPtr>( &Funcs, (FVoidPtr)_Func );
+		pushback_GelDataArray<FVoidPtr>( &Funcs, (FVoidPtr)_Func );
 	}
 	// Alternatively, the size_t type is supported too since it's the same width as a pointer //
 	inline void Connect( void (*_Func)(size_t) ) {
-		pushback_GelArray<FVoidPtr>( &Funcs, (FVoidPtr)_Func );
+		pushback_GelDataArray<FVoidPtr>( &Funcs, (FVoidPtr)_Func );
 	}
 
 	// Detach //
 	inline void Disconnect( FVoidPtr _Func ) {
 		// findlast, to allow us to correctly nest a scoped connection //
-		int Index = findlast_GelArray<FVoidPtr>( &Funcs, _Func );
+		int Index = findlast_GelDataArray<FVoidPtr>( &Funcs, _Func );
 		if ( Index > 0 ) {
-			erase_GelArray<FVoidPtr>( &Funcs, Index );
+			erase_GelDataArray<FVoidPtr>( &Funcs, Index );
 		}
 	}
 };

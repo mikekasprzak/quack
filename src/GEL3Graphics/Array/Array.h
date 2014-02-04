@@ -1,12 +1,12 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_VERT_VERT_H__
-#define __GEL_VERT_VERT_H__
+#ifndef __GEL_ARRAY_ARRAY_H__
+#define __GEL_ARRAY_ARRAY_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelVert.h"
+#include "GelArray.h"
 //#include "GelAlloc.h"
 //#include "GelParticle.h"
-//#include "GelVert_Types.h"
+//#include "GelVertex.h"
 #include "GelTree.h"
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_VERT_VERT_H__ //
+#endif // __GEL_ARRAY_ARRAY_H__ //
 // - ------------------------------------------------------------------------------------------ - //

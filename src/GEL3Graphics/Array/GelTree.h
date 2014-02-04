@@ -1,13 +1,13 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_VERT_GELTREE_H__
-#define __GEL_VERT_GELTREE_H__
+#ifndef __GEL_ARRAY_GELTREE_H__
+#define __GEL_ARRAY_GELTREE_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelVert.h"
+#include "GelArray.h"
 // - ------------------------------------------------------------------------------------------ - //
 template<typename T>
 class GelTree {
 	typedef GelTree thistype;
-	GelVert<T> Data;
+	GelArray<T> Data;
 public:
 	typedef T Type;
 	
@@ -144,5 +144,5 @@ inline void Gen_GelVert2C_from_GelTree( OUT& Out, IN& In ) { // GelVert2C, GelTr
 	}	
 }
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_VERT_GELTREE_H__ //
+#endif // __GEL_ARRAY_GELTREE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

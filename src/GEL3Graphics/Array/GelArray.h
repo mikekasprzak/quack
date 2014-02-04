@@ -1,5 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
-// USAGE: 
+// USAGE:
+//   GelArray<Type> for an array 
 //   GelVert2 for an array of 2D elements containing just a Position
 //   GelVert3NC for an array of 3D elements containing Position, a Normal, and a Color
 // - ------------------------------------------------------------------------------------------ - //
@@ -19,8 +20,8 @@
 // MultiPairs -- Currently only a single NN UU CC RR can be used.
 // Finish Data -- Currently only non-multipairs can use Data. Also no DD multipair.
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_VERT_GELVERT_H__
-#define __GEL_VERT_GELVERT_H__
+#ifndef __GEL_ARRAY_GELARRAY_H__
+#define __GEL_ARRAY_GELARRAY_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Graphics/Graphics.h>
@@ -34,14 +35,14 @@
 // GelParticle - Adds 'Life Time' to GelAlloc, making it suiatble for particle simulations. No GelParticleX!
 // - ------------------------------------------------------------------------------------------ - //
 template<typename T>
-class GelVert {
-	typedef GelVert thistype;
+class GelArray {
+	typedef GelArray thistype;
 	std::vector<T> Data;
 //	static T Dummy;
 public:
 	typedef T Type;
 	
-	inline GelVert( const st _Size = 0 ) :
+	inline GelArray( const st _Size = 0 ) :
 		Data(_Size)
 	{
 	}
@@ -123,11 +124,11 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-//template <typename T> T GelVert<T>::Dummy;
+//template <typename T> T GelArray<T>::Dummy;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-// GelAlloc is a wrapper that provides different methods of automatically indexing a GelVert //
+// GelAlloc is a wrapper that provides different methods of automatically indexing a GelArray //
 // - ------------------------------------------------------------------------------------------ - //
 template <typename T>
 class GelAlloc {
@@ -135,7 +136,7 @@ class GelAlloc {
 	st Capacity;
 	st Used;
 	int Index;
-	GelVert<T> Data;
+	GelArray<T> Data;
 public:
 	typedef T Type;
 
@@ -177,7 +178,7 @@ public:
 		return &(Data[Index]);
 	}
 
-	// Retrieve individual elements (as if it was a GelVertX type) //
+	// Retrieve individual elements (as if it was a GelArrayX type) //
 	inline T& operator [] ( const st Index ) {
 		return Data[Index];
 	}
@@ -250,7 +251,7 @@ public:
 	{
 	}
 
-	// Get the GelVert //
+	// Get the GelArray //
 	inline T* Get() {
 		return Data.Get();
 	}
@@ -275,7 +276,7 @@ public:
 		return Data.operator->();
 	}
 
-	// Retrieve individual elements (as if it was a GelVertX type) //
+	// Retrieve individual elements (as if it was a GelArrayX type) //
 	inline T& operator [] ( const st Index ) {
 		return Data[Index];
 	}
@@ -391,32 +392,32 @@ struct __CAT(GelVertex,__CAT(_num,_sym)) { \
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_END(_num,_sym) \
 }; \
-typedef GelVert<__CAT(GelVertex,__CAT(_num,_sym))> __CAT(GelVert,__CAT(_num,_sym)); \
+typedef GelArray<__CAT(GelVertex,__CAT(_num,_sym))> __CAT(GelVert,__CAT(_num,_sym)); \
 typedef GelAlloc<__CAT(GelVertex,__CAT(_num,_sym))> __CAT(GelAlloc,__CAT(_num,_sym));
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_TYPE Real
 #define __GelVertex_NUMBER 1
-#include "GelVert_GelVertex.def.h"
+#include "GelVertex.def.h"
 #undef __GelVertex_NUMBER
 #undef __GelVertex_TYPE
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_TYPE Vector2D
 #define __GelVertex_NUMBER 2
-#include "GelVert_GelVertex.def.h"
+#include "GelVertex.def.h"
 #undef __GelVertex_NUMBER
 #undef __GelVertex_TYPE
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_TYPE Vector3D
 #define __GelVertex_NUMBER 3
-#include "GelVert_GelVertex.def.h"
+#include "GelVertex.def.h"
 #undef __GelVertex_NUMBER
 #undef __GelVertex_TYPE
 // - ------------------------------------------------------------------------------------------ - //
 #define __GelVertex_TYPE Vector4D
 #define __GelVertex_NUMBER 4
-#include "GelVert_GelVertex.def.h"
+#include "GelVertex.def.h"
 #undef __GelVertex_NUMBER
 #undef __GelVertex_TYPE
 // - ------------------------------------------------------------------------------------------ - //
@@ -430,5 +431,5 @@ typedef GelAlloc<__CAT(GelVertex,__CAT(_num,_sym))> __CAT(GelAlloc,__CAT(_num,_s
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_VERT_GELVERT_H__ //
+#endif // __GEL_ARRAY_GELARRAY_H__ //
 // - ------------------------------------------------------------------------------------------ - //

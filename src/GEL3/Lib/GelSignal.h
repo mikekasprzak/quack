@@ -48,7 +48,7 @@
 #ifndef __GEL_LIB_GELSIGNAL_H__
 #define __GEL_LIB_GELSIGNAL_H__
 // - ------------------------------------------------------------------------------------------ - //
-//#include <Lib/GelArray/GelArray_Core.h>
+//#include <Lib/GelDataArray/GelDataArray_Core.h>
 #include <vector>
 #include <algorithm>
 // - ------------------------------------------------------------------------------------------ - //
@@ -279,9 +279,9 @@ public:
 			Funcs.erase( itr.base() );
 		}
 //		// findlast, to allow us to correctly nest a scoped connection //
-//		int Index = findlast_GelArray<FuncType>( &Funcs, _Func );
+//		int Index = findlast_GelDataArray<FuncType>( &Funcs, _Func );
 //		if ( Index > 0 ) {
-//			erase_GelArray<FuncType>( &Funcs, Index );
+//			erase_GelDataArray<FuncType>( &Funcs, Index );
 //		}
 	}
 	// TODO: all variations of the above //

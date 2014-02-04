@@ -123,7 +123,7 @@ inline GelDirectory* new_GelDirectory( const char* _BaseName ) {
 	
 	NewDir->BaseName = new_String( _BaseName );
 	NewDir->FileName = new_GelHeap();
-	NewDir->FileInfo = new_GelArray<GelFileInfo>( 0 );
+	NewDir->FileInfo = new_GelDataArray<GelFileInfo>( 0 );
 	
 	// Work //
 	populate_GelDirectory( NewDir );
