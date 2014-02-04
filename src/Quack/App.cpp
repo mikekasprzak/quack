@@ -318,7 +318,7 @@ void AppInit() {
 		//Gen_TileMap_GelVert2U_from_GelGrid2( App::OutMap, MyMap.Layer[0], TileWidth, TileHeight );
 		
 		GelGrid2<st8> MyMap;
-		GelImage Mimage( "TestFile.png" );
+		GelImage Mimage( "TestFileNoAlpha.png" );
 		
 		Log("MIMA: %i, %i (%i)", Mimage.Width(), Mimage.Height(), Mimage.BPP() );
 		Log("GRID: %i, %i", MyMap.Width(), MyMap.Height() );
@@ -326,10 +326,21 @@ void AppInit() {
 		Gen_GelGrid2_from_GelImage( MyMap, Mimage ); 
 
 		Log("GRID: %i, %i", MyMap.Width(), MyMap.Height() );
+
+//		for( int y = 0; y < MyMap.Height(); y++ ) {
+//			for( int x = 0; x < MyMap.Width(); x++ ) {
+//				_Log("%02X", (int)MyMap(x,y) );
+//			}		
+//			Log("");
+//		}
 		
-		for( int y = 0; y < MyMap.Height(); y++ ) {
-			for( int x = 0; x < MyMap.Width(); x++ ) {
-				_Log("%02X", (int)MyMap(x,y) );
+		GelSubGrid2<st8> SubMap = MyMap.GetSubGrid( 0,0, 12,12 );
+
+		Log("SUBGRID: %i, %i", SubMap.Width(), SubMap.Height() );
+		
+		for( int y = 0; y < SubMap.Height(); y++ ) {
+			for( int x = 0; x < SubMap.Width(); x++ ) {
+				_Log("%02X", (int)SubMap(x,y) );
 			}		
 			Log("");
 		}
