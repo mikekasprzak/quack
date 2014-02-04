@@ -32,10 +32,10 @@ public:
 	}
 	// The default behavior is Wrapping //
 	inline int Index( int _x, int _y ) const {
-		while ( _x > w ) { _x -= w; };
-		while ( _x < 0 ) { _x += w; };
-		while ( _y > h ) { _y -= h; };
-		while ( _y < 0 ) { _y += h; };
+		while ( _x >= w ) { _x -= w; };
+		while ( _x < 0 )  { _x += w; };
+		while ( _y >= h ) { _y -= h; };
+		while ( _y < 0 )  { _y += h; };
 		return _Index(_x,_y);
 	}
 
