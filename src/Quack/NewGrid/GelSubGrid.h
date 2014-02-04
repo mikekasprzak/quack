@@ -1,37 +1,39 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_GRID_GELGRID2_H__
-#define __GEL_GRID_GELGRID2_H__
+#ifndef __GEL_GRID_GELSUBGRID_H__
+#define __GEL_GRID_GELSUBGRID_H__
 // - ------------------------------------------------------------------------------------------ - //
-#include <Lib/Lib.h>
-#include <vector>
-// - ------------------------------------------------------------------------------------------ - //
-template<typename T>
-class GelSubGrid2;	// Prototype //
+#include "GelGrid.h"
 // - ------------------------------------------------------------------------------------------ - //
 template<typename T>
-class GelGrid2 {
-	typedef GelGrid2 thistype;
+class GelSubGrid {
+	typedef GelSubGrid thistype;
+	typedef GelGrid<T> ParentType;
 
-	st32 w,h;		// Shape //
-	std::vector<T> Data;
-	
-	friend GelSubGrid2<T>;
+	st32 w,h;		// Shape (first, to be consistent with GelGrid) //
+	int x,y;		// Offset //
+	ParentType* Parent;
 public:
 	typedef T Type;
-	
-	inline GelGrid2( const st _w = 0, const st _h = 0 ) :
+
+	inline GelSubGrid( ParentType* _Parent, const int _x = 0, const int _y = 0, const st _w = 0, const st _h = 0 ) :
 		w(_w),
 		h(_h),
-		Data(_w*_h)
+		x(_x),
+		y(_y),
+		Parent(_Parent)
 	{
 	}
 	
-	// Fast Version //
-	inline int _Index( const int _x, const int _y ) const {
-		return _x + (_y * w);
+	// Fast Version (No Wrapping) //
+	inline st __Index( const int _x, const int _y ) const {
+		return Parent->_Index(x+_x,y+_y);
 	}
-	// The default behavior is Wrapping //
-	inline int Index( int _x, int _y ) const {
+	// Parent Wrapping //
+	inline st _Index( const int _x, const int _y ) const {
+		return Parent->Index(x+_x,y+_y);
+	}
+	// Local Wrapping //
+	inline st Index( int _x, int _y ) const {
 		while ( _x >= w ) { _x -= w; };
 		while ( _x < 0 )  { _x += w; };
 		while ( _y >= h ) { _y -= h; };
@@ -40,24 +42,24 @@ public:
 	}
 
 	// Function Operator -- i.e. Normal Usage //	
-	inline T& operator () ( const st _x, const st _y ) {
-		return Data[ Index(_x,_y) ];
+	inline T& operator () ( const int _x, const int _y ) {
+		return (*Parent)[ Index(_x,_y) ];
 	}
-	inline const T& operator () ( const st _x, const st _y ) const {
-		return Data[ Index(_x,_y) ];
+	inline const T& operator () ( const int _x, const int _y ) const {
+		return (*Parent)[ Index(_x,_y) ];
 	}
 	
 	// Array Operator -- Only if you know the Index //
 	inline T& operator [] ( const st _idx ) {
-		return Data[ _idx ];
+		return (*Parent)[ _idx ];
 	}
 	inline const T& operator [] ( const st _idx ) const {
-		return Data[ _idx ];
+		return (*Parent)[ _idx ];
 	}
 	
 	// How many elements //
 	inline st Size() const {
-		return Data.size();
+		return Parent->Size();
 	}
 	inline st SizeOf() const {
 		return Size() * sizeof(T);
@@ -81,17 +83,30 @@ public:
 	}
 	
 public:
+	// NOTE: DOES NOT Invalidate Data //
 	inline void Resize( const st _w, const st _h ) {
 		w = _w;
 		h = _h;
-		// NOTE: Invalidates Data. If you want to preserve, copy to new, use a .swap() //
-		Data.resize(_w*_h);
+	}
+	inline void SetPos( const st _x, const st _y ) {
+		x = _x;
+		y = _y;
+	}
+
+	inline void Set( ParentType* _Parent, const int _x = 0, const int _y = 0, const st _w = 0, const st _h = 0 ) {
+		w = _w;
+		h = _h;
+		x = _x;
+		y = _y;
+		Parent = _Parent;
 	}
 
 public:
 	// Wrap Around as if the data looped back to the start after the end //
-	inline st LoopIndex( const int _x, const int _y ) const {
-		return abs(_Index(_x,_y)) % Size();
+	inline st LoopIndex( int _x, int _y ) const {
+		while ( _x > w ) { _x -= w; _y++; };
+		while ( _x < 0 ) { _x += w; _y--; };
+		return Parent->LoopIndex(x+_x,y+_y);
 	}
 	// Align to edges instead of wrapping //
 	inline st SaturateIndex( int _x, int _y ) const {
@@ -124,21 +139,27 @@ public:
 
 	// Extract X or Y values from an Index //
 	inline int IndexToX( const st _idx ) const {
-		// TODO: Assert > 0 (i.e. ABS) //
-		return _idx % w;
+		return Parent->IndexToX(_idx) - x;
 	}
 	inline int IndexToY( const st _idx ) const {
-		// TODO: Assert > 0 (i.e. ABS) //
-		return _idx / w;
+		return Parent->IndexToY(_idx) - y;
 	}
 
-	
 public:
-	// Generate a Sub Grid //
-	inline GelSubGrid2<T> GetSubGrid( const int _x, const int _y, const st _w, const st _h );
+	inline GelSubGrid<T> GetSubGrid( const int _x, const int _y, const st _w, const st _h );	
 };
 // - ------------------------------------------------------------------------------------------ - //
-
+// Sub Grids of a Grid //
+template<typename T>
+GelSubGrid<T> GelGrid<T>::GetSubGrid( const int _x, const int _y, const st _w, const st _h ) {
+	return GelSubGrid<T>( this, _x, _y, _w, _h );
+}
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_GRID_GELGRID2_H__ //
+// Sub Grids of Sub Grids //
+template<typename T>
+GelSubGrid<T> GelSubGrid<T>::GetSubGrid( const int _x, const int _y, const st _w, const st _h ) {
+	return GelSubGrid<T>( Parent, x+_x, y+_y, _w, _h );
+}
+// - ------------------------------------------------------------------------------------------ - //
+#endif // __GEL_GRID_GELSUBGRID_H__ //
 // - ------------------------------------------------------------------------------------------ - //
