@@ -47,7 +47,31 @@ public:
 	inline const unsigned char* Get() const {
 		return Image.Data;
 	}
+	
+	inline st32 Index( const st32 _x, const st32 _y ) const {
+		return ((_x + (_y * Image.Width)) * Image.Info);
+	}
+	inline st32 operator () ( const st32 _x, const st32 _y ) const {
+		unsigned char* Ptr = Image.Data + Index(_x,_y);
 
+		if ( Image.Info == 4 ) {
+			return *((st32*)Ptr);
+		}
+		else if ( Image.Info == 3 ) {
+			return Ptr[0] | (Ptr[1] << 8) | (Ptr[2] << 16);
+		}
+		else if ( Image.Info == 2 ) {
+			return *((st16*)Ptr);			
+		}
+		else {
+			return *Ptr;
+		}
+	}
+	
+	inline unsigned char operator [] ( const st32 _idx ) const {
+		return Image.Data[_idx];
+	}
+	
 public:
 	// Math //
 	inline st Area() const {
