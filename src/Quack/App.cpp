@@ -334,7 +334,7 @@ void AppInit() {
 //			Log("");
 //		}
 		
-		GelSubGrid2<st8> SubMap = MyMap.GetSubGrid( 0,0, 12,12 );
+		GelSubGrid2<st8> SubMap = MyMap.GetSubGrid( 60,60, 12,12 );
 
 		Log("SUBGRID: %i, %i", SubMap.Width(), SubMap.Height() );
 		
