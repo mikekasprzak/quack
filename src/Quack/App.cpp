@@ -349,6 +349,14 @@ void AppInit() {
 		Log("**** DONE");
 	}
 
+	{
+		Log("**** TILED MAP");
+
+		GelTiledMap MyMap;
+		MyMap.Load("WorldMap.json");
+
+		Log("**** DONE");
+	}
 	
 	{
 		Log("**** GLAYOUT");
