@@ -3,6 +3,7 @@
 #define __GEL_TILEDMAP_GELTILEDMAP_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Math/Vector.h>
+#include <Array/Array.h>
 #include <NewGrid/NewGrid.h>
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
@@ -37,7 +38,7 @@ public:
 	st32 Margin;
 	st32 Spacing;
 	
-	std::vector<GelTiledProperty> Property;	// Can be empty //
+	GelArray<GelTiledProperty> Property;	// Can be empty //
 };
 // - ------------------------------------------------------------------------------------------ - //
 class GelTiledObject {
@@ -56,8 +57,8 @@ public:
 	bool Visible;	// TODO: Flags.
 	st32 GID;		// Only need 16 bits //
 	
-	std::vector<Vector2D> Point;			// Can be empty. "polyline" and "polygon" //
-	std::vector<GelTiledProperty> Property;	// Can be empty //
+	GelArray<Vector2D> Point;			// Can be empty. "polyline" and "polygon" //
+	GelArray<GelTiledProperty> Property;	// Can be empty //
 };
 // - ------------------------------------------------------------------------------------------ - //
 class GelTiledLayer {
@@ -75,7 +76,7 @@ public:
 	bool Visible;	// TODO: Flags.
 	int DrawOrder;	// TODO: Flags. "topdown" (objectgroup only) 
 
-	std::vector<GelTiledObject> Object;	 	// Can be empty //
+	GelArray<GelTiledObject> Object;	 	// Can be empty //
 	GelGrid<st16> Data;					// Can be empty //
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -92,9 +93,9 @@ public:
 	int Version; 		// 1 //
 	int Orientation;	// orthogonal // TODO: Flags
 
-	std::vector<GelTiledLayer> Layer;
-	std::vector<GelTiledTileset> Tileset;	
-	std::vector<GelTiledProperty> Property; // Can be empty //
+	GelArray<GelTiledLayer> Layer;
+	GelArray<GelTiledTileset> Tileset;	
+	GelArray<GelTiledProperty> Property; // Can be empty //
 
 public:
 	void Load( const char* const InFile );
