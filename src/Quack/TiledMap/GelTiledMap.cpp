@@ -173,7 +173,16 @@ void GelTiledMap::Load( const char* const InFile ) {
 						}
 
 						// Object Group Layer //
-						
+						if ( Lyr.Type == GelTiledLayer::LT_TILELAYER ) {							
+							cJSON* Data = cJSON_GetObjectItem(Element,"data");
+
+							if ( Data ) {
+								if ( Data->type == cJSON_Array ) {
+								}
+							}
+						}
+
+						// Image Layer //
 					}
 				}
 
