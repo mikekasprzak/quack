@@ -25,7 +25,10 @@ public:
 class GelTiledTileset {
 	typedef GelTiledTileset thistype;
 public:
-	st32 FirstGID; // 1 //
+	// NOTE: Texture Paging is handled by ID's used. So texture 1 may use tiles 1-1025, and //
+	//       texture 2 may use tiles 1026-2050. And so on. Remember this! Rendere will need //
+	//       multiple passes to render correctly! //
+	st32 FirstGID; // 1 - First set. Higher number on later sets. //
 	std::string Name;
 	
 	std::string ImageFile;
