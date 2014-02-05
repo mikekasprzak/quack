@@ -65,7 +65,14 @@ class GelTiledLayer {
 	typedef GelTiledLayer thistype;
 public:
 	std::string Name;
-	int Type;		// TODO: Flags. "tilelayer", "objectgroup"
+	int Type;
+	enum {
+		LT_TILELAYER = 1,	// "tilelayer"
+		LT_OBJECTGROUP,		// "objectgroup"
+		LT_IMAGELAYER,		// "imagelayer" (may not use)
+		
+		DO_TOPDOWN = 1,		// "topdown"
+	};
 	
 	Vector2D Pos;
 	st32 Width;
@@ -77,7 +84,7 @@ public:
 	int DrawOrder;	// TODO: Flags. "topdown" (objectgroup only) 
 
 	GelArray<GelTiledObject> Object;	 	// Can be empty //
-	GelGrid<st16> Data;					// Can be empty //
+	GelGrid<st16> Data;						// Can be empty //
 };
 // - ------------------------------------------------------------------------------------------ - //
 
