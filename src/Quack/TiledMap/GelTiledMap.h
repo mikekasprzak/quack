@@ -47,6 +47,12 @@ public:
 	std::string Name;
 	std::string TypeName; // "type" in JSON //
 	int Type;		// TODO: Flags. "ellipse", "polyline", "polygon", (or default of "rectangle")
+	enum {
+		OT_RECTANGLE = 1,
+		OT_ELLIPSE,
+		OT_POLYLINE,
+		OT_POLYGON,
+	};
 
 	Vector2D Pos;
 	st32 Width;
