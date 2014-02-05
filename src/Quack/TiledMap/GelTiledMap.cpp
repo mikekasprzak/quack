@@ -173,11 +173,63 @@ void GelTiledMap::Load( const char* const InFile ) {
 						}
 
 						// Object Group Layer //
-						if ( Lyr.Type == GelTiledLayer::LT_TILELAYER ) {							
-							cJSON* Data = cJSON_GetObjectItem(Element,"data");
+						if ( Lyr.Type == GelTiledLayer::LT_OBJECTGROUP ) {							
+							cJSON* Data = cJSON_GetObjectItem(Element,"objects");
 
 							if ( Data ) {
 								if ( Data->type == cJSON_Array ) {
+									// NOTE: For loop is too slow //
+									cJSON* Item = cJSON_GetArrayItem(Data,0);
+									do {
+										GelTiledObject& Obj = Lyr.Object.PushBack();
+
+										Obj.Name = cJSON_GetString(Item,"name");
+										Obj.TypeName = cJSON_GetString(Item,"type");
+
+										Obj.Pos.x = Real(cJSON_GetDouble(Item,"x"));
+										Obj.Pos.y = Real(cJSON_GetDouble(Item,"y"));
+										
+										Obj.Width = cJSON_GetInt(Item,"width");
+										Obj.Height = cJSON_GetInt(Item,"height");
+
+										Obj.Visible = cJSON_GetInt(Item,"visible");
+										Obj.Rotation = cJSON_GetDouble(Item,"rotation");
+
+										Obj.GID = cJSON_GetInt(Item,"gid");
+										
+										Obj.Type = GelTiledObject::OT_RECTANGLE;
+										
+										// Ellipse //
+										int Ellipse = cJSON_GetInt(Item,"ellipse");
+										if ( Ellipse ) {
+											Obj.Type = GelTiledObject::OT_ELLIPSE;
+										}
+										
+										// TODO: Polyline
+										{
+											cJSON* Poly = cJSON_GetObjectItem(Item,"polyline");
+											if ( Poly ) {
+												// PolyLine //
+												Obj.Type = GelTiledObject::OT_POLYLINE;
+											}
+										}
+										
+										// TODO: Polygon
+										{
+											cJSON* Poly = cJSON_GetObjectItem(Item,"polygon");
+											if ( Poly ) {
+												// PolyLine //
+												Obj.Type = GelTiledObject::OT_POLYGON;
+											}
+										}
+										
+										// TODO: Properties
+										int PropSize = 0;
+										
+										Log("* %s [%i,%i] -- (%f,%f) [P: %i] = %i", Obj.Name.c_str(), Obj.Width,Obj.Height, Obj.Pos.x.ToFloat(),Obj.Pos.y.ToFloat(), PropSize, Obj.Type );
+										
+										Item = Item->next;
+									} while ( Item != 0 );
 								}
 							}
 						}
