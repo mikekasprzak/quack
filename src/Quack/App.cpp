@@ -86,6 +86,9 @@ GelVert2C OutCurve;
 
 VtTree InTree;
 GelVert2C OutTree;
+
+GelGrid<u8> TestMap;
+GelVert2C OutTestMap;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -352,8 +355,8 @@ void AppInit() {
 	{
 		Log("**** TILED MAP");
 
-		GelTiledMap MyMap;
-		MyMap.Load("WorldMap.json");
+		GelTiledMap MyTiledMap;
+		MyTiledMap.Load("WorldMap.json");
 
 		Log("**** DONE");
 	}
@@ -387,6 +390,63 @@ void AppInit() {
 		Log("Pos: (%f, %f) (%f, %f)", Pos.x, Pos.y, Shape.x, Shape.y);
 		
 		Log("**** DONE");
+	}
+	
+	{
+		GelGrid<GelColor> DummyMap;
+		GelImage ImageMap( "MapTest.png" );
+		
+		Gen_GelGrid_from_GelImage( DummyMap, ImageMap ); 
+		App::TestMap.Resize( DummyMap.Width(), DummyMap.Height() );
+		
+		// Convert Map //
+		for ( st idx = 0; idx < DummyMap.Size(); idx++ ) {
+			if ( GEL_GET_R(DummyMap[idx]) > 192 ) {
+				// DIRT //
+				App::TestMap[idx] = 1;
+			}
+			else if ( GEL_GET_G(DummyMap[idx]) > 192 ) {
+				// GRASS //
+				App::TestMap[idx] = 2;
+			}
+			else {
+				App::TestMap[idx] = 0;
+			}
+		}
+		
+		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400,550,160,90);
+		
+		// Generate Geometry //
+		App::OutTestMap.Clear();
+		Real StepX(2);
+		Real StepY(2);
+		Vector2D Offset(SubMap.HalfWidth(),SubMap.HalfHeight());
+		for ( st y = 0; y < SubMap.Height(); y++ ) {
+			for ( st x = 0; x < SubMap.Width(); x++ ) {
+				int Value = SubMap(x,(SubMap.Height()-1)-y);
+				if ( Value > 0 ) {
+					GelColor Color = GEL_RGB_MAGENTA;
+					if ( Value == 1 )
+						Color = GEL_RGB(100,50,40);
+					else if ( Value == 2 )
+						Color = GEL_RGB_PUKE;
+					
+					App::OutTestMap.PushBack().Pos = (Vector2D(x+0,y+0) - Offset) * Vector2D(StepX,StepY);
+					App::OutTestMap.Back().Color = Color;
+					App::OutTestMap.PushBack().Pos = (Vector2D(x+1,y+0) - Offset) * Vector2D(StepX,StepY);
+					App::OutTestMap.Back().Color = Color;
+					App::OutTestMap.PushBack().Pos = (Vector2D(x+1,y+1) - Offset) * Vector2D(StepX,StepY);
+					App::OutTestMap.Back().Color = Color;
+
+					App::OutTestMap.PushBack().Pos = (Vector2D(x+1,y+1) - Offset) * Vector2D(StepX,StepY);
+					App::OutTestMap.Back().Color = Color;
+					App::OutTestMap.PushBack().Pos = (Vector2D(x+0,y+1) - Offset) * Vector2D(StepX,StepY);
+					App::OutTestMap.Back().Color = Color;
+					App::OutTestMap.PushBack().Pos = (Vector2D(x+0,y+0) - Offset) * Vector2D(StepX,StepY);
+					App::OutTestMap.Back().Color = Color;
+				}
+			}
+		}
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -518,6 +578,8 @@ void AppDraw() {
 
 	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_BLUE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
 //	Gel::RenderColor2D_Packed(GEL_LINES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
+
+	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTestMap[0].Pos),&(App::OutTestMap[0].Color),App::OutTestMap.Size());
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {

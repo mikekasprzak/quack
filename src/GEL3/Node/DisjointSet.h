@@ -4,12 +4,10 @@
 // http://en.wikipedia.org/wiki/Disjoint-set_data_structure
 // http://www2.hawaii.edu/~suthers/courses/ics311f11/Notes/Topic-15/Disjoint-Sets.pdf
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL2_NODE_DISJOINTSET_H__
-#define __GEL2_NODE_DISJOINTSET_H__
+#ifndef __GEL_NODE_DISJOINTSET_H__
+#define __GEL_NODE_DISJOINTSET_H__
 // - ------------------------------------------------------------------------------------------ - //
 // http://avdongre.wordpress.com/2011/12/06/disjoint-set-data-structure-c/
-// - ------------------------------------------------------------------------------------------ - //
-#include <vector>
 // - ------------------------------------------------------------------------------------------ - //
 class DisjointSet {
 public:
@@ -29,7 +27,6 @@ public:
 		{
 		}
 	};
-	//std::vector<Set> Forest;
 	Set* Forest;
 	st32 Size;
 
@@ -37,10 +34,6 @@ public:
 	inline DisjointSet( const ValType n ) :
 		Forest( 0 )
 	{
-//		Forest.reserve( n );
-//		for ( st32 i=0; i<n; i++ ) {
-//			Forest.push_back( Set(i) );
-//		}
 		Forest = new Set[n+1];
 		Size = n+1;
 		for ( st32 i=0; i<=n; i++ ) {
@@ -73,7 +66,6 @@ public:
 //	}
 	
 	inline void Add( const ValType n ) {
-//		Log( "Hog %i", n );
 		Set* Old = Forest;
 		
 		Forest = new Set[n+1];
@@ -100,7 +92,6 @@ public:
 	}
 	
 	inline void Union( const ValType i, const ValType j ) {
-//		Log( "UNE! %i %i", i, j );
 		ValType root_i = Find(i);
 		ValType root_j = Find(j);
 		
@@ -158,5 +149,5 @@ public:
 //	}
 //};
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL2_NODE_DISJOINTSET_H__ //
+#endif // __GEL_NODE_DISJOINTSET_H__ //
 // - ------------------------------------------------------------------------------------------ - //
