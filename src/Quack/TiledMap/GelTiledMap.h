@@ -49,7 +49,7 @@ class GelTiledObject {
 public:
 	std::string Name;
 	std::string TypeName; // "type" in JSON //
-	int Type;		// TODO: Flags. "ellipse", "polyline", "polygon", (or default of "rectangle")
+	int Type;
 	enum {
 		OT_RECTANGLE = 1,
 		OT_ELLIPSE,
@@ -114,8 +114,21 @@ public:
 	GelArray<GelTiledProperty> Property; // Can be empty //
 
 public:
-	void Load( const char* const InFile );
+	inline GelTiledMap() :
+		Width(0),
+		Height(0),
+		TileHeight(0),
+		TileWidth(0),
+		Version(0),
+		Orientation(0)
+	{
+	}
 	
+	inline GelTiledMap( const char* const InFile ) {
+		Load( InFile );
+	}
+	
+	void Load( const char* const InFile );
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_TILEDMAP_GELTILEDMAP_H__ //
