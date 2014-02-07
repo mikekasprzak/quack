@@ -14,30 +14,31 @@ inline void BlobExtract_from_GelGrid( GelGrid<u16>& Out, const T& In, const T2 M
 	Out.Resize( In.Width(), In.Height(), BGVal );
 	
 	// First Pass //
-	for ( st y = 0; y < In.Height(); y++ ) {
-		for ( st x = 0; x < In.Width(); x++ ) {
+	for ( int y = 0; y < (int)In.Height()+1; y++ ) {
+		for ( int x = 0; x < (int)In.Width()+1; x++ ) {
 			if ( IndexFunc(In,x,y) >= Middle ) {
-				enum { N_Size = 2 };
+				enum { N_Size = 3 };
 				u16 N[N_Size];
 				for ( st idx = 0; idx < N_Size; idx++ ) {
 					N[idx] = BGVal;
 				}
 				
-				if ( (x>0) && (IndexFunc(In,x-1,y) >= Middle) ) {
+				if ( IndexFunc(In,x-1,y) >= Middle ) {
 					N[0] = Out(x-1,y);
 				}
-				if ( (y>0) && (IndexFunc(In,x,y-1) >= Middle) ) {
+				if ( IndexFunc(In,x,y-1) >= Middle ) {
 					N[1] = Out(x,y-1);
 				}
-				
+				N[2] = Out(x,y);
+
 				// If Neighbours is Empty //
-				if ( AllEq( BGVal, N[0], N[1] ) ) {
+				if ( AllEq( BGVal, N[0], N[1], N[2] ) ) {
 					Linked.Add(NextLabel);
 					Out(x,y) = NextLabel;
 					NextLabel++;
 				}
 				else {
-					Out(x,y) = ::Min( N[0], N[1] );	// Ok, because BGVal is big //
+					Out(x,y) = ::Min( N[0], N[1], N[2] );	// Ok, because BGVal is big //
 					
 					// Perform a union on Neighbours //
 					for ( st idx = 0; idx < N_Size; idx++ ) {
