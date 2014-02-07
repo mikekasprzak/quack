@@ -89,6 +89,7 @@ GelVert2C OutTree;
 
 GelGrid<u8> TestMap;
 GelVert2C OutTestMap;
+GelGrid<u16> MapBlobs;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -415,6 +416,8 @@ void AppInit() {
 		}
 		
 		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400,550,160,90);
+		
+		BlobExtract_from_GelGrid( App::MapBlobs, SubMap, 4 );
 		
 		// Generate Geometry //
 		App::OutTestMap.Clear();

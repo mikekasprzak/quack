@@ -160,7 +160,13 @@ public:
 	inline GelSubGrid<T> GetSubGrid( const int _x, const int _y, const st _w, const st _h );
 };
 // - ------------------------------------------------------------------------------------------ - //
-
+// Functor for calling the Builtin Index type //
+struct GelGrid_Index {
+	template<typename T>
+	inline int operator() ( const T& Grid, int _x, int _y ) const {
+		return Grid.Index(_x,_y);
+	}
+};
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_GRID_GELGRID_H__ //
 // - ------------------------------------------------------------------------------------------ - //
