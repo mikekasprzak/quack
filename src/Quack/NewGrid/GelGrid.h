@@ -160,11 +160,32 @@ public:
 	inline GelSubGrid<T> GetSubGrid( const int _x, const int _y, const st _w, const st _h );
 };
 // - ------------------------------------------------------------------------------------------ - //
+// http://stackoverflow.com/questions/1174169/function-passed-as-template-argument
+// NOTE: "add3()" is the constructor, then after F(...) is the () operator.
+// - ------------------------------------------------------------------------------------------ - //
 // Functor for calling the Builtin Index type //
 struct GelGrid_Index {
 	template<typename T>
 	inline int operator() ( const T& Grid, int _x, int _y ) const {
 		return Grid.Index(_x,_y);
+	}
+};
+struct GelGrid_LoopIndex {
+	template<typename T>
+	inline int operator() ( const T& Grid, int _x, int _y ) const {
+		return Grid.LoopIndex(_x,_y);
+	}
+};
+struct GelGrid_SaturateIndex {
+	template<typename T>
+	inline int operator() ( const T& Grid, int _x, int _y ) const {
+		return Grid.SaturateIndex(_x,_y);
+	}
+};
+struct GelGrid_DeadIndex {
+	template<typename T>
+	inline int operator() ( const T& Grid, int _x, int _y ) const {
+		return Grid.DeadIndex(_x,_y);
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
