@@ -418,7 +418,7 @@ void AppInit() {
 //		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400,550,160,90);
 		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400,580,80,50);
 		
-		BlobExtract_from_GelGrid( App::MapBlobs, SubMap, 1 );
+		BlobExtract_EQ_from_GelGrid( App::MapBlobs, SubMap, 2 );
 		for( int y = 0; y < App::MapBlobs.Height(); y++ ) {
 			for( int x = 0; x < App::MapBlobs.Width(); x++ ) {
 				_Log("%01X", App::MapBlobs(x,y)&0xf );
