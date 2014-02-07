@@ -4,12 +4,12 @@
 // http://en.wikipedia.org/wiki/Disjoint-set_data_structure
 // http://www2.hawaii.edu/~suthers/courses/ics311f11/Notes/Topic-15/Disjoint-Sets.pdf
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_NODE_DISJOINTSET_H__
-#define __GEL_NODE_DISJOINTSET_H__
+#ifndef __GEL_NODE_GELDISJOINTSET_H__
+#define __GEL_NODE_GELDISJOINTSET_H__
 // - ------------------------------------------------------------------------------------------ - //
 // http://avdongre.wordpress.com/2011/12/06/disjoint-set-data-structure-c/
 // - ------------------------------------------------------------------------------------------ - //
-class DisjointSet {
+class GelDisjointSet {
 public:
 	typedef st32 ValType;
 	struct Set {
@@ -31,7 +31,7 @@ public:
 	st32 Size;
 
 public:
-	inline DisjointSet( const ValType n ) :
+	inline GelDisjointSet( const ValType n ) :
 		Forest( 0 )
 	{
 		Forest = new Set[n+1];
@@ -41,13 +41,13 @@ public:
 		}
 	}
 	
-	inline ~DisjointSet() {
+	inline ~GelDisjointSet() {
 		if ( Forest )
 			delete [] Forest;
 	}
 	
 //	// NOTE: Actually a move, not a copy! //
-//	inline DisjointSet( DisjointSet& Copy ) {
+//	inline GelDisjointSet( GelDisjointSet& Copy ) {
 //		if ( Forest )
 //			delete [] Forest;
 //		
@@ -55,7 +55,7 @@ public:
 //		Copy.Forest = 0;
 //	}
 //	
-//	inline DisjointSet& operator = ( DisjointSet& Copy ) {
+//	inline GelDisjointSet& operator = ( GelDisjointSet& Copy ) {
 //		if ( Forest )
 //			delete [] Forest;
 //		
@@ -149,5 +149,5 @@ public:
 //	}
 //};
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_NODE_DISJOINTSET_H__ //
+#endif // __GEL_NODE_GELDISJOINTSET_H__ //
 // - ------------------------------------------------------------------------------------------ - //
