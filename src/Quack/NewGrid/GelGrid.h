@@ -25,6 +25,13 @@ public:
 		Data(_w*_h)
 	{
 	}
+
+	inline GelGrid( const st _w, const st _h, const T& _Value ) :
+		w(_w),
+		h(_h),
+		Data(_w*_h, _Value)
+	{
+	}
 	
 	// Fast Version //
 	inline int _Index( const int _x, const int _y ) const {
@@ -81,11 +88,21 @@ public:
 	}
 	
 public:
+	inline void Clear() {
+		w = 0;
+		h = 0;
+		Data.clear();
+	}
+	// NOTE: Invalidates Data. If you want to preserve, copy to new, use a .swap() //
 	inline void Resize( const st _w, const st _h ) {
 		w = _w;
 		h = _h;
-		// NOTE: Invalidates Data. If you want to preserve, copy to new, use a .swap() //
 		Data.resize(_w*_h);
+	}
+	inline void Resize( const st _w, const st _h, const T& Value ) {
+		w = _w;
+		h = _h;
+		Data.resize(_w*_h,Value);
 	}
 
 public:
@@ -130,6 +147,11 @@ public:
 	inline int IndexToY( const st _idx ) const {
 		// TODO: Assert > 0 (i.e. ABS) //
 		return _idx / w;
+	}
+
+
+	inline void Fill( const T& _Value ) {
+		Data.assign( Data.size(), _Value );
 	}
 
 	

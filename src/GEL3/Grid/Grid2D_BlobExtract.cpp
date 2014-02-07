@@ -1,6 +1,6 @@
 // - -------------------------------------------------------------------------------------- - //
 #include "Grid2D.h"
-#include <Node/DisjointSet.h>
+#include <Node/GelDisjointSet.h>
 // - -------------------------------------------------------------------------------------- - //
 // http://en.wikipedia.org/wiki/Blob_extraction
 // http://robotix.in/tutorials/category/imageprocessing/blob_detection
@@ -9,7 +9,7 @@ template< typename tType >
 const Grid2D<u16> BlobExtract( const Grid2D<tType>& Data, const tType Middle ) {
 	const u16 BGVal = 0xFFFF;
 	u16 NextLabel = 0;
-	DisjointSet Linked(0);
+	GelDisjointSet Linked(0);
 	Grid2D<u16> Ret( Data.Width(), Data.Height(), BGVal );
 			
 	// First Pass //
@@ -71,7 +71,7 @@ template< typename tType >
 const Grid2D<u16> BlobExtractWrapped( const Grid2D<tType>& Data, const tType Middle ) {
 	const u16 BGVal = 0xFFFF;
 	u16 NextLabel = 0;
-	DisjointSet Linked(0);
+	GelDisjointSet Linked(0);
 	Grid2D<u16> Ret( Data.Width(), Data.Height(), BGVal );
 			
 	// First Pass //
