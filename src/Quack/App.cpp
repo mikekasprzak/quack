@@ -94,6 +94,8 @@ GelGrid<u16> MapBlobs;
 GelVert2 OrigBesier;
 GelVert2 InBesier;
 GelVert2 OutBesier;
+GelVert2 InBesier2;
+GelVert2 OutBesier2;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -313,16 +315,18 @@ void AppInit() {
 		GelVert2& OB = App::OrigBesier;
 		OB.Resize(4);
 		OB[0].Pos = Vector2D(0,0);
-		OB[1].Pos = Vector2D(50,50);
-		OB[2].Pos = Vector2D(-120,100);
+		OB[1].Pos = Vector2D(60,60);
+		OB[2].Pos = Vector2D(-60,100);
 		OB[3].Pos = Vector2D(0,120);
 		
-		const int Count = 6;	
+		const int Count = 4;	
 		for ( int idx = 0; idx <= Count; idx++ ) {
-			App::InBesier.PushBack().Pos = Calc_Bezier( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, OB[2].Pos, OB[3].Pos );
+			App::InBesier.PushBack().Pos = Calc_Bezier( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, /*OB[2].Pos,*/ OB[3].Pos );
+			App::InBesier2.PushBack().Pos = Calc_RationalBezier( Real(idx/(float)Count), Real(1), OB[0].Pos, OB[1].Pos, /*OB[2].Pos,*/ OB[3].Pos );
 		}
 		
-		Gen_Curve( App::OutBesier, App::InBesier, Real(14), Real(1) );
+		Gen_Curve( App::OutBesier, App::InBesier, Real(3), Real(3) );
+		Gen_Curve( App::OutBesier2, App::InBesier2, Real(1), Real(1) );
 		Log("**** DONE");
 	}
 
@@ -619,6 +623,7 @@ void AppDraw() {
 		Mat *= App::InfoMatrix;
 	//	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutBesier.Get()->Pos),&(App::OutBesier.Get()->Color),App::OutBesier.Size());
 		Gel::RenderFlat2D(GEL_TRIANGLES,Mat,GEL_RGB(180,170,255),&(App::OutBesier.Get()->Pos),App::OutBesier.Size());
+		Gel::RenderFlat2D(GEL_TRIANGLES,Mat,GEL_RGB(60,80,145),&(App::OutBesier2.Get()->Pos),App::OutBesier2.Size());
 	}
 	
 	// Show Runtime Error Notices //
