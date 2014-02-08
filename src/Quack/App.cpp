@@ -425,7 +425,7 @@ void AppInit() {
 		GelGrid<GelColor> DummyMap;
 		Gen_GelGrid_from_GelImage( DummyMap, ImageMap ); 
 
-//		Flood( DummyMap, DummyMap.Index(4,4), GEL_RGB_GREEN );
+//		Flood( DummyMap, DummyMap.Index(4,4), GEL_RGB_RED );
 
 
 		App::TestMap.Resize( DummyMap.Width(), DummyMap.Height() );
@@ -448,7 +448,7 @@ void AppInit() {
 		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400+50,550,160,90);
 //		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400+70,580,80,50);
 
-//		FloodWrap( SubMap, SubMap.Index(4,4), 1 );
+//		FloodWrap( SubMap, SubMap.Index(4,40), 1 );
 		
 		BlobExtract_EQ_from_GelGrid( App::MapBlobs, SubMap, 2 );
 			
