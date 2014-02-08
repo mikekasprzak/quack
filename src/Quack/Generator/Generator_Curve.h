@@ -4,13 +4,78 @@
 // - ------------------------------------------------------------------------------------------ - //
 //#include <Array/Array.h>
 // - ------------------------------------------------------------------------------------------ - //
+template <typename OUT, typename IN>
+inline void Gen_Curve( OUT& Out, const IN& In, const Real RadiusA, const Real RadiusB ) {
+	typedef typename IN::Type InType;
+	typedef typename IN::Type::Type VecType;
+
+	Out.Reserve( In.Size() * (6+3) + (3*2) ); // Quad+Gaps, Caps //
+	Out.Clear();
+	
+	st Size = In.Size();
+	Real InvSize = Real::One / Real(In.Size()-1);
+	Real RadiusDiff = RadiusB - RadiusA;
+	VecType OldRayTan = VecType::Zero;
+
+	for ( st idx = 1; idx < Size; idx++ ) {
+		const InType& A = In[idx-1];
+		const InType& B = In[idx];
+		
+		VecType Ray = B.Pos - A.Pos;
+		Ray.Normalize();
+		VecType RayTan = Ray.Tangent();
+
+		Real Radius1 = RadiusA + (RadiusDiff * (Real(idx-1) * InvSize));
+		Real Radius2 = RadiusA + (RadiusDiff * (Real(idx) * InvSize));
+
+		Out.PushBack().Pos = A.Pos + (RayTan*Radius1);
+		Out.PushBack().Pos = A.Pos - (RayTan*Radius1);
+		Out.PushBack().Pos = B.Pos - (RayTan*Radius2);
+                                  
+		Out.PushBack().Pos = B.Pos - (RayTan*Radius2);
+		Out.PushBack().Pos = B.Pos + (RayTan*Radius2);
+		Out.PushBack().Pos = A.Pos + (RayTan*Radius1);
+
+		// Fill Gap //
+		Real RaySide = dot(RayTan.Tangent(),OldRayTan);
+		if ( RaySide < Real::Zero ) {
+			Out.PushBack().Pos = A.Pos - (RayTan*Radius1);
+			Out.PushBack().Pos = A.Pos;
+			Out.PushBack().Pos = A.Pos - (OldRayTan*Radius1);
+		}
+		else if ( RaySide > Real::Zero ) {
+			Out.PushBack().Pos = A.Pos;
+			Out.PushBack().Pos = A.Pos + (RayTan*Radius1);
+			Out.PushBack().Pos = A.Pos + (OldRayTan*Radius1);
+		}
+		else {
+			// Do nothing in Zero case (i.e. First time, axis aligned) //
+		}
+		
+		// Add Front Cap //
+		if ( idx == 1 ) {
+			Out.PushBack().Pos = A.Pos - (RayTan*Radius1);
+			Out.PushBack().Pos = A.Pos + (RayTan*Radius1);
+			Out.PushBack().Pos = A.Pos - (Ray*Radius1);
+		}
+
+		if ( idx == Size-1 ) {
+			Out.PushBack().Pos = B.Pos - (RayTan*Radius2);
+			Out.PushBack().Pos = B.Pos + (Ray*Radius2);
+			Out.PushBack().Pos = B.Pos + (RayTan*Radius2);
+		}
+				
+		OldRayTan = RayTan;
+	}
+}
+// - ------------------------------------------------------------------------------------------ - //
 template <typename IN, typename OUT>
-inline void GenCurve( const IN& In, OUT& Out ) {
+inline void Gen_SpecialCurve( const IN& In, OUT& Out ) {
 	Out.Reserve( In.Size() * 6 );
 	Real Radius = 10;
 	
 	GelColor Color1;
-	GelColor Color2;;
+	GelColor Color2;
 	
 	typename IN::Type::Type OldRayTan = IN::Type::Type::Zero;
 
