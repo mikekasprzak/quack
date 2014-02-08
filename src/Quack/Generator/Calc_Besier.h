@@ -1,30 +1,30 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEN_CALC_BESIER_H__
-#define __GEN_CALC_BESIER_H__
+#ifndef __GEN_CALC_BEZIER_H__
+#define __GEN_CALC_BEZIER_H__
 // - ------------------------------------------------------------------------------------------ - //
-// Besier Curves -- Alphas of 0 and 1 return the first and last point.
+// Bezier Curves -- Alphas of 0 and 1 return the first and last point.
 // - ------------------------------------------------------------------------------------------ - //
-// http://en.wikipedia.org/wiki/Besier_curve
+// http://en.wikipedia.org/wiki/B%C3%A9zier_curve
 // - ------------------------------------------------------------------------------------------ - //
 template<typename VT, typename FT> // VectorType (VT), FloatType (FT) //
-inline VT Calc_Besier( const FT&, const VT& P1 ) {
+inline VT Calc_Bezier( const FT&, const VT& P1 ) {
 	return P1;
 }
 // - ------------------------------------------------------------------------------------------ - //
 template<typename VT, typename FT> // VectorType (VT), FloatType (FT) //
-inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2 ) {
+inline VT Calc_Bezier( const FT& Alpha, const VT& P1, const VT& P2 ) {
 	return P1 + (P2-P1) * Alpha;
 }
 // - ------------------------------------------------------------------------------------------ - //
 template<typename VT, typename FT> // VectorType (VT), FloatType (FT) //
-inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3 ) {
+inline VT Calc_Bezier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3 ) {
 	VT Q1 = P1 + (P2-P1) * Alpha;
 	VT Q2 = P2 + (P3-P2) * Alpha;
 	return Q1 + (Q2-Q1) * Alpha;
 }
 // - ------------------------------------------------------------------------------------------ - //
 template<typename VT, typename FT> // VectorType (VT), FloatType (FT) //
-inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3, const VT& P4 ) {
+inline VT Calc_Bezier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3, const VT& P4 ) {
 	VT Q1 = P1 + (P2-P1) * Alpha;
 	VT Q2 = P2 + (P3-P2) * Alpha;
 	VT Q3 = P3 + (P4-P3) * Alpha;
@@ -34,7 +34,7 @@ inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3
 }
 // - ------------------------------------------------------------------------------------------ - //
 template<typename VT, typename FT> // VectorType (VT), FloatType (FT) //
-inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3, const VT& P4, const VT& P5 ) {
+inline VT Calc_Bezier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3, const VT& P4, const VT& P5 ) {
 	VT Q1 = P1 + (P2-P1) * Alpha;
 	VT Q2 = P2 + (P3-P2) * Alpha;
 	VT Q3 = P3 + (P4-P3) * Alpha;
@@ -48,7 +48,7 @@ inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3
 }
 // - ------------------------------------------------------------------------------------------ - //
 template<typename VT, typename FT> // VectorType (VT), FloatType (FT) //
-inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3, const VT& P4, const VT& P5, const VT& P6 ) {
+inline VT Calc_Bezier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3, const VT& P4, const VT& P5, const VT& P6 ) {
 	VT Q1 = P1 + (P2-P1) * Alpha;
 	VT Q2 = P2 + (P3-P2) * Alpha;
 	VT Q3 = P3 + (P4-P3) * Alpha;
@@ -66,5 +66,5 @@ inline VT Calc_Besier( const FT& Alpha, const VT& P1, const VT& P2, const VT& P3
 	return T1 + (T2-T1) * Alpha;;
 }
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEN_CALC_BESIER_H__ //
+#endif // __GEN_CALC_BEZIER_H__ //
 // - ------------------------------------------------------------------------------------------ - //
