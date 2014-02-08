@@ -90,6 +90,10 @@ GelVert2C OutTree;
 GelGrid<u8> TestMap;
 GelVert2C OutTestMap;
 GelGrid<u16> MapBlobs;
+
+GelVert2 OrigBesier;
+GelVert2 InBesier;
+GelVert2 OutBesier;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -285,7 +289,7 @@ void AppInit() {
 */
 
 	{
-		Log("**** Generator");
+		Log("**** Curve Generator");
 		for ( int idx = -4; idx < 8; idx++ ) {
 			int Scale = idx;
 			if ( Scale < 0 )
@@ -293,7 +297,7 @@ void AppInit() {
 			App::InCurve.PushBack().Pos = Vector2D(0,idx*(20-Scale));
 		}
 		
-		GenCurve( App::InCurve, App::OutCurve );
+		Gen_SpecialCurve( App::InCurve, App::OutCurve );
 
 //		for ( st idx = 0; idx < App::OutCurve.Size(); idx++ ) {
 //			Log("%i -- %f,%f", idx, App::OutCurve[idx].Pos.x.ToFloat(),App::OutCurve[idx].Pos.y.ToFloat());
@@ -301,6 +305,25 @@ void AppInit() {
 //				Log("");
 //		}
 	
+		Log("**** DONE");
+	}
+	
+	{
+		Log("**** Besier Generator");
+		GelVert2& OB = App::OrigBesier;
+		OB.Resize(4);
+		OB[0].Pos = Vector2D(0,0);
+		OB[1].Pos = Vector2D(50,50);
+		OB[2].Pos = Vector2D(-120,100);
+		OB[3].Pos = Vector2D(0,120);
+		
+		const int Count = 6;	
+		for ( int idx = 0; idx <= Count; idx++ ) {
+			App::InBesier.PushBack().Pos = Calc_Curve( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, OB[2].Pos, OB[3].Pos );
+//			App::InBesier.PushBack().Pos = OB[0].Pos + (Real(idx/(float)Count) * (OB[3].Pos - OB[0].Pos) );
+		}
+		
+		Gen_Curve( App::OutBesier, App::InBesier, Real(14), Real(1) );
 		Log("**** DONE");
 	}
 
@@ -527,7 +550,7 @@ void AppStep() {
 		App::InCurve[0].Pos.x = App::InCurve[1].Pos.x;
 		
 		App::OutCurve.Clear();
-		GenCurve( App::InCurve, App::OutCurve );
+		Gen_SpecialCurve( App::InCurve, App::OutCurve );
 	}
 	
 //	static int bort = 0;
@@ -591,6 +614,14 @@ void AppDraw() {
 
 	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTestMap[0].Pos),&(App::OutTestMap[0].Color),App::OutTestMap.Size());
 
+	{
+		Matrix4x4 Mat = Matrix4x4::Identity;
+		Mat *= Matrix4x4::TranslationMatrix( Vector3D(-120,0) );
+		Mat *= App::InfoMatrix;
+	//	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutBesier.Get()->Pos),&(App::OutBesier.Get()->Color),App::OutBesier.Size());
+		Gel::RenderFlat2D(GEL_TRIANGLES,Mat,GEL_RGB(180,170,255),&(App::OutBesier.Get()->Pos),App::OutBesier.Size());
+	}
+	
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
 		App::HadVMError = true;
