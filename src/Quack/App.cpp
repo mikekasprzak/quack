@@ -315,13 +315,13 @@ void AppInit() {
 		GelVert2& OB = App::OrigBesier;
 		OB.Resize(4);
 		OB[0].Pos = Vector2D(0,0);
-		OB[1].Pos = Vector2D(60,60);
+		OB[1].Pos = Vector2D(60,-60);
 		OB[2].Pos = Vector2D(-60,100);
 		OB[3].Pos = Vector2D(0,120);
 		
-		const int Count = 4;	
+		const int Count = 24;	
 		for ( int idx = 0; idx <= Count; idx++ ) {
-			App::InBesier.PushBack().Pos = Calc_Bezier( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, /*OB[2].Pos,*/ OB[3].Pos );
+			App::InBesier.PushBack().Pos = Calc_Bezier( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, OB[2].Pos, OB[3].Pos );
 			App::InBesier2.PushBack().Pos = Calc_RationalBezier( Real(idx/(float)Count), Real(1), OB[0].Pos, OB[1].Pos, /*OB[2].Pos,*/ OB[3].Pos );
 		}
 		
@@ -420,10 +420,14 @@ void AppInit() {
 	}
 	
 	{
-		GelGrid<GelColor> DummyMap;
 		GelImage ImageMap( "MapTest.png" );
 		
+		GelGrid<GelColor> DummyMap;
 		Gen_GelGrid_from_GelImage( DummyMap, ImageMap ); 
+
+//		Flood( DummyMap, DummyMap.Index(4,4), GEL_RGB_GREEN );
+
+
 		App::TestMap.Resize( DummyMap.Width(), DummyMap.Height() );
 		
 		// Convert Map //
@@ -441,12 +445,17 @@ void AppInit() {
 			}
 		}
 		
-//		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400,550,160,90);
-		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400,580,80,50);
+		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400+50,550,160,90);
+//		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400+70,580,80,50);
+
+//		FloodWrap( SubMap, SubMap.Index(4,4), 1 );
 		
 		BlobExtract_EQ_from_GelGrid( App::MapBlobs, SubMap, 2 );
-		for( int y = 0; y < App::MapBlobs.Height(); y++ ) {
-			for( int x = 0; x < App::MapBlobs.Width(); x++ ) {
+			
+		//FloodWrap( App::MapBlobs, App::MapBlobs.Index(4,40), 0xA );
+			
+		for( int y = 0; y < App::MapBlobs.Height(); y+=2 ) {
+			for( int x = 0; x < App::MapBlobs.Width(); x+=2 ) {
 				_Log("%01X", App::MapBlobs(x,y)&0xf );
 			}		
 			Log("");

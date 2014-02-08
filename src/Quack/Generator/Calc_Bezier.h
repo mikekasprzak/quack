@@ -5,6 +5,7 @@
 // Bezier Curves -- Alphas of 0 and 1 return the first and last point.
 // - ------------------------------------------------------------------------------------------ - //
 // http://en.wikipedia.org/wiki/B%C3%A9zier_curve
+// http://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
 // See the section on Rational Bezier curves too... gonna take some archiology to extract the meaning.
 //
 // Other Interesting Things:
