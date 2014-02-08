@@ -3,6 +3,9 @@
 #define __GEN_FILL_H__
 // - ------------------------------------------------------------------------------------------ - //
 // http://en.wikipedia.org/wiki/Flood_fill
+//
+// TODO: STOP USING A LIST! Switch to a type that doesn't do excess allocations. Alternatively,
+//       use a vector, but instead of popping the front, swap the first and last element, and pop_back.
 // - ------------------------------------------------------------------------------------------ - //
 #include <list>
 // - ------------------------------------------------------------------------------------------ - //
