@@ -35,15 +35,15 @@ inline void Flood( INOUT& InOut, int Index, const T1 FillColor, const T2 MatchCo
 			for (;++w < e;) {
 				InOut[InOut._Index(w,y)] = FillColor;
 
-				if ( y < InOut.Height()-1 ) {
-					int IndexN = InOut._Index(w,y+1);
-					if ( InOut[IndexN] == MatchColor )
-						Queue.push_back( IndexN );
-				}
 				if ( y > 0 ) {
 					int IndexS = InOut._Index(w,y-1);
 					if ( InOut[IndexS] == MatchColor )
 						Queue.push_back( IndexS );
+				}
+				if ( y < InOut.Height()-1 ) {
+					int IndexN = InOut._Index(w,y+1);
+					if ( InOut[IndexN] == MatchColor )
+						Queue.push_back( IndexN );
 				}
 			}
 		}
@@ -89,13 +89,13 @@ inline void FloodWrap( INOUT& InOut, int Index, const T1 FillColor, const T2 Mat
 			for (;++w < e;) {
 				InOut[InOut.Index(w,y)] = FillColor;
 
-				int IndexN = InOut.Index(w,y+1);
-				if ( InOut[IndexN] == MatchColor )
-					Queue.push_back( IndexN );
-
 				int IndexS = InOut.Index(w,y-1);
 				if ( InOut[IndexS] == MatchColor )
 					Queue.push_back( IndexS );
+
+				int IndexN = InOut.Index(w,y+1);
+				if ( InOut[IndexN] == MatchColor )
+					Queue.push_back( IndexN );
 			}
 		}
 	}
