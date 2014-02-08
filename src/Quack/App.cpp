@@ -319,8 +319,7 @@ void AppInit() {
 		
 		const int Count = 6;	
 		for ( int idx = 0; idx <= Count; idx++ ) {
-			App::InBesier.PushBack().Pos = Calc_Curve( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, OB[2].Pos, OB[3].Pos );
-//			App::InBesier.PushBack().Pos = OB[0].Pos + (Real(idx/(float)Count) * (OB[3].Pos - OB[0].Pos) );
+			App::InBesier.PushBack().Pos = Calc_Besier( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, OB[2].Pos, OB[3].Pos );
 		}
 		
 		Gen_Curve( App::OutBesier, App::InBesier, Real(14), Real(1) );
