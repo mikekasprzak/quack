@@ -34,10 +34,10 @@ public:
 	}
 	// Local Wrapping //
 	inline st Index( int _x, int _y ) const {
-		while ( _x >= w ) { _x -= w; };
-		while ( _x < 0 )  { _x += w; };
-		while ( _y >= h ) { _y -= h; };
-		while ( _y < 0 )  { _y += h; };
+		while ( _x >= (int)w )	{ _x -= (int)w; }
+		while ( _x < 0 )		{ _x += (int)w; }
+		while ( _y >= (int)h )	{ _y -= (int)h; }
+		while ( _y < 0 )		{ _y += (int)h; }
 		return _Index(_x,_y);
 	}
 
@@ -104,19 +104,19 @@ public:
 public:
 	// Wrap Around as if the data looped back to the start after the end //
 	inline st LoopIndex( int _x, int _y ) const {
-		while ( _x > w ) { _x -= w; _y++; };
-		while ( _x < 0 ) { _x += w; _y--; };
+		while ( _x > (int)w )	{ _x -= (int)w; _y++; };
+		while ( _x < 0 )		{ _x += (int)w; _y--; };
 		return Parent->LoopIndex(x+_x,y+_y);
 	}
 	// Align to edges instead of wrapping //
 	inline st SaturateIndex( int _x, int _y ) const {
-		if ( _x >= Width() )
-			_x = Width() - 1;
+		if ( _x >= (int)Width() )
+			_x = (int)Width() - 1;
 		else if ( _x < 0 )
 			_x = 0;
 			
-		if ( _y >= Height() )
-			_y = Height() - 1;
+		if ( _y >= (int)Height() )
+			_y = (int)Height() - 1;
 		else if ( _y < 0 )
 			_y = 0;
 			
