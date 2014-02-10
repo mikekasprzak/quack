@@ -21,7 +21,7 @@
 #include "Glayout/Glayout.h"
 #include <Array/Array.h>
 #include "Generator/Generator.h"
-#include "Seed/VtTree.h"
+#include "Seed/Seed.h"
 
 #include "NewGrid/NewGrid.h"
 #include <TiledMap/GelTiledMap.h>
@@ -626,7 +626,7 @@ void AppDraw() {
 
 	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTestMap[0].Pos),&(App::OutTestMap[0].Color),App::OutTestMap.Size());
 
-	{
+/*	{
 		Matrix4x4 Mat = Matrix4x4::Identity;
 		Mat *= Matrix4x4::TranslationMatrix( Vector3D(-120,0) );
 		Mat *= App::InfoMatrix;
@@ -634,7 +634,7 @@ void AppDraw() {
 		Gel::RenderFlat2D(GEL_TRIANGLES,Mat,GEL_RGB(180,170,255),&(App::OutBesier.Get()->Pos),App::OutBesier.Size());
 		Gel::RenderFlat2D(GEL_TRIANGLES,Mat,GEL_RGB(60,80,145),&(App::OutBesier2.Get()->Pos),App::OutBesier2.Size());
 	}
-	
+*/	
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
 		App::HadVMError = true;
