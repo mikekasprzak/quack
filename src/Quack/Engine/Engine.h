@@ -104,7 +104,7 @@ public:
 	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline void QkEngine_AddCommon( QkEngine& Engine, const QkEngine::EnVec& _Pos ) {
+inline void AddCommon_QkEngine( QkEngine& Engine, const QkEngine::EnVec& _Pos ) {
 	QkEngine::EnObj& Ob = Engine.Add();
 	QkObjCommon::InitObj( &Ob );
 	Ob.Data = new QkObjCommon( _Pos );
