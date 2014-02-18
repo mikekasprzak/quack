@@ -25,6 +25,8 @@
 
 #include "NewGrid/NewGrid.h"
 #include <TiledMap/GelTiledMap.h>
+
+#include "Engine/Engine.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -96,6 +98,8 @@ GelVert2 InBesier;
 GelVert2 OutBesier;
 GelVert2 InBesier2;
 GelVert2 OutBesier2;
+
+QkEngine Engine;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -493,6 +497,14 @@ void AppInit() {
 			}
 		}
 	}
+	
+	{
+		Log("**** ENGINE");
+
+		AddCommon_QkEngine( App::Engine, Vector2D(0,0) );
+
+		Log("**** DONE");
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
@@ -601,6 +613,8 @@ void AppStep() {
 //#endif // USES_STEAM //
 
 //	App::MySkel.Step();
+
+	App::Engine.Step();
 	
 	// *** //
 	App::StepProfiler.Stop();
@@ -625,6 +639,9 @@ void AppDraw() {
 //	Gel::RenderColor2D_Packed(GEL_LINES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
 
 	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTestMap[0].Pos),&(App::OutTestMap[0].Color),App::OutTestMap.Size());
+
+
+	App::Engine.Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
 /*	{
 		Matrix4x4 Mat = Matrix4x4::Identity;
