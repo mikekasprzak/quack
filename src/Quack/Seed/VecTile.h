@@ -17,10 +17,14 @@ public:
 		return Side[idx&3];
 	}
 	
-	inline static Vector2D _Vector( const st idx ) {
-		static float VecX[] = { 1, 0,-1, 0 };
-		static float VecY[] = { 0, 1, 0,-1 };
-		return Vector2D( VecX[idx&3], VecY[idx&3] );
+	inline static const Vector2D & _Vector( const st idx ) {
+		static const Vector2D Vec[] = { 
+			Vector2D(1,0),
+			Vector2D(0,1),
+			Vector2D(-1,0),
+			Vector2D(0,-1) 
+		};
+		return Vec[idx&3];
 	}
 	
 	inline Vector2D Vector( const st idx ) const {
