@@ -62,11 +62,26 @@ typedef Real 		QFloat;
 typedef Vector2D	QVec;
 typedef Rect2D		QRect;
 // - ------------------------------------------------------------------------------------------ - //
+// Quack Simulation Properties -- i.e. Gravity //
+class QProp {
+public:
+	QVec Gravity;
+	
+public:
+	// 9.80665f -- Earth's Gravity (Meters per Second Squared) //
+	// 3.13155f -- Earth's Gravity (Meters per Second) //
+	// 60.0f    -- Frames Per Second //
+	QProp( const QVec& _Gravity = QVec(0, -3.13155f / 60.0f) ) :
+		Gravity( _Gravity )
+	{
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
 // Quack Body (Collision) //
 class QBody {
 public:
 	typedef QFloat (*QGetInvMassFunc)( const void* self );
-//	typedef bool (*QStepFunc)( const void* self );
+//	typedef bool (*QStepFunc)( const void* self, const QProp& Prop );
 
 public:
 	int		Type;
@@ -114,7 +129,7 @@ class QObj {
 public:
 	typedef QRect (*QGetRectFunc)( void* self );
 	typedef QBody* (*QGetBodyFunc)( void* self );
-	typedef bool (*QStepFunc)( void* self );
+	typedef bool (*QStepFunc)( void* self, const QProp& );
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
 
 public:
@@ -133,6 +148,7 @@ public:
 // TODO: Client and Server Engines //
 class QEngine {
 public:
+	QProp Prop;
 	std::vector<QObj> Obj;	// An Engine contains Objects //
 
 	inline QObj& Add() {
@@ -148,7 +164,7 @@ public:
 			QObj& Ob = Obj[idx];
 
 			// Step Object //
-			if ( Ob.Step( Ob.Data ) ) {
+			if ( Ob.Step( Ob.Data, Prop ) ) {
 				// If the Object moved, update the Rectangle //
 				Ob.Rect = Ob.GetRect( Ob.Data );
 			}
