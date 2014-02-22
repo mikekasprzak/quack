@@ -53,6 +53,7 @@ enum {
 	
 	QO_DUMMY = 1,	// Dumb Static Example Object //
 	QO_BOXY,		// Dumb Simple Box Shaped Physical Object //
+	QO_BOXY_STATIC,	// Dumb Simple Box Shaped Static Solid Object //
 };
 // - ------------------------------------------------------------------------------------------ - //
 

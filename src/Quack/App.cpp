@@ -503,6 +503,7 @@ void AppInit() {
 
 		QK::AddDummy_QEngine( App::Engine, Vector2D(0,0) );
 		QK::AddBoxy_QEngine( App::Engine, Vector2D(0,64) );
+		QK::AddBoxyStatic_QEngine( App::Engine, Vector2D(-64,-64), Vector2D(128,16) );
 
 		Log("**** DONE");
 	}
