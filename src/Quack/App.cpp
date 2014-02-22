@@ -502,7 +502,7 @@ void AppInit() {
 		Log("**** ENGINE");
 
 		QK::AddDummy_QEngine( App::Engine, Vector2D(0,0) );
-		QK::AddBoxy_QEngine( App::Engine, Vector2D(0,-64) );
+		QK::AddBoxy_QEngine( App::Engine, Vector2D(0,64) );
 
 		Log("**** DONE");
 	}

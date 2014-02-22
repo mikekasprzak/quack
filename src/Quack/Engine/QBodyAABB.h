@@ -15,17 +15,20 @@ public:
 //		self->Step = (QBody::QStepFunc)_Step;
 	}
 public:
+	// Rectangle //
 	QVec Pos;
 	QVec Shape;
 	
-	QVec Old;		// Verlet //
-	
-	QFloat InvMass;
+	// Verlet Physics //
+	QVec 	Old;
+	QFloat	InvMass;
 
 public:
-	inline QBodyAABB( const QVec& _Pos, const QVec& _Shape ) :
+	inline QBodyAABB( const QVec& _Pos, const QVec& _Shape, const QFloat& _InvMass = QFloat::One ) :
 		Pos( _Pos ),
-		Shape( _Shape )
+		Shape( _Shape ),
+		Old( _Pos ),
+		InvMass( _InvMass )
 	{
 	}
 	
@@ -33,22 +36,21 @@ public:
 		return QRect( Pos, Shape );
 	}
 
+public:
 	static QFloat _GetInvMass( const thistype* self ) { return self->GetInvMass(); }
 	inline QFloat GetInvMass() const {
 		return InvMass;
 	}
 
-//	static bool _Step( thistype* self ) { return self->Step(); }
-	inline bool Step() {
+//	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }
+	inline bool Step( const QProp& Prop ) {
+		QVec Velocity = Pos - Old;
+		Old = Pos;
+		Pos += Velocity + Prop.Gravity;
+		
 		return true;
 	}
 };
-// - ------------------------------------------------------------------------------------------ - //
-//inline void AddDummy_QEngine( QEngine& Engine, const QVec& _Pos ) {
-//	QObj& Ob = Engine.Add();
-//	QObjDummy::InitObj( &Ob );
-//	Ob.Data = new QObjDummy( _Pos );
-//}
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
 // - ------------------------------------------------------------------------------------------ - //
