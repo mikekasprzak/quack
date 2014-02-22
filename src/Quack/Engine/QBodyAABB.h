@@ -52,6 +52,36 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
+//	QVec Vel = A.Pos - A.Old;
+//	Log("HERM %f %f", Vel.x.ToFloat(),Vel.y.ToFloat() );
+	
+	QFloat MassSum = B.InvMass + A.InvMass;
+	return_if_value( false, MassSum == QFloat::Zero );
+
+	QRect Diff = B.GetRect() - A.GetRect();
+	QVec Line = B.GetRect().Center() - A.GetRect().Center();
+	if ( Line.x.Abs() > Line.y.Abs() ) {
+		Line.x = Line.x.Normal();
+		Line.y = QFloat::Zero;
+	}
+	else {
+		Line.x = QFloat::Zero;
+		Line.y = Line.y.Normal();
+	}
+
+//	Log("A: %f %f -- %f %f", A.GetRect().P1().x.ToFloat(),A.GetRect().P1().y.ToFloat(), A.GetRect().Width().ToFloat(),A.GetRect().Height().ToFloat() );
+//	Log("B: %f %f -- %f %f", B.GetRect().P1().x.ToFloat(),B.GetRect().P1().y.ToFloat(), B.GetRect().Width().ToFloat(),B.GetRect().Height().ToFloat() );
+//	Log("VER: %f %f -- %f %f", Diff.P1().x.ToFloat(),Diff.P1().y.ToFloat(), Diff.Width().ToFloat(),Diff.Height().ToFloat() );
+
+//	A.Pos.x += (Line.x * Diff.Shape().x);// * Real::Half;// * (A.InvMass / MassSum);
+//	A.Pos.y -= (Line.y * Diff.Shape().y);// * (A.InvMass / MassSum);
+		
+	A.Pos -= (Line * Diff.Shape()) * (A.InvMass / MassSum);
+	B.Pos += (Line * Diff.Shape()) * (B.InvMass / MassSum);
+	return true;
+}
+// - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_ENGINE_QBODYAABB_H__ //

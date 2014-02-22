@@ -12,7 +12,7 @@ bool QBody::Solve( QBody& Vs ) {
 	
 	// If a collision was resolved, return true //
 	if ( A.Type == QB_AABB ) {
-		if ( B.Type == QB_AABB ) { return true; }
+		if ( B.Type == QB_AABB ) { return Solve_Body( *(QBodyAABB*)A.Data, *(QBodyAABB*)B.Data ); }
 		else if ( B.Type == QB_SPHERE ) { return true; }
 	}
 	else if ( A.Type == QB_SPHERE ) {
