@@ -13,6 +13,7 @@ SQInteger register_qkEngine(HSQUIRRELVM v);
 #include "QObjDummy.h"
 #include "QObjBoxy.h"
 #include "QObjBoxyStatic.h"
+#include "QObjBally.h"
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_ENGINE_ENGINE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

@@ -6,6 +6,8 @@
 #include <Math/Vector.h>
 #include <Math/Matrix.h>
 #include <Geometry/Rect.h>
+
+#include <Render/GelDraw.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -54,6 +56,7 @@ enum {
 	QO_DUMMY = 1,	// Dumb Static Example Object //
 	QO_BOXY,		// Dumb Simple Box Shaped Physical Object //
 	QO_BOXY_STATIC,	// Dumb Simple Box Shaped Static Solid Object //
+	QO_BALLY,		// Dumb Simple Ball Shaped Physical Object //
 };
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -213,6 +216,8 @@ public:
 				// TODO: Add to Draw Queue, to allow sorting/layering. //
 				Ob.Draw( Ob.Data, Mat );
 			}
+			
+			gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(64,64,0,64));
 		}
 	}
 };
