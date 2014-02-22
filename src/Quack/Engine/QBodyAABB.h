@@ -17,23 +17,23 @@ public:
 public:
 	// Rectangle //
 	QVec Pos;
-	QVec Shape;
+	QVec HalfShape;
 	
 	// Verlet Physics //
 	QVec 	Old;
 	QFloat	InvMass;
 
 public:
-	inline QBodyAABB( const QVec& _Pos, const QVec& _Shape, const QFloat& _InvMass = QFloat::One ) :
+	inline QBodyAABB( const QVec& _Pos, const QVec& _HalfShape, const QFloat& _InvMass = QFloat::One ) :
 		Pos( _Pos ),
-		Shape( _Shape ),
+		HalfShape( _HalfShape ),
 		Old( _Pos ),
 		InvMass( _InvMass )
 	{
 	}
 	
 	inline QRect GetRect() {
-		return QRect( Pos, Shape );
+		return QRect( Pos - HalfShape, HalfShape+HalfShape );
 	}
 
 public:
@@ -53,15 +53,13 @@ public:
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
-//	QVec Vel = A.Pos - A.Old;
-//	Log("HERM %f %f", Vel.x.ToFloat(),Vel.y.ToFloat() );
-	
 	QFloat MassSum = B.InvMass + A.InvMass;
 	return_if_value( false, MassSum == QFloat::Zero );
 
 	QRect Diff = B.GetRect() - A.GetRect();
-	QVec Line = B.GetRect().Center() - A.GetRect().Center();
-	if ( Line.x.Abs() > Line.y.Abs() ) {
+	QVec Line = B.Pos - A.Pos;
+	// The Size of the overlap region (Diff) determines which direction we push //
+	if ( Diff.Width() < Diff.Height() ) {
 		Line.x = Line.x.Normal();
 		Line.y = QFloat::Zero;
 	}

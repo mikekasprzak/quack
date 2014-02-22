@@ -185,7 +185,7 @@ public:
 		return *this;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real ClosestX( const Real& x ) const {
+	inline const Real NearestX( const Real& x ) const {
 		if ( x < P1().x )
 			return P1().x;
 		else if ( x > P2().x )
@@ -194,7 +194,7 @@ public:
 			return x;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real ClosestY( const Real& y ) const {
+	inline const Real NearestY( const Real& y ) const {
 		if ( y < P1().y )
 			return P1().y;
 		else if ( y > P2().y )
@@ -205,16 +205,16 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Return a 0-1 co-ordinate mapped on to the rectangle //
 	inline const Real MapX( const Real& x ) const {
-		return (-P1().x + ClosestX( x )) / Width();
+		return (-P1().x + NearestX( x )) / Width();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Return a 0-1 co-ordinate mapped on to the rectangle //
 	inline const Real MapY( const Real& y ) const {
-		return (-P1().y + ClosestY( y )) / Height();
+		return (-P1().y + NearestY( y )) / Height();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	// Given a point, find the closest point on the Rectangle //
-	inline const VecType ClosestPoint( const VecType& v ) const {
+	// Given a point, find the nearest point on the Rectangle //
+	inline const VecType NearestPoint( const VecType& v ) const {
 		VecType Point;
 	
 		if ( v.x < P1().x )
@@ -235,27 +235,34 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Given a point, find the nearest point on edge of the Rectangle //
-	inline const VecType NearestEdgePoint( const VecType& v ) const {
-		VecType Point;
-		
-		// Construct a vector with the closest X edge and Y edge //
-		if ( (P1().x - v.x).Abs() < (P2().x - v.x).Abs() )
-			Point.x = P1().x;
-		else
-			Point.x = P2().x;
-		
-		if ( (P1().y - v.y).Abs() < (P2().y - v.y).Abs() )
-			Point.y = P1().y;
-		else
-			Point.y = P2().y;
-		
-		// Return a vector with 
-		if ( (Point.x - v.x).Abs() < (Point.y - v.y).Abs() )
-			return VecType( Point.x, v.y );
-		else
-			return VecType( v.x, Point.y );
-	}	
-	
+	// NOTE: Doesn't work. Logic is Wrong. Logic is interesting, but wrong.
+//	inline VecType NearestEdgePoint( const VecType& v ) const {
+//		VecType Point;
+//		
+//		// Construct a vector with the nearest X edge and Y edge //
+//		if ( (P1().x - v.x).Abs() < (P2().x - v.x).Abs() )
+//			Point.x = P1().x;
+//		else
+//			Point.x = P2().x;
+//		
+//		if ( (P1().y - v.y).Abs() < (P2().y - v.y).Abs() )
+//			Point.y = P1().y;
+//		else
+//			Point.y = P2().y;
+//		
+//		// Return a vector with 
+//		if ( (Point.x - v.x).Abs() < (Point.y - v.y).Abs() )
+//			return VecType( Point.x, v.y );
+//		else
+//			return VecType( v.x, Point.y );
+//	}
+	// - -------------------------------------------------------------------------------------- - //
+	// NOTE: What I may want here is a function that returns the Line vector used to resolve the 
+	//       positions. I originally assumed I could use a floating Center Point, but that wont 
+	//       work because I don't return a radius.
+	//       No, instead I need to return an advanced form of the line from Center to Center..?
+	// - -------------------------------------------------------------------------------------- - //
+
 	// - -------------------------------------------------------------------------------------- - //
 	// Contract a rectangle (like how a selection contract or expand works in PSP/Photoshop) //
 	inline const ThisType Contract( const Real& Value ) {

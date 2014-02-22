@@ -57,13 +57,33 @@ inline bool Solve_Body( QBodySphere& A, QBodySphere& B ) {
 	QFloat MassSum = B.InvMass + A.InvMass;
 	return_if_value( false, MassSum == QFloat::Zero );
 
-	QFloat RadiusSum = B.Radius + A.Radius;
+	QFloat RadiusSum = B.Radius + A.Radius; // Larger than Magnitude //
 
 	QVec Line = B.Pos - A.Pos;
 	QFloat Mag = Line.MagnitudeSquared();
 	
 	if ( Mag < (RadiusSum*RadiusSum) ) {
-		Mag = Line.NormalizeRet() - RadiusSum;
+		Mag = RadiusSum - Line.NormalizeRet();
+		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
+		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
+		return true;
+	}
+	return false;
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline bool Solve_Body( QBodyAABB& A, QBodySphere& B ) {
+	QFloat MassSum = B.InvMass + A.InvMass;
+	return_if_value( false, MassSum == QFloat::Zero );
+
+	QFloat RadiusSum = B.Radius; // Larger than Magnitude //
+
+	QVec ANearestPoint = A.GetRect().NearestPoint( B.Pos );
+	
+	QVec Line = B.Pos - ANearestPoint;
+	QFloat Mag = Line.MagnitudeSquared();
+	
+	if ( Mag < (RadiusSum*RadiusSum) ) {
+		Mag = RadiusSum - Line.NormalizeRet();
 		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
 		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
 		return true;
