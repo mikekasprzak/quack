@@ -5,7 +5,8 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "Engine.h"
 // - ------------------------------------------------------------------------------------------ - //
-
+using namespace QK;
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 // the constructor //
@@ -143,7 +144,7 @@ SQInteger qk_engine_tostring( HSQUIRRELVM v ) {
 //	return SQ_VOID;
 //}
 // - ------------------------------------------------------------------------------------------ - //
-_FUNC_TYPEOF(QkEngine,qk_engine_typeof,"QkEngine",8);
+_FUNC_TYPEOF(QEngine,qk_engine_typeof,"QkEngine",8);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -179,14 +180,14 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 	
 	int Root = sq_gettop(v); // root table pos //
 	{
-		_ADD_CLASS_START(QkEngine,"QkEngine",QK_TAG_ENGINE);
+		_ADD_CLASS_START(QEngine,"QkEngine",QK_TAG_ENGINE);
 		_CLASS_ADDFUNC(qk_engine_constructor,constructor);
 		_CLASS_ADDFUNC(qk_engine_get,_get);
 		_CLASS_ADDFUNC(qk_engine_set,_set);
 		_CLASS_ADDFUNC_STATIC(qk_engine_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_engine_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_engine_cloned,_cloned);
-		_ADD_CLASS_END(QkEngine);
+		_ADD_CLASS_END(QEngine);
 	}
 	
 	return SQ_OK;

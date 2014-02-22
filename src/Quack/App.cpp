@@ -99,7 +99,7 @@ GelVert2 OutBesier;
 GelVert2 InBesier2;
 GelVert2 OutBesier2;
 
-QkEngine Engine;
+QK::QEngine Engine;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -501,7 +501,7 @@ void AppInit() {
 	{
 		Log("**** ENGINE");
 
-		AddCommon_QkEngine( App::Engine, Vector2D(0,0) );
+		QK::AddDummy_QEngine( App::Engine, Vector2D(0,0) );
 
 		Log("**** DONE");
 	}
