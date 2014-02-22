@@ -17,7 +17,7 @@ bool QBody::Solve( QBody& Vs ) {
 	}
 	else if ( A.Type == QB_SPHERE ) {
 		if ( B.Type == QB_AABB ) { return true; }
-		else if ( B.Type == QB_SPHERE ) { return true; }
+		else if ( B.Type == QB_SPHERE ) { return Solve_Body( *(QBodySphere*)A.Data, *(QBodySphere*)B.Data ); }
 	}
 	
 	// QB_NULL type tests will fall through, so no need to check for them //
