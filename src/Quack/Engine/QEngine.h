@@ -143,6 +143,11 @@ public:
 	QGetBodyFunc	GetBody;
 	QStepFunc		Step;
 	QDrawFunc		Draw;
+	
+public:
+	inline void UpdateRect() {
+		Rect = GetRect( Data );
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Engine //
