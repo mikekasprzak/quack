@@ -81,6 +81,8 @@ _PRIMITIVE_DRAW_RADIUS(qkDrawSquareFill,RadiusRect,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(qkDrawDiamondFill,Diamond,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(qkDrawTriangleFill,Circle,GEL_TRIANGLE_FAN,3);
 // - ------------------------------------------------------------------------------------------ - //
+#undef _PRIMITIVE_DRAW_RADIUS
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _PRIMITIVE_DRAW_CAPSULE(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_, ... ) \
@@ -158,6 +160,8 @@ _PRIMITIVE_DRAW_CAPSULE(qkDrawFlatCapsule,FlatCapsule,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_CAPSULE(qkDrawCapsuleFill,Capsule,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_CAPSULE(qkDrawDiamondCapsuleFill,DiamondCapsule,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_CAPSULE(qkDrawFlatCapsuleFill,FlatCapsule,GEL_TRIANGLE_FAN);
+// - ------------------------------------------------------------------------------------------ - //
+#undef _PRIMITIVE_DRAW_CAPSULE
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
