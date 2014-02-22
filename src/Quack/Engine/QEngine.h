@@ -18,19 +18,33 @@ enum {
 	QB_NULL = 0,
 
 	// Normal -- Physical Objects //
-	QB_AABB = 1, 	// Rectangle //
-	QB_SPHERE,		// Circle //
-	QB_POLY,		// Polygon (mesh?) //
-
-	// Sensors -- Detect Collisions only, and send messages //
-	QB_SENSOR_AABB,
-	QB_SENSOR_SPHERE,
-	QB_SENSOR_POLY,
+	QB_NORMAL_START = 1,
+		QB_AABB = QB_NORMAL_START, 	// Rectangle //
+		QB_SPHERE,					// Circle //
+		QB_POLY,					// Polygon (mesh?) //
+	QB_NORMAL_END,
 
 	// Statics -- Immoble Objects of Infinite Mass //
-	QB_STATIC_AABB,
-	QB_STATIC_SPHERE,
-	QB_STATIC_POLY,
+	QB_STATIC_START,
+		QB_STATIC_AABB = QB_STATIC_START,
+		QB_STATIC_SPHERE,
+		QB_STATIC_POLY,
+	QB_STATIC_END,
+
+	// Sensors -- Detect Collisions only, and send messages //
+	QB_SENSOR_START,
+		QB_SENSOR_AABB = QB_SENSOR_START,
+		QB_SENSOR_SPHERE,
+		QB_SENSOR_POLY,
+	QB_SENSOR_END,
+
+	// More Constants //
+	QB_SOLID_START =	QB_NORMAL_START,
+	QB_SOLID_END = 		QB_STATIC_END,	
+
+	QB_NORMAL_COUNT = QB_NORMAL_END - QB_NORMAL_START,
+	QB_STATIC_COUNT = QB_STATIC_END - QB_STATIC_START,
+	QB_SENSOR_COUNT = QB_SENSOR_END - QB_SENSOR_START,
 };
 // - ------------------------------------------------------------------------------------------ - //
 // QObj -- Quack Object (Entity) //
@@ -68,6 +82,27 @@ public:
 	inline QFloat GetMass() const {
 		return_if_value( QFloat::Zero, HasInfiniteMass() );		
 		return QFloat::One / GetInvMass( this );
+	}
+	
+	inline bool IsNormal() const {
+		if ( Type >= QB_NORMAL_START )
+			return Type < QB_NORMAL_END;
+		return false;
+	}
+	inline bool IsSensor() const {
+		if ( Type >= QB_SENSOR_START )
+			return Type < QB_SENSOR_END;
+		return false;
+	}
+	inline bool IsStatic() const {
+		if ( Type >= QB_STATIC_START )
+			return Type < QB_STATIC_END;
+		return false;
+	}
+	inline bool IsSolid() const {
+		if ( Type >= QB_SOLID_START )
+			return Type < QB_SOLID_END;
+		return false;
 	}
 
 public:	
