@@ -8,7 +8,7 @@ SQInteger register_qkEngine(HSQUIRRELVM v);
 #include "QEngine.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "QBodyAABB.h"
-//#include "QBodySphere.h"
+#include "QBodySphere.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "QObjDummy.h"
 #include "QObjBoxy.h"
