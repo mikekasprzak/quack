@@ -1412,26 +1412,52 @@ _SWIZZLE4( Vector3D, Vector4D, 1,1,1,1 );
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector2D ClosestPointOnLine( const Vector2D& A, const Vector2D& B, const Vector2D& P ) {
+inline Vector2D NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, const Vector2D& Pt ) {
 	Vector2D Line = B - A;
 	Vector2D LineNormal = Line;
 	Real LineLength = LineNormal.NormalizeRet();
 	
-	Vector2D Ray = P - A;
+	Vector2D Ray = Pt - A;
 	
-	Real DotLength = dot(LineNormal, Ray);
+	Real PosOnLine = dot(LineNormal, Ray);
 	
-	if ( DotLength < Real::Zero ) {
-		DotLength = Real::Zero;
+	if ( PosOnLine < Real::Zero ) {
+		PosOnLine = Real::Zero;
 	}
-	if ( DotLength > LineLength ) {
-		DotLength = LineLength;
+	if ( PosOnLine > LineLength ) {
+		PosOnLine = LineLength;
 	}
 	
-	return A + (LineNormal * DotLength);
+	return A + (LineNormal * PosOnLine);
+}
+// - ------------------------------------------------------------------------------------------ - //
+struct Vec2CPOL {
+	Vector2D LineNormal;
+	Real LineLength;
+	Real PosOnLine;
+};
+// - ------------------------------------------------------------------------------------------ - //
+inline Vec2CPOL Calc_NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, const Vector2D& Pt ) {
+	Vec2CPOL Ret;
+	
+	Vector2D Line = B - A;
+	Ret.LineNormal = Line;
+	Ret.LineLength = Ret.LineNormal.NormalizeRet();
+	
+	Vector2D Ray = Pt - A;
+	
+	Ret.PosOnLine = dot(Ret.LineNormal, Ray);
+	
+	if ( Ret.PosOnLine < Real::Zero ) {
+		Ret.PosOnLine = Real::Zero;
+	}
+	if ( Ret.PosOnLine > Ret.LineLength ) {
+		Ret.PosOnLine = Ret.LineLength;
+	}
+	
+	return Ret;
 } 
 // - ------------------------------------------------------------------------------------------ - //
-
 
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __Geometry_Vector_H__ //

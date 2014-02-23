@@ -502,9 +502,11 @@ void AppInit() {
 		Log("**** ENGINE");
 
 //		QK::AddDummy_QEngine( App::Engine, Vector2D(0,0) );
-		QK::AddBoxy_QEngine( App::Engine, Vector2D(-64-13,64) );
-		QK::AddBoxy_QEngine( App::Engine, Vector2D(32,64) );
-		QK::AddBally_QEngine( App::Engine, Vector2D(0,144), Real(20) );
+//		QK::AddBoxy_QEngine( App::Engine, Vector2D(-64-13,64) );
+//		QK::AddBoxy_QEngine( App::Engine, Vector2D(32,64) );
+//		QK::AddBally_QEngine( App::Engine, Vector2D(0,144), Real(20) );
+		QK::AddBally_QEngine( App::Engine, Vector2D(0,48), Real(16) );
+		QK::AddCappy_QEngine( App::Engine, Vector2D(1,144) /*, ...*/ );
 		QK::AddBoxyStatic_QEngine( App::Engine, Vector2D(0,-32), Vector2D(64,16) );
 
 		Log("**** DONE");
