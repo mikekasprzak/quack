@@ -23,13 +23,15 @@ enum {
 	QB_NORMAL_START = 1,
 		QB_AABB = QB_NORMAL_START, 	// Rectangle //
 		QB_SPHERE,					// Circle //
-		QB_POLY,					// Polygon (mesh?) //
+		QB_CAPSULE,					// Capsule //
+//		QB_POLY,					// Polygon (mesh?) //
 	QB_NORMAL_END,
 
 	// Statics -- Immoble Objects of Infinite Mass //
 	QB_STATIC_START,
 		QB_STATIC_AABB = QB_STATIC_START,
 		QB_STATIC_SPHERE,
+		QB_STATIC_CAPSULE,
 		QB_STATIC_POLY,
 	QB_STATIC_END,
 
@@ -37,6 +39,7 @@ enum {
 	QB_SENSOR_START,
 		QB_SENSOR_AABB = QB_SENSOR_START,
 		QB_SENSOR_SPHERE,
+		QB_SENSOR_CAPSULE,
 		QB_SENSOR_POLY,
 	QB_SENSOR_END,
 
@@ -57,6 +60,7 @@ enum {
 	QO_BOXY,		// Dumb Simple Box Shaped Physical Object //
 	QO_BOXY_STATIC,	// Dumb Simple Box Shaped Static Solid Object //
 	QO_BALLY,		// Dumb Simple Ball Shaped Physical Object //
+	QO_CAPPY,		// Dumb Simple Capsule Shaped Physical Object (Does not physically rotate) //
 };
 // - ------------------------------------------------------------------------------------------ - //
 
