@@ -99,25 +99,28 @@ inline bool Solve_Body( QBodySphere& A, QBodyCapsule& B ) {
 	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
-//inline bool Solve_Body( QBodyAABB& A, QBodySphere& B ) {
-//	QFloat MassSum = B.InvMass + A.InvMass;
-//	return_if_value( false, MassSum == QFloat::Zero );
-//
-//	QFloat RadiusSum = B.Radius; // Larger than Magnitude //
-//
-//	QVec ANearestPoint = A.GetRect().NearestPoint( B.Pos );
-//	
-//	QVec Line = B.Pos - ANearestPoint;
-//	QFloat Mag = Line.MagnitudeSquared();
-//	
-//	if ( Mag < (RadiusSum*RadiusSum) ) {
-//		Mag = RadiusSum - Line.NormalizeRet();
-//		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
-//		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
-//		return true;
-//	}
-//	return false;
-//}
+inline bool Solve_Body( QBodyAABB& A, QBodyCapsule& B ) {
+	QFloat MassSum = B.InvMass + A.InvMass;
+	return_if_value( false, MassSum == QFloat::Zero );
+
+	QVec BPos = NearestPoint_on_Line(B.Pos,B.Pos+B.Line,A.Pos);
+	QFloat BRadius = B.RadiusA; // FIX ME //
+
+	QFloat RadiusSum = BRadius; // Larger than Magnitude //
+
+	QVec ANearestPoint = A.GetRect().NearestPoint( BPos );
+	
+	QVec Line = BPos - ANearestPoint;
+	QFloat Mag = Line.MagnitudeSquared();
+	
+	if ( Mag < (RadiusSum*RadiusSum) ) {
+		Mag = RadiusSum - Line.NormalizeRet();
+		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
+		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
+		return true;
+	}
+	return false;
+}
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
 // - ------------------------------------------------------------------------------------------ - //
