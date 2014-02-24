@@ -33,6 +33,8 @@ public:
 		Radius( _Radius ),
 		Old( _Pos ),
 		InvMass( _InvMass ),
+		Friction( QFloat::One ),
+		Restitution( QFloat::One ),
 		Accum( QVec::Zero )
 	{
 	}
@@ -57,8 +59,21 @@ public:
 		Restitution = _Restitution;
 	}
 
-	inline const QVec GetVelocity() const {
+	inline QVec GetVelocity() const {
 		return Pos - Old; // Old -> Pos, Start -> Dest, A -> B, Dest (B) always goes first //
+	}
+	inline QFloat GetMass() const {
+		return QFloat::One / InvMass;
+	}
+	inline const QFloat& GetFriction() const {
+		return Friction;
+	}
+	inline const QFloat& GetRestitution() const {
+		return Restitution;
+	}
+
+	inline void AddForce( const QVec& Force ) {
+		Accum += Force;
 	}
 
 public:
@@ -69,27 +84,24 @@ public:
 
 //	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }
 	inline bool Step( const QProp& Prop ) {
-		QVec Velocity = GetVelocity();
-		Old = Pos;
-		// Accum is (Accum * TimeStep * TimeStep), but TimeStep is 1 so it cancels out. //
-		Pos += Velocity + Accum;
-		
-		// Instead of setting the Accumulator to 0, set it equal to Gravity //
-		Accum = Prop.Gravity;
-		
-		return true;
-	}
-
-	inline void AddForce( const QVec& Force ) {
-		Accum += Force;
+		return DoStep_Body( *this, Prop );
+//		QVec Velocity = GetVelocity();
+//		Old = Pos;
+//		// Accum is (Accum * TimeStep * TimeStep), but TimeStep is 1 so it cancels out. //
+//		Pos += Velocity + Accum;
+//		
+//		// Instead of setting the Accumulator to 0, set it equal to Gravity //
+//		Accum = Prop.Gravity;
+//		
+//		return true;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodySphere& A, QBodySphere& B ) {
-	QFloat MassSum = B.InvMass + A.InvMass;
-	return_if_value( false, MassSum == QFloat::Zero );
+//	QFloat MassSum = B.InvMass + A.InvMass;
+//	return_if_value( false, MassSum == QFloat::Zero );
 
-	return FinishSolve_Body( A, B, B.Pos-A.Pos, B.Radius+A.Radius, MassSum );
+	return FinishSolve_Body( A, B, B.Pos-A.Pos, B.Radius+A.Radius );
 //
 //	QFloat RadiusSum = B.Radius + A.Radius; // Larger than Magnitude //
 //
@@ -106,12 +118,12 @@ inline bool Solve_Body( QBodySphere& A, QBodySphere& B ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyAABB& A, QBodySphere& B ) {
-	QFloat MassSum = B.InvMass + A.InvMass;
-	return_if_value( false, MassSum == QFloat::Zero );
+//	QFloat MassSum = B.InvMass + A.InvMass;
+//	return_if_value( false, MassSum == QFloat::Zero );
 
 	QVec ANearestPoint = A.GetRect().NearestPoint( B.Pos );
 
-	return FinishSolve_Body( A, B, B.Pos-ANearestPoint, B.Radius, MassSum );
+	return FinishSolve_Body( A, B, B.Pos-ANearestPoint, B.Radius );
 
 //	QFloat RadiusSum = B.Radius; // Larger than Magnitude //
 //
