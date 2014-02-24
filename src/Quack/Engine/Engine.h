@@ -8,6 +8,7 @@ SQInteger register_qkEngine(HSQUIRRELVM v);
 #include "QEngine.h"
 // - ------------------------------------------------------------------------------------------ - //
 // Objects have only one body, but can multiple sensors. Bodies must be convex. //
+#include "QBody.h"
 #include "QBodyAABB.h"
 #include "QBodySphere.h"
 #include "QBodyCapsule.h"
