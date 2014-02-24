@@ -84,11 +84,6 @@ public:
 //	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }
 	inline bool Step( const QProp& Prop ) {
 		return DoStep_Body( *this, Prop );
-//		QVec Velocity = Pos - Old;
-//		Old = Pos;
-//		Pos += Velocity + Prop.Gravity;
-//		
-//		return true;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
