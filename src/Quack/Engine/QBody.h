@@ -23,13 +23,14 @@ template<typename T1, typename T2>
 inline bool FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& RadiusSum ) {
 	QFloat MassSum = B.InvMass + A.InvMass;
 	return_if_value( false, MassSum == QFloat::Zero );
+	QFloat InvMassSum = QFloat::One / MassSum;
 
 	QFloat Mag = Line.MagnitudeSquared();
 	
 	if ( Mag < (RadiusSum*RadiusSum) ) {
 		Mag = RadiusSum - Line.NormalizeRet();
-		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
-		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
+		A.Pos -= (Line * Mag) * (A.InvMass * InvMassSum);
+		B.Pos += (Line * Mag) * (B.InvMass * InvMassSum);
 		return true;
 	}
 	return false;
