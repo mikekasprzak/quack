@@ -128,7 +128,7 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Negation Operator //
-	inline const Matrix2x2 operator - ( ) const {
+	inline Matrix2x2 operator - ( ) const {
 		return Matrix2x2(
 			-Array[0], -Array[1],
 			-Array[2], -Array[3]
@@ -152,7 +152,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate Transpose of Matrix //
-	inline const Matrix2x2 Transpose() {
+	inline Matrix2x2 Transpose() {
 		return Matrix2x2(
 			Array[0], Array[2],
 			Array[1], Array[3]
@@ -160,19 +160,19 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate Adjoint of Matrix //
-	inline const Matrix2x2 Adjoint() {
+	inline Matrix2x2 Adjoint() {
 		return Matrix2x2( Array[3], -Array[1], -Array[2], Array[0] );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate the determinant, for the inverse //
-	inline const Real Determinant() const {
+	inline Real Determinant() const {
 		return (Array[0]*Array[3]) - (Array[1]*Array[2]);
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate the Inverse //
-	inline const Matrix2x2 Inverse() {
+	inline Matrix2x2 Inverse() {
 		Real Det = Determinant();
 
 		if ( Det == Real::Zero ) {
@@ -189,19 +189,19 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Element helper functions, for making some of the more complex code more readable //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e11() const {
+	inline Real e11() const {
 		return Matrix(0,0);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e21() const {
+	inline Real e21() const {
 		return Matrix(1,0);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e12() const {
+	inline Real e12() const {
 		return Matrix(0,1);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e22() const {
+	inline Real e22() const {
 		return Matrix(1,1);
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -222,7 +222,7 @@ public:
 	// Regular Functions //
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a scaling Matrix from a vector //
-	inline static const Matrix2x2 Scale( const Vector2D& _Vs ) {
+	inline static Matrix2x2 Scale( const Vector2D& _Vs ) {
 		Matrix2x2 Matrix(
 			_Vs.x,
 			Real::Zero,
@@ -234,7 +234,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a scaling matrix from a scalar //
-	inline static const Matrix2x2 Scale( const Real& Scalar ) {
+	inline static Matrix2x2 Scale( const Real& Scalar ) {
 		Matrix2x2 Matrix(
 			Scalar,
 			Real::Zero,
@@ -246,7 +246,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation matrix from a given angle //
-	inline static const Matrix2x2 Rotate( const Real& Angle ) {
+	inline static Matrix2x2 Rotate( const Real& Angle ) {
 		Real AngleCos = Angle.Cos();
 		Real AngleSin = Angle.Sin();
 		
@@ -261,7 +261,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation and scaling matrix from a given angle and scalar //
-	inline static const Matrix2x2 RotateScale( const Real& Angle, const Real& Scalar ) {
+	inline static Matrix2x2 RotateScale( const Real& Angle, const Real& Scalar ) {
 		Real AngleCos = Angle.Cos();
 		Real AngleSin = Angle.Sin();
 		
@@ -276,7 +276,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates an orientation matrix from a vector //
-	inline static const Matrix2x2 Orientation( const Vector2D& Vec ) {
+	inline static Matrix2x2 Orientation( const Vector2D& Vec ) {
 		Matrix2x2 Matrix(
 			Vec.x,
 			Vec.y,
@@ -290,7 +290,7 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation Matrix from an angle scalar //
-	inline static const Matrix2x2 RotationMatrix( Real Angle ) {
+	inline static Matrix2x2 RotationMatrix( Real Angle ) {
 		Angle /= 360.0f;
 		Matrix2x2 Matrix(
 			Real::Cos(Angle), Real::Sin(Angle),
@@ -307,12 +307,12 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 // External Scalar Maths //
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix2x2 operator - ( const Real& a, const Matrix2x2& b ) {
+inline Matrix2x2 operator - ( const Real& a, const Matrix2x2& b ) {
 	Matrix2x2 Ret( a - b.Array[0], a - b.Array[1], a - b.Array[2], a - b.Array[3] );
 	return Ret;
 }
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Matrix2x2 operator / ( const Real& a, const Matrix2x2& b ) {
+inline Matrix2x2 operator / ( const Real& a, const Matrix2x2& b ) {
 	Matrix2x2 Ret( a / b.Array[0], a / b.Array[1], a / b.Array[2], a / b.Array[3] );
 	return Ret;
 }

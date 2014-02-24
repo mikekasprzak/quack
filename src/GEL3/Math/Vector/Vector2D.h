@@ -83,36 +83,36 @@ public:
 		return (x * _Vs.x) + (y * _Vs.y);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const Real dot( const Vector2D& a, const Vector2D& b ) {
+	inline static Real dot( const Vector2D& a, const Vector2D& b ) {
 		return (a.x * b.x) + (a.y * b.y);
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Component-wise Multipy (no longer dot product) //
-//	inline const Vector2D operator * ( const Vector2D& _Vs ) const {
+//	inline Vector2D operator * ( const Vector2D& _Vs ) const {
 //		return Vector2D( (x * _Vs.x), (y * _Vs.y) );
 //	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Like the GLSL parallel, blends between two vectors by alpha (0 = a returned, 1 = b returned) //
-	inline const Vector2D mix( const Vector2D& _Vs, const Real Alpha ) const {
+	inline Vector2D mix( const Vector2D& _Vs, const Real Alpha ) const {
 		return ((*this) * (Real::One - Alpha)) + (_Vs * Alpha);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const Vector2D mix( const Vector2D& a, const Vector2D& b, const Real Alpha ) {
+	inline static Vector2D mix( const Vector2D& a, const Vector2D& b, const Real Alpha ) {
 		return (a * (Real::One - Alpha)) + (b * Alpha);
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Negate Operator //
-	inline const Vector2D operator - ( ) const {
+	inline Vector2D operator - ( ) const {
 		return Vector2D( -x, -y );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real SumOf() const {
+	inline Real SumOf() const {
 		return x+y;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real ProductOf() const {
+	inline Real ProductOf() const {
 		return x*y;
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -149,7 +149,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that returns the Magnitude after calculating the normalized vector //
-	inline const Real NormalizeRet() {
+	inline Real NormalizeRet() {
 		Real Mag( Magnitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -160,7 +160,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that only returns the normal //
-	inline const Vector2D Normal() const {
+	inline Vector2D Normal() const {
 		Real Mag( Magnitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -173,7 +173,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The length of a vector //
-	inline const Real Magnitude() const {
+	inline Real Magnitude() const {
 		Real Mag( MagnitudeSquared() );
 //		Mag = Mag.Sqrt();
 	
@@ -184,7 +184,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The squared length of a vector //
-	inline const Real MagnitudeSquared() const {
+	inline Real MagnitudeSquared() const {
 		return (x * x) + (y * y);
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -200,7 +200,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that returns the Magnitude after calculating the normalized vector //
-	inline const Real ManhattanNormalizeRet() {
+	inline Real ManhattanNormalizeRet() {
 		Real Mag( Manhattan() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -211,7 +211,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that only returns the normal //
-	inline const Vector2D ManhattanNormal() const {
+	inline Vector2D ManhattanNormal() const {
 		Real Mag( Manhattan() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -224,7 +224,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The sum of all absolute value parts //
-	inline const Real Manhattan() const {
+	inline Real Manhattan() const {
 		return x.Abs() + y.Abs();
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -243,7 +243,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that returns the Magnitude after calculating the normalized vector //
-	inline const Real MaxitudeNormalizeRet() {
+	inline Real MaxitudeNormalizeRet() {
 		Real Mag( Maxitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -254,7 +254,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that only returns the normal //
-	inline const Vector2D MaxitudeNormal() const {
+	inline Vector2D MaxitudeNormal() const {
 		Real Mag( Maxitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -267,7 +267,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The greatest absolute value part //
-	inline const Real Maxitude() const {
+	inline Real Maxitude() const {
 		return x.Abs() > y.Abs() ? x.Abs() : y.Abs();
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -285,7 +285,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that returns the Magnitude after calculating the normalized vector //
-	inline const Real MinitudeNormalizeRet() {
+	inline Real MinitudeNormalizeRet() {
 		Real Mag( Minitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -296,7 +296,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that only returns the normal //
-	inline const Vector2D MinitudeNormal() const {
+	inline Vector2D MinitudeNormal() const {
 		Real Mag( Minitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -309,7 +309,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The smallest absolute value part //
-	inline const Real Minitude() const {
+	inline Real Minitude() const {
 		return x.Abs() < y.Abs() ? x.Abs() : y.Abs();
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -355,25 +355,25 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D Min( const Vector2D& _Vs ) const {
+	inline Vector2D Min( const Vector2D& _Vs ) const {
 		Vector2D Vec = *this;
 		Vec.MinClamp( _Vs );
 		return Vec;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D Max( const Vector2D& _Vs ) const {
+	inline Vector2D Max( const Vector2D& _Vs ) const {
 		Vector2D Vec = *this;
 		Vec.MaxClamp( _Vs );
 		return Vec;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D Min( const Real& _x, const Real& _y ) const {
+	inline Vector2D Min( const Real& _x, const Real& _y ) const {
 		Vector2D Vec = *this;
 		Vec.MinClamp( _x, _y );
 		return Vec;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D Max( const Real& _x, const Real& _y ) const {
+	inline Vector2D Max( const Real& _x, const Real& _y ) const {
 		Vector2D Vec = *this;
 		Vec.MaxClamp( _x, _y );
 		return Vec;
@@ -427,7 +427,7 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Return a special vector only with the x or y part that is largest //
 	// If you want this normalized, you must normalize it yourself, appropriately //
-	inline const Vector2D AxisAligned() const {
+	inline Vector2D AxisAligned() const {
 		if ( x.Abs() >= y.Abs() )
 			return Vector2D( x, 0 );
 		else
@@ -442,33 +442,33 @@ public:
 	// Normally I have clockwise and counterclockwise variants, but potential changes in the //
 	//   Mapping co-ordinates make counterclockwise clockwise, and vice versa.  So instead, use //
 	//   Tangent() and -Tangent() for the respected sides. //
-	inline const Vector2D Tangent() const {
+	inline Vector2D Tangent() const {
 		return Vector2D( y, -x );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// A 45 degree rotation of a vector.  Negating doesn't flip this, you want the -Tangent() of //
 	//   the rotation. i.e. -v.Rotate45().Tangent().  Alternatively, RotateNegative45() does this //
-	inline const Vector2D Rotate45() const {
+	inline Vector2D Rotate45() const {
 		return Vector2D( x + y, y - x ) * Real::Sine45;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D RotateNegative45() const {
+	inline Vector2D RotateNegative45() const {
 		return Vector2D( x - y, y + x ) * Real::Sine45;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const Vector2D Angle( const Real _Angle ) {
+	inline static Vector2D Angle( const Real _Angle ) {
 		return Vector2D( Real::Sin(_Angle), -Real::Cos(_Angle) );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 public:
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D FlipX() {
+	inline Vector2D FlipX() {
 		return Vector2D( -x, y );
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D FlipY() {
+	inline Vector2D FlipY() {
 		return Vector2D( x, -y );
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -489,36 +489,36 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Explicit Conversion Functions //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const class Vector3D ToVector3D() const;
-	inline const class Vector4D ToVector4D() const;
-	inline const class Vector3D ToHomoVector3D() const;
-	inline const class Vector4D ToHomoVector4D() const;
+	inline class Vector3D ToVector3D() const;
+	inline class Vector4D ToVector4D() const;
+	inline class Vector3D ToHomoVector3D() const;
+	inline class Vector4D ToHomoVector4D() const;
 
 	
 	inline const class Matrix2x1& ToMatrix2x1() const;
 	inline const class Matrix1x2& ToMatrix1x2() const;
-//	inline const class Matrix3x1& ToMatrix3x1() const;
-//	inline const class Matrix1x3& ToMatrix1x3() const;
-//	inline const class Matrix3x1& ToMatrix4x1() const;
-//	inline const class Matrix1x3& ToMatrix1x4() const;
+//	inline class Matrix3x1 ToMatrix3x1() const;
+//	inline class Matrix1x3 ToMatrix1x3() const;
+//	inline class Matrix3x1 ToMatrix4x1() const;
+//	inline class Matrix1x3 ToMatrix1x4() const;
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Projection //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D ApplyMatrix( const class Matrix2x2& ) const;
-	inline const Vector2D ApplyMatrix( const class Matrix3x3& ) const;
-//	inline const Vector2D ApplyMatrix( const class Matrix2x3& ) const;
-//	inline const Vector2D ApplyMatrix( const class Matrix3x2& ) const;
-	inline const Vector2D ApplyMatrix( const class Matrix4x4& ) const;
+	inline Vector2D ApplyMatrix( const class Matrix2x2& ) const;
+	inline Vector2D ApplyMatrix( const class Matrix3x3& ) const;
+//	inline Vector2D ApplyMatrix( const class Matrix2x3& ) const;
+//	inline Vector2D ApplyMatrix( const class Matrix3x2& ) const;
+	inline Vector2D ApplyMatrix( const class Matrix4x4& ) const;
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D XAxis() const {
+	inline Vector2D XAxis() const {
 		return Vector2D( x, Real::Zero );
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector2D YAxis() const {
+	inline Vector2D YAxis() const {
 		return Vector2D( Real::Zero, y );
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -858,12 +858,12 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 // External Scalar Maths //
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector2D operator - ( const Real& a, const Vector2D& b ) {
+inline Vector2D operator - ( const Real& a, const Vector2D& b ) {
 	Vector2D Ret( a - b.x, a - b.y );
 	return Ret;
 }
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Vector2D operator / ( const Real& a, const Vector2D& b ) {
+inline Vector2D operator / ( const Real& a, const Vector2D& b ) {
 	Vector2D Ret( a / b.x, a / b.y );
 	return Ret;
 }
@@ -872,11 +872,11 @@ inline const Vector2D operator / ( const Real& a, const Vector2D& b ) {
 // -- ---------------------------------------------------------------------------------------- -- //
 // External Vector Operations, for GLSL familiar syntax //
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Real dot( const Vector2D& a, const Vector2D& b ) {
+inline Real dot( const Vector2D& a, const Vector2D& b ) {
 	return (a.x * b.x) + (a.y * b.y);
 }
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Vector2D mix( const Vector2D& a, const Vector2D& b, const Real Alpha ) {
+inline Vector2D mix( const Vector2D& a, const Vector2D& b, const Real Alpha ) {
 	return (a * (Real::One - Alpha)) + (b * Alpha);
 }
 // -- ---------------------------------------------------------------------------------------- -- //

@@ -25,21 +25,21 @@
 // [ 0 1 ] //
 // [ 2 3 ] //
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix1x2 operator * ( const Matrix2x2& _a, const Matrix1x2& _b ) {
+inline Matrix1x2 operator * ( const Matrix2x2& _a, const Matrix1x2& _b ) {
 	Matrix1x2 Temp;
 	Temp.x = (_a.Array[ 0 ] * _b.x) + (_a.Array[ 1 ] * _b.y);
 	Temp.y = (_a.Array[ 2 ] * _b.x) + (_a.Array[ 3 ] * _b.y);
 	return Temp;	
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix2x1 operator * ( const Matrix2x1& _a, const Matrix2x2& _b ) {
+inline Matrix2x1 operator * ( const Matrix2x1& _a, const Matrix2x2& _b ) {
 	Matrix2x1 Temp;
 	Temp.x = (_a.x * _b.Array[ 0 ]) + (_a.y * _b.Array[ 2 ]);
 	Temp.y = (_a.x * _b.Array[ 1 ]) + (_a.y * _b.Array[ 3 ]);
 	return Temp;		
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix1x3 operator * ( const Matrix3x3& _a, const Matrix1x3& _b ) {
+inline Matrix1x3 operator * ( const Matrix3x3& _a, const Matrix1x3& _b ) {
 	Matrix1x3 Temp;
 	Temp.x = (_a.Array[ 0 ] * _b.x) + (_a.Array[ 1 ] * _b.y) + (_a.Array[ 2 ] * _b.z);
 	Temp.y = (_a.Array[ 3 ] * _b.x) + (_a.Array[ 4 ] * _b.y) + (_a.Array[ 5 ] * _b.z);
@@ -47,7 +47,7 @@ inline const Matrix1x3 operator * ( const Matrix3x3& _a, const Matrix1x3& _b ) {
 	return Temp;	
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix3x1 operator * ( const Matrix3x1& _a, const Matrix3x3& _b ) {
+inline Matrix3x1 operator * ( const Matrix3x1& _a, const Matrix3x3& _b ) {
 	Matrix3x1 Temp;
 	Temp.x = (_a.x * _b.Array[ 0 ]) + (_a.y * _b.Array[ 3 ]) + (_a.z * _b.Array[ 6 ]);
 	Temp.y = (_a.x * _b.Array[ 1 ]) + (_a.y * _b.Array[ 4 ]) + (_a.z * _b.Array[ 7 ]);
@@ -55,7 +55,7 @@ inline const Matrix3x1 operator * ( const Matrix3x1& _a, const Matrix3x3& _b ) {
 	return Temp;		
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix1x4 operator * ( const Matrix4x4& _a, const Matrix1x4& _b ) {
+inline Matrix1x4 operator * ( const Matrix4x4& _a, const Matrix1x4& _b ) {
 	Matrix1x4 Temp;
 	Temp.x = (_a.Array[ 0 ] * _b.x) + (_a.Array[ 1 ] * _b.y) + (_a.Array[ 2 ] * _b.z) + (_a.Array[ 3 ] * _b.w);
 	Temp.y = (_a.Array[ 4 ] * _b.x) + (_a.Array[ 5 ] * _b.y) + (_a.Array[ 6 ] * _b.z) + (_a.Array[ 7 ] * _b.w);
@@ -64,7 +64,7 @@ inline const Matrix1x4 operator * ( const Matrix4x4& _a, const Matrix1x4& _b ) {
 	return Temp;	
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix4x1 operator * ( const Matrix4x1& _a, const Matrix4x4& _b ) {
+inline Matrix4x1 operator * ( const Matrix4x1& _a, const Matrix4x4& _b ) {
 	Matrix4x1 Temp;
 	Temp.x = (_a.x * _b.Array[ 0 ]) + (_a.y * _b.Array[ 4 ]) + (_a.z * _b.Array[ 8 ]) + (_a.w * _b.Array[ 12 ]);
 	Temp.y = (_a.x * _b.Array[ 1 ]) + (_a.y * _b.Array[ 5 ]) + (_a.z * _b.Array[ 9 ]) + (_a.w * _b.Array[ 13 ]);
@@ -77,37 +77,37 @@ inline const Matrix4x1 operator * ( const Matrix4x1& _a, const Matrix4x4& _b ) {
 // - ------------------------------------------------------------------------------------------ - //
 // Apply a matrix transformation to a vector //
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector2D Vector2D::ApplyMatrix( const Matrix2x2& _Vs ) const {
+inline Vector2D Vector2D::ApplyMatrix( const Matrix2x2& _Vs ) const {
 	return (this->ToMatrix2x1() * _Vs).ToVector2D();
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector2D Vector2D::ApplyMatrix( const Matrix3x3& _Vs ) const {
+inline Vector2D Vector2D::ApplyMatrix( const Matrix3x3& _Vs ) const {
 	return (this->ToVector3D().ToMatrix3x1() * _Vs).ToVector3D().ToVector2D();
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector2D Vector2D::ApplyMatrix( const Matrix4x4& _Vs ) const {
+inline Vector2D Vector2D::ApplyMatrix( const Matrix4x4& _Vs ) const {
 	return (this->ToVector4D().ToMatrix4x1() * _Vs).ToVector4D().ToVector2D();
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector3D Vector3D::ApplyMatrix( const Matrix3x3& _Vs ) const {
+inline Vector3D Vector3D::ApplyMatrix( const Matrix3x3& _Vs ) const {
 	return (this->ToMatrix3x1() * _Vs).ToVector3D();
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector3D Vector3D::ApplyMatrix( const Matrix4x4& _Vs ) const {
+inline Vector3D Vector3D::ApplyMatrix( const Matrix4x4& _Vs ) const {
 	return (this->ToMatrix4x1() * _Vs).ToVector3D();
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector4D Vector4D::ApplyMatrix( const Matrix4x4& _Vs ) const {
+inline Vector4D Vector4D::ApplyMatrix( const Matrix4x4& _Vs ) const {
 	return (this->ToMatrix4x1() * _Vs).ToVector4D();
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix4x4 Matrix3x3::ToMatrix4x4() const {
+inline Matrix4x4 Matrix3x3::ToMatrix4x4() const {
 	return Matrix4x4( 
 		Array[0], Array[1], Array[2], Real::Zero,
 		Array[3], Array[4], Array[5], Real::Zero,
