@@ -88,6 +88,25 @@ public:
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
+/*
+	QRect Diff = B.GetRect() - A.GetRect();
+	QVec Line = B.Pos - A.Pos;
+	QFloat DiffRet;
+	// The Size of the overlap region (Diff) determines which direction we push //
+	if ( Diff.Width() < Diff.Height() ) {
+		Line.x = Line.x.Normal() * Diff.Height();
+		Line.y = QFloat::Zero;
+		DiffRet = Diff.Height();
+	}
+	else {
+		Line.x = QFloat::Zero;
+		Line.y = Line.y.Normal() * Diff.Width();
+		DiffRet = Diff.Width();
+	}
+	
+	return FinishSolve_Body( A, B, Line, DiffRet );
+*/
+
 	QFloat MassSum = B.InvMass + A.InvMass;
 	return_if_value( false, MassSum == QFloat::Zero );
 
