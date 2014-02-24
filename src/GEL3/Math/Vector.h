@@ -12,47 +12,47 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-const Vector3D Vector2D::ToVector3D() const {
+Vector3D Vector2D::ToVector3D() const {
 	return Vector3D( x, y, Real::Zero );
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Vector3D Vector2D::ToHomoVector3D() const {
+Vector3D Vector2D::ToHomoVector3D() const {
 	return Vector3D( x, y, Real::One );
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Vector4D Vector2D::ToVector4D() const {
+Vector4D Vector2D::ToVector4D() const {
 	return Vector4D( x, y, Real::Zero, Real::Zero );
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Vector4D Vector2D::ToHomoVector4D() const {
+Vector4D Vector2D::ToHomoVector4D() const {
 	return Vector4D( x, y, Real::One, Real::One );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-const Vector2D Vector3D::ToVector2D() const {
+Vector2D Vector3D::ToVector2D() const {
 	return Vector2D( x, y );
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Vector3D Vector3D::ToHomoVector3D() const {
+Vector3D Vector3D::ToHomoVector3D() const {
 	return Vector3D( x, y, Real::One );
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Vector4D Vector3D::ToVector4D() const {
+Vector4D Vector3D::ToVector4D() const {
 	return Vector4D( x, y, z, Real::Zero );
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Vector4D Vector3D::ToHomoVector4D() const {
+Vector4D Vector3D::ToHomoVector4D() const {
 	return Vector4D( x, y, z, Real::One );
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-const Vector2D Vector4D::ToVector2D() const {
+Vector2D Vector4D::ToVector2D() const {
 	return Vector2D( x, y );
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Vector3D Vector4D::ToVector3D() const {
+Vector3D Vector4D::ToVector3D() const {
 	return Vector3D( x, y, z );
 }
 // - ------------------------------------------------------------------------------------------ - //

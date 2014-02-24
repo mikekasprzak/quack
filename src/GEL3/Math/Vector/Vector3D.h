@@ -91,22 +91,22 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Dot Product //
-	inline const Real dot( const Vector3D& _Vs ) const {
+	inline Real dot( const Vector3D& _Vs ) const {
 		return (x * _Vs.x) + (y * _Vs.y) + (z * _Vs.z);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const Real dot( const Vector3D& a, const Vector3D& b ) {
+	inline static Real dot( const Vector3D& a, const Vector3D& b ) {
 		return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Component-wise Multipy (no longer dot product) //
-//	inline const Vector3D operator * ( const Vector3D& _Vs ) const {
+//	inline Vector3D operator * ( const Vector3D& _Vs ) const {
 //		return Vector3D( (x * _Vs.x), (y * _Vs.y), (z * _Vs.z) );
 //	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Cross product //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D cross( const Vector3D& _Vs ) const {
+	inline Vector3D cross( const Vector3D& _Vs ) const {
 		return Vector3D(
 			(y * _Vs.z) - (z * _Vs.y),
 			(z * _Vs.x) - (x * _Vs.z),
@@ -114,7 +114,7 @@ public:
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const Vector3D cross( const Vector3D& a, const Vector3D b ) {
+	inline static Vector3D cross( const Vector3D& a, const Vector3D b ) {
 		return Vector3D(
 			(a.y * b.z) - (a.z * b.y),
 			(a.z * b.x) - (a.x * b.z),
@@ -124,7 +124,7 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 //	// *note* this is the % sign because it is at the same level as the * and / signs, unlike the //
 //	//        ^ sign, which is at the binary logic level (OR, AND, XOR). //
-//	inline const Vector3D operator % ( const Vector3D& _Vs ) const {
+//	inline Vector3D operator % ( const Vector3D& _Vs ) const {
 //		return Vector3D(
 //			(y * _Vs.z) - (z * _Vs.y),
 //			(z * _Vs.x) - (x * _Vs.z),
@@ -133,32 +133,32 @@ public:
 //	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Like the GLSL parallel, blends between two vectors by alpha (0 = a returned, 1 = b returned) //
-	inline const Vector3D mix( const Vector3D& _Vs, const Real Alpha ) const {
+	inline Vector3D mix( const Vector3D& _Vs, const Real Alpha ) const {
 		return ((*this) * (Real::One - Alpha)) + (_Vs * Alpha);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline static const Vector3D mix( const Vector3D& a, const Vector3D& b, const Real Alpha ) {
+	inline static Vector3D mix( const Vector3D& a, const Vector3D& b, const Real Alpha ) {
 		return (a * (Real::One - Alpha)) + (b * Alpha);
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Negate Operator //
-	inline const Vector3D operator - ( ) const {
+	inline Vector3D operator - ( ) const {
 		return Vector3D( -x, -y, -z );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D Scale( const Vector3D& Vs ) const {
+	inline Vector3D Scale( const Vector3D& Vs ) const {
 		return Vector3D( x * Vs.x, y * Vs.y, z * Vs.z );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real SumOf() const {
+	inline Real SumOf() const {
 		return x+y+z;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real ProductOf() const {
+	inline Real ProductOf() const {
 		return x*y*z;
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -176,7 +176,7 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Regular Functions //
 	// - -------------------------------------------------------------------------------------- - //
-	inline Vector3D& Normalize() {
+	inline const Vector3D& Normalize() {
 		Real Mag( Magnitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -186,7 +186,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that returns the Magnitude after calculating the normalized vector //
-	inline const Real NormalizeRet() {
+	inline Real NormalizeRet() {
 		Real Mag( Magnitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -197,7 +197,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation of Normalize that only returns the normal //
-	inline const Vector3D Normal() const {
+	inline Vector3D Normal() const {
 		Real Mag( Magnitude() );
 	
 		if ( Mag.IsZeroOrLess() )
@@ -210,18 +210,18 @@ public:
 	}	
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation, make all axis of length 1, unless the axis is a zero //
-	inline Vector3D& AxisNormalize() {
+	inline const Vector3D& AxisNormalize() {
 		*this = Vector3D( x.Normal(), y.Normal(), z.Normal() );
 		return *this;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation, returns all axis of length 1, unless the axis is a zero //
-	inline const Vector3D AxisNormal() const {
+	inline Vector3D AxisNormal() const {
 		return Vector3D( x.Normal(), y.Normal(), z.Normal() );
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The length of a vector //
-	inline const Real Magnitude() const {
+	inline Real Magnitude() const {
 		Real Mag( MagnitudeSquared() );
 //		Mag = Mag.Sqrt();
 	
@@ -232,12 +232,12 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The squared length of a vector //
-	inline const Real MagnitudeSquared() const {
+	inline Real MagnitudeSquared() const {
 		return (x * x) + (y * y) + (z * z);
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// The sum of all absolute value parts //
-	inline const Real Manhattan() const {
+	inline Real Manhattan() const {
 		return x.Abs() + y.Abs() + z.Abs();
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -287,25 +287,25 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D Min( const Vector3D& _Vs ) const {
+	inline Vector3D Min( const Vector3D& _Vs ) const {
 		Vector3D Vec = *this;
 		Vec.MinClamp( _Vs );
 		return Vec;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D Max( const Vector3D& _Vs ) const {
+	inline Vector3D Max( const Vector3D& _Vs ) const {
 		Vector3D Vec = *this;
 		Vec.MaxClamp( _Vs );
 		return Vec;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D Min( const Real& _x, const Real& _y, const Real& _z ) const {
+	inline Vector3D Min( const Real& _x, const Real& _y, const Real& _z ) const {
 		Vector3D Vec = *this;
 		Vec.MinClamp( _x, _y, _z );
 		return Vec;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D Max( const Real& _x, const Real& _y, const Real& _z ) const {
+	inline Vector3D Max( const Real& _x, const Real& _y, const Real& _z ) const {
 		Vector3D Vec = *this;
 		Vec.MaxClamp( _x, _y, _z );
 		return Vec;
@@ -316,35 +316,35 @@ public:
 	// General Vector vs. Vector Angle Tests //
 	// - -------------------------------------------------------------------------------------- - //
 	// If it's an Acute angle between vectors, the dot will return a positive number //
-	inline const bool IsAcuteAngle( const Vector3D& _Vs ) const {
+	inline bool IsAcuteAngle( const Vector3D& _Vs ) const {
 		return dot((*this), _Vs) > Real::Zero;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// If it's an obtuse angle between vectors, the dot will return a negative number //
-	inline const bool IsObtuseAngle( const Vector3D& _Vs ) const {
+	inline bool IsObtuseAngle( const Vector3D& _Vs ) const {
 		return dot((*this), _Vs) < Real::Zero;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// If it's a 90 degree angle between vectors, the dot will return zero (or near zero) //
-	inline const bool IsRightAngle( const Vector3D& _Vs ) const {
+	inline bool IsRightAngle( const Vector3D& _Vs ) const {
 		return dot((*this), _Vs).IsZero();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const bool IsZero() const {
+	inline bool IsZero() const {
 		return x.IsZero() && y.IsZero() && z.IsZero();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Variation, that requires the guarentee that the number is positive. Used with magnitude. //
-	inline const bool IsZeroOrLess() const {
+	inline bool IsZeroOrLess() const {
 		return x.IsZeroOrLess() && y.IsZeroOrLess() && z.IsZeroOrLess();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Returns true if this vector is axis aligned, but false if a zero vector //
-	inline const bool IsAxisAligned() const {
+	inline bool IsAxisAligned() const {
 		int Zeroes = 0;
 		if ( x.IsZero() )
 			Zeroes++;
@@ -359,7 +359,7 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Give me a legal Tangent vector to this one. Does not guarentee anything else about it. //
-	inline const Vector3D Tangent() const {
+	inline Vector3D Tangent() const {
 		Vector3D Ret( 1,0,0 );
 		if ( IsAxisAligned() ) {
 			Ret = Vector3D( Real::Sine45, Real::Sine45, 0 );
@@ -369,15 +369,15 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D FlipX() {
+	inline Vector3D FlipX() {
 		return Vector3D( -x, y, z );
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D FlipY() {
+	inline Vector3D FlipY() {
 		return Vector3D( x, -y, z );
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D FlipZ() {
+	inline Vector3D FlipZ() {
 		return Vector3D( x, y, -z );
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -400,38 +400,38 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Explicit Conversion Functions //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const class Vector2D ToVector2D() const;
-	inline const class Vector4D ToVector4D() const;
-	inline const class Vector3D ToHomoVector3D() const;
-	inline const class Vector4D ToHomoVector4D() const;
+	inline class Vector2D ToVector2D() const;
+	inline class Vector4D ToVector4D() const;
+	inline class Vector3D ToHomoVector3D() const;
+	inline class Vector4D ToHomoVector4D() const;
 	
-//	inline const class Matrix2x1& ToMatrix2x1() const;
-//	inline const class Matrix1x2& ToMatrix1x2() const;
+//	inline class Matrix2x1 ToMatrix2x1() const;
+//	inline class Matrix1x2 ToMatrix1x2() const;
 	inline const class Matrix3x1& ToMatrix3x1() const;
 	inline const class Matrix1x3& ToMatrix1x3() const;
-	inline const class Matrix4x1 ToMatrix4x1() const;
-	inline const class Matrix1x4 ToMatrix1x4() const;
+	inline class Matrix4x1 ToMatrix4x1() const;
+	inline class Matrix1x4 ToMatrix1x4() const;
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Projection //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D ApplyMatrix( const class Matrix3x3& ) const;
-	inline const Vector3D ApplyMatrix( const class Matrix4x4& ) const;
-//	inline const Vector3D ApplyMatrix( const class Matrix4x3& ) const;
-//	inline const Vector3D ApplyMatrix( const class Matrix3x4& ) const;
+	inline Vector3D ApplyMatrix( const class Matrix3x3& ) const;
+	inline Vector3D ApplyMatrix( const class Matrix4x4& ) const;
+//	inline Vector3D ApplyMatrix( const class Matrix4x3& ) const;
+//	inline Vector3D ApplyMatrix( const class Matrix3x4& ) const;
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D XAxis() const {
+	inline Vector3D XAxis() const {
 		return Vector3D( x, Real::Zero, Real::Zero );
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D YAxis() const {
+	inline Vector3D YAxis() const {
 		return Vector3D( Real::Zero, y, Real::Zero );
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Vector3D ZAxis() const {
+	inline Vector3D ZAxis() const {
 		return Vector3D( Real::Zero, Real::Zero, z );
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -1364,12 +1364,12 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 // External Scalar Maths //
 // - ------------------------------------------------------------------------------------------ - //
-inline const Vector3D operator - ( const Real& a, const Vector3D& b ) {
+inline Vector3D operator - ( const Real& a, const Vector3D& b ) {
 	Vector3D Ret( a - b.x, a - b.y, a - b.z );
 	return Ret;
 }
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Vector3D operator / ( const Real& a, const Vector3D& b ) {
+inline Vector3D operator / ( const Real& a, const Vector3D& b ) {
 	Vector3D Ret( a / b.x, a / b.y, a / b.z );
 	return Ret;
 }
@@ -1378,11 +1378,11 @@ inline const Vector3D operator / ( const Real& a, const Vector3D& b ) {
 // -- ---------------------------------------------------------------------------------------- -- //
 // External Vector Operations, for GLSL familiar syntax //
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Real dot( const Vector3D& a, const Vector3D& b ) {
+inline Real dot( const Vector3D& a, const Vector3D& b ) {
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 // - -------------------------------------------------------------------------------------- - //
-inline const Vector3D cross( const Vector3D& a, const Vector3D b ) {
+inline Vector3D cross( const Vector3D& a, const Vector3D b ) {
 	return Vector3D(
 		(a.y * b.z) - (a.z * b.y),
 		(a.z * b.x) - (a.x * b.z),
@@ -1390,7 +1390,7 @@ inline const Vector3D cross( const Vector3D& a, const Vector3D b ) {
 		);
 }
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Vector3D mix( const Vector3D& a, const Vector3D& b, const Real Alpha ) {
+inline Vector3D mix( const Vector3D& a, const Vector3D& b, const Real Alpha ) {
 	return (a * (Real::One - Alpha)) + (b * Alpha);
 }
 // -- ---------------------------------------------------------------------------------------- -- //

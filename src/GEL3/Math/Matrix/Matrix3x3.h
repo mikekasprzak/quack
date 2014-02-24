@@ -216,7 +216,7 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Negation Operator //
-	inline const Matrix3x3 operator - ( ) const {
+	inline Matrix3x3 operator - ( ) const {
 		return Matrix3x3(
 			-Array[0], -Array[1], -Array[2],
 			-Array[3], -Array[4], -Array[5],
@@ -248,7 +248,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate Transpose of Matrix //
-	inline const Matrix3x3 Transpose() {
+	inline Matrix3x3 Transpose() {
 		return Matrix3x3(
 			Array[0], Array[3], Array[6],
 			Array[1], Array[4], Array[7],
@@ -257,7 +257,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate the determinant, for the inverse //
-	inline const Real Determinant() const {
+	inline Real Determinant() const {
 		return
 			(Matrix(0,0) * ((Matrix(1,1) * Matrix(2,2)) - (Matrix(1,2) * Matrix(2,1)))) +
 			(Matrix(0,1) * ((Matrix(1,2) * Matrix(2,0)) - (Matrix(1,0) * Matrix(2,2)))) +
@@ -265,7 +265,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate Adjoint of Matrix (Transpose of the Cofactors) //
-	inline const Matrix3x3 Adjoint() {
+	inline Matrix3x3 Adjoint() {
 		return Matrix3x3(
 			Cofactor11().Determinant(), Cofactor12().Determinant(), Cofactor13().Determinant(),
 			Cofactor21().Determinant(), Cofactor22().Determinant(), Cofactor23().Determinant(),
@@ -276,7 +276,7 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Calculate the Inverse //
-	inline const Matrix3x3 Inverse() {
+	inline Matrix3x3 Inverse() {
 		Real Det = Determinant();
 
 		if ( Det == Real::Zero ) {
@@ -293,39 +293,39 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Element helper functions, for making some of the more complex code more readable //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e11() const {
+	inline Real e11() const {
 		return Matrix(0,0);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e21() const {
+	inline Real e21() const {
 		return Matrix(1,0);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e31() const {
+	inline Real e31() const {
 		return Matrix(2,0);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e12() const {
+	inline Real e12() const {
 		return Matrix(0,1);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e22() const {
+	inline Real e22() const {
 		return Matrix(1,1);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e32() const {
+	inline Real e32() const {
 		return Matrix(2,1);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e13() const {
+	inline Real e13() const {
 		return Matrix(0,2);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e23() const {
+	inline Real e23() const {
 		return Matrix(1,2);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real e33() const {
+	inline Real e33() const {
 		return Matrix(2,2);
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -333,63 +333,63 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Minors are the resulting matrices when the specified row and column of an index are removed //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor11() const {
+	inline Matrix2x2 Minor11() const {
 		return Matrix2x2(
 			e22(), e32(),
 			e23(), e33()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor21() const {
+	inline Matrix2x2 Minor21() const {
 		return Matrix2x2(
 			e12(), e32(),
 			e13(), e33()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor31() const {
+	inline Matrix2x2 Minor31() const {
 		return Matrix2x2(
 			e12(), e22(),
 			e13(), e23()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor12() const {
+	inline Matrix2x2 Minor12() const {
 		return Matrix2x2(
 			e21(), e31(),
 			e23(), e33()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor22() const {
+	inline Matrix2x2 Minor22() const {
 		return Matrix2x2(
 			e11(), e31(),
 			e13(), e33()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor32() const {
+	inline Matrix2x2 Minor32() const {
 		return Matrix2x2(
 			e11(), e21(),
 			e13(), e23()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor13() const {
+	inline Matrix2x2 Minor13() const {
 		return Matrix2x2(
 			e21(), e31(),
 			e22(), e32()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor23() const {
+	inline Matrix2x2 Minor23() const {
 		return Matrix2x2(
 			e11(), e31(),
 			e12(), e32()
 			);
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Minor33() const {
+	inline Matrix2x2 Minor33() const {
 		return Matrix2x2(
 			e11(), e21(),
 			e12(), e22()
@@ -400,39 +400,39 @@ public:
 	// - -------------------------------------------------------------------------------------- - //
 	// Cofactors are Minors, but with the unusual property that every other is negated (checkerboard) //
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor11() const {
+	inline Matrix2x2 Cofactor11() const {
 		return Minor11();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor21() const {
+	inline Matrix2x2 Cofactor21() const {
 		return -Minor21();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor31() const {
+	inline Matrix2x2 Cofactor31() const {
 		return Minor31();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor12() const {
+	inline Matrix2x2 Cofactor12() const {
 		return -Minor12();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor22() const {
+	inline Matrix2x2 Cofactor22() const {
 		return Minor22();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor32() const {
+	inline Matrix2x2 Cofactor32() const {
 		return -Minor32();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor13() const {
+	inline Matrix2x2 Cofactor13() const {
 		return Minor13();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor23() const {
+	inline Matrix2x2 Cofactor23() const {
 		return -Minor23();
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix2x2 Cofactor33() const {
+	inline Matrix2x2 Cofactor33() const {
 		return Minor33();
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -452,7 +452,7 @@ public:
 	// Regular Functions //
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a scaling Matrix from a vector //
-	inline static const Matrix3x3 Scale( const Vector2D& _Vs ) {
+	inline static Matrix3x3 Scale( const Vector2D& _Vs ) {
 		Matrix3x3 Matrix(
 			_Vs.x, Real::Zero, Real::Zero,
 			Real::Zero, _Vs.y, Real::Zero,
@@ -463,7 +463,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a scaling Matrix from a vector //
-	inline static const Matrix3x3 Scale( const Vector3D& _Vs ) {
+	inline static Matrix3x3 Scale( const Vector3D& _Vs ) {
 		Matrix3x3 Matrix(
 			_Vs.x, Real::Zero, Real::Zero,
 			Real::Zero, _Vs.y, Real::Zero,
@@ -474,7 +474,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a scaling matrix from a scalar //
-	inline static const Matrix3x3 Scale( const Real& Scalar ) {
+	inline static Matrix3x3 Scale( const Real& Scalar ) {
 		Matrix3x3 Matrix(
 			Scalar, Real::Zero, Real::Zero,
 			Real::Zero, Scalar, Real::Zero,
@@ -485,7 +485,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a translating Matrix from a vector //
-	inline static const Matrix3x3 Translate( const Vector2D& _Vs ) {
+	inline static Matrix3x3 Translate( const Vector2D& _Vs ) {
 		Matrix3x3 Matrix(
 			Real::One, Real::Zero, Real::Zero,
 			Real::Zero, Real::One, Real::Zero,
@@ -496,7 +496,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a translating Matrix from a vector //
-	inline static const Matrix3x3 Translate( const Vector3D& _Vs ) {
+	inline static Matrix3x3 Translate( const Vector3D& _Vs ) {
 		Matrix3x3 Matrix(
 			Real::One, Real::Zero, Real::Zero,
 			Real::Zero, Real::One, Real::Zero,
@@ -507,7 +507,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation Matrix from a vector ((0,1) being an untransformed matrix) //
-	inline static const Matrix3x3 RotateX( const Vector2D& _Vs ) {
+	inline static Matrix3x3 RotateX( const Vector2D& _Vs ) {
 		Matrix3x3 Matrix(
 			Real::One, Real::Zero, Real::Zero, 
 			Real::Zero, _Vs.y, -_Vs.x,
@@ -518,7 +518,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation Matrix from an Angle //
-	inline static const Matrix3x3 RotateX( const Real& Angle ) {
+	inline static Matrix3x3 RotateX( const Real& Angle ) {
 		Matrix3x3 Matrix(
 			Real::One, Real::Zero, Real::Zero, 
 			Real::Zero, Angle.Cos(), -Angle.Sin(),
@@ -529,7 +529,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation Matrix from a vector ((0,1) being an untransformed matrix) //
-	inline static const Matrix3x3 RotateY( const Vector2D& _Vs ) {
+	inline static Matrix3x3 RotateY( const Vector2D& _Vs ) {
 		Matrix3x3 Matrix(
 			_Vs.y, Real::Zero, -_Vs.x, 
 			Real::Zero, Real::One, Real::Zero, 
@@ -540,7 +540,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation Matrix from an Angle //
-	inline static const Matrix3x3 RotateY( const Real& Angle ) {
+	inline static Matrix3x3 RotateY( const Real& Angle ) {
 		Matrix3x3 Matrix(
 			Angle.Cos(), Real::Zero, -Angle.Sin(),
 			Real::Zero, Real::One, Real::Zero,
@@ -551,7 +551,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation Matrix from a vector ((0,1) being an untransformed matrix) //
-	inline static const Matrix3x3 RotateZ( const Vector2D& _Vs ) {
+	inline static Matrix3x3 RotateZ( const Vector2D& _Vs ) {
 		Matrix3x3 Matrix(
 			_Vs.y, -_Vs.x, Real::Zero,
 			_Vs.x, _Vs.y, Real::Zero,
@@ -562,7 +562,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Creates a rotation Matrix from an Angle //
-	inline static const Matrix3x3 RotateZ( const Real& Angle ) {
+	inline static Matrix3x3 RotateZ( const Real& Angle ) {
 		Matrix3x3 Matrix(
 			Angle.Cos(), -Angle.Sin(), Real::Zero,
 			Angle.Sin(), Angle.Cos(), Real::Zero,
@@ -572,7 +572,7 @@ public:
 		return Matrix;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Matrix4x4 ToMatrix4x4() const;
+	inline Matrix4x4 ToMatrix4x4() const;
 	// - -------------------------------------------------------------------------------------- - //
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -580,7 +580,7 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 // External Scalar Maths //
 // - ------------------------------------------------------------------------------------------ - //
-inline const Matrix3x3 operator - ( const Real& a, const Matrix3x3& b ) {
+inline Matrix3x3 operator - ( const Real& a, const Matrix3x3& b ) {
 	return Matrix3x3(
 		a - b.Array[0], a - b.Array[1], a - b.Array[2],
 		a - b.Array[3], a - b.Array[4], a - b.Array[5],
@@ -588,7 +588,7 @@ inline const Matrix3x3 operator - ( const Real& a, const Matrix3x3& b ) {
 		);
 }
 // -- ---------------------------------------------------------------------------------------- -- //
-inline const Matrix3x3 operator / ( const Real& a, const Matrix3x3& b ) {
+inline Matrix3x3 operator / ( const Real& a, const Matrix3x3& b ) {
 	return Matrix3x3(
 		a / b.Array[0], a / b.Array[1], a / b.Array[2],
 		a / b.Array[3], a / b.Array[4], a / b.Array[5],

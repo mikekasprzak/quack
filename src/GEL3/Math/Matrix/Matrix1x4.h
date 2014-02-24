@@ -35,7 +35,7 @@ const Matrix1x4& Vector4D::ToMatrix1x4() const {
 	return (const Matrix1x4&)*this;
 }
 // - ------------------------------------------------------------------------------------------ - //
-const Matrix1x4 Vector3D::ToMatrix1x4() const {
+Matrix1x4 Vector3D::ToMatrix1x4() const {
 	return ToHomoVector4D().ToMatrix1x4();
 }
 // - ------------------------------------------------------------------------------------------ - //
