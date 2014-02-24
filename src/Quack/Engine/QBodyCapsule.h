@@ -92,11 +92,6 @@ public:
 //	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }
 	inline bool Step( const QProp& Prop ) {
 		return DoStep_Body( *this, Prop );
-//		QVec Velocity = Pos - Old;
-//		Old = Pos;
-//		Pos += Velocity + Prop.Gravity;
-//		
-//		return true;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -121,51 +116,19 @@ inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodySphere& A, QBodyCapsule& B ) {
-//	QFloat MassSum = B.InvMass + A.InvMass;
-//	return_if_value( false, MassSum == QFloat::Zero );
-
 	QVec BPos = NearestPoint_on_Line(B.Pos,B.Pos+B.Line,A.Pos);
 	QFloat BRadius = B.RadiusA; // FIX ME //
 
 	return FinishSolve_Body( A, B, BPos-A.Pos, BRadius+A.Radius );
-
-//	QFloat RadiusSum = BRadius + A.Radius; // Larger than Magnitude //
-//
-//	QVec Line = BPos - A.Pos;
-//	QFloat Mag = Line.MagnitudeSquared();
-//	
-//	if ( Mag < (RadiusSum*RadiusSum) ) {
-//		Mag = RadiusSum - Line.NormalizeRet();
-//		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
-//		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
-//		return true;
-//	}
-//	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyAABB& A, QBodyCapsule& B ) {
-//	QFloat MassSum = B.InvMass + A.InvMass;
-//	return_if_value( false, MassSum == QFloat::Zero );
-
 	QVec BPos = NearestPoint_on_Line(B.Pos,B.Pos+B.Line,A.Pos);
 	QFloat BRadius = B.RadiusA; // FIX ME //
-
-//	QFloat RadiusSum = BRadius; // Larger than Magnitude //
 
 	QVec ANearestPoint = A.GetRect().NearestPoint( BPos );
 
 	return FinishSolve_Body( A, B, BPos-ANearestPoint, BRadius );
-	
-//	QVec Line = BPos - ANearestPoint;
-//	QFloat Mag = Line.MagnitudeSquared();
-//	
-//	if ( Mag < (RadiusSum*RadiusSum) ) {
-//		Mag = RadiusSum - Line.NormalizeRet();
-//		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
-//		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
-//		return true;
-//	}
-//	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //

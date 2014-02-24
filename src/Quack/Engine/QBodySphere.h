@@ -85,60 +85,17 @@ public:
 //	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }
 	inline bool Step( const QProp& Prop ) {
 		return DoStep_Body( *this, Prop );
-//		QVec Velocity = GetVelocity();
-//		Old = Pos;
-//		// Accum is (Accum * TimeStep * TimeStep), but TimeStep is 1 so it cancels out. //
-//		Pos += Velocity + Accum;
-//		
-//		// Instead of setting the Accumulator to 0, set it equal to Gravity //
-//		Accum = Prop.Gravity;
-//		
-//		return true;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodySphere& A, QBodySphere& B ) {
-//	QFloat MassSum = B.InvMass + A.InvMass;
-//	return_if_value( false, MassSum == QFloat::Zero );
-
 	return FinishSolve_Body( A, B, B.Pos-A.Pos, B.Radius+A.Radius );
-//
-//	QFloat RadiusSum = B.Radius + A.Radius; // Larger than Magnitude //
-//
-//	QVec Line = B.Pos - A.Pos;
-//	QFloat Mag = Line.MagnitudeSquared();
-//	
-//	if ( Mag < (RadiusSum*RadiusSum) ) {
-//		Mag = RadiusSum - Line.NormalizeRet();
-//		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
-//		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
-//		return true;
-//	}
-//	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyAABB& A, QBodySphere& B ) {
-//	QFloat MassSum = B.InvMass + A.InvMass;
-//	return_if_value( false, MassSum == QFloat::Zero );
-
 	QVec ANearestPoint = A.GetRect().NearestPoint( B.Pos );
 
 	return FinishSolve_Body( A, B, B.Pos-ANearestPoint, B.Radius );
-
-//	QFloat RadiusSum = B.Radius; // Larger than Magnitude //
-//
-//	QVec ANearestPoint = A.GetRect().NearestPoint( B.Pos );
-//	
-//	QVec Line = B.Pos - ANearestPoint;
-//	QFloat Mag = Line.MagnitudeSquared();
-//	
-//	if ( Mag < (RadiusSum*RadiusSum) ) {
-//		Mag = RadiusSum - Line.NormalizeRet();
-//		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
-//		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
-//		return true;
-//	}
-//	return false;
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
