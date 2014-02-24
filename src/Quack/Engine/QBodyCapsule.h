@@ -60,10 +60,12 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-//inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
-//	QFloat MassSum = B.InvMass + A.InvMass;
-//	return_if_value( false, MassSum == QFloat::Zero );
-//
+inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
+	QFloat MassSum = B.InvMass + A.InvMass;
+	return_if_value( false, MassSum == QFloat::Zero );
+		
+//	QVec LineA = 
+
 //	QFloat RadiusSum = B.Radius + A.Radius; // Larger than Magnitude //
 //
 //	QVec Line = B.Pos - A.Pos;
@@ -75,8 +77,8 @@ public:
 //		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
 //		return true;
 //	}
-//	return false;
-//}
+	return false;
+}
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodySphere& A, QBodyCapsule& B ) {
 	QFloat MassSum = B.InvMass + A.InvMass;
