@@ -38,7 +38,7 @@ public:
 		Old( _Pos ),
 		InvMass( _InvMass ),
 		Friction( QFloat::One ),
-		Restitution( QFloat::One ),
+		Restitution( QFloat::Zero ),
 		Accum( QVec::Zero )
 	{
 	}
