@@ -137,6 +137,7 @@ class QObj {
 public:
 	typedef QRect (*QGetRectFunc)( void* self );
 	typedef QBody* (*QGetBodyFunc)( void* self );
+	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
 	typedef bool (*QStepFunc)( void* self, const QProp& );
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
 
@@ -146,14 +147,23 @@ public:
 
 	QRect	Rect;
 
-	QGetRectFunc	GetRect;
-	QGetBodyFunc	GetBody;
-	QStepFunc		Step;
-	QDrawFunc		Draw;
-	
+	QGetRectFunc	_GetRect;
+	QGetBodyFunc	_GetBody;
+	QAddForceFunc	_AddForce;
+
+	QStepFunc		_Step;
+	QDrawFunc		_Draw;
+
+public:
+	inline QRect GetRect() { return _GetRect(Data); }
+	inline QBody* GetBody() { return _GetBody(Data); }
+	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
+	inline bool Step( const QProp& Prop ) { return _Step(Data,Prop); }
+	inline void Draw( const Matrix4x4& Mat ) { _Draw(Data,Mat); }
+
 public:
 	inline void UpdateRect() {
-		Rect = GetRect( Data );
+		Rect = GetRect();
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -168,6 +178,22 @@ public:
 		Obj.push_back( QObj() );
 		return Obj.back();
 	}
+	inline QObj& Back() {
+		return Obj.back();
+	}
+	inline QObj& Front() {
+		return Obj.front();
+	}
+	inline st Size() {
+		return Obj.size();
+	}
+
+	inline QObj& operator [] ( const st Index ) {
+		return Obj[Index];
+	}
+	inline const QObj& operator [] ( const st Index ) const {
+		return Obj[Index];
+	}
 		
 public:
 	void Step() {
@@ -177,9 +203,9 @@ public:
 			QObj& Ob = Obj[idx];
 
 			// Step Object //
-			if ( Ob.Step( Ob.Data, Prop ) ) {
+			if ( Ob.Step( Prop ) ) {
 				// If the Object moved, update the Rectangle //
-				Ob.Rect = Ob.GetRect( Ob.Data );
+				Ob.Rect = Ob.GetRect();
 			}
 		}
 		
@@ -193,16 +219,16 @@ public:
 				
 				// Broad Phase //
 				if ( ObA.Rect == ObB.Rect ) {
-					QBody* BodyA = ObA.GetBody( ObA.Data );
-					QBody* BodyB = ObB.GetBody( ObB.Data );
+					QBody* BodyA = ObA.GetBody();
+					QBody* BodyB = ObB.GetBody();
 					
 					// Only if Objects have Bodies //
 					if ( BodyA && BodyB ) {
 						// Solve/Resolve Collision //
 						if ( BodyA->Solve( *BodyB ) ) {
 							// If a collision was solved/resolved, then update Rectangles //
-							ObA.Rect = ObA.GetRect( ObA.Data );
-							ObB.Rect = ObB.GetRect( ObB.Data );
+							ObA.Rect = ObA.GetRect();
+							ObB.Rect = ObB.GetRect();
 						}
 					}
 				}
@@ -218,7 +244,7 @@ public:
 			// If in the view (Rectangle Test) //
 			if ( Ob.Rect == View ) {
 				// TODO: Add to Draw Queue, to allow sorting/layering. //
-				Ob.Draw( Ob.Data, Mat );
+				Ob.Draw( Mat );
 			}
 			
 			gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(64,64,0,64));
