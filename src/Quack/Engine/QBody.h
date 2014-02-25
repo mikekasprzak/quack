@@ -11,7 +11,7 @@ inline bool DoStep_Body( T1& A, const QProp& Prop ) {
 	QVec Velocity = A.GetVelocity();
 	A.Old = A.Pos;
 	// Accum is (Accum * TimeStep * TimeStep), but TimeStep is 1 so it cancels out. //
-	A.Pos += Velocity + A.Accum;
+	A.Pos += (Velocity + A.Accum);// * QFloat(0.999f);
 	
 	// Instead of setting the Accumulator to 0, set it equal to Gravity //
 	A.Accum = Prop.Gravity;
