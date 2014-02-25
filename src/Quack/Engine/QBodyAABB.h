@@ -88,24 +88,23 @@ public:
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
-/*
 	QRect Diff = B.GetRect() - A.GetRect();
 	QVec Line = B.Pos - A.Pos;
 	QFloat DiffRet;
 	// The Size of the overlap region (Diff) determines which direction we push //
 	if ( Diff.Width() < Diff.Height() ) {
-		Line.x = Line.x.Normal() * Diff.Height();
+		Line.x = Line.x.Normal();
 		Line.y = QFloat::Zero;
-		DiffRet = Diff.Height();
+		DiffRet = Diff.Width() + QFloat::One;
 	}
 	else {
 		Line.x = QFloat::Zero;
-		Line.y = Line.y.Normal() * Diff.Width();
-		DiffRet = Diff.Width();
+		Line.y = Line.y.Normal();
+		DiffRet = Diff.Height() + QFloat::One;
 	}
 	
 	return FinishSolve_Body( A, B, Line, DiffRet );
-*/
+/*
 
 	QFloat MassSum = B.InvMass + A.InvMass;
 	return_if_value( false, MassSum == QFloat::Zero );
@@ -121,6 +120,8 @@ inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
 		Line.x = QFloat::Zero;
 		Line.y = Line.y.Normal();
 	}
+	
+	Line *= Diff.Shape();
 
 //	Log("A: %f %f -- %f %f", A.GetRect().P1().x.ToFloat(),A.GetRect().P1().y.ToFloat(), A.GetRect().Width().ToFloat(),A.GetRect().Height().ToFloat() );
 //	Log("B: %f %f -- %f %f", B.GetRect().P1().x.ToFloat(),B.GetRect().P1().y.ToFloat(), B.GetRect().Width().ToFloat(),B.GetRect().Height().ToFloat() );
@@ -129,9 +130,10 @@ inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
 //	A.Pos.x += (Line.x * Diff.Shape().x);// * Real::Half;// * (A.InvMass / MassSum);
 //	A.Pos.y -= (Line.y * Diff.Shape().y);// * (A.InvMass / MassSum);
 		
-	A.Pos -= (Line * Diff.Shape()) * (A.InvMass / MassSum);
-	B.Pos += (Line * Diff.Shape()) * (B.InvMass / MassSum);
+	A.Pos -= (Line) * (A.InvMass / MassSum);
+	B.Pos += (Line) * (B.InvMass / MassSum);
 	return true;
+*/
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
