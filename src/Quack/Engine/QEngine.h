@@ -56,11 +56,12 @@ enum {
 enum {
 	QO_NULL = 0,
 	
-	QO_DUMMY = 1,	// Dumb Static Example Object //
-	QO_BOXY,		// Dumb Simple Box Shaped Physical Object //
-	QO_BOXY_STATIC,	// Dumb Simple Box Shaped Static Solid Object //
-	QO_BALLY,		// Dumb Simple Ball Shaped Physical Object //
-	QO_CAPPY,		// Dumb Simple Capsule Shaped Physical Object (Does not physically rotate) //
+	QO_DUMMY = 1,		// Dumb Static Example Object //
+	QO_BOXY,			// Dumb Simple Box Shaped Physical Object //
+	QO_BOXY_STATIC,		// Dumb Simple Box Shaped Static Solid Object //
+	QO_BALLY,			// Dumb Simple Ball Shaped Physical Object //
+	QO_CAPPY,			// Dumb Simple Capsule Shaped Physical Object (Does not physically rotate) //
+	QO_CAPPY_STATIC,	// Dumb Simple Capsule Shaped Solid Object //
 };
 // - ------------------------------------------------------------------------------------------ - //
 
