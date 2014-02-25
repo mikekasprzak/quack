@@ -90,22 +90,15 @@ public:
 inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
 	QRect Diff = B.GetRect() - A.GetRect();
 	QVec Line = B.Pos - A.Pos;
-	QFloat DiffRet;
 	// The Size of the overlap region (Diff) determines which direction we push //
 	if ( Diff.Width() < Diff.Height() ) {
+		// The +One compensates for the length of 1 introduced by the Normal() //
 		return FinishSolve_Body( A, B, QVec(Line.x.Normal(),0), Diff.Width()+QFloat::One );
-//		Line.x = Line.x.Normal();
-//		Line.y = QFloat::Zero;
-//		DiffRet = Diff.Width() + QFloat::One;
 	}
 	else {
+		// The +One compensates for the length of 1 introduced by the Normal() //
 		return FinishSolve_Body( A, B, QVec(0,Line.y.Normal()), Diff.Height()+QFloat::One );
-//		Line.x = QFloat::Zero;
-//		Line.y = Line.y.Normal();
-//		DiffRet = Diff.Height() + QFloat::One;
 	}
-	
-//	return FinishSolve_Body( A, B, Line, DiffRet );
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
