@@ -93,47 +93,19 @@ inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
 	QFloat DiffRet;
 	// The Size of the overlap region (Diff) determines which direction we push //
 	if ( Diff.Width() < Diff.Height() ) {
-		Line.x = Line.x.Normal();
-		Line.y = QFloat::Zero;
-		DiffRet = Diff.Width() + QFloat::One;
+		return FinishSolve_Body( A, B, QVec(Line.x.Normal(),0), Diff.Width()+QFloat::One );
+//		Line.x = Line.x.Normal();
+//		Line.y = QFloat::Zero;
+//		DiffRet = Diff.Width() + QFloat::One;
 	}
 	else {
-		Line.x = QFloat::Zero;
-		Line.y = Line.y.Normal();
-		DiffRet = Diff.Height() + QFloat::One;
+		return FinishSolve_Body( A, B, QVec(0,Line.y.Normal()), Diff.Height()+QFloat::One );
+//		Line.x = QFloat::Zero;
+//		Line.y = Line.y.Normal();
+//		DiffRet = Diff.Height() + QFloat::One;
 	}
 	
-	return FinishSolve_Body( A, B, Line, DiffRet );
-/*
-
-	QFloat MassSum = B.InvMass + A.InvMass;
-	return_if_value( false, MassSum == QFloat::Zero );
-
-	QRect Diff = B.GetRect() - A.GetRect();
-	QVec Line = B.Pos - A.Pos;
-	// The Size of the overlap region (Diff) determines which direction we push //
-	if ( Diff.Width() < Diff.Height() ) {
-		Line.x = Line.x.Normal();
-		Line.y = QFloat::Zero;
-	}
-	else {
-		Line.x = QFloat::Zero;
-		Line.y = Line.y.Normal();
-	}
-	
-	Line *= Diff.Shape();
-
-//	Log("A: %f %f -- %f %f", A.GetRect().P1().x.ToFloat(),A.GetRect().P1().y.ToFloat(), A.GetRect().Width().ToFloat(),A.GetRect().Height().ToFloat() );
-//	Log("B: %f %f -- %f %f", B.GetRect().P1().x.ToFloat(),B.GetRect().P1().y.ToFloat(), B.GetRect().Width().ToFloat(),B.GetRect().Height().ToFloat() );
-//	Log("VER: %f %f -- %f %f", Diff.P1().x.ToFloat(),Diff.P1().y.ToFloat(), Diff.Width().ToFloat(),Diff.Height().ToFloat() );
-
-//	A.Pos.x += (Line.x * Diff.Shape().x);// * Real::Half;// * (A.InvMass / MassSum);
-//	A.Pos.y -= (Line.y * Diff.Shape().y);// * (A.InvMass / MassSum);
-		
-	A.Pos -= (Line) * (A.InvMass / MassSum);
-	B.Pos += (Line) * (B.InvMass / MassSum);
-	return true;
-*/
+//	return FinishSolve_Body( A, B, Line, DiffRet );
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
