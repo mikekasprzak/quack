@@ -66,8 +66,10 @@ inline bool _Regular_FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& Ra
 			QVec ImpactB = -Line * ContactB;
 			
 			// When Velocity and Line are Parallel, the cross is 0 so Tangents cancel out // 
-			QVec TangentA = -VelocityA.Tangent().Normal();//cross(cross(VelocityA,Line),Line).Normal();
-			QVec TangentB = -VelocityB.Tangent().Normal();//cross(cross(VelocityB,-Line),-Line).Normal();
+			QVec TangentA = cross(cross(VelocityA.ToVector3D(),Line.ToVector3D()),Line.ToVector3D()).Normal().ToVector2D();
+			QVec TangentB = cross(cross(VelocityB.ToVector3D(),-Line.ToVector3D()),-Line.ToVector3D()).Normal().ToVector2D();
+//			QVec TangentA = Line.Tangent().Normal();//cross(cross(VelocityA,Line),Line).Normal();
+//			QVec TangentB = -Line.Tangent().Normal();//cross(cross(VelocityB,-Line),-Line).Normal();
 			
 			QFloat AMass = A.GetMass();
 			QFloat BMass = B.GetMass();
@@ -123,8 +125,9 @@ inline bool _BInfinite_FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& 
 			QVec ImpactB = QVec::Zero;//-Line * ContactB;
 			
 			// When Velocity and Line are Parallel, the cross is 0 so Tangents cancel out // 
-			QVec TangentA = -VelocityA.Tangent().Normal();//cross(cross(VelocityA,Line),Line).Normal();
-			//QVec TangentB = VelocityB.Tangent().Normal();//cross(cross(VelocityB,-Line),-Line).Normal();
+			QVec TangentA = cross(cross(VelocityA.ToVector3D(),Line.ToVector3D()),Line.ToVector3D()).Normal().ToVector2D();
+//			QVec TangentA = Line.Tangent().Normal();//cross(cross(VelocityA,Line),Line).Normal();
+			//QVec TangentB = -Line.Tangent().Normal();//cross(cross(VelocityB,-Line),-Line).Normal();
 			
 			//QFloat AMass = A.GetMass();
 			//QFloat BMass = B.GetMass();

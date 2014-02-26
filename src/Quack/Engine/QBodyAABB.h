@@ -33,8 +33,8 @@ public:
 		HalfShape( _HalfShape ),
 		Old( _Pos ),
 		InvMass( _InvMass ),
-		Friction( QFloat::One ),
-		Restitution( QFloat::One ),
+		Friction( QFloat::Zero ),
+		Restitution( QFloat::Zero ),
 		Accum( QVec::Zero )
 	{
 	}
