@@ -138,7 +138,7 @@ inline bool _BInfinite_FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& 
 			//QVec Momentum = MomentumA + MomentumB;
 	
 			QFloat Restitution = A.Restitution;//Real::Max( A.Restitution, B.Restitution );
-			QFloat Friction = Real::Sqrt( A.Friction );// * B.Friction );
+			QFloat Friction = Real::Sqrt( A.Friction * B.Friction );
 			
 			// 1+Restitution may be wrong... it bounced off with 2x energy //
 			QVec ContactVelocityA = (((QFloat::One+Restitution)*(ImpactB-ImpactA)+ImpactA)) * Friction;
