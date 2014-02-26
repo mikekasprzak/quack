@@ -1386,35 +1386,35 @@ inline const Real ArcTan2( const Real y, const Real x ) {
 // External Operations, for GLSL familiar syntax. From the Procedural book. //
 // NOTE: These functions, for the most part, operate on ranges. Functions above are typically [0,1]
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real mix( const Real a, const Real b, const Real Alpha ) {
+inline Real mix( const Real a, const Real b, const Real Alpha ) {
 	return (a * (Real::One - Alpha)) + (b * Alpha);
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real step( const Real a, const Real x ) {
+inline Real step( const Real a, const Real x ) {
 	return Real(x >= a); // NOTE: This is a boolean op [0,1] //
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real pulse( const Real a, const Real b, const Real x ) {
+inline Real pulse( const Real a, const Real b, const Real x ) {
 	return step(a,x) - step(b,x); // Clever! x>a Becomes 1, then as x>b it becomes 1-1=0 //
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real min( const Real a, const Real b ) {
+inline Real min( const Real a, const Real b ) {
 	return a < b ? a : b;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real max( const Real a, const Real b ) {
+inline Real max( const Real a, const Real b ) {
 	return a < b ? b : a;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real clamp( const Real x, const Real a, const Real b ) {
+inline Real clamp( const Real x, const Real a, const Real b ) {
 	return min( max(x,a), b );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real abs( const Real x ) {
+inline Real abs( const Real x ) {
 	return x < Real::Zero ? -x : x;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real smoothstep( const Real a, const Real b, Real x ) {
+inline Real smoothstep( const Real a, const Real b, Real x ) {
 	if ( x < a )  return Real::Zero;
 	if ( x >= b ) return Real::One;
 	x = (x-a) / (b-a);
@@ -1423,22 +1423,22 @@ inline const Real smoothstep( const Real a, const Real b, Real x ) {
 // - ------------------------------------------------------------------------------------------ - //
 // Page 34 - Splines
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real gammacorrect( const Real Gamma, const Real x ) {
+inline Real gammacorrect( const Real Gamma, const Real x ) {
 	return pow( x.ToFloat(), (Real::One/Gamma).ToFloat() );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real bias( const Real b, const Real x ) {
+inline Real bias( const Real b, const Real x ) {
 	return pow( x.ToFloat(), log(b.ToFloat()) / log(0.5f) );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real gain( const Real g, const Real x ) {
+inline Real gain( const Real g, const Real x ) {
 	if ( x < Real::Half )
 		return bias( Real::One - g, Real::Two * x) / Real::Two;
 	else
 		return Real::One - bias( Real::One - g, Real::Two * x) / Real::Two;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline const Real boxstep( const Real a, const Real b, const Real x ) { 
+inline Real boxstep( const Real a, const Real b, const Real x ) { 
 	return clamp( (x-a)/(b-a), Real::Zero, Real::One );
 }
 // - ------------------------------------------------------------------------------------------ - //

@@ -16,6 +16,9 @@ public:
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
+		self->_Contact = (QObj::QContactFunc)_Contact;
+		self->_Notify = (QObj::QNotifyFunc)_Notify;
+
 		self->_Step = (QObj::QStepFunc)_Step;
 		self->_Draw = (QObj::QDrawFunc)_Draw;
 	}
@@ -42,6 +45,14 @@ public:
 	static void _AddForce( thistype* self, const QVec& Force ) { self->AddForce( Force ); }
 	inline void AddForce( const QVec& ) {
 		// No body, so nothing to do //
+	}
+
+	static void _Contact( thistype* self, QObj& Vs ) { self->Contact( Vs ); }
+	inline void Contact( QObj& Vs ) {
+	}
+
+	static void _Notify( thistype* self, QObj& Sender, const int Message ) { self->Notify( Sender, Message ); }
+	inline void Notify( QObj& Sender, const int Message ) {
 	}
 
 	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }

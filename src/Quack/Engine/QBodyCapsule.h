@@ -96,23 +96,13 @@ public:
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
-	QFloat MassSum = B.InvMass + A.InvMass;
-	return_if_value( false, MassSum == QFloat::Zero );
-		
-//	QVec LineA = 
+	Vec2CNLOL Line = Calc_NearestLine_on_Lines( A.Pos,A.Pos+A.Line, B.Pos,B.Pos+B.Line );
 
-//	QFloat RadiusSum = B.Radius + A.Radius; // Larger than Magnitude //
-//
-//	QVec Line = B.Pos - A.Pos;
-//	QFloat Mag = Line.MagnitudeSquared();
-//	
-//	if ( Mag < (RadiusSum*RadiusSum) ) {
-//		Mag = RadiusSum - Line.NormalizeRet();
-//		A.Pos -= (Line * Mag) * (A.InvMass / MassSum);
-//		B.Pos += (Line * Mag) * (B.InvMass / MassSum);
-//		return true;
-//	}
-	return false;
+	// NOTE: Broken in parallel case //
+	QFloat ARadius = A.RadiusA + ((A.RadiusB-A.RadiusA)*Line.s);
+	QFloat BRadius = B.RadiusA + ((B.RadiusB-B.RadiusA)*Line.t);
+
+	return FinishSolve_Body( A, B, Line.a-Line.b, BRadius+ARadius );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodySphere& A, QBodyCapsule& B ) {
