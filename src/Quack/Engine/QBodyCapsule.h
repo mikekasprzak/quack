@@ -96,11 +96,26 @@ public:
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
+	if ( (A.InvMass == QFloat::Zero) && (B.InvMass == QFloat::Zero) )
+		return false;
+	
 	Vec2CNLOL Line = Calc_NearestLine_on_Lines( A.Pos,A.Pos+A.Line, B.Pos,B.Pos+B.Line );
+	Vector2D& C1 = Line.a;
+	Vector2D& C2 = Line.b;
+	
+	Log("(%0.02f,%0.02f -> %0.02f,%0.02f) vs (%0.02f,%0.02f -> %0.02f,%0.02f) = (%0.02f,%0.02f -> %0.02f,%0.02f) [%0.02f,%0.02f]",
+		A.Pos.x.ToFloat(),A.Pos.y.ToFloat(),
+		(A.Pos+A.Line).x.ToFloat(),(A.Pos+A.Line).y.ToFloat(),
+		B.Pos.x.ToFloat(),B.Pos.y.ToFloat(),
+		(B.Pos+B.Line).x.ToFloat(),(B.Pos+B.Line).y.ToFloat(),
+		C1.x.ToFloat(),C1.y.ToFloat(),
+		C2.x.ToFloat(),C2.y.ToFloat(),
+		Line.s.ToFloat(),Line.t.ToFloat()
+		);
 
 	// NOTE: Broken in parallel case //
-	QFloat ARadius = A.RadiusA + ((A.RadiusB-A.RadiusA)*Line.s);
-	QFloat BRadius = B.RadiusA + ((B.RadiusB-B.RadiusA)*Line.t);
+	QFloat ARadius = A.RadiusA;// + ((A.RadiusB-A.RadiusA)*Line.s);
+	QFloat BRadius = B.RadiusA;// + ((B.RadiusB-B.RadiusA)*Line.t);
 
 	return FinishSolve_Body( A, B, Line.a-Line.b, BRadius+ARadius );
 }
