@@ -1477,8 +1477,8 @@ inline Vec2CNLOL Calc_NearestLine_on_Lines( const Vector2D& A1, const Vector2D& 
 	Real& s = Ret.s;
 	Real& t = Ret.t;
 	
-	Vec d1 = B1 - A1;		// LineA
-	Vec d2 = B2 - A2;		// LineB
+	Vec d1 = A2 - A1;		// LineA
+	Vec d2 = B2 - B1;		// LineB
 	Vec r = A1 - A2;
 	Real a = dot(d1,d2);	// Squared Length of A (unnecessarily clever Magnitude)
 	Real e = dot(d2,d2);	// Squared Length of B (unnecessarily clever Magnitude)
