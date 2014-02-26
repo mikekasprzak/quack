@@ -8,6 +8,7 @@
 #include <Geometry/Rect.h>
 
 #include <Render/GelDraw.h>
+#include <RTCD/RTCD.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -139,6 +140,9 @@ public:
 	typedef QRect (*QGetRectFunc)( void* self );
 	typedef QBody* (*QGetBodyFunc)( void* self );
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
+	typedef void (*QContactFunc)( void* self, QObj& Vs );
+	typedef void (*QNotifyFunc)( void* self, QObj& Sender, const int Message );
+
 	typedef bool (*QStepFunc)( void* self, const QProp& );
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
 
@@ -151,6 +155,8 @@ public:
 	QGetRectFunc	_GetRect;
 	QGetBodyFunc	_GetBody;
 	QAddForceFunc	_AddForce;
+	QContactFunc	_Contact;
+	QNotifyFunc		_Notify;
 
 	QStepFunc		_Step;
 	QDrawFunc		_Draw;
@@ -159,6 +165,9 @@ public:
 	inline QRect GetRect() { return _GetRect(Data); }
 	inline QBody* GetBody() { return _GetBody(Data); }
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
+	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }
+	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,Sender,Message); }
+
 	inline bool Step( const QProp& Prop ) { return _Step(Data,Prop); }
 	inline void Draw( const Matrix4x4& Mat ) { _Draw(Data,Mat); }
 
@@ -227,7 +236,10 @@ public:
 					if ( BodyA && BodyB ) {
 						// Solve/Resolve Collision //
 						if ( BodyA->Solve( *BodyB ) ) {
-							// If a collision was solved/resolved, then update Rectangles //
+							// If a collision was solved/resolved, trigger Contact events //
+							ObA.Contact( ObB );
+							ObB.Contact( ObA );						
+							// Update Rectangles //
 							ObA.Rect = ObA.GetRect();
 							ObB.Rect = ObB.GetRect();
 						}

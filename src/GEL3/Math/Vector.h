@@ -1431,14 +1431,14 @@ inline Vector2D NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, cons
 	return A + (LineNormal * PosOnLine);
 }
 // - ------------------------------------------------------------------------------------------ - //
-struct Vec2CPOL {
+struct Vec2CNPOL {
 	Vector2D LineNormal;
 	Real LineLength;
 	Real PosOnLine;
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline Vec2CPOL Calc_NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, const Vector2D& Pt ) {
-	Vec2CPOL Ret;
+inline Vec2CNPOL Calc_NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, const Vector2D& Pt ) {
+	Vec2CNPOL Ret;
 	
 	Vector2D Line = B - A;
 	Ret.LineNormal = Line;
@@ -1457,6 +1457,89 @@ inline Vec2CPOL Calc_NearestPoint_on_Line( const Vector2D& A, const Vector2D& B,
 	
 	return Ret;
 } 
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
+// Real Time Collision Detection -- Page 149 //
+// - ------------------------------------------------------------------------------------------ - //
+struct Vec2CNLOL {
+	Vector2D a,b;	// Points on each line segment //
+	Real s,t;		// Positions on each line segment (0->1) //
+};
+// - ------------------------------------------------------------------------------------------ - //
+// Line A1->A2, B1->B2, Returns: C1->C2 and S,T (position on each Segment) //
+inline Vec2CNLOL Calc_NearestLine_on_Lines( const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2 ) {
+	typedef Vector2D Vec;
+	Vec2CNLOL Ret;
+	Vec& C1 = Ret.a;
+	Vec& C2 = Ret.b;
+	Real& s = Ret.s;
+	Real& t = Ret.t;
+	
+	Vec d1 = B1 - A1;		// LineA
+	Vec d2 = B2 - A2;		// LineB
+	Vec r = A1 - A2;
+	Real a = dot(d1,d2);	// Squared Length of A (unnecessarily clever Magnitude)
+	Real e = dot(d2,d2);	// Squared Length of B (unnecessarily clever Magnitude)
+	Real f = dot(d2,r);
+	
+	if ( a.IsZero() && e.IsZero() ) {
+		s = t = Real::Zero;
+		C1 = A1;
+		C2 = A2;
+		return Ret;
+	}
+
+	if ( a.IsZero() ) {
+		// 1st segment degenerates in to a point //
+		s = Real::Zero;
+		t = f / e;
+		t = clamp(t, Real::Zero,Real::One);	
+	}
+	else {
+		Real c = dot(d1,r);
+		if ( e.IsZero() ) {
+			// 2nd segment degenerates in to a point //
+			t = Real::Zero;
+			s = clamp(-c / a, Real::Zero, Real::One );
+		}
+		else {
+			// The general non-degenerate case starts here //
+			Real b = dot(d1,d2);
+			Real denom = a*e-b*b; // Always non-negative //
+			
+			// If segments not parellel, compute closest point on L1 to L2 and
+			// clamp to segment S1. Else pick arbitrary S (here 0)
+			if ( denom != Real::Zero ) {
+				s = clamp((b*f - c*e) / denom, Real::Zero,Real::One);
+			}
+			else {
+				s = Real::Zero;
+			}
+			
+			// Compute point on L2 closest to S1(s) using
+			// t = Dot(P1 + D1*s) - P2,D2) / Dot(D2,D2) = (b*s + f) / e
+			t = (b*s + f) / e;
+			
+			// If t in [0,1] done. Else clamp t, recompute s for the new value
+			// of t using s = Dot((P2 + D2*t) - P1,D1) / Dot(D1,D1) = (t*b - c) / a
+			// and clamp s to [0,1]
+			if ( t < Real::Zero ) {
+				t = Real::Zero;
+				s = clamp(-c / a, Real::Zero,Real::One);
+			}
+			else if ( t > Real::One ) {
+				t = Real::One;
+				s = clamp((b-c)/a, Real::Zero,Real::One);
+			}
+		}
+	}
+	
+	C1 = A1 + d1 * s;
+	C2 = A2 + d2 * t;
+	return Ret;
+}
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
