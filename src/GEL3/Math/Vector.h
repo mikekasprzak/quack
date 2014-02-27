@@ -1411,25 +1411,25 @@ _SWIZZLE4( Vector3D, Vector4D, 1,1,1,1 );
 #undef SWIZZLE2
 // - ------------------------------------------------------------------------------------------ - //
 
-// - ------------------------------------------------------------------------------------------ - //
-inline Vector2D NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, const Vector2D& Pt ) {
-	Vector2D Line = B - A;
-	Vector2D LineNormal = Line;
-	Real LineLength = LineNormal.NormalizeRet();
-	
-	Vector2D Ray = Pt - A;
-	
-	Real PosOnLine = dot(LineNormal, Ray);
-	
-	if ( PosOnLine < Real::Zero ) {
-		PosOnLine = Real::Zero;
-	}
-	if ( PosOnLine > LineLength ) {
-		PosOnLine = LineLength;
-	}
-	
-	return A + (LineNormal * PosOnLine);
-}
+//// - ------------------------------------------------------------------------------------------ - //
+//inline Vector2D NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, const Vector2D& Pt ) {
+//	Vector2D Line = B - A;
+//	Vector2D LineNormal = Line;
+//	Real LineLength = LineNormal.NormalizeRet();
+//	
+//	Vector2D Ray = Pt - A;
+//	
+//	Real PosOnLine = dot(LineNormal, Ray);
+//	
+//	if ( PosOnLine < Real::Zero ) {
+//		PosOnLine = Real::Zero;
+//	}
+//	if ( PosOnLine > LineLength ) {
+//		PosOnLine = LineLength;
+//	}
+//	
+//	return A + (LineNormal * PosOnLine);
+//}
 // - ------------------------------------------------------------------------------------------ - //
 struct Vec2CNPOL {
 	Vector2D LineNormal;
@@ -1457,6 +1457,12 @@ inline Vec2CNPOL Calc_NearestPoint_on_Line( const Vector2D& A, const Vector2D& B
 	
 	return Ret;
 } 
+// - ------------------------------------------------------------------------------------------ - //
+inline Vector2D NearestPoint_on_Line( const Vector2D& A, const Vector2D& B, const Vector2D& Pt ) {
+	Vec2CNPOL Ret = Calc_NearestPoint_on_Line( A, B, Pt );
+	
+	return A + (Ret.LineNormal * Ret.PosOnLine);
+}
 // - ------------------------------------------------------------------------------------------ - //
 
 

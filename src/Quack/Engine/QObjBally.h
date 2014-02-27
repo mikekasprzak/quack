@@ -53,7 +53,7 @@ public:
 
 	static void _Contact( thistype* self, QObj& Vs ) { self->Contact( Vs ); }
 	inline void Contact( QObj& Vs ) {
-		Log("Bonk!");
+//		Log("Bonk!");
 	}
 
 	static void _Notify( thistype* self, QObj& Sender, const int Message ) { self->Notify( Sender, Message ); }
