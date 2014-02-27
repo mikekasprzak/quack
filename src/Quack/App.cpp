@@ -509,10 +509,10 @@ void AppInit() {
 		QK::AddBally_QEngine( App::Engine, Vector2D(-120,50), Real(16) );
 		App::Engine.Back().AddForce( Vector2D(1.12,0) );
 
-//		QK::AddCappy_QEngine( App::Engine, Vector2D(1,144) /*, ...*/ );
-//		App::Engine.Back().AddForce( Vector2D(1.2,0) );
+		QK::AddCappy_QEngine( App::Engine, Vector2D(1,100) /*, ...*/ );
+		App::Engine.Back().AddForce( Vector2D(0.3,0) );
 
-		//QK::AddBoxy_QEngine( App::Engine, Vector2D(16,240) );	
+		QK::AddBoxy_QEngine( App::Engine, Vector2D(16,240) );	
 		//QK::AddBoxyStatic_QEngine( App::Engine, Vector2D(0,-32), Vector2D(96,16) );
 		QK::AddCappyStatic_QEngine( App::Engine, Vector2D(-96,-32), Real(16), Vector2D(96*2,0), Real(16) );
 		QK::AddBoxyStatic_QEngine( App::Engine, Vector2D(-96,0), Vector2D(16,32) );

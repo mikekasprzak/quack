@@ -33,7 +33,7 @@ public:
 		Radius( _Radius ),
 		Old( _Pos ),
 		InvMass( _InvMass ),
-		Friction( QFloat::One ),
+		Friction( QFloat::Zero ),
 		Restitution( QFloat::One ),
 		Accum( QVec::Zero )
 	{

@@ -37,7 +37,7 @@ public:
 		RadiusB( _RadiusB ),
 		Old( _Pos ),
 		InvMass( _InvMass ),
-		Friction( QFloat::One ),
+		Friction( QFloat::Zero ),
 		Restitution( QFloat::One ),
 		Accum( QVec::Zero )
 	{
@@ -117,7 +117,7 @@ inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
 	QFloat ARadius = A.RadiusA;// + ((A.RadiusB-A.RadiusA)*Line.s);
 	QFloat BRadius = B.RadiusA;// + ((B.RadiusB-B.RadiusA)*Line.t);
 
-	return FinishSolve_Body( A, B, Line.a-Line.b, BRadius+ARadius );
+	return FinishSolve_Body( A, B, Line.b-Line.a, BRadius+ARadius );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline bool Solve_Body( QBodySphere& A, QBodyCapsule& B ) {
