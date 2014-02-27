@@ -1479,8 +1479,8 @@ inline Vec2CNLOL Calc_NearestLine_on_Lines( const Vector2D& A1, const Vector2D& 
 	
 	Vec d1 = A2 - A1;		// LineA
 	Vec d2 = B2 - B1;		// LineB
-	Vec r = A1 - A2;
-	Real a = dot(d1,d2);	// Squared Length of A (unnecessarily clever Magnitude)
+	Vec r = A1 - B1;
+	Real a = dot(d1,d1);	// Squared Length of A (unnecessarily clever Magnitude)
 	Real e = dot(d2,d2);	// Squared Length of B (unnecessarily clever Magnitude)
 	Real f = dot(d2,r);
 	
@@ -1502,7 +1502,7 @@ inline Vec2CNLOL Calc_NearestLine_on_Lines( const Vector2D& A1, const Vector2D& 
 		if ( e.IsZero() ) {
 			// 2nd segment degenerates in to a point //
 			t = Real::Zero;
-			s = clamp(-c / a, Real::Zero, Real::One );
+			s = clamp((-c)/a, Real::Zero,Real::One );
 		}
 		else {
 			// The general non-degenerate case starts here //
@@ -1527,7 +1527,7 @@ inline Vec2CNLOL Calc_NearestLine_on_Lines( const Vector2D& A1, const Vector2D& 
 			// and clamp s to [0,1]
 			if ( t < Real::Zero ) {
 				t = Real::Zero;
-				s = clamp(-c / a, Real::Zero,Real::One);
+				s = clamp((-c)/a, Real::Zero,Real::One);
 			}
 			else if ( t > Real::One ) {
 				t = Real::One;
@@ -1537,7 +1537,7 @@ inline Vec2CNLOL Calc_NearestLine_on_Lines( const Vector2D& A1, const Vector2D& 
 	}
 	
 	C1 = A1 + d1 * s;
-	C2 = A2 + d2 * t;
+	C2 = B1 + d2 * t;
 	return Ret;
 }
 // - ------------------------------------------------------------------------------------------ - //

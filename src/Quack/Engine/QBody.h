@@ -133,16 +133,16 @@ inline bool _BInfinite_FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& 
 			//QFloat BMass = B.GetMass();
 			//QFloat MassSum = (AMass+BMass);
 	
-			//QVec MomentumA = (AMass*ImpactA);
+			QVec MomentumA = ImpactA;//(AMass*ImpactA);
 			//QVec MomentumB = QVec::Zero;//(BMass*ImpactB);
-			//QVec Momentum = MomentumA + MomentumB;
+			QVec Momentum = MomentumA;// + MomentumB;
 	
 			QFloat Restitution = A.Restitution;//Real::Max( A.Restitution, B.Restitution );
 			QFloat Friction = Real::Sqrt( A.Friction * B.Friction );
 			
 			// 1+Restitution may be wrong... it bounced off with 2x energy //
-			QVec ContactVelocityA = (((QFloat::One+Restitution)*(ImpactB-ImpactA)+ImpactA)) * Friction;
-			//QVec ContactVelocityA = ((Restitution*BMass*(ImpactB-ImpactA)+Momentum)/MassSum) * Friction;
+			//QVec ContactVelocityA = (((QFloat::One+Restitution)*(ImpactB-ImpactA)+ImpactA)) * Friction;
+			QVec ContactVelocityA = ((Restitution*Real::One*(ImpactB-ImpactA)+Momentum)/Real::One) * Friction;
 			//QVec ContactVelocityB = ((Restitution*AMass*(ImpactA-ImpactB)+Momentum)/MassSum) * Friction;
 	
 			QVec TangentVelocityA = TangentA * dot(VelocityA,TangentA);
