@@ -26,6 +26,8 @@
 #include "NewGrid/NewGrid.h"
 #include <TiledMap/GelTiledMap.h>
 
+#include "Seed/AdjacencyGrid.h"
+
 #include "Engine/Engine.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
@@ -379,6 +381,8 @@ void AppInit() {
 			}		
 			Log("");
 		}
+		
+		
 		
 		Log("**** DONE");
 	}
