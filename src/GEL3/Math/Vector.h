@@ -1548,6 +1548,26 @@ inline Vec2CNLOL Calc_NearestLine_on_Lines( const Vector2D& A1, const Vector2D& 
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+
+// - ------------------------------------------------------------------------------------------ - //
+// http://box2d.org/2014/02/computing-a-basis/
+// - ------------------------------------------------------------------------------------------ - //
+// Fast simple calculation of basis vectors (3x3 Orientation Matrix) //
+inline void ComputeBasis(const Vector3D& a, Vector3D& b, Vector3D& c) {
+  // Suppose vector a has all equal components and is a unit vector: a = (s, s, s)
+  // Then 3*s*s = 1, s = sqrt(1/3) = 0.57735. This means that at least one component of a
+  // unit vector must be greater or equal to 0.57735.
+
+	if (a.x >= Real(0.57735f))
+		b = Vector3D(a.y, -a.x, 0.0f);
+	else
+		b = Vector3D(0.0f, a.z, -a.y);
+	
+	b.Normalize();
+	c = cross(a, b);
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __Geometry_Vector_H__ //
 // - ------------------------------------------------------------------------------------------ - //

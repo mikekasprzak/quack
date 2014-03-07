@@ -137,24 +137,6 @@ public:
 			if ( TexIndex != OldTexIndex ) {
 				FlushDraw( Matrix, OldTexIndex, Vert );
 			}
-	
-	//		sf::Vertex vertices[4];
-	//		vertices[0].color.r = r;
-	//		vertices[0].color.g = g;
-	//		vertices[0].color.b = b;
-	//		vertices[0].color.a = a;
-	//		vertices[1].color.r = r;
-	//		vertices[1].color.g = g;
-	//		vertices[1].color.b = b;
-	//		vertices[1].color.a = a;
-	//		vertices[2].color.r = r;
-	//		vertices[2].color.g = g;
-	//		vertices[2].color.b = b;
-	//		vertices[2].color.a = a;
-	//		vertices[3].color.r = r;
-	//		vertices[3].color.g = g;
-	//		vertices[3].color.b = b;
-	//		vertices[3].color.a = a;
 
 			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
 			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
@@ -175,55 +157,10 @@ public:
 			Vert.Next()->Pos = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
 			Vert->UV = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
 			Vert->Color = Color;
-	
-/*
-			const st32 VertCount = 6;
-			Vector3D Verts[ VertCount ];
-			Verts[0] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
-			Verts[1] = Vector3D(worldVertices[VERTEX_X2],worldVertices[VERTEX_Y2],0);
-			Verts[2] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
-			
-			Verts[3] = Vector3D(worldVertices[VERTEX_X3],worldVertices[VERTEX_Y3],0);
-			Verts[4] = Vector3D(worldVertices[VERTEX_X4],worldVertices[VERTEX_Y4],0);
-			Verts[5] = Vector3D(worldVertices[VERTEX_X1],worldVertices[VERTEX_Y1],0);
-*/			
-			// DO THIS WITH MATRIX //
-//			for ( st32 idx = 0; idx < VertCount; idx++ ) {
-//				Verts[idx] += Pos;
-//			}
-
-					
-//			TexIndex = (st)((spAtlasRegion*)regionAttachment->rendererObject)->page->rendererObject;
-
-/*	
-			GelUV UVs[ VertCount ];
-			UVs[0] = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
-			UVs[1] = GelUV(regionAttachment->uvs[VERTEX_X2],regionAttachment->uvs[VERTEX_Y2]);
-			UVs[2] = GelUV(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-	
-			UVs[3] = GelUV(regionAttachment->uvs[VERTEX_X3],regionAttachment->uvs[VERTEX_Y3]);
-			UVs[4] = GelUV(regionAttachment->uvs[VERTEX_X4],regionAttachment->uvs[VERTEX_Y4]);
-			UVs[5] = GelUV(regionAttachment->uvs[VERTEX_X1],regionAttachment->uvs[VERTEX_Y1]);
-*/
-	
-	//		vertexArray->append(vertices[0]);
-	//		vertexArray->append(vertices[1]);
-	//		vertexArray->append(vertices[2]);
-	//		vertexArray->append(vertices[3]);
-	
-			// TODO: Do batching cleverness here. If same texture, continue batching. If different, render the current batch.
-			//       Advance poniter, so further render ops don't re-draw prior data.
-//			Gel::TexturePool[TexIndex].Bind();
-//			Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
-	//		Gel::RenderFlat( GEL_TRIANGLES, Matrix, Color, Verts, VertCount );
-	
 		}
+		
 		// Render everything in the final batch //
 		FlushDraw( Matrix, TexIndex, Vert );
-//		Gel::TexturePool[TexIndex].Bind();
-//		Gel::RenderTextureColorPacked( GEL_TRIANGLES, Matrix, GEL_RGB_WHITE, &(Vert.Get()->Pos), &(Vert.Get()->UV), &(Vert.Get()->Color), Vert.Size() );
-	
-	//	target.draw(*vertexArray, states);
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
