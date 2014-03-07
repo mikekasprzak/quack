@@ -13,6 +13,7 @@
 #include "QuackVM.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include "QuackLib/QuackLib.h"
+#include "Engine/Engine.h"
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -119,6 +120,8 @@ void QuackVMInit() {
 		Log("* qkSkel"); register_qkSkel( vm );
 		Log("* qkSkelAnimator"); register_qkSkelAnimator( vm );
 		Log("* qkModel"); register_qkModel( vm );
+		
+		Log("* qkEngine"); register_qkEngine( vm );
 	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	
