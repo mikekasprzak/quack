@@ -9,6 +9,8 @@ SQInteger register_qkSystem(HSQUIRRELVM v);
 SQInteger register_qkFloat(HSQUIRRELVM v);
 SQInteger register_qkVector(HSQUIRRELVM v);
 SQInteger register_qkMatrix(HSQUIRRELVM v);
+SQInteger register_qkRect2(HSQUIRRELVM v);
+SQInteger register_qkRect3(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkScreen(HSQUIRRELVM v);
 SQInteger register_qkBlending(HSQUIRRELVM v);

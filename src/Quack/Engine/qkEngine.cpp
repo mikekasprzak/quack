@@ -36,6 +36,10 @@ SQInteger qk_engine_constructor( HSQUIRRELVM v ) {
 	// Construct Data //
 	new(Engine) QK::QEngine();
 
+
+	QK::AddBally_QEngine( *Engine, Vector2D(0,50), Real(16) );
+	QK::AddCappyStatic_QEngine( *Engine, Vector2D(-96,-32), Real(16), Vector2D(96*2,0), Real(16) );
+
 	// Finished //
 	return SQ_VOID;
 }
@@ -178,9 +182,10 @@ SQInteger qk_engine_draw( HSQUIRRELVM v ) {
 	
 	// Need a View and a Matrix //
 	Rect2D* View;
+	sq_getinstanceup(v,2,(void**)&View,NULL);
 	
-	
-	Matrix4x4* Mat;	
+	Matrix4x4* Mat;
+	sq_getinstanceup(v,3,(void**)&Mat,NULL);
 
 	// Do Step //	
 	Engine->Draw(*View,*Mat);	
