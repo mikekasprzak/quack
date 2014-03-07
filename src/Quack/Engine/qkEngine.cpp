@@ -11,13 +11,13 @@ using namespace QK;
 // - ------------------------------------------------------------------------------------------ - //
 // the constructor //
 SQInteger qk_engine_constructor( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// Check the number of arguments //
-//	int Top = sq_gettop(v);
-//	
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+	
+	// Check the number of arguments //
+	int Top = sq_gettop(v);
+	
 //	// Build our color channels //
 //	int r,g,b;
 //	int a = 255;
@@ -32,9 +32,17 @@ SQInteger qk_engine_constructor( HSQUIRRELVM v ) {
 //	g = GEL_CLAMP_COLOR_COMPONENT(g);
 //	b = GEL_CLAMP_COLOR_COMPONENT(b);
 //	a = GEL_CLAMP_COLOR_COMPONENT(a);
-//	
-//	// Write Data //
-//	*Color = GEL_RGBA(r,g,b,a);
+	
+	// Construct Data //
+	new(Engine) QK::QEngine();
+
+	// Finished //
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// the destructor //
+SQInteger qk_engine_destructor( SQUserPointer Engine, SQInteger /*Size*/ ) {
+	((QK::QEngine*)Engine)->~QEngine();
 
 	// Finished //
 	return SQ_VOID;
@@ -148,6 +156,40 @@ _FUNC_TYPEOF(QEngine,qk_engine_typeof,"QkEngine",8);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_step( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// Do Step //	
+	Engine->Step();	
+	
+	// Finished //
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_draw( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// Check the number of arguments //
+	int Top = sq_gettop(v);
+	
+	// Need a View and a Matrix //
+	Rect2D* View;
+	
+	
+	Matrix4x4* Mat;	
+
+	// Do Step //	
+	Engine->Draw(*View,*Mat);	
+		
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
 #define _DECL_FUNC_ALT(sqname,name,nparams,pmask) {_SC(sqname),name,nparams,pmask}
 SQRegFunction qkEngine_funcs[] = {
@@ -161,6 +203,8 @@ SQRegFunction qkEngine_funcs[] = {
 	_DECL_FUNC(qk_engine_typeof,0,NULL),
 	_DECL_FUNC(qk_engine_tostring,1,NULL),
 //	_DECL_FUNC(qk_engine_cloned,2,NULL),	
+	_DECL_FUNC(qk_engine_step,1,NULL),
+	_DECL_FUNC(qk_engine_draw,3,NULL),
 	
 	{0,0,0,0}
 };
@@ -181,9 +225,12 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 	int Root = sq_gettop(v); // root table pos //
 	{
 		_ADD_CLASS_START(QEngine,"QkEngine",QK_TAG_ENGINE);
+		_CLASS_DESTRUCTOR(qk_engine_destructor);
 		_CLASS_ADDFUNC(qk_engine_constructor,constructor);
 		_CLASS_ADDFUNC(qk_engine_get,_get);
 		_CLASS_ADDFUNC(qk_engine_set,_set);
+		_CLASS_ADDFUNC(qk_engine_step,Step);
+		_CLASS_ADDFUNC(qk_engine_draw,Draw);
 		_CLASS_ADDFUNC_STATIC(qk_engine_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_engine_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_engine_cloned,_cloned);

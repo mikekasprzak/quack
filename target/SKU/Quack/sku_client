@@ -1,6 +1,6 @@
 # - ------------------------------------------------------------------------ - #
 PRODUCT_NAME		:=	"Quack"
-PRODUCT_VERSION		:=	"v0.02"
+PRODUCT_VERSION		:=	"v0.03"
 PRODUCT_SKU			:=	"SYK-018-Q"
 # - ------------------------------------------------------------------------ - #
 # NOTE: Only reference files here suitable for GAME scope (no platform) #
@@ -34,6 +34,5 @@ USES_HG				:=	true	# Uses Mercurial Version Control #
 # - ------------------------------------------------------------------------ - #
 USES_CJSON			:=	true
 USES_SQUIRREL		:=	true
-#USES_SPINE			:=	true
 # - ------------------------------------------------------------------------ - #
 USES_RDESTL			:=	true

@@ -184,6 +184,15 @@ public:
 	QProp Prop;
 	std::vector<QObj> Obj;	// An Engine contains Objects //
 
+public:
+	inline QEngine() {
+		Log("** Engine Created");
+	}
+	inline ~QEngine() {
+		Log("** Engine Deleted");
+	}
+
+public:
 	inline QObj& Add() {
 		Obj.push_back( QObj() );
 		return Obj.back();

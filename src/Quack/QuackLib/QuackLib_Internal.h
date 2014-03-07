@@ -70,6 +70,10 @@ inline const char* qk_gettagname( int Index ) {
 		case QK_TAG_COLOR:
 			return "color";
 			break;
+			
+		case QK_TAG_ENGINE:
+			return "QkEngine";
+			break;
 	};
 
 	return "invalid tag";
@@ -229,6 +233,9 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_get(v,Root); /* lookup function */		/* =0 */ \
 	sq_newslot(v,CPos,true);					/* -2 */
 // - ------------------------------------------------------------------------------------------ - //
+#define _CLASS_DESTRUCTOR(_FUNC_) \
+	sq_setreleasehook(v,CPos,_FUNC_);
+// - ------------------------------------------------------------------------------------------ - //
 #define _ADD_CLASS_START(_TYPE_,_TYPENAME_,_TYPETAG_) \
 	sq_pushstring(v,_TYPENAME_,-1);				/* +1 */ \
 	sq_newclass(v,false); 						/* +1 */ \
@@ -378,7 +385,6 @@ inline SQInteger qk_arr_constructor_body( HSQUIRRELVM v, float* Arr, const int A
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-
 
 
 // - ------------------------------------------------------------------------------------------ - //
