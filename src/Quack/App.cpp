@@ -149,36 +149,36 @@ void AppInit() {
 
 	// **** //
 
-	{
-		Log("**** ENGINE");
-		
-		App::Engine = new QK::QEngine();
-
-//		QK::AddDummy_QEngine( *App::Engine, Vector2D(0,0) );
-//		QK::AddBoxy_QEngine( *App::Engine, Vector2D(-64-13,64) );
-//		QK::AddBoxy_QEngine( *App::Engine, Vector2D(32,64) );
-//		QK::AddBally_QEngine( *App::Engine, Vector2D(0,144), Real(20) );
-
-		QK::AddBally_QEngine( *App::Engine, Vector2D(-120,50), Real(16) );
-		App::Engine->Back().AddForce( Vector2D(1.12,0) );
-
-		QK::AddCappy_QEngine( *App::Engine, Vector2D(1,100) /*, ...*/ );
-		App::Engine->Back().AddForce( Vector2D(0.3,0) );
-
-		QK::AddBoxy_QEngine( *App::Engine, Vector2D(16,240) );	
-		//QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(0,-32), Vector2D(96,16) );
-		QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(-96,-32), Real(16), Vector2D(96*2,0), Real(16) );
-		QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(-96,0), Vector2D(16,32) );
-		//QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(-96,-16), Real(16), Vector2D(0,64), Real(16) );
-		//QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(+96,0), Vector2D(16,32) );
-		QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(+96,-16), Real(16), Vector2D(0,64), Real(16) );
-
-		Log("**** DONE");
-	}
+//	{
+//		Log("**** ENGINE");
+//		
+//		App::Engine = new QK::QEngine();
+//
+////		QK::AddDummy_QEngine( *App::Engine, Vector2D(0,0) );
+////		QK::AddBoxy_QEngine( *App::Engine, Vector2D(-64-13,64) );
+////		QK::AddBoxy_QEngine( *App::Engine, Vector2D(32,64) );
+////		QK::AddBally_QEngine( *App::Engine, Vector2D(0,144), Real(20) );
+//
+//		QK::AddBally_QEngine( *App::Engine, Vector2D(-120,50), Real(16) );
+//		App::Engine->Back().AddForce( Vector2D(1.12,0) );
+//
+//		QK::AddCappy_QEngine( *App::Engine, Vector2D(1,100) /*, ...*/ );
+//		App::Engine->Back().AddForce( Vector2D(0.3,0) );
+//
+//		QK::AddBoxy_QEngine( *App::Engine, Vector2D(16,240) );	
+//		//QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(0,-32), Vector2D(96,16) );
+//		QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(-96,-32), Real(16), Vector2D(96*2,0), Real(16) );
+//		QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(-96,0), Vector2D(16,32) );
+//		//QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(-96,-16), Real(16), Vector2D(0,64), Real(16) );
+//		//QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(+96,0), Vector2D(16,32) );
+//		QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(+96,-16), Real(16), Vector2D(0,64), Real(16) );
+//
+//		Log("**** DONE");
+//	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
-	delete App::Engine;
+//	delete App::Engine;
 
 	/***/
 
@@ -216,7 +216,7 @@ void AppStep() {
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
 
-	App::Engine->Step();
+//	App::Engine->Step();
 	
 	// *** //
 	App::StepProfiler.Stop();
@@ -230,7 +230,7 @@ void AppDraw() {
 	// *** //
 	App::SqDrawProfiler.Stop();
 
-	App::Engine->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
+//	App::Engine->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {

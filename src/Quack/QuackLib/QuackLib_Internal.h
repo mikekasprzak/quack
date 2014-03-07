@@ -13,6 +13,9 @@ enum {
 	QK_TAG_VEC3,
 	QK_TAG_VEC4,
 	QK_TAG_SCALAR,
+	
+	QK_TAG_RECT2,
+	QK_TAG_RECT3,
 
 	QK_TAG_MAT2,
 	QK_TAG_MAT3,
@@ -33,6 +36,7 @@ enum {
 	
 	// EXTERNAL TO QUACKLIB //
 	QK_TAG_ENGINE,
+	QK_TAG_OBJECT,
 	
 	QK_TAG_MAX		// Last Symbol //
 };

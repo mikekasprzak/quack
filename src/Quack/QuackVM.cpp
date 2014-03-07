@@ -106,6 +106,9 @@ void QuackVMInit() {
 		Log("* qkGrid"); register_qkGrid( vm );
 		Log("* qkColor"); register_qkColor( vm );
 
+		Log("* qkRect2"); register_qkRect2( vm );
+		//Log("* qkRect3"); register_qkRect3( vm );
+
 		Log("* qkInput"); register_qkInput( vm );
 		Log("* qkInput (nut)"); sqext_load_nut( vm, "qkInput.nut" );
 
