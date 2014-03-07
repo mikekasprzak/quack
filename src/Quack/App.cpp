@@ -18,16 +18,6 @@
 #include <Skel/Skel.h>
 #include <Model/Model.h>
 
-#include "Glayout/Glayout.h"
-#include <Array/Array.h>
-#include "Generator/Generator.h"
-#include "Seed/Seed.h"
-
-#include "NewGrid/NewGrid.h"
-#include <TiledMap/GelTiledMap.h>
-
-#include "Seed/AdjacencyGrid.h"
-
 #include "Engine/Engine.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
@@ -77,30 +67,6 @@ Real AspectRatio;
 Matrix4x4 InfoMatrix;
 bool HadVMError;
 // - ------------------------------------------------------------------------------------------ - //
-//GelSkelPool::UID	SpineUID;
-//spSkeleton*				SpineSkeleton;
-//spAnimationState*		SpineAnimState;
-//GelSkelAnimator MySkel;
-//GelAtlasPool::UID MyAtlasID;
-	
-GlayLayout Layout;
-
-GelVert2 InCurve;
-GelVert2C OutCurve;
-
-VtTree InTree;
-GelVert2C OutTree;
-
-GelGrid<u8> TestMap;
-GelVert2C OutTestMap;
-GelGrid<u16> MapBlobs;
-
-GelVert2 OrigBesier;
-GelVert2 InBesier;
-GelVert2 OutBesier;
-GelVert2 InBesier2;
-GelVert2 OutBesier2;
-
 QK::QEngine Engine;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
@@ -183,325 +149,6 @@ void AppInit() {
 
 	// **** //
 
-//	{	
-//		Log("**** LOADING POD");
-//		GelModelPool::UID MyUID = Gel::ModelPool.Load( "project/content/Cube.pod" );
-//		
-//		Log("**** DONE");
-//	}
-
-//	{	
-//		Log("**** LOADING SPINE");
-//		App::MySkel.Load( Gel::SkelPool.Load( "Creature/QuadrupedA.json" ) );//"SpineTest/spineboy.json" ) );
-////		App::SpineUID = Gel::SkelPool.Load( "SpineTest/spineboy.json" );
-////		App::SpineSkeleton = spSkeleton_create( Gel::SkelPool[App::SpineUID].GetSkeletonData() );
-////		App::SpineAnimState = spAnimationState_create(0);//stateData);
-////			
-////		spAnimation* Animation = spSkeletonData_findAnimation( App::SpineSkeleton->data, "walk");
-////		spAnimationState_setAnimation( App::SpineAnimState, 0, Animation, true );
-//
-//		App::MySkel.Set( "Walk" );//"walk" );
-//		Log("**** DONE");
-//	}
-
-//	{
-//		Log("**** LOADING ATLAS");
-//		App::MyAtlasID = Gel::AtlasPool.Load( "ItemIcons.atlas" );
-//		//App::MySkel.Set( "Walk" );//"walk" );
-//		Log("**** DONE");		
-//	}
-
-/*
-	{
-		Log("**** GelVert, GelAlloc, GelParticle");
-//		GelVert2 Scrot(4);
-//		Scrot[0].Pos = Vector2D(10,10);
-//		Scrot.PushBack();
-//		Scrot.Back().Pos.x = Real(14);
-//		
-//		GelVert2::Type Verr = Scrot[4];
-//		Log("Verr [%i]: %f", Scrot.Size(), Verr.Pos.x.ToFloat() );
-		
-		GelAlloc2 Norb(4);	
-		Log("Norb: %i (%i) [%i]", Norb.MaxSize(), Norb.Size(), Norb.GetUsed());
-		
-		Norb.Next();
-		Norb->Pos = Vector2D(1,-1);
-		Norb.Next();
-		Norb->Pos = Vector2D(2,-2);
-		Norb.Next();
-		Norb->Pos = Vector2D(3,-3);
-		Norb.Next();
-		Norb->Pos = Vector2D(4,-4);
-		Norb.Next();
-		Norb->Pos = Vector2D(5,-5);
-		Norb.Next();
-		Norb->Pos = Vector2D(6,-6);
-		
-		for ( int idx = 0; idx < Norb.Size(); idx++ ) {
-			Log("%i -- %f,%f", idx, Norb[idx].Pos.x.ToFloat(), Norb[idx].Pos.y.ToFloat() );
-		}
-
-		Log("Norb: %i (%i) [%i]", Norb.MaxSize(), Norb.Size(), Norb.GetUsed());
-		
-		GelParticle<GelVertex2> Pork(4);
-		Log("Pork: %i -- %i [%i]", Pork.Size(), Pork.Living(), Pork.Oldest());
-		
-		Pork.Add(4);
-		Pork->Pos = Vector2D(1,-1);
-		Pork.Add(5);
-		Pork->Pos = Vector2D(2,-2);
-		Pork.Add(2);
-		Pork->Pos = Vector2D(3,-3);
-
-		while ( Pork.Living() ) {
-			Log("Pork: %i -- %i [%i]", Pork.Size(), Pork.Living(), Pork.Oldest());
-			for ( int idx = 0; idx < Pork.Size(); idx++ ) {
-				if ( Pork.IsAlive(idx) ) {
-					Log("%i [%i] -- %f,%f", idx, Pork.Life(idx), Pork[idx].Pos.x.ToFloat(), Pork[idx].Pos.y.ToFloat() );
-				}
-			}
-			
-			if ( Pork.GetTime() == 3 ) {
-				Log("** NEW **");
-				Pork.Add(4);
-				Pork->Pos = Vector2D(4,-4);
-			}
-			if ( Pork.GetTime() == 4 ) {
-				Log("** NEW **");
-				Pork.Add(4);
-				Pork->Pos = Vector2D(5,-5);
-			}
-			if ( Pork.GetTime() == 5 ) {
-				Log("** NEW MANY **");
-				Pork.Add(2);
-				Pork->Pos = Vector2D(6,-6);
-				Pork.Add(1);
-				Pork->Pos = Vector2D(7,-7);
-				Pork.Add(2);
-				Pork->Pos = Vector2D(8,-8);
-			}
-			if ( Pork.GetTime() == 6 ) {
-				Log("** NEW **");
-				Pork.Add(4);
-				Pork->Pos = Vector2D(9,-9);
-			}
-			
-			Pork.Step();
-		};
-		Log("Pork: %i -- %i [%i]", Pork.Size(), Pork.Living(), Pork.Oldest());
-		
-		
-		Log("**** DONE");
-	}
-*/
-
-	{
-		Log("**** Curve Generator");
-		for ( int idx = -4; idx < 8; idx++ ) {
-			int Scale = idx;
-			if ( Scale < 0 )
-				Scale *= -Scale;
-			App::InCurve.PushBack().Pos = Vector2D(0,idx*(20-Scale));
-		}
-		
-		Gen_SpecialCurve( App::InCurve, App::OutCurve );
-
-//		for ( st idx = 0; idx < App::OutCurve.Size(); idx++ ) {
-//			Log("%i -- %f,%f", idx, App::OutCurve[idx].Pos.x.ToFloat(),App::OutCurve[idx].Pos.y.ToFloat());
-//			if ( (idx % 6) == 5 )
-//				Log("");
-//		}
-	
-		Log("**** DONE");
-	}
-	
-	{
-		Log("**** Besier Generator");
-		GelVert2& OB = App::OrigBesier;
-		OB.Resize(4);
-		OB[0].Pos = Vector2D(0,0);
-		OB[1].Pos = Vector2D(60,-60);
-		OB[2].Pos = Vector2D(-60,100);
-		OB[3].Pos = Vector2D(0,120);
-		
-		const int Count = 24;	
-		for ( int idx = 0; idx <= Count; idx++ ) {
-			App::InBesier.PushBack().Pos = Calc_Bezier( Real(idx/(float)Count), OB[0].Pos, OB[1].Pos, OB[2].Pos, OB[3].Pos );
-			App::InBesier2.PushBack().Pos = Calc_RationalBezier( Real(idx/(float)Count), Real(1), OB[0].Pos, OB[1].Pos, /*OB[2].Pos,*/ OB[3].Pos );
-		}
-		
-		Gen_Curve( App::OutBesier, App::InBesier, Real(3), Real(3) );
-		Gen_Curve( App::OutBesier2, App::InBesier2, Real(1), Real(1) );
-		Log("**** DONE");
-	}
-
-
-	{
-		Log("**** Tree Generator");
-		
-		Gen_VtTree( App::InTree );
-		Gen_GelVert2C_from_GelTree( App::OutTree, App::InTree );
-		// Gen_Curve_GelVert2C_from_GelTree
-	
-		Log("**** DONE");
-	}
-
-
-	{
-		Log("**** Grid Generator");
-
-		//GelTileMap MyMap("Blah.map"); // Use Search and Asset, but no Pool //
-		//Gen_TileMap_GelVert2U_from_GelGrid( App::OutMap, MyMap.Layer[0], TileWidth, TileHeight );
-		
-		GelGrid<st8> MyMap;
-		GelImage Mimage( "TestFileNoAlpha.png" );
-		
-		Log("MIMA: %i, %i (%i)", Mimage.Width(), Mimage.Height(), Mimage.BPP() );
-		Log("GRID: %i, %i", MyMap.Width(), MyMap.Height() );
-		
-		Gen_GelGrid_from_GelImage( MyMap, Mimage ); 
-
-		Log("GRID: %i, %i", MyMap.Width(), MyMap.Height() );
-
-//		for( int y = 0; y < MyMap.Height(); y++ ) {
-//			for( int x = 0; x < MyMap.Width(); x++ ) {
-//				_Log("%02X", (int)MyMap(x,y) );
-//			}		
-//			Log("");
-//		}
-		
-		GelSubGrid<st8> SubMap = MyMap.GetSubGrid( 60,60, 12,12 );
-
-		Log("SUBGRID: %i, %i", SubMap.Width(), SubMap.Height() );
-		
-		for( int y = 0; y < SubMap.Height(); y++ ) {
-			for( int x = 0; x < SubMap.Width(); x++ ) {
-				_Log("%02X", (int)SubMap(x,y) );
-			}		
-			Log("");
-		}
-		
-		
-		
-		Log("**** DONE");
-	}
-
-	{
-		Log("**** TILED MAP");
-
-		GelTiledMap MyTiledMap;
-		MyTiledMap.Load("WorldMap.json");
-
-		Log("**** DONE");
-	}
-	
-	{
-		Log("**** GLAYOUT");
-		App::Layout.Root.SetPos(128+16,-128);
-		App::Layout.Root.SetShape(100,100);
-		App::Layout.Root.AddChild( GLAY_FILL_WIDTH );
-		App::Layout.Root.Child.back().SetPos(40,60);
-		App::Layout.Root.Child.back().SetShape(20,20);
-		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().Child.back().SetShape(4,2);
-		App::Layout.Root.Child.back().AddChild();
-
-		App::Layout.Root.AddChild( GLAY_FILL );
-		App::Layout.Root.Child.back().SetPos(10,10);
-		App::Layout.Root.Child.back().SetShape(60,30);
-		App::Layout.Root.Child.back().AddEmptyChild();
-		App::Layout.Root.Child.back().AddEmptyChild();
-		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().AddEmptyChild();
-		App::Layout.Root.Child.back().AddChild().SetShape(8,4);
-		App::Layout.Root.Child.back().Child.back().SetPos(1,0);
-		App::Layout.Root.Child.back().AddEmptyChild();		
-		App::Layout.Update();
-
-		GlayPoint Pos = App::Layout.Root.Child.back().Child.back().GetPos();
-		GlayPoint Shape = App::Layout.Root.Child.back().Child.back().GetShape();
-		Log("Pos: (%f, %f) (%f, %f)", Pos.x, Pos.y, Shape.x, Shape.y);
-		
-		Log("**** DONE");
-	}
-	
-	{
-		GelImage ImageMap( "MapTest.png" );
-		
-		GelGrid<GelColor> DummyMap;
-		Gen_GelGrid_from_GelImage( DummyMap, ImageMap ); 
-
-//		Flood( DummyMap, DummyMap.Index(4,4), GEL_RGB_RED );
-
-
-		App::TestMap.Resize( DummyMap.Width(), DummyMap.Height() );
-		
-		// Convert Map //
-		for ( st idx = 0; idx < DummyMap.Size(); idx++ ) {
-			if ( GEL_GET_R(DummyMap[idx]) > 192 ) {
-				// DIRT //
-				App::TestMap[idx] = 1;
-			}
-			else if ( GEL_GET_G(DummyMap[idx]) > 192 ) {
-				// GRASS //
-				App::TestMap[idx] = 2;
-			}
-			else {
-				App::TestMap[idx] = 0;
-			}
-		}
-		
-		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400+50,550,160,90);
-//		GelSubGrid<u8> SubMap = App::TestMap.GetSubGrid(400+70,580,80,50);
-
-//		FloodWrap( SubMap, SubMap.Index(4,40), 1 );
-		
-		BlobExtract_EQ_from_GelGrid( App::MapBlobs, SubMap, 2 );
-			
-		//FloodWrap( App::MapBlobs, App::MapBlobs.Index(4,40), 0xA );
-			
-		for( int y = 0; y < App::MapBlobs.Height(); y+=2 ) {
-			for( int x = 0; x < App::MapBlobs.Width(); x+=2 ) {
-				_Log("%01X", App::MapBlobs(x,y)&0xf );
-			}		
-			Log("");
-		}		
-		
-		// Generate Geometry //
-		App::OutTestMap.Clear();
-		Real StepX(2);
-		Real StepY(2);
-		Vector2D Offset(SubMap.HalfWidth(),SubMap.HalfHeight());
-		for ( st y = 0; y < SubMap.Height(); y++ ) {
-			for ( st x = 0; x < SubMap.Width(); x++ ) {
-				int Value = SubMap(x,(SubMap.Height()-1)-y);
-				if ( Value > 0 ) {
-					GelColor Color = GEL_RGB_MAGENTA;
-					if ( Value == 1 )
-						Color = GEL_RGB(100,50,40);
-					else if ( Value == 2 )
-						Color = GEL_RGB_PUKE;
-					
-					App::OutTestMap.PushBack().Pos = (Vector2D(x+0,y+0) - Offset) * Vector2D(StepX,StepY);
-					App::OutTestMap.Back().Color = Color;
-					App::OutTestMap.PushBack().Pos = (Vector2D(x+1,y+0) - Offset) * Vector2D(StepX,StepY);
-					App::OutTestMap.Back().Color = Color;
-					App::OutTestMap.PushBack().Pos = (Vector2D(x+1,y+1) - Offset) * Vector2D(StepX,StepY);
-					App::OutTestMap.Back().Color = Color;
-
-					App::OutTestMap.PushBack().Pos = (Vector2D(x+1,y+1) - Offset) * Vector2D(StepX,StepY);
-					App::OutTestMap.Back().Color = Color;
-					App::OutTestMap.PushBack().Pos = (Vector2D(x+0,y+1) - Offset) * Vector2D(StepX,StepY);
-					App::OutTestMap.Back().Color = Color;
-					App::OutTestMap.PushBack().Pos = (Vector2D(x+0,y+0) - Offset) * Vector2D(StepX,StepY);
-					App::OutTestMap.Back().Color = Color;
-				}
-			}
-		}
-	}
-	
 	{
 		Log("**** ENGINE");
 
@@ -538,26 +185,6 @@ void AppExit() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
-void DrawLayout( const GlayNode& Node ) {
-	const st32 VertCount = 4;
-	Vector3D Verts[ VertCount ];
-	Verts[0].x = Node.GetPos().x;
-	Verts[0].y = Node.GetPos().y;
-	Verts[1].x = Node.GetPos().x + Node.GetShape().x;
-	Verts[1].y = Node.GetPos().y;
-	Verts[2].x = Node.GetPos().x + Node.GetShape().x;
-	Verts[2].y = Node.GetPos().y + Node.GetShape().y;
-	Verts[3].x = Node.GetPos().x;
-	Verts[3].y = Node.GetPos().y + Node.GetShape().y;
-
-	Gel::RenderFlat( GEL_LINE_LOOP, App::InfoMatrix, GEL_RGB_PURPLE, Verts, VertCount );
-	
-	
-	for (std::list<GlayNode>::const_iterator Itr = Node.Child.begin(), End = Node.Child.end(); Itr != End; ++Itr) {
-		DrawLayout( *Itr );
-	}
-}
-
 // - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
 	App::StepProfiler.Start();
@@ -586,55 +213,6 @@ void AppStep() {
 	QuackVMCallStep();
 	App::SqStepProfiler.Stop();
 
-	{
-		static Real Flow(0);
-		Flow += Real(0.01f);
-		for ( int idx = 0; idx < App::InCurve.Size(); idx++ ) {
-			App::InCurve[idx].Pos.x = Real(200)+(Flow+(Real(idx)*Real(0.1))).Sin() * Real(20-idx);
-		}
-		App::InCurve[0].Pos.x = App::InCurve[1].Pos.x;
-		
-		App::OutCurve.Clear();
-		Gen_SpecialCurve( App::InCurve, App::OutCurve );
-	}
-	
-//	static int bort = 0;
-//	bort++;
-//	if ( (bort % 6) == 0 )
-	{
-//		static Real Nerf(0);
-//		Nerf+=Real(0.005);
-//		for ( int idx = 1; idx < App::InTree.Size(); idx++ ) {
-//			App::InTree[idx].Angle = Vector2D((Nerf+Real(idx)*Real(0.01)).Cos(),1).Normal();
-//		}		
-		// Step //	
-		Step_VtTree( App::InTree );
-		Gen_GelVert2C_from_GelTree( App::OutTree, App::InTree );
-	}
-
-//#ifdef USES_STEAM
-//	if ( Gel::IsSteamRunning ) {
-//		static int Boof = 0;
-//		Boof++;
-//		if ( (Boof & 63) == 0 ) {
-//			for (st idx = 0; idx < Gel::Input::Steam::Size(); idx++ ) {
-//				if ( Gel::Input::Steam::IsConnected( idx ) ) {
-//					Log("%i -- L: %f,%f  R: %f,%f  B:%x",
-//						idx, 
-//						Gel::Input::Steam::Pad[idx].LStick.x.ToFloat(),
-//						Gel::Input::Steam::Pad[idx].LStick.y.ToFloat(),
-//						Gel::Input::Steam::Pad[idx].RStick.x.ToFloat(),
-//						Gel::Input::Steam::Pad[idx].RStick.y.ToFloat(),
-//						Gel::Input::Steam::Pad[idx].Button
-//						);
-//				}
-//			}
-//		}
-//	}
-//#endif // USES_STEAM //
-
-//	App::MySkel.Step();
-
 	App::Engine.Step();
 	
 	// *** //
@@ -648,31 +226,9 @@ void AppDraw() {
 	QuackVMCallDraw();
 	// *** //
 	App::SqDrawProfiler.Stop();
-	
-//	Gel::AtlasPool[App::MyAtlasID].Draw( App::InfoMatrix, 4 );
-	
-	DrawLayout( App::Layout.Root );
-		
-//	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve.Get()->Pos),&(App::OutCurve.Get()->Color),App::OutCurve.Size());
-	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutCurve[6].Pos),&(App::OutCurve[6].Color),App::OutCurve.Size()-6);
-
-	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_BLUE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
-//	Gel::RenderColor2D_Packed(GEL_LINES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTree[0].Pos),&(App::OutTree[0].Color),App::OutTree.Size());
-
-	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutTestMap[0].Pos),&(App::OutTestMap[0].Color),App::OutTestMap.Size());
-
 
 	App::Engine.Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
-/*	{
-		Matrix4x4 Mat = Matrix4x4::Identity;
-		Mat *= Matrix4x4::TranslationMatrix( Vector3D(-120,0) );
-		Mat *= App::InfoMatrix;
-	//	Gel::RenderColor2D_Packed(GEL_TRIANGLES,App::InfoMatrix,GEL_RGB_WHITE,&(App::OutBesier.Get()->Pos),&(App::OutBesier.Get()->Color),App::OutBesier.Size());
-		Gel::RenderFlat2D(GEL_TRIANGLES,Mat,GEL_RGB(180,170,255),&(App::OutBesier.Get()->Pos),App::OutBesier.Size());
-		Gel::RenderFlat2D(GEL_TRIANGLES,Mat,GEL_RGB(60,80,145),&(App::OutBesier2.Get()->Pos),App::OutBesier2.Size());
-	}
-*/	
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
 		App::HadVMError = true;
@@ -694,7 +250,7 @@ void AppDraw() {
 
 	// Draw FPS Counter //
 	{
-		Vector3D MessagePos = Vector3D(+254,+254,0);
+		Vector3D MessagePos = Vector3D(+254,+254-24,0);
 		MessagePos.y /= App::AspectRatio;
 			
 		GelColor Color = GEL_RGB(255,255,255);
