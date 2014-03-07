@@ -188,6 +188,9 @@ public:
 	inline QEngine() {
 		Log("** Engine Created");
 	}
+//	inline void Death() {
+//		Log("** Engine Deleted");
+//	}
 	inline ~QEngine() {
 		Log("** Engine Deleted");
 	}

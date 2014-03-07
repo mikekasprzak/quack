@@ -47,6 +47,7 @@ SQInteger qk_engine_constructor( HSQUIRRELVM v ) {
 // the destructor //
 SQInteger qk_engine_destructor( SQUserPointer Engine, SQInteger /*Size*/ ) {
 	((QK::QEngine*)Engine)->~QEngine();
+//	((QK::QEngine*)Engine)->Death();
 
 	// Finished //
 	return SQ_VOID;
