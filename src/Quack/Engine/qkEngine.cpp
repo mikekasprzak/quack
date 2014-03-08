@@ -246,6 +246,24 @@ SQInteger qk_engine_AddCappyStatic( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddBoxObj( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos;
+	sq_getinstanceup(v,2,(void**)&Pos,NULL);	
+	const char* ClassName;
+	sq_getstring(v,3,&ClassName);
+	
+	QK::AddBoxObj_QEngine( *Engine, *Pos, ClassName );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_engine_step( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 	QK::QEngine* Engine;
@@ -295,12 +313,14 @@ SQRegFunction qkEngine_funcs[] = {
 	_DECL_FUNC(qk_engine_tostring,1,NULL),
 //	_DECL_FUNC(qk_engine_cloned,2,NULL),	
 
+	_DECL_FUNC(qk_engine_AddDummy,2,NULL),
 	_DECL_FUNC(qk_engine_AddBoxy,3,NULL),
 	_DECL_FUNC(qk_engine_AddBoxyStatic,3,NULL),
 	_DECL_FUNC(qk_engine_AddBally,3,NULL),
 	_DECL_FUNC(qk_engine_AddCappy,5,NULL),
 	_DECL_FUNC(qk_engine_AddCappyStatic,5,NULL),
-	_DECL_FUNC(qk_engine_AddDummy,2,NULL),
+	
+	_DECL_FUNC(qk_engine_AddBoxObj,3,NULL),
 
 	_DECL_FUNC(qk_engine_step,1,NULL),
 	_DECL_FUNC(qk_engine_draw,3,NULL),
@@ -342,6 +362,8 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_engine_AddBally,AddBally);
 		_CLASS_ADDFUNC(qk_engine_AddCappy,AddCappy);
 		_CLASS_ADDFUNC(qk_engine_AddCappyStatic,AddCappyStatic);
+		
+		_CLASS_ADDFUNC(qk_engine_AddBoxObj,AddBoxObj);
 
 		_CLASS_ADDFUNC(qk_engine_step,Step);
 		_CLASS_ADDFUNC(qk_engine_draw,Draw);

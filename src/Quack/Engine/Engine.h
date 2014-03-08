@@ -29,6 +29,8 @@ SQInteger register_qkEngine(HSQUIRRELVM v);
 #include "QObjBally.h"
 #include "QObjCappy.h"
 #include "QObjCappyStatic.h"
+
+#include "QObjBoxObj.h"
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_ENGINE_ENGINE_H__ //
 // - ------------------------------------------------------------------------------------------ - //

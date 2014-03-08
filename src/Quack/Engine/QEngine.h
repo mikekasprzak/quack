@@ -63,6 +63,8 @@ enum {
 	QO_BALLY,			// Dumb Simple Ball Shaped Physical Object //
 	QO_CAPPY,			// Dumb Simple Capsule Shaped Physical Object (Does not physically rotate) //
 	QO_CAPPY_STATIC,	// Dumb Simple Capsule Shaped Solid Object //
+	
+	QO_BOXOBJ,			// Box Object, with Squirrel Hooks //
 };
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -188,9 +190,6 @@ public:
 	inline QEngine() {
 		Log("** Engine Created %x",this);
 	}
-//	inline void Death() {
-//		Log("** Engine Deleted");
-//	}
 	inline ~QEngine() {
 		Log("** Engine Deleted %x",this);
 	}
