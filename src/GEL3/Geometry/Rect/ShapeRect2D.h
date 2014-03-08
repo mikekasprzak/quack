@@ -108,18 +108,17 @@ public:
 	inline const VecType& P1() const {
 		return _P1;
 	}
-	// - -------------------------------------------------------------------------------------- - //
 	inline VecType& P1() {
 		return _P1;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const VecType P2() const {
+	inline VecType P2() const {
 		return _P1 + _Shape;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 
 	// - -------------------------------------------------------------------------------------- - //
-	inline const VecType Center() const {
+	inline VecType Center() const {
 		return P1() + HalfShape();
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -128,16 +127,22 @@ public:
 	inline const Real& Width() const {
 		return _Shape.x;
 	}
+	inline Real& Width() {
+		return _Shape.x;
+	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real HalfWidth() const {
+	inline Real HalfWidth() const {
 		return Width() * Real::Half;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	inline const Real& Height() const {
 		return _Shape.y;
 	}
+	inline Real& Height() {
+		return _Shape.y;
+	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real HalfHeight() const {
+	inline Real HalfHeight() const {
 		return Height() * Real::Half;
 	}
 	// - -------------------------------------------------------------------------------------- - //	
@@ -146,18 +151,17 @@ public:
 	inline const VecType& Shape() const {
 		return _Shape;
 	}
-	// - -------------------------------------------------------------------------------------- - //
 	inline VecType& Shape() {
 		return _Shape;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const VecType HalfShape() const {
+	inline VecType HalfShape() const {
 		return Shape() * Real::Half;
 	}
 	// - -------------------------------------------------------------------------------------- - //
 public:	
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real Area() const {
+	inline Real Area() const {
 		return Width() * Height();
 	}
 	// - -------------------------------------------------------------------------------------- - //
@@ -193,7 +197,7 @@ public:
 		return *this;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real NearestX( const Real& x ) const {
+	inline Real NearestX( const Real& x ) const {
 		if ( x < P1().x )
 			return P1().x;
 		else if ( x > P2().x )
@@ -202,7 +206,7 @@ public:
 			return x;
 	}
 	// - -------------------------------------------------------------------------------------- - //
-	inline const Real NearestY( const Real& y ) const {
+	inline Real NearestY( const Real& y ) const {
 		if ( y < P1().y )
 			return P1().y;
 		else if ( y > P2().y )
@@ -212,17 +216,17 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Return a 0-1 co-ordinate mapped on to the rectangle //
-	inline const Real MapX( const Real& x ) const {
+	inline Real MapX( const Real& x ) const {
 		return (-P1().x + NearestX( x )) / Width();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Return a 0-1 co-ordinate mapped on to the rectangle //
-	inline const Real MapY( const Real& y ) const {
+	inline Real MapY( const Real& y ) const {
 		return (-P1().y + NearestY( y )) / Height();
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Given a point, find the nearest point on the Rectangle //
-	inline const VecType NearestPoint( const VecType& v ) const {
+	inline VecType NearestPoint( const VecType& v ) const {
 		VecType Point;
 	
 		if ( v.x < P1().x )
@@ -273,7 +277,7 @@ public:
 
 	// - -------------------------------------------------------------------------------------- - //
 	// Contract a rectangle (like how a selection contract or expand works in PSP/Photoshop) //
-	inline const ThisType Contract( const Real& Value ) {
+	inline ThisType Contract( const Real& Value ) {
 		ThisType NewRect = *this;
 		
 		Vector2D Deformation( Value + Value, Value + Value );
@@ -287,7 +291,7 @@ public:
 	}
 	// - -------------------------------------------------------------------------------------- - //
 	// Expand a rectangle (like how a selection contract or expand works in PSP/Photoshop) //
-	inline const ThisType Expand( const Real& Value ) {
+	inline ThisType Expand( const Real& Value ) {
 		ThisType NewRect = *this;
 		
 		NewRect._P1 -= Vector2D( Value, Value );
