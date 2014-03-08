@@ -121,8 +121,6 @@ public:
 		}
 		Skel = new GelSkelAnimator();
 		Skel->Load( Gel::SkelPool.Load( ArtFile ) );
-			
-		Skel->Set( "Idle" );
 	}
 	static void* _GetArt( thistype* self ) { return self->GetArt(); }
 	inline void* GetArt() {
