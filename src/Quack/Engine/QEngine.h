@@ -186,13 +186,13 @@ public:
 
 public:
 	inline QEngine() {
-		Log("** Engine Created");
+		Log("** Engine Created %x",this);
 	}
 //	inline void Death() {
 //		Log("** Engine Deleted");
 //	}
 	inline ~QEngine() {
-		Log("** Engine Deleted");
+		Log("** Engine Deleted %x",this);
 	}
 
 public:
