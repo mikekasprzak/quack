@@ -9,6 +9,10 @@ using namespace QK;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+HSQOBJECT DummySkelAnimator;
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 // the constructor //
 SQInteger qk_object_constructor( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
@@ -24,14 +28,20 @@ SQInteger qk_object_constructor( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 // _get metamethod //
 SQInteger qk_object_get( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// Get the requested member //
-//	const char* MemberName;
-//	sq_getstring(v,2,&MemberName);
-//	
+	// Retrieve Data (Pointer) //
+	QK::QObj* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+	
+	// Get the requested member //
+	const char* MemberName;
+	sq_getstring(v,2,&MemberName);
+
+	if ( strcmp(MemberName,"Art") == 0 ) {
+		sq_pushobject(vm,DummySkelAnimator);
+		sq_setinstanceup(vm,-1,Ob->GetArt());
+		return SQ_RETURN;		
+	}
+
 //	// Return different data depending on requested member //
 //	if ( MemberName[0] == 'r' ) {
 //		sq_pushinteger(v,GEL_GET_R(*Color));	// +1 //
@@ -194,6 +204,19 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 
 		_ADD_CLASS_END(QObj);
 	}
+	
+	// ** SqObj Holder (Pointer is assigned before calls) ** //
+	sq_resetobject(&DummySkelAnimator);
+	// Instance the Class //		
+	sq_pushroottable(vm);
+	sq_pushstring(vm,_SC("QkSkelAnimatorPtr"),-1);
+	sq_get(vm,-2);
+	sq_createinstance(vm,-1);
+	// Store the Instance, add a reference //
+	sq_getstackobj(vm,-1,&DummySkelAnimator);
+	sq_addref(vm,&DummySkelAnimator);
+	sq_pop(vm,3);
+
 	
 	return SQ_OK;
 }

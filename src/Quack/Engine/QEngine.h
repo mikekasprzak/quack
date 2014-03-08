@@ -142,6 +142,7 @@ public:
 	typedef QRect (*QGetRectFunc)( void* self );
 	typedef QBody* (*QGetBodyFunc)( void* self );
 	typedef void (*QSetArtFunc)( void* self, const char* ArtFile );
+	typedef void* (*QGetArtFunc)( void* self );
 
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
 	typedef void (*QContactFunc)( void* self, QObj& Vs );
@@ -161,6 +162,7 @@ public:
 	QGetRectFunc	_GetRect;
 	QGetBodyFunc	_GetBody;
 	QSetArtFunc		_SetArt;
+	QGetArtFunc		_GetArt;
 
 	QAddForceFunc	_AddForce;
 	QContactFunc	_Contact;
@@ -174,6 +176,7 @@ public:
 	inline QRect GetRect() { return _GetRect(Data); }
 	inline QBody* GetBody() { return _GetBody(Data); }
 	inline void SetArt( const char* ArtFile ) { _SetArt(Data,ArtFile); }
+	inline void* GetArt() { return _GetArt(Data); }
 
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }
