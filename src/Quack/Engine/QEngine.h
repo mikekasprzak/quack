@@ -145,7 +145,7 @@ public:
 	typedef void (*QContactFunc)( void* self, QObj& Vs );
 	typedef void (*QNotifyFunc)( void* self, QObj& Sender, const int Message );
 
-	typedef bool (*QStepFunc)( void* self, const QProp& );
+	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
 
 public:
@@ -170,7 +170,7 @@ public:
 	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,Sender,Message); }
 
-	inline bool Step( const QProp& Prop ) { return _Step(Data,Prop); }
+	inline bool Step( const QProp& Prop ) { return _Step(Data,*this,Prop); }
 	inline void Draw( const Matrix4x4& Mat ) { _Draw(Data,Mat); }
 
 public:

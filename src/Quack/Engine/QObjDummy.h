@@ -55,8 +55,8 @@ public:
 	inline void Notify( QObj& Sender, const int Message ) {
 	}
 
-	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }
-	inline bool Step( const QProp& /*Prop*/ ) {
+	static bool _Step( thistype* self, QObj& Obj, const QProp& Prop ) { return self->Step( Obj, Prop ); }
+	inline bool Step( QObj& /*Obj*/, const QProp& /*Prop*/ ) {
 		return false;
 	}
 

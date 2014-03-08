@@ -247,6 +247,12 @@ SQInteger _NAME_( HSQUIRRELVM v ) { \
 	sq_setclassudsize(v,CPos,sizeof(_TYPE_)); \
 	sq_settypetag(v,CPos,(void*)_TYPETAG_);
 // - ------------------------------------------------------------------------------------------ - //
+#define _ADD_PTRCLASS_START(_TYPE_,_TYPENAME_,_TYPETAG_) \
+	sq_pushstring(v,_TYPENAME_,-1);				/* +1 */ \
+	sq_newclass(v,false); 						/* +1 */ \
+	int CPos = sq_gettop(v); /* class pos */ \
+	sq_settypetag(v,CPos,(void*)_TYPETAG_);
+// - ------------------------------------------------------------------------------------------ - //
 #define _ADD_CLASS_END(_TYPE_) \
 	sq_newslot(v,Root,false); /* Add to Root */	/* -2 */
 // - ------------------------------------------------------------------------------------------ - //

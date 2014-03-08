@@ -125,6 +125,7 @@ void QuackVMInit() {
 		Log("* qkModel"); register_qkModel( vm );
 		
 		Log("* qkEngine"); register_qkEngine( vm );
+		Log("* qkObject"); register_qkObject( vm );
 	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	
