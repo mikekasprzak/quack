@@ -18,31 +18,9 @@ SQInteger qk_engine_constructor( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 	QK::QEngine* Engine;
 	sq_getinstanceup(v,1,(void**)&Engine,0);
-	
-	// Check the number of arguments //
-	int Top = sq_gettop(v);
-	
-//	// Build our color channels //
-//	int r,g,b;
-//	int a = 255;
-//	sq_getinteger(v,2,&r);
-//	sq_getinteger(v,3,&g);
-//	sq_getinteger(v,4,&b);
-//	if ( Top > 4 )
-//		sq_getinteger(v,5,&a);
-//	
-//	// Clamp Colors to 0-255 range //
-//	r = GEL_CLAMP_COLOR_COMPONENT(r);
-//	g = GEL_CLAMP_COLOR_COMPONENT(g);
-//	b = GEL_CLAMP_COLOR_COMPONENT(b);
-//	a = GEL_CLAMP_COLOR_COMPONENT(a);
-	
+
 	// Construct Data //
 	new(Engine) QK::QEngine();
-
-
-	QK::AddBally_QEngine( *Engine, Vector2D(0,50), Real(16) );
-	QK::AddCappyStatic_QEngine( *Engine, Vector2D(-96,-32), Real(16), Vector2D(96*2,0), Real(16) );
 
 	// Finished //
 	return SQ_VOID;
@@ -164,6 +142,110 @@ _FUNC_TYPEOF(QEngine,qk_engine_typeof,"QkEngine",8);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddDummy( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos;
+	sq_getinstanceup(v,2,(void**)&Pos,NULL);
+	
+	QK::AddDummy_QEngine( *Engine, *Pos );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddBoxy( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos;
+	sq_getinstanceup(v,2,(void**)&Pos,NULL);
+	Vector2D* Shape;
+	sq_getinstanceup(v,3,(void**)&Shape,NULL);
+	
+	QK::AddBoxy_QEngine( *Engine, *Pos, *Shape );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddBoxyStatic( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos;
+	sq_getinstanceup(v,2,(void**)&Pos,NULL);
+	Vector2D* Shape;
+	sq_getinstanceup(v,3,(void**)&Shape,NULL);
+	
+	QK::AddBoxyStatic_QEngine( *Engine, *Pos, *Shape );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddBally( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos;
+	sq_getinstanceup(v,2,(void**)&Pos,NULL);
+	float Radius;
+	sq_getfloat(v,3,&Radius);
+	
+	QK::AddBally_QEngine( *Engine, *Pos, Real(Radius) );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddCappy( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos1;
+	sq_getinstanceup(v,2,(void**)&Pos1,NULL);
+	float Radius1;
+	sq_getfloat(v,3,&Radius1);
+	Vector2D* Pos2;
+	sq_getinstanceup(v,4,(void**)&Pos2,NULL);
+	float Radius2;
+	sq_getfloat(v,5,&Radius2);
+	
+	QK::AddCappy_QEngine( *Engine, *Pos1, Real(Radius1), *Pos2, Real(Radius2) );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddCappyStatic( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos1;
+	sq_getinstanceup(v,2,(void**)&Pos1,NULL);
+	float Radius1;
+	sq_getfloat(v,3,&Radius1);
+	Vector2D* Pos2;
+	sq_getinstanceup(v,4,(void**)&Pos2,NULL);
+	float Radius2;
+	sq_getfloat(v,5,&Radius2);
+	
+	QK::AddCappyStatic_QEngine( *Engine, *Pos1, Real(Radius1), *Pos2, Real(Radius2) );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_engine_step( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 	QK::QEngine* Engine;
@@ -212,6 +294,14 @@ SQRegFunction qkEngine_funcs[] = {
 	_DECL_FUNC(qk_engine_typeof,0,NULL),
 	_DECL_FUNC(qk_engine_tostring,1,NULL),
 //	_DECL_FUNC(qk_engine_cloned,2,NULL),	
+
+	_DECL_FUNC(qk_engine_AddBoxy,3,NULL),
+	_DECL_FUNC(qk_engine_AddBoxyStatic,3,NULL),
+	_DECL_FUNC(qk_engine_AddBally,3,NULL),
+	_DECL_FUNC(qk_engine_AddCappy,5,NULL),
+	_DECL_FUNC(qk_engine_AddCappyStatic,5,NULL),
+	_DECL_FUNC(qk_engine_AddDummy,2,NULL),
+
 	_DECL_FUNC(qk_engine_step,1,NULL),
 	_DECL_FUNC(qk_engine_draw,3,NULL),
 	
@@ -245,6 +335,17 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC_STATIC(qk_engine_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_engine_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_engine_cloned,_cloned);
+
+		_CLASS_ADDFUNC(qk_engine_AddDummy,AddDummy);
+		_CLASS_ADDFUNC(qk_engine_AddBoxy,AddBoxy);
+		_CLASS_ADDFUNC(qk_engine_AddBoxyStatic,AddBoxyStatic);
+		_CLASS_ADDFUNC(qk_engine_AddBally,AddBally);
+		_CLASS_ADDFUNC(qk_engine_AddCappy,AddCappy);
+		_CLASS_ADDFUNC(qk_engine_AddCappyStatic,AddCappyStatic);
+
+		_CLASS_ADDFUNC(qk_engine_step,Step);
+		_CLASS_ADDFUNC(qk_engine_draw,Draw);
+
 		_ADD_CLASS_END(QEngine);
 	}
 	
