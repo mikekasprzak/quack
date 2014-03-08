@@ -70,7 +70,14 @@ public:
 	inline const QFloat& GetRestitution() const {
 		return Restitution;
 	}
-
+	
+	inline QVec GetBasePoint() const {
+		return QVec(Pos.x,Pos.y-HalfShape.y);
+	}
+	inline const QVec& GetPos() const {
+		return Pos;
+	}
+	
 	inline void AddForce( const QVec& Force ) {
 		Accum += Force;
 	}	

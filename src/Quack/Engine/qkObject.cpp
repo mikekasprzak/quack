@@ -130,6 +130,23 @@ _FUNC_TYPEOF(QObj,qk_object_typeof,"QkObj",5);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_object_SetArt( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QObj* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+	
+	// Get the requested member //
+	const char* ArtFile;
+	sq_getstring(v,2,&ArtFile);
+	
+	Ob->SetArt(ArtFile);
+
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
 #define _DECL_FUNC_ALT(sqname,name,nparams,pmask) {_SC(sqname),name,nparams,pmask}
 SQRegFunction qkObject_funcs[] = {
@@ -143,6 +160,8 @@ SQRegFunction qkObject_funcs[] = {
 	_DECL_FUNC(qk_object_typeof,0,NULL),
 	_DECL_FUNC(qk_object_tostring,1,NULL),
 //	_DECL_FUNC(qk_object_cloned,2,NULL),
+
+	_DECL_FUNC(qk_object_SetArt,2,NULL),
 	
 	{0,0,0,0}
 };
@@ -170,6 +189,8 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC_STATIC(qk_object_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_object_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_object_cloned,_cloned);
+
+		_CLASS_ADDFUNC(qk_object_SetArt,SetArt);
 
 		_ADD_CLASS_END(QObj);
 	}
