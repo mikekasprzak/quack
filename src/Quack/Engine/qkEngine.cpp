@@ -11,6 +11,10 @@ using namespace QK;
 // - ------------------------------------------------------------------------------------------ - //
 // the constructor //
 SQInteger qk_engine_constructor( HSQUIRRELVM v ) {
+	// HACK! Until fixed (see notes at bottom of file in class creation) //
+	extern SQInteger qk_engine_destructor( SQUserPointer Engine, SQInteger Size );
+	sq_setreleasehook(v,1,qk_engine_destructor);
+	
 	// Retrieve Data (Pointer) //
 	QK::QEngine* Engine;
 	sq_getinstanceup(v,1,(void**)&Engine,0);
@@ -45,9 +49,8 @@ SQInteger qk_engine_constructor( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 // the destructor //
-SQInteger qk_engine_destructor( SQUserPointer Engine, SQInteger /*Size*/ ) {
+SQInteger qk_engine_destructor( SQUserPointer Engine, SQInteger Size ) {
 	((QK::QEngine*)Engine)->~QEngine();
-//	((QK::QEngine*)Engine)->Death();
 
 	// Finished //
 	return SQ_VOID;
@@ -231,7 +234,9 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 	int Root = sq_gettop(v); // root table pos //
 	{
 		_ADD_CLASS_START(QEngine,"QkEngine",QK_TAG_ENGINE);
-		_CLASS_DESTRUCTOR(qk_engine_destructor);
+		// There's a bug/design flaw. This will not propagate to the instances (as of 3.4) //
+		// Instead, I've added a workaround to the constructor itself //
+//		_CLASS_DESTRUCTOR(qk_engine_destructor);
 		_CLASS_ADDFUNC(qk_engine_constructor,constructor);
 		_CLASS_ADDFUNC(qk_engine_get,_get);
 		_CLASS_ADDFUNC(qk_engine_set,_set);
