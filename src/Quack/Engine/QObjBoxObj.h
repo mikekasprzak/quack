@@ -34,10 +34,12 @@ public:
 	BT 		Body;		// Actual Physical Properties //
 	QBody	BodyType;	// Signature type understood by the engine //
 
-	HSQOBJECT SqObj;
+	HSQOBJECT SqHookObj;
 	HSQMEMBERHANDLE SqInitFunc;
 	HSQMEMBERHANDLE SqStepFunc;
 	HSQMEMBERHANDLE SqNotifyFunc;
+
+	HSQOBJECT SqObj;
 
 public:
 	inline QObjBoxObj( const QVec& _Pos, const char* _Class ) :
@@ -46,10 +48,23 @@ public:
 		BodyType.Type = QB_AABB;
 		BodyType.Data = &Body;
 		BodyType.GetInvMass = (QBody::QGetInvMassFunc)BT::_GetInvMass;
-		
-		
-		// Clear the Instance Storage //
+
+		// ** SqObj Holder ** //
 		sq_resetobject(&SqObj);
+		// Instance the Class //		
+		sq_pushroottable(vm);
+		sq_pushstring(vm,_SC("QkObj"),-1);
+		sq_get(vm,-2);
+		sq_createinstance(vm,-1);
+		// Store the Instance, add a reference //
+		sq_getstackobj(vm,-1,&SqObj);
+		sq_addref(vm,&SqObj);
+//		sq_pop(vm,3);
+		
+		
+		// ** Class Instance Holder ** //
+		// Clear the Instance Storage //
+		sq_resetobject(&SqHookObj);
 				
 		// Instance the Class //		
 		sq_pushroottable(vm);
@@ -57,8 +72,8 @@ public:
 		sq_get(vm,-2);
 		sq_createinstance(vm,-1);
 		// Store the Instance, add a reference //
-		sq_getstackobj(vm,-1,&SqObj);
-		sq_addref(vm,&SqObj);
+		sq_getstackobj(vm,-1,&SqHookObj);
+		sq_addref(vm,&SqHookObj);
 		
 		// Get Members //
 		sq_pushstring(vm,_SC("Init"),-1);
@@ -72,16 +87,17 @@ public:
 		
 
 		Log("%i",sq_gettop(vm));		
-		sq_pushobject(vm,SqObj);
+		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqInitFunc);
 		// ARGS (must be accurate) //
-		sq_pushobject(vm,SqObj);	// ARG1 - this //
+		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
 		sq_call(vm,1,false,false);
 		sq_pop(vm,2);
 		Log("%i",sq_gettop(vm));
 	}
 	
 	inline ~QObjBoxObj() {
+		sq_release(vm,&SqHookObj);
 		sq_release(vm,&SqObj);
 	}
 
@@ -109,13 +125,16 @@ public:
 	inline void Notify( QObj& Sender, const int Message ) {
 	}
 
-	static bool _Step( thistype* self, const QProp& Prop ) { return self->Step( Prop ); }
-	inline bool Step( const QProp& Prop ) {
-		sq_pushobject(vm,SqObj);
+	static bool _Step( thistype* self, QObj& Obj, const QProp& Prop ) { return self->Step( Obj, Prop ); }
+	inline bool Step( QObj& Obj, const QProp& Prop ) {
+
+		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqStepFunc);
 		// ARGS (must be accurate) //
-		sq_pushobject(vm,SqObj);	// ARG1 - this //
-		sq_call(vm,1,false,false);
+		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
+		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_call(vm,2,false,false);
 		sq_pop(vm,2);
 		
 		return Body.Step( Prop );
