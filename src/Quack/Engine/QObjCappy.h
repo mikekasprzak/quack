@@ -19,6 +19,7 @@ public:
 		self->_Contact = (QObj::QContactFunc)_Contact;
 		self->_Notify = (QObj::QNotifyFunc)_Notify;
 
+		self->_Init = (QObj::QInitFunc)_Init;
 		self->_Step = (QObj::QStepFunc)_Step;
 		self->_Draw = (QObj::QDrawFunc)_Draw;
 	}
@@ -57,6 +58,12 @@ public:
 
 	static void _Notify( thistype* self, QObj& Sender, const int Message ) { self->Notify( Sender, Message ); }
 	inline void Notify( QObj& Sender, const int Message ) {
+	}
+
+
+	static bool _Init( thistype* self, QObj& Obj ) { return self->Init( Obj ); }
+	inline bool Init( QObj& /*Obj*/ ) {
+		return false;
 	}
 
 	static bool _Step( thistype* self, QObj& Obj, const QProp& Prop ) { return self->Step( Obj, Prop ); }

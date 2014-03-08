@@ -141,10 +141,13 @@ class QObj {
 public:
 	typedef QRect (*QGetRectFunc)( void* self );
 	typedef QBody* (*QGetBodyFunc)( void* self );
+	typedef void (*QSetArtFunc)( void* self, const char* ArtFile );
+
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
 	typedef void (*QContactFunc)( void* self, QObj& Vs );
 	typedef void (*QNotifyFunc)( void* self, QObj& Sender, const int Message );
 
+	typedef bool (*QInitFunc)( void* self, QObj& Obj );
 	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
 
@@ -154,22 +157,29 @@ public:
 
 	QRect	Rect;
 
+
 	QGetRectFunc	_GetRect;
 	QGetBodyFunc	_GetBody;
+	QSetArtFunc		_SetArt;
+
 	QAddForceFunc	_AddForce;
 	QContactFunc	_Contact;
 	QNotifyFunc		_Notify;
 
+	QInitFunc		_Init;
 	QStepFunc		_Step;
 	QDrawFunc		_Draw;
 
 public:
 	inline QRect GetRect() { return _GetRect(Data); }
 	inline QBody* GetBody() { return _GetBody(Data); }
+	inline void SetArt( const char* ArtFile ) { _SetArt(Data,ArtFile); }
+
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,Sender,Message); }
 
+	inline bool Init() { return _Init(Data,*this); }
 	inline bool Step( const QProp& Prop ) { return _Step(Data,*this,Prop); }
 	inline void Draw( const Matrix4x4& Mat ) { _Draw(Data,Mat); }
 

@@ -5,9 +5,10 @@
 #include "QEngine.h"
 #include <Render/GelDraw.h>
 
-#include <string>
 #include <Lib/Lib.h>
 #include <API/API_Squirrel.h>
+
+#include <Skel/Skel.h>
 // - ------------------------------------------------------------------------------------------ - //
 extern HSQUIRRELVM vm;
 // - ------------------------------------------------------------------------------------------ - //
@@ -23,10 +24,13 @@ public:
 		self->Type = QK::QO_BOXOBJ;
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
+		self->_SetArt = (QObj::QSetArtFunc)_SetArt;
+
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
 		self->_Contact = (QObj::QContactFunc)_Contact;
 		self->_Notify = (QObj::QNotifyFunc)_Notify;
 
+		self->_Init = (QObj::QInitFunc)_Init;	// ?? //
 		self->_Step = (QObj::QStepFunc)_Step;
 		self->_Draw = (QObj::QDrawFunc)_Draw;
 	}
@@ -34,8 +38,10 @@ public:
 	BT 		Body;		// Actual Physical Properties //
 	QBody	BodyType;	// Signature type understood by the engine //
 
+	GelSkelAnimator* Skel;
+
 	HSQOBJECT SqHookObj;
-	HSQMEMBERHANDLE SqInitFunc;
+	HSQMEMBERHANDLE SqInitFunc;	// ?? //
 	HSQMEMBERHANDLE SqStepFunc;
 	HSQMEMBERHANDLE SqNotifyFunc;
 
@@ -43,13 +49,14 @@ public:
 
 public:
 	inline QObjBoxObj( const QVec& _Pos, const char* _Class ) :
-		Body( _Pos, Vector2D(8,8) ) 
+		Body( _Pos, Vector2D(8,8) ),
+		Skel( 0 )
 	{
 		BodyType.Type = QB_AABB;
 		BodyType.Data = &Body;
 		BodyType.GetInvMass = (QBody::QGetInvMassFunc)BT::_GetInvMass;
 
-		// ** SqObj Holder ** //
+		// ** SqObj Holder (Pointer is assigned before calls) ** //
 		sq_resetobject(&SqObj);
 		// Instance the Class //		
 		sq_pushroottable(vm);
@@ -84,21 +91,15 @@ public:
 		sq_getmemberhandle(vm,-3,&SqNotifyFunc);	// The Class, not the Instance //
 		// Finished, clean up the stack //
 //		sq_pop(vm,3);
-		
-
-		Log("%i",sq_gettop(vm));		
-		sq_pushobject(vm,SqHookObj);
-		sq_getbyhandle(vm,-1,&SqInitFunc);
-		// ARGS (must be accurate) //
-		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
-		sq_call(vm,1,false,false);
-		sq_pop(vm,2);
-		Log("%i",sq_gettop(vm));
 	}
 	
 	inline ~QObjBoxObj() {
 		sq_release(vm,&SqHookObj);
 		sq_release(vm,&SqObj);
+
+		if ( Skel ) {
+			delete Skel;
+		}
 	}
 
 public:
@@ -110,6 +111,17 @@ public:
 	static QBody* _GetBody( thistype* self ) { return self->GetBody(); }
 	inline QBody* GetBody() {
 		return &BodyType;
+	}
+
+	static void _SetArt( thistype* self, const char* ArtFile ) { self->SetArt( ArtFile ); }
+	inline void SetArt( const char* ArtFile ) {
+		if ( Skel ) {
+			delete Skel;
+		}
+		Skel = new GelSkelAnimator();
+		Skel->Load( Gel::SkelPool.Load( ArtFile ) );
+			
+		Skel->Set( "Idle" );
 	}
 
 	static void _AddForce( thistype* self, const QVec& Force ) { self->AddForce( Force ); }
@@ -125,9 +137,29 @@ public:
 	inline void Notify( QObj& Sender, const int Message ) {
 	}
 
+public:
+	static bool _Init( thistype* self, QObj& Obj ) { return self->Init( Obj ); }
+	inline bool Init( QObj& Obj ) {
+		
+		sq_pushobject(vm,SqHookObj);
+		sq_getbyhandle(vm,-1,&SqInitFunc);
+		// ARGS (must be accurate) //
+		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
+		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_call(vm,2,false,false);
+		sq_pop(vm,2);
+		
+		return true;
+	}
+
 	static bool _Step( thistype* self, QObj& Obj, const QProp& Prop ) { return self->Step( Obj, Prop ); }
 	inline bool Step( QObj& Obj, const QProp& Prop ) {
-
+		if ( Skel ) {
+			Skel->Step();
+		}
+		
+		// Do Step Function //
 		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqStepFunc);
 		// ARGS (must be accurate) //
@@ -142,7 +174,14 @@ public:
 
 	static void _Draw( thistype* self, const Matrix4x4& Mat ) { self->Draw( Mat ); }
 	inline void Draw( const Matrix4x4& Mat ) {
-		gelDrawSquareFill(Mat,GetRect().Center().ToVector3D(),GetRect().HalfShape(),GEL_RGBA(64,192,64,192));
+		if ( Skel ) {
+			Matrix4x4 NewMat = Matrix4x4::TranslationMatrix(Body.GetBasePoint());
+			NewMat *= Mat;
+			Skel->Draw( NewMat );
+		}
+		else {
+			gelDrawSquareFill(Mat,GetRect().Center().ToVector3D(),GetRect().HalfShape(),GEL_RGBA(64,192,64,192));
+		}
 	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -150,6 +189,7 @@ inline void AddBoxObj_QEngine( QEngine& Engine, const QVec& _Pos, const char* _C
 	QObj& Ob = Engine.Add();
 	QObjBoxObj::InitObj( &Ob );
 	Ob.Data = new QObjBoxObj( _Pos, _Class );
+	((QObjBoxObj*)Ob.Data)->Init(Ob);
 	Ob.UpdateRect();
 }
 // - ------------------------------------------------------------------------------------------ - //
