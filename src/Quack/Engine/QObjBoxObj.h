@@ -25,6 +25,7 @@ public:
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
 		self->_SetArt = (QObj::QSetArtFunc)_SetArt;
+		self->_GetArt = (QObj::QGetArtFunc)_GetArt;
 
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
 		self->_Contact = (QObj::QContactFunc)_Contact;
@@ -122,6 +123,10 @@ public:
 		Skel->Load( Gel::SkelPool.Load( ArtFile ) );
 			
 		Skel->Set( "Idle" );
+	}
+	static void* _GetArt( thistype* self ) { return self->GetArt(); }
+	inline void* GetArt() {
+		return (void*)Skel;
 	}
 
 	static void _AddForce( thistype* self, const QVec& Force ) { self->AddForce( Force ); }

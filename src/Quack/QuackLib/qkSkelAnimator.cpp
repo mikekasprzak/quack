@@ -275,9 +275,25 @@ SQInteger register_qkSkelAnimator(HSQUIRRELVM v) {
 		i++;
 	}
 	
+	// Regular Version //
 	int Root = sq_gettop(v); // root table pos //
 	{
 		_ADD_CLASS_START(GelSkelAnimator,"QkSkelAnimator",QK_TAG_SKELANIMATOR);
+		_CLASS_ADDFUNC(qk_skelanimator_constructor,constructor);
+//		_CLASS_ADDFUNC(qk_skelanimator_get,_get);
+//		_CLASS_ADDFUNC(qk_skelanimator_set,_set);
+		_CLASS_ADDFUNC_STATIC(qk_skelanimator_typeof,_typeof);
+		_CLASS_ADDFUNC(qk_skelanimator_tostring,_tostring);
+		_CLASS_ADDFUNC(qk_skelanimator_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_skelanimator_Step,Step);
+		_CLASS_ADDFUNC(qk_skelanimator_Draw,Draw);
+		_CLASS_ADDFUNC(qk_skelanimator_Set,Set);
+		_ADD_CLASS_END(GelSkelAnimator);
+	}
+
+	// Pointer Version //
+	{
+		_ADD_PTRCLASS_START(GelSkelAnimator,"QkSkelAnimatorPtr",QK_TAG_SKELANIMATOR);
 		_CLASS_ADDFUNC(qk_skelanimator_constructor,constructor);
 //		_CLASS_ADDFUNC(qk_skelanimator_get,_get);
 //		_CLASS_ADDFUNC(qk_skelanimator_set,_set);
