@@ -110,7 +110,15 @@ public:
 	
 	inline void SetFlips( const bool _x = false, const bool _y = false ) {
 		Skeleton->flipX = _x;
-		Skeleton->flipY = _y;		
+		Skeleton->flipY = _y;
+	}
+
+	inline void SetColor( const GelColor Color ) {
+		float ColorMax = 1.0f / 255.0f;
+		Skeleton->r = GEL_GET_R(Color) * ColorMax;
+		Skeleton->g = GEL_GET_G(Color) * ColorMax;
+		Skeleton->b = GEL_GET_B(Color) * ColorMax;
+		Skeleton->a = GEL_GET_A(Color) * ColorMax;
 	}
 
 public:

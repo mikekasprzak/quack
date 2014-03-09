@@ -274,6 +274,22 @@ SQInteger qk_skelanimator_SetFlips( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_skelanimator_SetColor( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelSkelAnimator* SkelAnimator;
+	sq_getinstanceup(v,1,(void**)&SkelAnimator,0);
+
+	// Check the number of arguments //
+	int Top = sq_gettop(v);
+
+	GelColor* Color;
+	sq_getinstanceup(v,2,(void**)&Color,0);
+	
+	SkelAnimator->SetColor( *Color );
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_skelanimator_Clear( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 	GelSkelAnimator* SkelAnimator;
@@ -319,6 +335,7 @@ SQRegFunction qkSkelAnimator_funcs[] = {
 	_DECL_FUNC(qk_skelanimator_Force,-3,NULL),
 	_DECL_FUNC(qk_skelanimator_Add,-3,NULL),
 	_DECL_FUNC(qk_skelanimator_SetFlips,-2,NULL),
+	_DECL_FUNC(qk_skelanimator_SetColor,2,NULL),
 	_DECL_FUNC(qk_skelanimator_Clear,-1,NULL),
 
 	{0,0,0,0}
@@ -354,6 +371,7 @@ SQInteger register_qkSkelAnimator(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_skelanimator_Force,Force);
 		_CLASS_ADDFUNC(qk_skelanimator_Add,Add);
 		_CLASS_ADDFUNC(qk_skelanimator_SetFlips,SetFlips);
+		_CLASS_ADDFUNC(qk_skelanimator_SetColor,SetColor);
 		_CLASS_ADDFUNC(qk_skelanimator_Clear,Clear);
 		_ADD_CLASS_END(GelSkelAnimator);
 	}
@@ -374,6 +392,7 @@ SQInteger register_qkSkelAnimator(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_skelanimator_Force,Force);
 		_CLASS_ADDFUNC(qk_skelanimator_Add,Add);
 		_CLASS_ADDFUNC(qk_skelanimator_SetFlips,SetFlips);
+		_CLASS_ADDFUNC(qk_skelanimator_SetColor,SetColor);
 		_CLASS_ADDFUNC(qk_skelanimator_Clear,Clear);
 		_ADD_CLASS_END(GelSkelAnimator);
 	}
