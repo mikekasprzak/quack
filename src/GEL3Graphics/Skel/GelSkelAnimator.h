@@ -13,11 +13,13 @@ class GelSkelAnimator {
 protected:
 	GelSkelPool::UID		AssetUID;
 	spSkeleton*				Skeleton;
+	spAnimationStateData*	AnimStateData;
 	spAnimationState*		AnimState;
 public:
 	inline GelSkelAnimator() :
 		AssetUID( 0 ),
 		Skeleton( 0 ),
+		AnimStateData( 0 ),
 		AnimState( 0 )
 	{
 	}
@@ -25,13 +27,15 @@ public:
 	inline GelSkelAnimator( const GelSkelPool::UID _Asset ) :
 		AssetUID( _Asset ),
 		Skeleton( spSkeleton_create( Gel::SkelPool[AssetUID].GetSkeletonData() ) ),
-		AnimState( spAnimationState_create(0) ) // stateData //
+		AnimStateData( spAnimationStateData_create( Skeleton->data ) ),
+		AnimState( spAnimationState_create( AnimStateData ) )
 	{
 	}
 	
 	inline void _Constructor() {
 		AssetUID = 0;
 		Skeleton = 0;
+		AnimStateData = 0;
 		AnimState = 0;
 	}
 	
@@ -48,6 +52,11 @@ public:
 			AnimState = 0;
 		}
 
+		if ( AnimStateData ) {
+			spAnimationStateData_dispose( AnimStateData );
+			AnimStateData = 0;
+		}
+
 		if ( Skeleton ) {
 			spSkeleton_dispose( Skeleton );
 			Skeleton = 0;
@@ -59,30 +68,72 @@ public:
 		
 		AssetUID = _Asset,
 		Skeleton = spSkeleton_create( Gel::SkelPool[AssetUID].GetSkeletonData() );
-		AnimState = spAnimationState_create(0); // To do animation mixing, apparently you pass an AnimationStateData here //
+		AnimStateData = spAnimationStateData_create( Skeleton->data );
+		AnimState = spAnimationState_create( AnimStateData );
 	}
 
 public:
-	// What Animation to set, by name //
-	inline void Set( const char* Name ) {
-		spSkeleton_setToSetupPose( Skeleton );
-		const bool Loop = true;
-		spAnimationState_setAnimation( AnimState, 0, spSkeletonData_findAnimation( Skeleton->data, Name), Loop );
+	// Set an animation (Clear, Add Track), but only if it's not the current animation //
+	inline void Set( const int TrackIndex, const char* Name, const bool Loop = true ) {
+		Set( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop );
 	}
+	inline void Set( const int TrackIndex, spAnimation* Anim, const bool Loop = true ) {
+		if ( GetAnim(TrackIndex) != Anim ) {
+			Force( TrackIndex, Anim, Loop );
+		}
+	}
+	// Always set an animation (Clear, Add Track) //
+	inline void Force( const int TrackIndex, const char* Name, const bool Loop = true ) {
+		Force( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop );
+	}
+	inline void Force( const int TrackIndex, spAnimation* Anim, const bool Loop = true ) {
+		spSkeleton_setToSetupPose( Skeleton );
+		spAnimationState_setAnimation( AnimState, TrackIndex, Anim, Loop );
+	}
+	
+	// Clear the Animation Tracklist //
+	inline void Clear() {
+		spAnimationState_clearTracks( AnimState );
+	}
+	inline void Clear( const int TrackIndex ) {
+		spAnimationState_clearTrack( AnimState, TrackIndex );
+	}
+	
+	// Add a new Animation Track //
+	inline void Add( const int TrackIndex, const char* Name, const bool Loop = true, const int Delay = 0 ) {
+		Add( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop, Delay );
+	}
+	inline void Add( const int TrackIndex, spAnimation* Anim, const bool Loop = true, const int Delay = 0 ) {
+		spAnimationState_addAnimation( AnimState, TrackIndex, Anim, Loop, Delay );
+	}
+	
 	
 	inline void SetFlips( const bool _x = false, const bool _y = false ) {
 		Skeleton->flipX = _x;
 		Skeleton->flipY = _y;		
 	}
-	
+
+public:
+	inline spAnimation* GetAnim( const int TrackIndex ) {
+		spTrackEntry* Track = GetTrack(TrackIndex);
+		if ( Track ) {
+			return Track->animation;
+		}
+		return 0;
+	}
+	inline spTrackEntry* GetTrack( const int TrackIndex ) {
+		return spAnimationState_getCurrent( AnimState, TrackIndex );
+	}
+
+public:	
 	inline void Step() {
 		float deltaTime = 1000.0f/60.0f;
-		float timeScale = 0.001f;
+		float timeScale = 1.0f/1000.0f;
 		
-		spSkeleton_update( Skeleton, deltaTime ); // Add deltaTime //
+		spSkeleton_update( Skeleton, deltaTime ); 		// Add deltaTime //
 		spAnimationState_update( AnimState, deltaTime * timeScale ); // Step all active animations //
-		spAnimationState_apply( AnimState, Skeleton ); // Apply and Mix Animations, trigger event callbacks //
-		spSkeleton_updateWorldTransform( Skeleton ); // Build Matrix //
+		spAnimationState_apply( AnimState, Skeleton );	// Apply and Mix Animations, trigger event callbacks //
+		spSkeleton_updateWorldTransform( Skeleton ); 	// Build Matrix //
 	}
 	
 	inline void FlushDraw( const Matrix4x4& Matrix, const GelTexturePool::UID& TexIndex, GelAlloc3UC& Vert ) const {
