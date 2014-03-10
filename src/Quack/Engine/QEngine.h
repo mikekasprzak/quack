@@ -141,11 +141,12 @@ class QObj {
 public:
 	typedef void (*QSetArtFunc)( void* self, const char* ArtFile );
 	typedef void* (*QGetArtFunc)( void* self );
-	typedef void (*QSetArtScaleFunc)( void* self, const QVec& Scale );
+	typedef void (*QSetArtScaleFunc)( void* self, const QVec& _Scale );
 
 	typedef QRect (*QGetRectFunc)( void* self );
 
 	typedef QBody* (*QGetBodyFunc)( void* self );
+	typedef void (*QSetShapeFunc)( void* self, const QVec& _Shape );
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
 	typedef void (*QContactFunc)( void* self, QObj& Vs );
 	typedef void (*QNotifyFunc)( void* self, QObj& Sender, const int Message );
@@ -168,6 +169,8 @@ public:
 	QGetRectFunc		_GetRect;
 
 	QGetBodyFunc		_GetBody;
+	QSetShapeFunc		_SetShape;
+
 	QAddForceFunc		_AddForce;
 	QContactFunc		_Contact;
 	QNotifyFunc			_Notify;
@@ -184,6 +187,8 @@ public:
 	inline QRect GetRect() { return _GetRect(Data); }
 
 	inline QBody* GetBody() { return _GetBody(Data); }
+	inline void SetShape( const QVec& _Shape ) { _SetShape(Data,_Shape); }
+
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,Sender,Message); }
@@ -290,7 +295,7 @@ public:
 				Ob.Draw( Mat );
 			}
 			
-			gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(64,64,0,64));
+			gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
 		}
 	}
 };
