@@ -42,6 +42,9 @@ public:
 	inline QRect GetRect() {
 		return QRect( Pos - HalfShape, HalfShape+HalfShape );
 	}
+	inline void SetShape( const QVec& Shape ) {
+		HalfShape = Shape * QFloat::Half;
+	}
 
 public:
 	// NOTE: This explicitly sets the velocity property. It does not accumulate! //

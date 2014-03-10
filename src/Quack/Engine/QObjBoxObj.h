@@ -30,6 +30,8 @@ public:
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
 			
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
+		self->_SetShape = (QObj::QSetShapeFunc)_SetShape;
+
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
 		self->_Contact = (QObj::QContactFunc)_Contact;
 		self->_Notify = (QObj::QNotifyFunc)_Notify;
@@ -118,6 +120,10 @@ public:
 	inline QBody* GetBody() {
 		return &BodyType;
 	}
+	static void _SetShape( thistype* self, const QVec& _Shape ) { self->SetShape( _Shape ); }
+	inline void SetShape( const QVec& _Shape ) {
+		Body.SetShape( _Shape );
+	}
 
 	static void _SetArt( thistype* self, const char* ArtFile ) { self->SetArt( ArtFile ); }
 	inline void SetArt( const char* ArtFile ) {
@@ -189,7 +195,7 @@ public:
 	static void _Draw( thistype* self, const Matrix4x4& Mat ) { self->Draw( Mat ); }
 	inline void Draw( const Matrix4x4& Mat ) {
 		if ( Skel ) {
-			Matrix4x4 NewMat = Matrix4x4::ScalarMatrix( ArtScale );
+			Matrix4x4 NewMat = Matrix4x4::ScalarMatrix( ArtScale * QFloat(0.5f) );
 			NewMat *= Matrix4x4::TranslationMatrix( Body.GetBasePoint() );
 			NewMat *= Mat;
 			Skel->Draw( NewMat );
