@@ -154,6 +154,22 @@ SQInteger qk_object_SetArt( HSQUIRRELVM v ) {
 	return SQ_VOID;	
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_object_SetArtScale( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QObj* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+	
+	SQFloat x = 1.0f;
+	SQFloat y = 1.0f;
+	
+	sq_getfloat(v,2,&x);
+	sq_getfloat(v,3,&y);
+	
+	Ob->SetArtScale( Vector2D(x,y) );
+
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -172,6 +188,7 @@ SQRegFunction qkObject_funcs[] = {
 //	_DECL_FUNC(qk_object_cloned,2,NULL),
 
 	_DECL_FUNC(qk_object_SetArt,2,NULL),
+	_DECL_FUNC(qk_object_SetArtScale,3,NULL),
 	
 	{0,0,0,0}
 };
@@ -201,6 +218,7 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_object_cloned,_cloned);
 
 		_CLASS_ADDFUNC(qk_object_SetArt,SetArt);
+		_CLASS_ADDFUNC(qk_object_SetArtScale,SetArtScale);
 
 		_ADD_CLASS_END(QObj);
 	}
