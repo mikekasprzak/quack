@@ -15,6 +15,7 @@ public:
 		self->Type = QK::QO_BALLY;
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
+		self->_GetInvMass = (QObj::QGetInvMassFunc)_GetInvMass;
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
 		self->_Contact = (QObj::QContactFunc)_Contact;
 		self->_Notify = (QObj::QNotifyFunc)_Notify;
@@ -45,6 +46,10 @@ public:
 	static QBody* _GetBody( thistype* self ) { return self->GetBody(); }
 	inline QBody* GetBody() {
 		return &BodyType;
+	}
+	static QFloat _GetInvMass( thistype* self ) { return self->GetInvMass(); }
+	inline QFloat GetInvMass() {
+		return Body.GetInvMass();
 	}
 
 	static void _AddForce( thistype* self, const QVec& Force ) { self->AddForce( Force ); }

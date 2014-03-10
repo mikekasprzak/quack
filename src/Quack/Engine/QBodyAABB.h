@@ -145,11 +145,13 @@ inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
 	// The Size of the overlap region (Diff) determines which direction we push //
 	if ( Diff.Width() < Diff.Height() ) {
 		// The +One compensates for the length of 1 introduced by the Normal() //
-		return FinishSolve_Body( A, B, QVec(Line.x.Normal(),0), Diff.Width()+QFloat::One );
+//		return FinishSolve_Body( A, B, QVec(Line.x.Normal(),0), Diff.Width()+QFloat::One );
+		return FinishSolve2_Body( A, B, QVec(Line.x.Normal()*Diff.Width(),0) );
 	}
 	else {
 		// The +One compensates for the length of 1 introduced by the Normal() //
-		return FinishSolve_Body( A, B, QVec(0,Line.y.Normal()), Diff.Height()+QFloat::One );
+//		return FinishSolve_Body( A, B, QVec(0,Line.y.Normal()), Diff.Height()+QFloat::One );
+		return FinishSolve2_Body( A, B, QVec(0,Line.y.Normal()*Diff.Height()) );
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //

@@ -11,6 +11,7 @@
 #include <RTCD/RTCD.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
+#include <algorithm>
 // - ------------------------------------------------------------------------------------------ - //
 namespace QK {
 // - ------------------------------------------------------------------------------------------ - //
@@ -147,6 +148,7 @@ public:
 
 	typedef QBody* (*QGetBodyFunc)( void* self );
 	typedef QVec (*QGetVelocityFunc)( void* self );
+	typedef QFloat (*QGetInvMassFunc)( void* self );
 	typedef void (*QSetMassFunc)( void* self, const QFloat Mass );
 	typedef void (*QSetShapeFunc)( void* self, const QVec& Shape );
 
@@ -173,6 +175,7 @@ public:
 
 	QGetBodyFunc		_GetBody;
 	QGetVelocityFunc	_GetVelocity;
+	QGetInvMassFunc		_GetInvMass;
 	QSetMassFunc		_SetMass;
 	QSetShapeFunc		_SetShape;
 
@@ -193,6 +196,7 @@ public:
 
 	inline QBody* GetBody() { return _GetBody(Data); }
 	inline QVec GetVelocity() { return _GetVelocity(Data); }
+	inline QFloat GetInvMass() { return _GetInvMass(Data); }
 	inline void SetMass( const QFloat Mass ) { _SetMass(Data,Mass); }
 	inline void SetShape( const QVec& Shape ) { _SetShape(Data,Shape); }
 
@@ -289,6 +293,9 @@ public:
 				}
 			}
 		}
+		
+		// Reorganize Objects in a better order //
+		Optimize();
 	}
 	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
@@ -303,6 +310,22 @@ public:
 			}
 			
 			gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
+		}
+	}
+	
+	void Optimize() {
+		int Swaps = 0;
+		// Reorganize so that Infinite Mass Objects go last //
+		for ( st idx = 1; idx < Obj.size(); idx++ ) {
+			if ( Obj[idx-1].GetInvMass() == Real::Zero ) {
+				if ( Obj[idx].GetInvMass() != Real::Zero ) {
+					std::swap(Obj[idx-1],Obj[idx]);
+					Swaps++;
+				}
+			}
+		}
+		if ( Swaps ) {
+			Log("Optimized: %i Object Swaps", Swaps);
 		}
 	}
 };
