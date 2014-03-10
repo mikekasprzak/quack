@@ -209,6 +209,28 @@ SQInteger qk_object_AddForce( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_object_GetVelocity( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QObj* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+
+	// Create a Vector Instance //	
+	sq_pushroottable(v);
+	sq_pushstring(v,"vec2",-1);
+	sq_get(v,-2);
+	sq_createinstance(vm,-1);
+	// TODO: OPTIMIZE! store a vec2 class, retrieve it, push it //
+	
+	QK::QVec* Vec;
+	sq_getinstanceup(v,-1,(void**)&Vec,0);
+
+	*Vec = Ob->GetVelocity();
+
+	return SQ_RETURN;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -231,6 +253,8 @@ SQRegFunction qkObject_funcs[] = {
 	_DECL_FUNC(qk_object_SetMass,2,NULL),
 	_DECL_FUNC(qk_object_SetShape,3,NULL),
 	_DECL_FUNC(qk_object_AddForce,-2,NULL),
+	
+	_DECL_FUNC(qk_object_GetVelocity,1,NULL),
 	
 	{0,0,0,0}
 };
@@ -265,6 +289,8 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_object_SetMass,SetMass);
 		_CLASS_ADDFUNC(qk_object_SetShape,SetShape);
 		_CLASS_ADDFUNC(qk_object_AddForce,AddForce);
+
+		_CLASS_ADDFUNC(qk_object_GetVelocity,GetVelocity);
 
 		_ADD_CLASS_END(QObj);
 	}
