@@ -139,11 +139,13 @@ public:
 // Quack Object (Engine Entity) //
 class QObj {
 public:
-	typedef QRect (*QGetRectFunc)( void* self );
-	typedef QBody* (*QGetBodyFunc)( void* self );
 	typedef void (*QSetArtFunc)( void* self, const char* ArtFile );
 	typedef void* (*QGetArtFunc)( void* self );
+	typedef void (*QSetArtScaleFunc)( void* self, const QVec& Scale );
 
+	typedef QRect (*QGetRectFunc)( void* self );
+
+	typedef QBody* (*QGetBodyFunc)( void* self );
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
 	typedef void (*QContactFunc)( void* self, QObj& Vs );
 	typedef void (*QNotifyFunc)( void* self, QObj& Sender, const int Message );
@@ -158,26 +160,30 @@ public:
 
 	QRect	Rect;
 
+public:	
+	QSetArtFunc			_SetArt;
+	QGetArtFunc			_GetArt;
+	QSetArtScaleFunc	_SetArtScale;
+	
+	QGetRectFunc		_GetRect;
 
-	QGetRectFunc	_GetRect;
-	QGetBodyFunc	_GetBody;
-	QSetArtFunc		_SetArt;
-	QGetArtFunc		_GetArt;
+	QGetBodyFunc		_GetBody;
+	QAddForceFunc		_AddForce;
+	QContactFunc		_Contact;
+	QNotifyFunc			_Notify;
 
-	QAddForceFunc	_AddForce;
-	QContactFunc	_Contact;
-	QNotifyFunc		_Notify;
-
-	QInitFunc		_Init;
-	QStepFunc		_Step;
-	QDrawFunc		_Draw;
+	QInitFunc			_Init;
+	QStepFunc			_Step;
+	QDrawFunc			_Draw;
 
 public:
-	inline QRect GetRect() { return _GetRect(Data); }
-	inline QBody* GetBody() { return _GetBody(Data); }
 	inline void SetArt( const char* ArtFile ) { _SetArt(Data,ArtFile); }
 	inline void* GetArt() { return _GetArt(Data); }
+	inline void SetArtScale( const QVec& _Scale ) { _SetArtScale(Data,_Scale); }
 
+	inline QRect GetRect() { return _GetRect(Data); }
+
+	inline QBody* GetBody() { return _GetBody(Data); }
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,Sender,Message); }

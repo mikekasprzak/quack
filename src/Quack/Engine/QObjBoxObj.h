@@ -22,11 +22,14 @@ class QObjBoxObj {
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_BOXOBJ;
-		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
-		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
+
 		self->_SetArt = (QObj::QSetArtFunc)_SetArt;
 		self->_GetArt = (QObj::QGetArtFunc)_GetArt;
+		self->_SetArtScale = (QObj::QSetArtScaleFunc)_SetArtScale;
 
+		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
+			
+		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
 		self->_Contact = (QObj::QContactFunc)_Contact;
 		self->_Notify = (QObj::QNotifyFunc)_Notify;
@@ -40,6 +43,7 @@ public:
 	QBody	BodyType;	// Signature type understood by the engine //
 
 	GelSkelAnimator* Skel;
+	QVec ArtScale;
 
 	HSQOBJECT SqHookObj;
 	HSQMEMBERHANDLE SqInitFunc;	// ?? //
@@ -50,7 +54,8 @@ public:
 
 public:
 	inline QObjBoxObj( const QVec& _Pos, const char* _Class ) :
-		Body( _Pos, Vector2D(8,8) ),
+		Body( _Pos, QVec(8,8) ),
+		ArtScale(1,1),
 		Skel( 0 )
 	{
 		BodyType.Type = QB_AABB;
@@ -127,6 +132,12 @@ public:
 		return (void*)Skel;
 	}
 
+	static void _SetArtScale( thistype* self, const QVec& _Scale ) { self->SetArtScale( _Scale ); }
+	inline void SetArtScale( const QVec& _Scale ) {
+		ArtScale = _Scale;
+	}
+	
+
 	static void _AddForce( thistype* self, const QVec& Force ) { self->AddForce( Force ); }
 	inline void AddForce( const QVec& Force ) {
 		Body.AddForce( Force );
@@ -178,7 +189,8 @@ public:
 	static void _Draw( thistype* self, const Matrix4x4& Mat ) { self->Draw( Mat ); }
 	inline void Draw( const Matrix4x4& Mat ) {
 		if ( Skel ) {
-			Matrix4x4 NewMat = Matrix4x4::TranslationMatrix(Body.GetBasePoint());
+			Matrix4x4 NewMat = Matrix4x4::ScalarMatrix( ArtScale );
+			NewMat *= Matrix4x4::TranslationMatrix( Body.GetBasePoint() );
 			NewMat *= Mat;
 			Skel->Draw( NewMat );
 		}
