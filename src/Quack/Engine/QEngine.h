@@ -151,8 +151,8 @@ public:
 	typedef void (*QSetShapeFunc)( void* self, const QVec& Shape );
 
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
-	typedef void (*QContactFunc)( void* self, QObj& Vs );
-	typedef void (*QNotifyFunc)( void* self, QObj& Sender, const int Message );
+	typedef void (*QContactFunc)( void* self, QObj& Obj, QObj& Vs );
+	typedef void (*QNotifyFunc)( void* self, QObj& Obj, QObj& Sender, const int Message );
 
 	typedef bool (*QInitFunc)( void* self, QObj& Obj );
 	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
@@ -197,8 +197,8 @@ public:
 	inline void SetShape( const QVec& Shape ) { _SetShape(Data,Shape); }
 
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
-	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }
-	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,Sender,Message); }
+	inline void Contact( QObj& Vs ) { _Contact(Data,*this,Vs); }
+	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,*this,Sender,Message); }
 
 	inline bool Init() { return _Init(Data,*this); }
 	inline bool Step( const QProp& Prop ) { return _Step(Data,*this,Prop); }

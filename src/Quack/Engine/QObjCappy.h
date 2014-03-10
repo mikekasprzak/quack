@@ -52,12 +52,12 @@ public:
 		Body.AddForce( Force );
 	}
 
-	static void _Contact( thistype* self, QObj& Vs ) { self->Contact( Vs ); }
-	inline void Contact( QObj& Vs ) {
+	static void _Contact( thistype* self, QObj& Obj, QObj& Vs ) { self->Contact( Obj, Vs ); }
+	inline void Contact( QObj& Obj, QObj& Vs ) {
 	}
 
-	static void _Notify( thistype* self, QObj& Sender, const int Message ) { self->Notify( Sender, Message ); }
-	inline void Notify( QObj& Sender, const int Message ) {
+	static void _Notify( thistype* self, QObj& Obj, QObj& Sender, const int Message ) { self->Notify( Obj, Sender, Message ); }
+	inline void Notify( QObj& Obj, QObj& Sender, const int Message ) {
 	}
 
 

@@ -231,6 +231,23 @@ SQInteger qk_object_GetVelocity( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_object_Notify( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QObj* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+
+	QK::QObj* Vs;
+	sq_getinstanceup(v,2,(void**)&Vs,0);
+
+	SQInteger Message;
+	sq_getinteger(v,3,&Message);
+
+	Ob->Notify(*Vs,Message);
+
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -253,6 +270,8 @@ SQRegFunction qkObject_funcs[] = {
 	_DECL_FUNC(qk_object_SetMass,2,NULL),
 	_DECL_FUNC(qk_object_SetShape,3,NULL),
 	_DECL_FUNC(qk_object_AddForce,-2,NULL),
+
+	_DECL_FUNC(qk_object_Notify,3,NULL),
 	
 	_DECL_FUNC(qk_object_GetVelocity,1,NULL),
 	
@@ -291,6 +310,8 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_object_AddForce,AddForce);
 
 		_CLASS_ADDFUNC(qk_object_GetVelocity,GetVelocity);
+
+		_CLASS_ADDFUNC(qk_object_Notify,Notify);
 
 		_ADD_CLASS_END(QObj);
 	}

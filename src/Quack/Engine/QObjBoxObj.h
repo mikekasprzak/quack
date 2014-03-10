@@ -52,9 +52,11 @@ public:
 	HSQOBJECT SqHookObj;
 	HSQMEMBERHANDLE SqInitFunc;	// ?? //
 	HSQMEMBERHANDLE SqStepFunc;
-	HSQMEMBERHANDLE SqNotifyFunc;
+	HSQMEMBERHANDLE SqContactFunc;
+	HSQMEMBERHANDLE SqNoticeFunc;
 
 	HSQOBJECT SqObj;
+	HSQOBJECT SqObj2;
 
 public:
 	inline QObjBoxObj( const QVec& _Pos, const char* _Class ) :
@@ -77,6 +79,18 @@ public:
 		sq_getstackobj(vm,-1,&SqObj);
 		sq_addref(vm,&SqObj);
 //		sq_pop(vm,3);
+
+		// ** SqObj Holder (Pointer is assigned before calls) ** //
+		sq_resetobject(&SqObj2);
+		// Instance the Class //		
+		sq_pushroottable(vm);
+		sq_pushstring(vm,_SC("QkObj"),-1);
+		sq_get(vm,-2);
+		sq_createinstance(vm,-1);
+		// Store the Instance, add a reference //
+		sq_getstackobj(vm,-1,&SqObj2);
+		sq_addref(vm,&SqObj2);
+//		sq_pop(vm,3);
 		
 		
 		// ** Class Instance Holder ** //
@@ -92,19 +106,22 @@ public:
 		sq_getstackobj(vm,-1,&SqHookObj);
 		sq_addref(vm,&SqHookObj);
 		
-		// Get Members //
+		// Get Members (with Class index, not the instance index) //
 		sq_pushstring(vm,_SC("Init"),-1);
-		sq_getmemberhandle(vm,-3,&SqInitFunc);		// The Class, not the Instance //
+		sq_getmemberhandle(vm,-3,&SqInitFunc);
 		sq_pushstring(vm,_SC("Step"),-1);
-		sq_getmemberhandle(vm,-3,&SqStepFunc);		// The Class, not the Instance //
-		sq_pushstring(vm,_SC("Notify"),-1);
-		sq_getmemberhandle(vm,-3,&SqNotifyFunc);	// The Class, not the Instance //
+		sq_getmemberhandle(vm,-3,&SqStepFunc);
+		sq_pushstring(vm,_SC("Contact"),-1);
+		sq_getmemberhandle(vm,-3,&SqContactFunc);
+		sq_pushstring(vm,_SC("Notice"),-1);
+		sq_getmemberhandle(vm,-3,&SqNoticeFunc);
 		// Finished, clean up the stack //
 //		sq_pop(vm,3);
 	}
 	
 	inline ~QObjBoxObj() {
 		sq_release(vm,&SqHookObj);
+		sq_release(vm,&SqObj2);
 		sq_release(vm,&SqObj);
 
 		if ( Skel ) {
@@ -159,12 +176,36 @@ public:
 		Body.AddForce( Force );
 	}
 
-	static void _Contact( thistype* self, QObj& Vs ) { self->Contact( Vs ); }
-	inline void Contact( QObj& Vs ) {
+	static void _Contact( thistype* self, QObj& Obj, QObj& Vs ) { self->Contact( Obj, Vs ); }
+	inline void Contact( QObj& Obj, QObj& Vs ) {
+		// Do Step Function //
+		sq_pushobject(vm,SqHookObj);
+		sq_getbyhandle(vm,-1,&SqContactFunc);
+		// ARGS (must be accurate) //
+		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
+		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_pushobject(vm,SqObj2);		// ARG2 - Vs //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
+		sq_pushinteger(vm,0);			// ARG3 - Info //
+		sq_call(vm,4,false,false);
+		sq_pop(vm,2);
 	}
 
-	static void _Notify( thistype* self, QObj& Sender, const int Message ) { self->Notify( Sender, Message ); }
-	inline void Notify( QObj& Sender, const int Message ) {
+	static void _Notify( thistype* self, QObj& Obj, QObj& Sender, const int Message ) { self->Notify( Obj, Sender, Message ); }
+	inline void Notify( QObj& Obj, QObj& Sender, const int Message ) {
+		// Do Step Function //
+		sq_pushobject(vm,SqHookObj);
+		sq_getbyhandle(vm,-1,&SqNoticeFunc);
+		// ARGS (must be accurate) //
+		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
+		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_pushobject(vm,SqObj2);		// ARG2 - Sender //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Sender);
+		sq_pushinteger(vm,Message);		// ARG3 - Message //
+		sq_call(vm,4,false,false);
+		sq_pop(vm,2);
 	}
 
 public:
