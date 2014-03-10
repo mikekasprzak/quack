@@ -108,15 +108,14 @@ SQInteger qk_object_set( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 // _tostring metamethod //
 SQInteger qk_object_tostring( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// (RRR,GGG,BBB,AAA) //
-//	char Text[2 + 3+1 + 3+1 + 3+1 + 3 + 1];
-//	sprintf(Text,"(%i,%i,%i,%i)", GEL_GET_R(*Color), GEL_GET_G(*Color), GEL_GET_B(*Color), GEL_GET_A(*Color) );
+	// Retrieve Data (Pointer) //
+	QK::QObj* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
 	
-	sq_pushstring(v,"[QkObject:?,?,?]",-1);
+	char Text[128];
+	sprintf(Text,"[QkObject:0x%x,?,?]", (int)(st)Ob );
+	
+	sq_pushstring(v,Text,-1);
 	
 	return SQ_RETURN;
 }

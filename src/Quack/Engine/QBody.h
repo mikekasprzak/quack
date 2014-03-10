@@ -30,8 +30,44 @@ inline bool _FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& RadiusSum 
 	
 	if ( Mag < (RadiusSum*RadiusSum) ) {
 		Mag = RadiusSum - Line.NormalizeRet();
+		
+		QVec AVel = A.GetVelocity();
 		A.Pos -= (Line * Mag) * (A.InvMass * MassSum);
+		A.Old += AVel - A.GetVelocity();
+
+		QVec BVel = B.GetVelocity();
 		B.Pos += (Line * Mag) * (B.InvMass * MassSum);
+//		B.Old += BVel - B.GetVelocity();	
+		return true;
+	}
+	return false;
+}
+// - ------------------------------------------------------------------------------------------ - //
+// Simple Finish Function that handles Masses //
+template<typename T1, typename T2>
+inline bool _FinishSolve2_Body( T1& A, T2& B, QVec Line ) {
+	QFloat InvMassSum = B.InvMass + A.InvMass;
+	return_if_value( false, InvMassSum == QFloat::Zero );
+	QFloat MassSum = QFloat::One / InvMassSum;
+
+	QFloat Mag = Line.MagnitudeSquared();
+
+	if ( Mag > Real(0.001f) ) {	
+		Mag = Line.NormalizeRet() * Real(0.99f);
+			
+		QVec APush = (Line * Mag) * (A.InvMass * MassSum);
+		QVec BPush = (Line * Mag) * (B.InvMass * MassSum);
+
+		//QVec AVel = A.GetVelocity();
+		A.Pos -= APush;
+//		A.Old += APush;
+		//A.Old += AVel - A.GetVelocity();
+	
+		//QVec BVel = B.GetVelocity();
+		B.Pos += BPush;
+//		B.Old -= BPush;
+		//B.Old += BVel - B.GetVelocity();
+		
 		return true;
 	}
 	return false;
@@ -159,6 +195,7 @@ inline bool _BInfinite_FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& 
 // - ------------------------------------------------------------------------------------------ - //
 template<typename T1, typename T2>
 inline bool FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& RadiusSum ) {
+/*
 	if ( A.InvMass == QFloat::Zero ) {
 		return_if_value( false, B.InvMass == QFloat::Zero );
 		return _FinishSolve_Body(B,A,-Line,RadiusSum);
@@ -173,6 +210,13 @@ inline bool FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& RadiusSum )
 	}
 	return _FinishSolve_Body(A,B,Line,RadiusSum);
 //	return _Regular_FinishSolve_Body(A,B,Line,RadiusSum);
+*/
+	return _FinishSolve_Body(A,B,Line,RadiusSum);
+}
+// - ------------------------------------------------------------------------------------------ - //
+template<typename T1, typename T2>
+inline bool FinishSolve2_Body( T1& A, T2& B, QVec Line ) {
+	return _FinishSolve2_Body(A,B,Line);
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
