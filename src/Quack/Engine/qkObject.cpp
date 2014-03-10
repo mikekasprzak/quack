@@ -159,13 +159,10 @@ SQInteger qk_object_SetArtScale( HSQUIRRELVM v ) {
 	QK::QObj* Ob;
 	sq_getinstanceup(v,1,(void**)&Ob,0);
 	
-	SQFloat x = 1.0f;
-	SQFloat y = 1.0f;
+	Vector2D Vec(1,1);
+	_SQ_GET_VEC2_ARG(Vec,2);	
 	
-	sq_getfloat(v,2,&x);
-	sq_getfloat(v,3,&y);
-	
-	Ob->SetArtScale( Vector2D(x,y) );
+	Ob->SetArtScale( Vec );
 
 	return SQ_VOID;	
 }
@@ -190,13 +187,10 @@ SQInteger qk_object_SetShape( HSQUIRRELVM v ) {
 	QK::QObj* Ob;
 	sq_getinstanceup(v,1,(void**)&Ob,0);
 	
-	SQFloat x = 1.0f;
-	SQFloat y = 1.0f;
+	Vector2D Vec(1,1);
+	_SQ_GET_VEC2_ARG(Vec,2);	
 	
-	sq_getfloat(v,2,&x);
-	sq_getfloat(v,3,&y);
-	
-	Ob->SetShape( Vector2D(x,y) );
+	Ob->SetShape( Vec );
 
 	return SQ_VOID;	
 }
@@ -206,23 +200,10 @@ SQInteger qk_object_AddForce( HSQUIRRELVM v ) {
 	QK::QObj* Ob;
 	sq_getinstanceup(v,1,(void**)&Ob,0);
 	
-	int Top = sq_gettop(v);
+	Vector2D Vec;
+	_SQ_GET_VEC2_ARG(Vec,2);	
 
-	if ( Top >= 3 ) {
-		SQFloat x = 0.0f;
-		SQFloat y = 0.0f;
-		
-		sq_getfloat(v,2,&x);
-		sq_getfloat(v,3,&y);
-
-		Ob->AddForce( Vector2D(x,y) );
-	}
-	else if ( Top == 2 ) {
-		Vector2D* MyVec;
-		sq_getinstanceup(v,2,(void**)&MyVec,0);
-		Log("Hee %x", MyVec);
-		Ob->AddForce( *MyVec );
-	}
+	Ob->AddForce( Vec );
 
 	return SQ_VOID;	
 }

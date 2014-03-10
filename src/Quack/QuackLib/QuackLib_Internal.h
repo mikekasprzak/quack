@@ -396,6 +396,34 @@ inline SQInteger qk_arr_constructor_body( HSQUIRRELVM v, float* Arr, const int A
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+#define _SQ_GET_VEC2_ARG(_VAR_,_ROOTINDEX_) \
+{ \
+	int _VTop = sq_gettop(v); \
+	\
+	if ( _VTop >= _ROOTINDEX_+0 ) { \
+		const int Type = sq_gettype(v,_ROOTINDEX_+0); \
+		if ( Type & SQOBJECT_NUMERIC ) { \
+			sq_getfloat(v,_ROOTINDEX_+0,(float*)&_VAR_.x); \
+		} \
+		else if ( Type & OT_INSTANCE ) { \
+			int Tag; \
+			sq_gettypetag(v,_ROOTINDEX_+0,(SQUserPointer*)&Tag); \
+			if ( (Tag == QK_TAG_VEC2) || (Tag == QK_TAG_VEC3) || (Tag == QK_TAG_VEC4) ) { \
+				Vector2D* MyVec; \
+				sq_getinstanceup(v,_ROOTINDEX_+0,(void**)&MyVec,0); \
+				_VAR_ = *MyVec; \
+			} \
+		} \
+	} \
+	if ( _VTop >= _ROOTINDEX_+1 ) { \
+		const int Type = sq_gettype(v,_ROOTINDEX_+1); \
+		if ( Type & SQOBJECT_NUMERIC ) { \
+			sq_getfloat(v,_ROOTINDEX_+1,(float*)&_VAR_.y); \
+		} \
+	} \
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __QUACK_QUACKLIB_QUACKLIB_INTERNAL_H__ //
