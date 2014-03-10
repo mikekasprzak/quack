@@ -192,8 +192,13 @@ SQInteger qk_skelanimator_Set( HSQUIRRELVM v ) {
 	if ( Top >= 4 ) {
 		sq_getbool(v,4,&Loop);
 	}
+
+	SQFloat MixLength = 0;
+	if ( Top >= 5 ) {
+		sq_getfloat(v,5,&MixLength);
+	}
 	
-	SkelAnimator->Set( TrackIndex, AnimName, Loop );
+	SkelAnimator->Set( TrackIndex, AnimName, Loop, MixLength );
 
 	return SQ_VOID;
 }

@@ -142,6 +142,22 @@ _FUNC_TYPEOF(QEngine,qk_engine_typeof,"QkEngine",8);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_ShowRects( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+	
+	// Get the requested member //
+	SQBool Show;
+	sq_getbool(v,2,&Show);
+	
+	Engine->Prop.ShowRects = Show;
+
+	return SQ_VOID;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_engine_AddDummy( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 	QK::QEngine* Engine;
@@ -321,6 +337,8 @@ SQRegFunction qkEngine_funcs[] = {
 	_DECL_FUNC(qk_engine_AddCappyStatic,5,NULL),
 	
 	_DECL_FUNC(qk_engine_AddBoxObj,3,NULL),
+	
+	_DECL_FUNC(qk_engine_ShowRects,2,NULL),
 
 	_DECL_FUNC(qk_engine_step,1,NULL),
 	_DECL_FUNC(qk_engine_draw,3,NULL),
@@ -364,6 +382,8 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_engine_AddCappyStatic,AddCappyStatic);
 		
 		_CLASS_ADDFUNC(qk_engine_AddBoxObj,AddBoxObj);
+		
+		_CLASS_ADDFUNC(qk_engine_ShowRects,ShowRects);
 
 		_CLASS_ADDFUNC(qk_engine_step,Step);
 		_CLASS_ADDFUNC(qk_engine_draw,Draw);

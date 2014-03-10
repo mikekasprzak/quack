@@ -74,21 +74,28 @@ public:
 
 public:
 	// Set an animation (Clear, Add Track), but only if it's not the current animation //
-	inline void Set( const int TrackIndex, const char* Name, const bool Loop = true ) {
-		Set( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop );
+	inline void Set( const int TrackIndex, const char* Name, const bool Loop = true, const float MixLength = 0.0f ) {
+		Set( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop, MixLength );
 	}
-	inline void Set( const int TrackIndex, spAnimation* Anim, const bool Loop = true ) {
+	inline void Set( const int TrackIndex, spAnimation* Anim, const bool Loop = true, const float MixLength = 0.0f ) {
 		if ( GetAnim(TrackIndex) != Anim ) {
-			Force( TrackIndex, Anim, Loop );
+			Force( TrackIndex, Anim, Loop, MixLength );
 		}
 	}
 	// Always set an animation (Clear, Add Track) //
-	inline void Force( const int TrackIndex, const char* Name, const bool Loop = true ) {
-		Force( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop );
+	inline void Force( const int TrackIndex, const char* Name, const bool Loop = true, const float MixLength = 0.0f ) {
+		Force( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop, MixLength );
 	}
-	inline void Force( const int TrackIndex, spAnimation* Anim, const bool Loop = true ) {
-		spSkeleton_setToSetupPose( Skeleton );
-		spAnimationState_setAnimation( AnimState, TrackIndex, Anim, Loop );
+	inline void Force( const int TrackIndex, spAnimation* Anim, const bool Loop = true, const float MixLength = 0.0f ) {
+		if ( MixLength > 0.0f ) {
+			spAnimation* Old = GetAnim(TrackIndex);
+			spAnimationState_setAnimation( AnimState, TrackIndex, Anim, Loop );
+			spAnimationStateData_setMix( AnimState->data, Old, Anim, MixLength );
+		}
+		else {
+			spSkeleton_setToSetupPose( Skeleton );
+			spAnimationState_setAnimation( AnimState, TrackIndex, Anim, Loop );
+		}
 	}
 	
 	// Clear the Animation Tracklist //
@@ -100,10 +107,10 @@ public:
 	}
 	
 	// Add a new Animation Track //
-	inline void Add( const int TrackIndex, const char* Name, const bool Loop = true, const int Delay = 0 ) {
+	inline void Add( const int TrackIndex, const char* Name, const bool Loop = true, const float Delay = 0.0f ) {
 		Add( TrackIndex, spSkeletonData_findAnimation( Skeleton->data, Name ), Loop, Delay );
 	}
-	inline void Add( const int TrackIndex, spAnimation* Anim, const bool Loop = true, const int Delay = 0 ) {
+	inline void Add( const int TrackIndex, spAnimation* Anim, const bool Loop = true, const float Delay = 0.0f ) {
 		spAnimationState_addAnimation( AnimState, TrackIndex, Anim, Loop, Delay );
 	}
 	
