@@ -146,7 +146,9 @@ public:
 	typedef QRect (*QGetRectFunc)( void* self );
 
 	typedef QBody* (*QGetBodyFunc)( void* self );
-	typedef void (*QSetShapeFunc)( void* self, const QVec& _Shape );
+	typedef void (*QSetMassFunc)( void* self, const QFloat Mass );
+	typedef void (*QSetShapeFunc)( void* self, const QVec& Shape );
+
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
 	typedef void (*QContactFunc)( void* self, QObj& Vs );
 	typedef void (*QNotifyFunc)( void* self, QObj& Sender, const int Message );
@@ -169,6 +171,7 @@ public:
 	QGetRectFunc		_GetRect;
 
 	QGetBodyFunc		_GetBody;
+	QSetMassFunc		_SetMass;
 	QSetShapeFunc		_SetShape;
 
 	QAddForceFunc		_AddForce;
@@ -187,7 +190,8 @@ public:
 	inline QRect GetRect() { return _GetRect(Data); }
 
 	inline QBody* GetBody() { return _GetBody(Data); }
-	inline void SetShape( const QVec& _Shape ) { _SetShape(Data,_Shape); }
+	inline void SetMass( const QFloat Mass ) { _SetMass(Data,Mass); }
+	inline void SetShape( const QVec& Shape ) { _SetShape(Data,Shape); }
 
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 	inline void Contact( QObj& Vs ) { _Contact(Data,Vs); }

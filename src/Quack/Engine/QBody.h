@@ -161,15 +161,18 @@ template<typename T1, typename T2>
 inline bool FinishSolve_Body( T1& A, T2& B, QVec Line, const QFloat& RadiusSum ) {
 	if ( A.InvMass == QFloat::Zero ) {
 		return_if_value( false, B.InvMass == QFloat::Zero );
-		return _BInfinite_FinishSolve_Body(B,A,-Line,RadiusSum);
+		return _FinishSolve_Body(B,A,-Line,RadiusSum);
+//		return _BInfinite_FinishSolve_Body(B,A,-Line,RadiusSum);
 //		return _FinishSolve_Body(A,B,Line,RadiusSum);
 	}
 	else if ( B.InvMass == QFloat::Zero ) {
 		return_if_value( false, A.InvMass == QFloat::Zero );
-		return _BInfinite_FinishSolve_Body(A,B,Line,RadiusSum);
+		return _FinishSolve_Body(A,B,Line,RadiusSum);
+//		return _BInfinite_FinishSolve_Body(A,B,Line,RadiusSum);
 //		return _FinishSolve_Body(A,B,Line,RadiusSum);
 	}
-	return _Regular_FinishSolve_Body(A,B,Line,RadiusSum);
+	return _FinishSolve_Body(A,B,Line,RadiusSum);
+//	return _Regular_FinishSolve_Body(A,B,Line,RadiusSum);
 }
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //

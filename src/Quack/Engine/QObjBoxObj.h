@@ -30,6 +30,7 @@ public:
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
 			
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
+		self->_SetMass = (QObj::QSetMassFunc)_SetMass;
 		self->_SetShape = (QObj::QSetShapeFunc)_SetShape;
 
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
@@ -119,6 +120,10 @@ public:
 	static QBody* _GetBody( thistype* self ) { return self->GetBody(); }
 	inline QBody* GetBody() {
 		return &BodyType;
+	}
+	static void _SetMass( thistype* self, const QFloat Mass ) { self->SetMass( Mass ); }
+	inline void SetMass( const QFloat Mass ) {
+		Body.SetMass( Mass );
 	}
 	static void _SetShape( thistype* self, const QVec& _Shape ) { self->SetShape( _Shape ); }
 	inline void SetShape( const QVec& _Shape ) {
