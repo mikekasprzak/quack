@@ -83,7 +83,7 @@ public:
 	// 9.80665f -- Earth's Gravity (Meters per Second Squared) //
 	// 3.13155f -- Earth's Gravity (Meters per Second) //
 	// 60.0f    -- Frames Per Second //
-	QProp( const QVec& _Gravity = QVec(0, -3.13155f / 60.0f) ) :
+	QProp( const QVec& _Gravity = QVec(0, -3.13155f / (60.0f/2.0f)) ) :
 		Gravity( _Gravity )
 	{
 	}
@@ -146,6 +146,7 @@ public:
 	typedef QRect (*QGetRectFunc)( void* self );
 
 	typedef QBody* (*QGetBodyFunc)( void* self );
+	typedef QVec (*QGetVelocityFunc)( void* self );
 	typedef void (*QSetMassFunc)( void* self, const QFloat Mass );
 	typedef void (*QSetShapeFunc)( void* self, const QVec& Shape );
 
@@ -171,6 +172,7 @@ public:
 	QGetRectFunc		_GetRect;
 
 	QGetBodyFunc		_GetBody;
+	QGetVelocityFunc	_GetVelocity;
 	QSetMassFunc		_SetMass;
 	QSetShapeFunc		_SetShape;
 
@@ -190,6 +192,7 @@ public:
 	inline QRect GetRect() { return _GetRect(Data); }
 
 	inline QBody* GetBody() { return _GetBody(Data); }
+	inline QVec GetVelocity() { return _GetVelocity(Data); }
 	inline void SetMass( const QFloat Mass ) { _SetMass(Data,Mass); }
 	inline void SetShape( const QVec& Shape ) { _SetShape(Data,Shape); }
 

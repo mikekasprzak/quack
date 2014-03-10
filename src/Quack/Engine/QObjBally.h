@@ -29,7 +29,7 @@ public:
 
 public:
 	inline QObjBally( const QVec& _Pos, const QFloat& _Radius ) :
-		Body( _Pos, _Radius ) 
+		Body( _Pos, _Radius, QFloat::One / (_Radius*_Radius*Real::Pi) ) 
 	{
 		BodyType.Type = QB_SPHERE;
 		BodyType.Data = &Body;

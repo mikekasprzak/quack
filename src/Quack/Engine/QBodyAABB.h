@@ -45,6 +45,48 @@ public:
 	inline void SetShape( const QVec& Shape ) {
 		HalfShape = Shape * QFloat::Half;
 	}
+	
+	// Linear Momentum sets motion in whole units //
+	inline void SetLinearMomentum( const QVec& Ray, const QFloat Rate ) {
+		QVec Line = Ray - GetVelocity();
+		QFloat Length = Line.NormalizeRet();
+		if ( Rate > Length )
+			AddForce( Line * Length );
+		else
+			AddForce( Line * Rate );
+	}
+	inline void SetLinearXMomentum( const QVec& Ray, const QFloat Rate ) {
+		QFloat Line = Ray.x - GetVelocity().x;
+		QFloat Length = Line.NormalizeRet();
+		if ( Rate > Length )
+			AddForce( QVec(Line,0) * Length );
+		else
+			AddForce( QVec(Line,0) * Rate );
+	}
+	inline void SetLinearYMomentum( const QVec& Ray, const QFloat Rate ) {
+		QFloat Line = Ray.y - GetVelocity().y;
+		QFloat Length = Line.NormalizeRet();
+		if ( Rate > Length )
+			AddForce( QVec(0,Line) * Length );
+		else
+			AddForce( QVec(0,Line) * Rate );
+	}
+	
+	// Momentum sets motion in Fractional Units (i.e. 0.25 to step a quarter) //
+	inline void SetMomentum( const QVec& Ray, const QFloat Amount ) {
+		QVec Line = Ray - GetVelocity();
+		AddForce( Line * Amount );
+	}
+	inline void SetXMomentum( const QVec& Ray, const QFloat Amount ) {
+		QFloat Line = Ray.x - GetVelocity().x;
+		AddForce( QVec(Line,0) * Amount );
+	}
+	inline void SetYMomentum( const QVec& Ray, const QFloat Amount ) {
+		QFloat Line = Ray.y - GetVelocity().y;
+		AddForce( QVec(0,Line) * Amount );
+	}
+	
+	
 
 public:
 	// NOTE: This explicitly sets the velocity property. It does not accumulate! //

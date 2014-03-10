@@ -29,7 +29,7 @@ public:
 
 public:
 	inline QObjBoxy( const QVec& _Pos, const QVec& _Shape ) :
-		Body( _Pos, _Shape ) 
+		Body( _Pos, _Shape, QFloat::One / (_Shape.x*_Shape.y) ) 
 	{
 		BodyType.Type = QB_AABB;
 		BodyType.Data = &Body;
