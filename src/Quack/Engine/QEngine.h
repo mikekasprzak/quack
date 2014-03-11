@@ -170,22 +170,23 @@ public:
 
 public:	
 	QSetArtFunc			_SetArt;
-	QGetArtFunc			_GetArt;
-	QSetArtScaleFunc	_SetArtScale;
+	QGetArtFunc			_GetArt; // Add a header? //
+	QSetArtScaleFunc	_SetArtScale; // Odd scope? //
 	
 	QGetRectFunc		_GetRect;
 
 	QGetBodyFunc		_GetBody;
+	// TODO: Move all of the following to the Body (perhaps a single member of Body, i.e. vtable) //
 	QGetVelocityFunc	_GetVelocity;
 	QGetInvMassFunc		_GetInvMass;
 	QSetMassFunc		_SetMass;
 	QSetShapeFunc		_SetShape;
-
 	QAddForceFunc		_AddForce;
+
 	QContactFunc		_Contact;
 	QNotifyFunc			_Notify;
 
-	QInitFunc			_Init;
+	QInitFunc			_Init; // Doesn't Constructor do this? //
 	QStepFunc			_Step;
 	QDrawFunc			_Draw;
 
