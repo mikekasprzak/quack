@@ -127,6 +127,10 @@ public:
 		Skeleton->b = GEL_GET_B(Color) * ColorMax;
 		Skeleton->a = GEL_GET_A(Color) * ColorMax;
 	}
+	
+	inline void SetTrackMix( const int TrackIndex, const float Value = 1.0f ) {
+		GetTrack(TrackIndex)->mix = Value;
+	}
 
 public:
 	inline spAnimation* GetAnim( const int TrackIndex ) {
@@ -149,6 +153,30 @@ public:
 		spAnimationState_update( AnimState, deltaTime * timeScale ); // Step all active animations //
 		spAnimationState_apply( AnimState, Skeleton );	// Apply and Mix Animations, trigger event callbacks //
 		spSkeleton_updateWorldTransform( Skeleton ); 	// Build Matrix //
+		
+
+		// How we retieve Bounding Boxes //
+		/*
+		{
+			float bbVertices[16*2];
+			for (int i = 0; i < Skeleton->slotCount; ++i) {
+				spSlot* slot = Skeleton->drawOrder[i];
+				spAttachment* attachment = slot->attachment;
+				if (!attachment || attachment->type != ATTACHMENT_BOUNDING_BOX) 
+					continue;
+				spBoundingBoxAttachment* bbAttachment = (spBoundingBoxAttachment*)attachment;
+				
+				spBoundingBoxAttachment_computeWorldVertices(bbAttachment, slot->skeleton->x, slot->skeleton->y, slot->bone, bbVertices);
+				int Count = bbAttachment->verticesCount;
+				
+				_Log("%s: ",bbAttachment->super.name);
+				for ( int idx = 0; idx < Count; idx++ ) {
+					_Log("%f, ", bbVertices[idx]);
+				}
+				Log("");
+			}
+		}
+		*/
 	}
 	
 	inline void FlushDraw( const Matrix4x4& Matrix, const GelTexturePool::UID& TexIndex, GelAlloc3UC& Vert ) const {

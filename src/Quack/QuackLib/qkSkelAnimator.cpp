@@ -316,6 +316,22 @@ SQInteger qk_skelanimator_Clear( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_skelanimator_SetTrackMix( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelSkelAnimator* SkelAnimator;
+	sq_getinstanceup(v,1,(void**)&SkelAnimator,0);
+
+	SQInteger TrackIndex = 0;
+	sq_getinteger(v,2,&TrackIndex);
+
+	SQFloat Mix = 1.0f;
+	sq_getfloat(v,3,&Mix);
+	
+	SkelAnimator->SetTrackMix( TrackIndex, Mix );
+
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -342,6 +358,8 @@ SQRegFunction qkSkelAnimator_funcs[] = {
 	_DECL_FUNC(qk_skelanimator_SetFlips,-2,NULL),
 	_DECL_FUNC(qk_skelanimator_SetColor,2,NULL),
 	_DECL_FUNC(qk_skelanimator_Clear,-1,NULL),
+	
+	_DECL_FUNC(qk_skelanimator_SetTrackMix,-2,NULL),
 
 	{0,0,0,0}
 };
@@ -378,6 +396,8 @@ SQInteger register_qkSkelAnimator(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_skelanimator_SetFlips,SetFlips);
 		_CLASS_ADDFUNC(qk_skelanimator_SetColor,SetColor);
 		_CLASS_ADDFUNC(qk_skelanimator_Clear,Clear);
+
+		_CLASS_ADDFUNC(qk_skelanimator_SetTrackMix,SetTrackMix);
 		_ADD_CLASS_END(GelSkelAnimator);
 	}
 
@@ -399,6 +419,8 @@ SQInteger register_qkSkelAnimator(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_skelanimator_SetFlips,SetFlips);
 		_CLASS_ADDFUNC(qk_skelanimator_SetColor,SetColor);
 		_CLASS_ADDFUNC(qk_skelanimator_Clear,Clear);
+
+		_CLASS_ADDFUNC(qk_skelanimator_SetTrackMix,SetTrackMix);
 		_ADD_CLASS_END(GelSkelAnimator);
 	}
 	
