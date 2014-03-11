@@ -5,6 +5,8 @@
 #include "GelSkel.h"
 #include "GelSkelPool.h"
 
+#include "ConvexVsConvex.h"
+
 #include <Render/Render.h>
 #include <Texture/Texture.h>
 #include <Array/Array.h>
