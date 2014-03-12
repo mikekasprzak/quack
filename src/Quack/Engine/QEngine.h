@@ -189,23 +189,27 @@ public:
 // Quack Sensors (Test-Only Collisions) //
 class QSensor {
 public:
-//	typedef void* (*QGetFirstFunc)( const void* self );
-//	typedef void* (*QGetNextFunc)( const void* self, void* Prev );
+	typedef QRect (*QGetRectFunc)( void* self );
 	
 public:
 	int		Type;
 	void*	Data;
+	
+	QRect	Rect;	
 
 public:	
-//	QGetFirstFunc		_GetFirst;
-//	QGetNextFunc		_GetNext;
+	QGetRectFunc		_GetRect;
 
 public:
 	inline int GetType() const { return Type; }
 	inline void* Get() { return Data; }
 
-//	inline void* GetFirst() { return _GetFirst(Data); }
-//	inline void* GetNext( void* Prev ) { return _GetNext(Data,Prev); }
+	inline QRect GetRect() { return _GetRect(Data); }
+
+public:
+	inline void UpdateRect() {
+		Rect = GetRect();
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 bool Sense_Sensor( class QObj& ObA,QSensor& A, class QObj& ObB,QSensor& B );
@@ -314,6 +318,16 @@ public:
 public:
 	inline void UpdateRect() {
 		Rect = GetRect();
+
+		QSensor* Sensor = GetSensor();
+		if ( Sensor ) {
+			Sensor->UpdateRect();
+//			Log("+%f %f", Sensor->Rect.P1().x.ToFloat(), Sensor->Rect.P1().y.ToFloat() );
+			Sensor->Rect.P1() *= QFloat::Half;
+			Sensor->Rect.Shape() *= QFloat::Half;
+			Sensor->Rect.P1() += GetPos();
+//			Log("-%f %f", Sensor->Rect.P1().x.ToFloat(), Sensor->Rect.P1().y.ToFloat() );
+		}
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -355,28 +369,16 @@ public:
 	}
 		
 public:
-	void Step() {
-		// Step Objects //
-		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
-		for ( st idx = 0; idx < Obj.size(); idx++ ) {
-			QObj& Ob = Obj[idx];
-
-			// Step Object //
-			if ( Ob.Step( Prop ) ) {
-				// If the Object moved, update the Rectangle //
-				Ob.Rect = Ob.GetRect();
-			}
-		}
-		
-		// Do Collision //
-		// TODO: Only against objects in same region //
+	void Step() {		
+		// Do Collisions First //
+		// TODO: Broad Phase: Test only against objects in same region //
 		for ( st idx = 0; idx < Obj.size(); idx++ ) {
 			// To eliminitae != self check, start at idx+1 //
 			for ( st idx2 = idx+1; idx2 < Obj.size(); idx2++ ) {
 				QObj& ObA = Obj[idx];
 				QObj& ObB = Obj[idx2];
 				
-				// Broad Phase //
+				// Narrow Phase //
 				if ( ObA.Rect == ObB.Rect ) {
 					QBody* BodyA = ObA.GetBody();
 					QBody* BodyB = ObB.GetBody();
@@ -389,8 +391,8 @@ public:
 							ObA.Contact( ObB );
 							ObB.Contact( ObA );						
 							// Update Rectangles //
-							ObA.Rect = ObA.GetRect();
-							ObB.Rect = ObB.GetRect();
+							ObA.UpdateRect();
+							ObB.UpdateRect();
 						}
 					}
 				}
@@ -400,25 +402,26 @@ public:
 
 				// Only Sense if both Objects have Sensors //
 				if ( SensorA && SensorB ) {
-					if ( Sense_Sensor(ObA,*SensorA, ObB,*SensorB) ) {
-						// Sense Called in Sense_Sensor //
-						
-//						ObA.Sense(ObB);
-//						ObB.Sense(ObA);
-						// *shrug* I dunno //
+					// Narrow Phase //
+					if ( SensorA->Rect == SensorB->Rect ) {
+						// Compare Sensors //
+						if ( Sense_Sensor(ObA,*SensorA, ObB,*SensorB) ) {
+							// Sense Functions are called in Sense_Sensor //
+						}
 					}
-//					GelSkelAnimator* AnimA = (GelSkelAnimator*)SensorA->Get();
-//					GelSkelAnimator* AnimB = (GelSkelAnimator*)SensorB->Get();
-					
-//					QSensorInfo InfoA(&ObA);
-//					QSensorInfo InfoB(&ObB);
-					
-//					Sense_Sensor(
-//						ObA.GetPos(),*AnimA,&InfoA,
-//						ObB.GetPos(),*AnimB,&InfoB
-//						// Func //
-//						);
 				}
+			}
+		}
+
+		// Step Objects Next //
+		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
+		for ( st idx = 0; idx < Obj.size(); idx++ ) {
+			QObj& Ob = Obj[idx];
+
+			// Step Object //
+			if ( Ob.Step( Prop ) ) {
+				// If the Object moved, update the Rectangle //
+				Ob.UpdateRect();
 			}
 		}
 		
@@ -437,8 +440,14 @@ public:
 				Ob.Draw( Mat );
 			}
 			
-			if ( Prop.ShowRects ) {
+//			if ( Prop.ShowRects )
+			{
 				gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
+
+				QSensor* Sensor = Ob.GetSensor();
+				if ( Sensor ) {
+					gelDrawSquare(Mat,Sensor->Rect.Center().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
+				}
 			}
 		}
 	}

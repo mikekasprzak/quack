@@ -207,6 +207,10 @@ public:
 		spAttachment* Attachment = _GetAttachment(Index);
 		return GetBB(Attachment);
 	}
+	inline spBoundingBoxAttachment* GetBB( spSlot* Slot ) const {
+		if ( !Slot ) return 0;
+		return GetBB(Slot->attachment);
+	}
 	inline spBoundingBoxAttachment* GetBB( spAttachment* Attachment ) const {
 		if ( !Attachment ) return 0;
 		return _GetBB(Attachment);
