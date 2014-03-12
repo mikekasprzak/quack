@@ -20,24 +20,27 @@ class QObjBoxObj {
 	typedef QObjBoxObj thistype;
 	typedef QBodyAABB BodyT;
 	typedef GelSkelAnimator ArtT;
-	typedef GelSkelAnimator SensorsT;
+	typedef GelSkelAnimator SensorT;
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_BOXOBJ;
 
-		self->_SetArt = (QObj::QSetArtFunc)_SetArt;
 		self->_GetArt = (QObj::QGetArtFunc)_GetArt;
+		self->_SetArt = (QObj::QSetArtFunc)_SetArt;
 		self->_SetArtScale = (QObj::QSetArtScaleFunc)_SetArtScale;
 
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
 			
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
+		self->_GetPos = (QObj::QGetPosFunc)_GetPos;
 		self->_GetVelocity = (QObj::QGetVelocityFunc)_GetVelocity;
 		self->_GetInvMass = (QObj::QGetInvMassFunc)_GetInvMass;
 		self->_SetMass = (QObj::QSetMassFunc)_SetMass;
 		self->_SetShape = (QObj::QSetShapeFunc)_SetShape;
-
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
+
+		self->_GetSensor = (QObj::QGetSensorFunc)_GetSensor;
+
 		self->_Contact = (QObj::QContactFunc)_Contact;
 		self->_Notify = (QObj::QNotifyFunc)_Notify;
 
@@ -54,7 +57,7 @@ public:
 	QVec 		ArtScale; 	// Hack //
 
 	// No SensorT type (using ST_SPINE_BB) //
-	QSensors	SensorsType;
+	QSensor		SensorType;
 
 	HSQOBJECT SqHookObj;
 	HSQMEMBERHANDLE SqInitFunc;	// ?? //
@@ -80,10 +83,10 @@ public:
 		//ArtType.Data = Art;
 		//ArtType.
 		
-		SensorsType.Type = QS_SPINE_BB;
-		//SensorsType.Data = Art;
-		//SensorsType.GetFirst = (QSensors::QGetFirstFunc)SensorsT::_GetFirst;
-		//SensorsType.GetNext = (QSensors::QGetNextFunc)SensorsT::_GetNext;
+		SensorType.Type = QS_SPINE_BB;
+		//SensorType.Data = Art;
+		//SensorType.GetFirst = (QSensor::QGetFirstFunc)SensorT::_GetFirst;
+		//SensorType.GetNext = (QSensor::QGetNextFunc)SensorT::_GetNext;
 		
 		// ** Squirrel Setup *********************** //
 		// ** SqObj Holder (Pointer is assigned before calls) ** //
@@ -157,6 +160,10 @@ public:
 	inline QBody* GetBody() {
 		return &BodyType;
 	}
+	static QVec _GetPos( thistype* self ) { return self->GetPos(); }
+	inline QVec GetPos() {
+		return Body.GetPos();
+	}
 	static QVec _GetVelocity( thistype* self ) { return self->GetVelocity(); }
 	inline QVec GetVelocity() {
 		return Body.GetVelocity();
@@ -181,6 +188,10 @@ public:
 		}
 		Art = new ArtT();
 		Art->Load( Gel::SkelPool.Load( ArtFile ) );
+
+		// Store copies of the pointer in Art and Sensor Types //		
+		ArtType.Data = Art;
+		SensorType.Data = Art;
 	}
 	static void* _GetArt( thistype* self ) { return self->GetArt(); }
 	inline void* GetArt() {
@@ -198,6 +209,12 @@ public:
 		Body.AddForce( Force );
 	}
 
+
+	static QSensor* _GetSensor( thistype* self ) { return self->GetSensor(); }
+	inline QSensor* GetSensor() {
+		return &SensorType;
+	}
+
 	static void _Contact( thistype* self, QObj& Obj, QObj& Vs ) { self->Contact( Obj, Vs ); }
 	inline void Contact( QObj& Obj, QObj& Vs ) {
 		// Do Step Function //
@@ -212,6 +229,11 @@ public:
 		sq_pushinteger(vm,0);			// ARG3 - Info //
 		sq_call(vm,4,false,false);
 		sq_pop(vm,2);
+	}
+
+	static void _Sense( thistype* self, QObj& Obj, QObj& Vs ) { self->Sense( Obj, Vs ); }
+	inline void Sense( QObj& Obj, QObj& Vs ) {
+		
 	}
 
 	static void _Notify( thistype* self, QObj& Obj, QObj& Sender, const int Message ) { self->Notify( Obj, Sender, Message ); }

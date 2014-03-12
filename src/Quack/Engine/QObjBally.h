@@ -13,8 +13,15 @@ class QObjBally {
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_BALLY;
+
+		self->_GetArt = (QObj::QGetArtFunc)_GetArt;
+		self->_GetSensor = (QObj::QGetSensorFunc)_GetSensor;
+
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
+
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
+		self->_GetPos = (QObj::QGetPosFunc)_GetPos;
+		self->_GetVelocity = (QObj::QGetVelocityFunc)_GetVelocity;
 		self->_GetInvMass = (QObj::QGetInvMassFunc)_GetInvMass;
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
 		self->_Contact = (QObj::QContactFunc)_Contact;
@@ -42,9 +49,26 @@ public:
 		return Body.GetRect();
 	}
 
+	static QSensor* _GetSensor( thistype* self ) { return self->GetSensor(); }
+	inline QSensor* GetSensor() {
+		return 0;
+	}
+	static QArt* _GetArt( thistype* self ) { return self->GetArt(); }
+	inline QArt* GetArt() {
+		return 0;
+	}
+	
 	static QBody* _GetBody( thistype* self ) { return self->GetBody(); }
 	inline QBody* GetBody() {
 		return &BodyType;
+	}
+	static QVec _GetPos( thistype* self ) { return self->GetPos(); }
+	inline QVec GetPos() {
+		return Body.GetPos();
+	}
+	static QVec _GetVelocity( thistype* self ) { return self->GetVelocity(); }
+	inline QVec GetVelocity() {
+		return Body.GetVelocity();
 	}
 	static QFloat _GetInvMass( thistype* self ) { return self->GetInvMass(); }
 	inline QFloat GetInvMass() {

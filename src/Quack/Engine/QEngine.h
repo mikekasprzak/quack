@@ -9,6 +9,8 @@
 
 #include <Render/GelDraw.h>
 #include <RTCD/RTCD.h>
+
+#include <Skel/Skel.h>	// Temp //
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
 #include <algorithm>
@@ -178,7 +180,7 @@ public:
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Sensors (Test-Only Collisions) //
-class QSensors {
+class QSensor {
 public:
 	typedef void* (*QGetFirstFunc)( const void* self );
 	typedef void* (*QGetNextFunc)( const void* self, void* Prev );
@@ -209,6 +211,7 @@ public:
 	typedef QRect (*QGetRectFunc)( void* self );
 
 	typedef QBody* (*QGetBodyFunc)( void* self );
+	typedef QVec (*QGetPosFunc)( void* self );
 	typedef QVec (*QGetVelocityFunc)( void* self );
 	typedef QFloat (*QGetInvMassFunc)( void* self );
 	typedef void (*QSetMassFunc)( void* self, const QFloat Mass );
@@ -218,7 +221,7 @@ public:
 	typedef void (*QContactFunc)( void* self, QObj& Obj, QObj& Vs );
 	typedef void (*QNotifyFunc)( void* self, QObj& Obj, QObj& Sender, const int Message );
 
-	typedef QSensors* (*QGetSensorsFunc)( void* self );
+	typedef QSensor* (*QGetSensorFunc)( void* self );
 
 	typedef bool (*QInitFunc)( void* self, QObj& Obj );
 	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
@@ -231,21 +234,22 @@ public:
 	QRect	Rect;
 
 public:
-	QSetArtFunc			_SetArt;
 	QGetArtFunc			_GetArt; // Add a header? //
+	QSetArtFunc			_SetArt;
 	QSetArtScaleFunc	_SetArtScale; // Odd scope? //
 	
 	QGetRectFunc		_GetRect;
 
 	QGetBodyFunc		_GetBody;
 	// TODO: Move all of the following to the Body (perhaps a single member of Body, i.e. vtable) //
+	QGetPosFunc			_GetPos;
 	QGetVelocityFunc	_GetVelocity;
 	QGetInvMassFunc		_GetInvMass;
 	QSetMassFunc		_SetMass;
 	QSetShapeFunc		_SetShape;
 	QAddForceFunc		_AddForce;
 
-	QGetSensorsFunc		_GetSensors;
+	QGetSensorFunc		_GetSensor;
 
 	QContactFunc		_Contact;
 	QNotifyFunc			_Notify;
@@ -258,20 +262,21 @@ public:
 	inline int GetType() const { return Type; }
 	inline void* Get() { return Data; }
 
-	inline void SetArt( const char* ArtFile ) { _SetArt(Data,ArtFile); }
 	inline void* GetArt() { return _GetArt(Data); }
+	inline void SetArt( const char* ArtFile ) { _SetArt(Data,ArtFile); }
 	inline void SetArtScale( const QVec& _Scale ) { _SetArtScale(Data,_Scale); }
 
 	inline QRect GetRect() { return _GetRect(Data); }
 
 	inline QBody* GetBody() { return _GetBody(Data); }
+	inline QVec GetPos() { return _GetPos(Data); }
 	inline QVec GetVelocity() { return _GetVelocity(Data); }
 	inline QFloat GetInvMass() { return _GetInvMass(Data); }
 	inline void SetMass( const QFloat Mass ) { _SetMass(Data,Mass); }
 	inline void SetShape( const QVec& Shape ) { _SetShape(Data,Shape); }
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 
-	inline QSensors* GetSensors() { return _GetSensors(Data); }
+	inline QSensor* GetSensor() { return _GetSensor(Data); }
 
 	inline void Contact( QObj& Vs ) { _Contact(Data,*this,Vs); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,*this,Sender,Message); }
@@ -362,6 +367,16 @@ public:
 							ObB.Rect = ObB.GetRect();
 						}
 					}
+				}
+				
+				QSensor* SensorA = ObA.GetSensor();
+				QSensor* SensorB = ObB.GetSensor();
+
+				// Only Sense if both Objects have Sensors //
+				if ( SensorA && SensorB ) {
+					Sense_GelSkelAnimator(
+						ObA.GetPos(),*(GelSkelAnimator*)SensorA->Get(),
+						ObB.GetPos(),*(GelSkelAnimator*)SensorB->Get() );
 				}
 			}
 		}
