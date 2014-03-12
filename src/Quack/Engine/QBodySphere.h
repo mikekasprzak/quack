@@ -91,11 +91,11 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline bool Solve_Body( QBodySphere& A, QBodySphere& B ) {
+inline bool Solve_Body( QBodySphere& A, QBodySphere& B, QContactInfo& Info ) {
 	return FinishSolve_Body( A, B, B.Pos-A.Pos, B.Radius+A.Radius );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline bool Solve_Body( QBodyAABB& A, QBodySphere& B ) {
+inline bool Solve_Body( QBodyAABB& A, QBodySphere& B, QContactInfo& Info ) {
 	QVec ANearestPoint = A.GetRect().NearestPoint( B.Pos );
 
 	return FinishSolve_Body( A, B, B.Pos-ANearestPoint, B.Radius );

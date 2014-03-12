@@ -167,7 +167,22 @@ public:
 
 };
 // - ------------------------------------------------------------------------------------------ - //
-bool Solve_Body( QBody& A, QBody& B ); // Solve/Resolve Collisions //
+bool Solve_Body( QBody& A, QBody& B, class QContactInfo& Info ); // Solve/Resolve Collisions //
+// - ------------------------------------------------------------------------------------------ - //
+// Quack Contact -- //
+class QContact {
+public:
+	QVec		Point; // ? //
+	QVec		Normal;
+	QFloat		Length;
+//	class QObj* Obj;
+//	class QObj*	Vs;
+};
+// - ------------------------------------------------------------------------------------------ - //
+class QContactInfo {
+public:
+	QContact Contact;
+};
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Art (Thing that handles art and animation) //
 class QArt {
@@ -245,7 +260,7 @@ public:
 	typedef void (*QSetShapeFunc)( void* self, const QVec& Shape );
 
 	typedef void (*QAddForceFunc)( void* self, const QVec& Force );
-	typedef void (*QContactFunc)( void* self, QObj& Obj, QObj& Vs );
+	typedef void (*QContactFunc)( void* self, QObj& Obj, QObj& Vs, QContactInfo& Info );
 	typedef void (*QNotifyFunc)( void* self, QObj& Obj, QObj& Sender, const int Message );
 
 	typedef QSensor* (*QGetSensorFunc)( void* self );
@@ -308,7 +323,7 @@ public:
 	inline QSensor* GetSensor() { return _GetSensor(Data); }
 	inline void Sense( QObj& Vs ) { _Sense(Data,*this,Vs); }
 
-	inline void Contact( QObj& Vs ) { _Contact(Data,*this,Vs); }
+	inline void Contact( QObj& Vs, QContactInfo& Info ) { _Contact(Data,*this,Vs,Info); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,*this,Sender,Message); }
 
 	inline bool Init() { return _Init(Data,*this); }
@@ -385,11 +400,13 @@ public:
 					
 					// Only if Objects have Bodies //
 					if ( BodyA && BodyB ) {
+						QContactInfo Info;
 						// Solve/Resolve Collision //
-						if ( Solve_Body(*BodyA,*BodyB) ) {
+						if ( Solve_Body(*BodyA,*BodyB,Info) ) {
 							// If a collision was solved/resolved, trigger Contact events //
-							ObA.Contact( ObB );
-							ObB.Contact( ObA );						
+							ObA.Contact( ObB, Info );
+							Info.Contact.Normal = -Info.Contact.Normal; // Flip the Normal //
+							ObB.Contact( ObA, Info );						
 							// Update Rectangles //
 							ObA.UpdateRect();
 							ObB.UpdateRect();

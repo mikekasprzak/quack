@@ -98,7 +98,7 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
+inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B, QContactInfo& Info ) {
 	if ( (A.InvMass == QFloat::Zero) && (B.InvMass == QFloat::Zero) )
 		return false;
 	
@@ -123,14 +123,14 @@ inline bool Solve_Body( QBodyCapsule& A, QBodyCapsule& B ) {
 	return FinishSolve_Body( A, B, Line.b-Line.a, BRadius+ARadius );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline bool Solve_Body( QBodySphere& A, QBodyCapsule& B ) {
+inline bool Solve_Body( QBodySphere& A, QBodyCapsule& B, QContactInfo& Info ) {
 	QVec BPos = NearestPoint_on_Line(B.Pos,B.Pos+B.Line,A.Pos);
 	QFloat BRadius = B.RadiusA; // FIX ME //
 
 	return FinishSolve_Body( A, B, BPos-A.Pos, BRadius+A.Radius );
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline bool Solve_Body( QBodyAABB& A, QBodyCapsule& B ) {
+inline bool Solve_Body( QBodyAABB& A, QBodyCapsule& B, QContactInfo& Info ) {
 	QVec BPos = NearestPoint_on_Line(B.Pos,B.Pos+B.Line,A.Pos);
 	QFloat BRadius = B.RadiusA; // FIX ME //
 

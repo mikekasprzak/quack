@@ -139,19 +139,22 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B ) {
+inline bool Solve_Body( QBodyAABB& A, QBodyAABB& B, QContactInfo& Info ) {
 	QRect Diff = B.GetRect() - A.GetRect();
 	QVec Line = B.Pos - A.Pos;
+	
 	// The Size of the overlap region (Diff) determines which direction we push //
 	if ( Diff.Width() < Diff.Height() ) {
-		// The +One compensates for the length of 1 introduced by the Normal() //
-//		return FinishSolve_Body( A, B, QVec(Line.x.Normal(),0), Diff.Width()+QFloat::One );
-		return FinishSolve2_Body( A, B, QVec(Line.x.Normal()*Diff.Width(),0) );
+		QVec SolveLine = QVec(Line.x.Normal()*Diff.Width(),0);
+		Info.Contact.Normal = SolveLine;
+		Info.Contact.Length = Info.Contact.Normal.NormalizeRet();
+		return FinishSolve2_Body( A, B, SolveLine );
 	}
 	else {
-		// The +One compensates for the length of 1 introduced by the Normal() //
-//		return FinishSolve_Body( A, B, QVec(0,Line.y.Normal()), Diff.Height()+QFloat::One );
-		return FinishSolve2_Body( A, B, QVec(0,Line.y.Normal()*Diff.Height()) );
+		QVec SolveLine = QVec(0,Line.y.Normal()*Diff.Height());
+		Info.Contact.Normal = SolveLine;
+		Info.Contact.Length = Info.Contact.Normal.NormalizeRet();
+		return FinishSolve2_Body( A, B, SolveLine );
 	}
 }
 // - ------------------------------------------------------------------------------------------ - //
