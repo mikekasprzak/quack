@@ -371,14 +371,14 @@ public:
 public:
 	void Step() {		
 		// Do Collisions First //
-		// TODO: Broad Phase: Test only against objects in same region //
+		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
 		for ( st idx = 0; idx < Obj.size(); idx++ ) {
 			// To eliminitae != self check, start at idx+1 //
 			for ( st idx2 = idx+1; idx2 < Obj.size(); idx2++ ) {
 				QObj& ObA = Obj[idx];
 				QObj& ObB = Obj[idx2];
 				
-				// Narrow Phase //
+				// Broad Phase 2 (Rectangles) //
 				if ( ObA.Rect == ObB.Rect ) {
 					QBody* BodyA = ObA.GetBody();
 					QBody* BodyB = ObB.GetBody();
@@ -402,7 +402,7 @@ public:
 
 				// Only Sense if both Objects have Sensors //
 				if ( SensorA && SensorB ) {
-					// Narrow Phase //
+					// Broad Phase 2 (Rectangles) //
 					if ( SensorA->Rect == SensorB->Rect ) {
 						// Compare Sensors //
 						if ( Sense_Sensor(ObA,*SensorA, ObB,*SensorB) ) {
@@ -446,7 +446,7 @@ public:
 
 				QSensor* Sensor = Ob.GetSensor();
 				if ( Sensor ) {
-					gelDrawSquare(Mat,Sensor->Rect.Center().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
+					gelDrawSquare(Mat,Sensor->Rect.BasePoint().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
 				}
 			}
 		}
