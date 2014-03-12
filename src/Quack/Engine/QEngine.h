@@ -245,6 +245,7 @@ public:
 	typedef void (*QNotifyFunc)( void* self, QObj& Obj, QObj& Sender, const int Message );
 
 	typedef QSensor* (*QGetSensorFunc)( void* self );
+	typedef void (*QSenseFunc)( void* self, QObj& Obj, QObj& Vs );
 
 	typedef bool (*QInitFunc)( void* self, QObj& Obj );
 	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
@@ -273,6 +274,7 @@ public:
 	QAddForceFunc		_AddForce;
 
 	QGetSensorFunc		_GetSensor;
+	QSenseFunc			_Sense;
 
 	QContactFunc		_Contact;
 	QNotifyFunc			_Notify;
@@ -300,6 +302,7 @@ public:
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 
 	inline QSensor* GetSensor() { return _GetSensor(Data); }
+	inline void Sense( QObj& Vs ) { _Sense(Data,*this,Vs); }
 
 	inline void Contact( QObj& Vs ) { _Contact(Data,*this,Vs); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,*this,Sender,Message); }
@@ -398,6 +401,10 @@ public:
 				// Only Sense if both Objects have Sensors //
 				if ( SensorA && SensorB ) {
 					if ( Sense_Sensor(ObA,*SensorA, ObB,*SensorB) ) {
+						// Sense Called in Sense_Sensor //
+						
+//						ObA.Sense(ObB);
+//						ObB.Sense(ObA);
 						// *shrug* I dunno //
 					}
 //					GelSkelAnimator* AnimA = (GelSkelAnimator*)SensorA->Get();

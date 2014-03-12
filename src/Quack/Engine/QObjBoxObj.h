@@ -40,6 +40,7 @@ public:
 		self->_AddForce = (QObj::QAddForceFunc)_AddForce;
 
 		self->_GetSensor = (QObj::QGetSensorFunc)_GetSensor;
+		self->_Sense = (QObj::QSenseFunc)_Sense;
 
 		self->_Contact = (QObj::QContactFunc)_Contact;
 		self->_Notify = (QObj::QNotifyFunc)_Notify;
@@ -63,6 +64,7 @@ public:
 	HSQMEMBERHANDLE SqInitFunc;	// ?? //
 	HSQMEMBERHANDLE SqStepFunc;
 	HSQMEMBERHANDLE SqContactFunc;
+	HSQMEMBERHANDLE SqSenseFunc;
 	HSQMEMBERHANDLE SqNoticeFunc;
 
 	HSQOBJECT SqObj;
@@ -129,6 +131,8 @@ public:
 		sq_getmemberhandle(vm,-3,&SqStepFunc);
 		sq_pushstring(vm,_SC("Contact"),-1);
 		sq_getmemberhandle(vm,-3,&SqContactFunc);
+		sq_pushstring(vm,_SC("Sense"),-1);
+		sq_getmemberhandle(vm,-3,&SqSenseFunc);
 		sq_pushstring(vm,_SC("Notice"),-1);
 		sq_getmemberhandle(vm,-3,&SqNoticeFunc);
 		// Finished, clean up the stack //
@@ -228,7 +232,19 @@ public:
 
 	static void _Sense( thistype* self, QObj& Obj, QObj& Vs ) { self->Sense( Obj, Vs ); }
 	inline void Sense( QObj& Obj, QObj& Vs ) {
-		
+		// Do Step Function //
+		sq_pushobject(vm,SqHookObj);
+		sq_getbyhandle(vm,-1,&SqSenseFunc);
+		// ARGS (must be accurate) //
+		sq_pushobject(vm,SqHookObj);			// ARG0 - this //
+		sq_pushobject(vm,SqObj);				// ARG1 - Obj //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_pushobject(vm,SqObj2);				// ARG2 - Vs //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
+		sq_pushinteger(vm,Sensor.Message);		// ARG3 - Info //
+//		sq_pushinteger(vm,Vs.Sensor.Message);	// ARG4 - Vs Info //
+		sq_call(vm,4,false,false);
+		sq_pop(vm,2);
 	}
 
 	static void _Notify( thistype* self, QObj& Obj, QObj& Sender, const int Message ) { self->Notify( Obj, Sender, Message ); }

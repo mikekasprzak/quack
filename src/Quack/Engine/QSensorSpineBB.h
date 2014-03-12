@@ -14,6 +14,8 @@ public:
 	}
 public:
 	GelSkelAnimator*	Skel;
+	int					Message;
+	const char*			Name;
 
 public:
 	inline QSensorSpineBB()
@@ -28,6 +30,11 @@ public:
 //inline bool Sense_Sensor( const Vector2D& PosA, const GelSkelAnimator& SkelA, QSensorInfo& InfoA, const Vector2D& PosB, const GelSkelAnimator& SkelB, QSensorInfo& InfoB ) {
 inline bool Sense_Sensor( QObj& ObA, QSensorSpineBB& SenA, QObj& ObB, QSensorSpineBB& SenB ) {
 	bool Sensed = false;
+	
+	const char _HITBOX[] = {'H','I','T','-',0};
+	const char _HURTBOX[] = {'H','U','R','T',0};
+	const int& HITBOX = *((int*)_HITBOX);
+	const int& HURTBOX = *((int*)_HURTBOX);
 	
 	const Vector2D& PosA = ObA.GetPos();
 	GelSkelAnimator& SkelA = *(SenA.Skel);
@@ -76,12 +83,48 @@ inline bool Sense_Sensor( QObj& ObA, QSensorSpineBB& SenA, QObj& ObB, QSensorSpi
 			if ( ConvexVsConvex(bbVertA,bbVertASize, bbVertB,bbVertBSize ) ) {
 				Sensed = true;
 				
-				Log( "** [%x][%i] %s (%.01f,%.01f) vs [%x][%i] %s (%.01f,%.01f)...", 
-					SkelA.GetSkeleton(),IndexA,SkelA.GetName(IndexA),
-					PosA.x.ToFloat(),PosA.y.ToFloat(),
-					SkelB.GetSkeleton(),IndexB,SkelB.GetName(IndexB),
-					PosB.x.ToFloat(),PosB.y.ToFloat()
-					);
+				// ** A ** //
+				SenA.Name = BBA->super.name;
+				{
+					int* NamePtr = (int*)SenA.Name;
+					if ( *NamePtr == HITBOX ) {
+						SenA.Message = QSI_HITBOX;
+					}
+					else if ( *NamePtr == HURTBOX ) {
+						SenA.Message = QSI_HURTBOX;
+					}
+					else {
+						// TODO: String to Number
+						SenA.Message = 0;
+					}
+				}
+
+				// ** B ** //
+				SenB.Name = BBB->super.name;
+				{
+					int* NamePtr = (int*)SenB.Name;
+					if ( *NamePtr == HITBOX ) {
+						SenB.Message = QSI_HITBOX;
+					}
+					else if ( *NamePtr == HURTBOX ) {
+						SenB.Message = QSI_HURTBOX;
+					}
+					else {
+						// TODO: String to Number
+						SenB.Message = 0;
+					}
+				}
+
+				ObA.Sense(ObB);
+				ObB.Sense(ObA);
+				
+//				Log( "** [%x][%i] %s (%.01f,%.01f) vs [%x][%i] %s (%.01f,%.01f)...", 
+//					SkelA.GetSkeleton(),IndexA,SkelA.GetName(IndexA),
+//					PosA.x.ToFloat(),PosA.y.ToFloat(),
+//					SkelB.GetSkeleton(),IndexB,SkelB.GetName(IndexB),
+//					PosB.x.ToFloat(),PosB.y.ToFloat()
+//					);
+
 //				for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
 //					_Log("(%.02f,%.02f) ", bbVertA[(idx<<1)+0],bbVertA[(idx<<1)+1]);
 //				}
