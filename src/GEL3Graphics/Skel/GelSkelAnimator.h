@@ -180,7 +180,114 @@ public:
 		}
 		*/
 	}
-	
+
+	// Iterating Bonunding Boxes requires iterating over slots //
+	inline int GetSlotCount() const {
+		return Skeleton->slotCount;
+	}
+	// Slots contain attachments //
+	inline spAttachment* GetAttachment( const st Index ) const {
+		if ( Index >= Skeleton->slotCount ) return 0;
+		return _GetAttachment(Index);
+	}
+	inline spAttachment* _GetAttachment( const st Index ) const {
+		return Skeleton->drawOrder[Index]->attachment;
+	}
+	// An attachment can be a region (art box) //
+	inline spRegionAttachment* GetRegion( const st Index ) const {
+		if ( Index >= Skeleton->slotCount ) return 0;
+		return _GetRegion(Index);
+	}
+	inline spRegionAttachment* _GetRegion( const st Index ) const {
+		spAttachment* Attachment = _GetAttachment(Index);
+		return GetRegion(Attachment);
+	}
+	inline spRegionAttachment* GetRegion( spAttachment* Attachment ) const {
+		if ( !Attachment ) return 0;
+		return _GetRegion(Attachment);
+	}
+	inline spRegionAttachment* _GetRegion( spAttachment* Attachment ) const {
+		if ( Attachment->type != ATTACHMENT_REGION ) return 0;
+		return (spRegionAttachment*)Attachment;
+	}
+	// Or an attachment can be a BoundingBox //
+	inline spBoundingBoxAttachment* GetBB( const st Index ) const {
+		if ( Index >= Skeleton->slotCount ) return 0;
+		return _GetBB(Index);
+	}
+	inline spBoundingBoxAttachment* _GetBB( const st Index ) const {
+		spAttachment* Attachment = _GetAttachment(Index);
+		return GetBB(Attachment);
+	}
+	inline spBoundingBoxAttachment* GetBB( spAttachment* Attachment ) const {
+		if ( !Attachment ) return 0;
+		return _GetBB(Attachment);
+	}
+	inline spBoundingBoxAttachment* _GetBB( spAttachment* Attachment ) const {
+		if ( Attachment->type != ATTACHMENT_BOUNDING_BOX ) return 0;
+		return (spBoundingBoxAttachment*)Attachment;
+	}
+	// Or go right to the name //
+	inline const char* GetName( const st Index ) const {
+		if ( Index >= Skeleton->slotCount ) return 0;
+		return _GetName(Index);
+	}
+	inline const char* _GetName( const st Index ) const {
+		spAttachment* Attachment = _GetAttachment(Index);
+		return GetName(Attachment);
+	}
+	inline const char* GetName( spAttachment* Attachment ) const {
+		if ( !Attachment ) return 0;
+		return _GetName(Attachment);
+	}
+	inline const char* _GetName( spAttachment* Attachment ) const {
+		return Attachment->name;
+	}
+	// Or right to the Polygon data (UNTRANSFORMED) //
+	inline float* GetBBVertices( const st Index ) const {
+		if ( Index >= Skeleton->slotCount ) return 0;
+		return _GetBBVertices(Index);
+	}
+	inline float* _GetBBVertices( const st Index ) const {
+		spBoundingBoxAttachment* Attachment = _GetBB(Index);
+		return GetBBVertices(Attachment);
+	}
+	inline float* GetBBVertices( spBoundingBoxAttachment* Attachment ) const {
+		if ( !Attachment ) return 0;
+		return _GetBBVertices(Attachment);
+	}
+	inline float* _GetBBVertices( spBoundingBoxAttachment* Attachment ) const {
+		return Attachment->vertices;
+	}
+	// Or Vertex Count //
+	inline int GetBBVertexCount( const st Index ) const {
+		if ( Index >= Skeleton->slotCount ) return 0;
+		return _GetBBVertexCount(Index);
+	}
+	inline int _GetBBVertexCount( const st Index ) const {
+		spBoundingBoxAttachment* Attachment = _GetBB(Index);
+		return GetBBVertexCount(Attachment);
+	}
+	inline int GetBBVertexCount( spBoundingBoxAttachment* Attachment ) const {
+		if ( !Attachment ) return 0;
+		return _GetBBVertexCount(Attachment);
+	}
+	inline int _GetBBVertexCount( spBoundingBoxAttachment* Attachment ) const {
+		return Attachment->verticesCount;
+	}
+	// Transform some Polygon Data //
+//	inline void TransformBBVertices( const st Index, float* Out ) const {
+//		if ( Index >= Skeleton->slotCount ) return;
+//		return _TransformBBVertices(Index, Out);
+//	}
+//	inline void _TransformBBVertices( const st Index, float* Out ) const {
+//		spBoundingBoxAttachment* Attachment = _GetBB(Index);
+//		if ( !Attachment ) return;
+//		
+//		return Attachment->vertices;
+//	}
+		
+public:	
 	inline void FlushDraw( const Matrix4x4& Matrix, const GelTexturePool::UID& TexIndex, GelAlloc3UC& Vert ) const {
 		if ( Vert.Size() ) {
 			Gel::TexturePool[TexIndex].Bind();

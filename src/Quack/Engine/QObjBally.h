@@ -9,7 +9,7 @@ namespace QK {
 // - ------------------------------------------------------------------------------------------ - //
 class QObjBally {
 	typedef QObjBally thistype;
-	typedef QBodySphere BT;
+	typedef QBodySphere BodyT;
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_BALLY;
@@ -25,16 +25,15 @@ public:
 		self->_Draw = (QObj::QDrawFunc)_Draw;
 	}
 public:
-	BT 		Body;		// Actual Physical Properties //
+	BodyT	Body;		// Actual Physical Properties //
 	QBody	BodyType;	// Signature type understood by the engine //
 
 public:
 	inline QObjBally( const QVec& _Pos, const QFloat& _Radius ) :
 		Body( _Pos, _Radius, QFloat::One / (_Radius*_Radius*Real::Pi) ) 
 	{
-		BodyType.Type = QB_SPHERE;
+		BodyT::InitBody( &BodyType );
 		BodyType.Data = &Body;
-		BodyType.GetInvMass = (QBody::QGetInvMassFunc)BT::_GetInvMass;
 	}
 
 public:
