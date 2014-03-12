@@ -374,9 +374,12 @@ public:
 
 				// Only Sense if both Objects have Sensors //
 				if ( SensorA && SensorB ) {
+					GelSkelAnimator* AnimA = (GelSkelAnimator*)SensorA->Get();
+					GelSkelAnimator* AnimB = (GelSkelAnimator*)SensorB->Get();
+										
 					Sense_GelSkelAnimator(
-						ObA.GetPos(),*(GelSkelAnimator*)SensorA->Get(),
-						ObB.GetPos(),*(GelSkelAnimator*)SensorB->Get() );
+						ObA.GetPos(),*AnimA,
+						ObB.GetPos(),*AnimB );
 				}
 			}
 		}

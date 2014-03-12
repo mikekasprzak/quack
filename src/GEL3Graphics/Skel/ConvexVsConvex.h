@@ -42,8 +42,10 @@ inline bool ConvexVsConvex( const float* _PolyA, int PolyASize, const float* _Po
 		Real AxMax = AMax > BMax ? AMax : BMax;
 		Real AxLen = AxMax - AxMin;
 		
-		if ( AxLen > ALen+BLen )
+		if ( AxLen > ALen+BLen ) {
+			Log("SHORT! %f %f", AxLen.ToFloat(), (ALen+BLen).ToFloat() );
 			return false;
+		}
 	}
 
 	// For all Axis of PolyB //
@@ -78,8 +80,10 @@ inline bool ConvexVsConvex( const float* _PolyA, int PolyASize, const float* _Po
 		Real AxMax = AMax > BMax ? AMax : BMax;
 		Real AxLen = AxMax - AxMin;
 		
-		if ( AxLen > ALen+BLen )
+		if ( AxLen > ALen+BLen ) {
+			Log("SH0RT! %f %f", AxLen.ToFloat(), (ALen+BLen).ToFloat() );
 			return false;
+		}
 	}
 	
 	// No overlaps are greater than the sum of shapes per axis //
