@@ -361,63 +361,62 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline void Sense_GelSkelAnimator( const Vector2D& PosA, const GelSkelAnimator& SkelA, const Vector2D& PosB, const GelSkelAnimator& SkelB ) {
-	for ( int IndexB = 0; IndexB < SkelB.GetSlotCount(); IndexB++ ) {
-		spSlot* SlotB = SkelB._GetSlot(IndexB);
-		//if ( !SlotB ) continue;
-		spBoundingBoxAttachment* BBB = SkelB._GetBB(IndexB);
-		if ( !BBB ) continue;
-		for ( int IndexA = 0; IndexA < SkelA.GetSlotCount(); IndexA++ ) {
-			spSlot* SlotA = SkelA._GetSlot(IndexA);
-			//if ( !SlotA ) continue;
-			spBoundingBoxAttachment* BBA = SkelA._GetBB(IndexA);
-			if ( !BBA ) continue;
-
-			// NOTE: Max Verts 16! //
-			float bbVertA[16*2];
-			float bbVertB[16*2];
-			
-			SkelA._TransformBBVertices(SlotA,BBA,bbVertA);
-			SkelB._TransformBBVertices(SlotB,BBB,bbVertB);
-
-			int bbVertASize = BBA->verticesCount;
-			int bbVertBSize = BBB->verticesCount;
-			
-			for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
-				bbVertA[(idx<<1)+0] *= 0.5f;
-				bbVertA[(idx<<1)+0] += PosA.x.ToFloat();
-				bbVertA[(idx<<1)+1] *= 0.5f;
-				bbVertA[(idx<<1)+1] += PosA.y.ToFloat();
-			}
-
-			for ( int idx = 0; idx < bbVertBSize>>1; idx++ ) {
-				bbVertB[(idx<<1)+0] *= 0.5f;
-				bbVertB[(idx<<1)+0] += PosB.x.ToFloat();
-				bbVertB[(idx<<1)+1] *= 0.5f;
-				bbVertB[(idx<<1)+1] += PosB.y.ToFloat();
-			}
-			
-			//Log( "** [%x][%i] vs [%x][%i]...", SlotA,IndexA, SlotB,IndexB );
-			if ( ConvexVsConvex(bbVertA,bbVertASize, bbVertB,bbVertBSize ) ) {
-				Log( "** [%x][%i] %s (%.01f,%.01f) vs [%x][%i] %s (%.01f,%.01f)...", 
-					SkelA.GetSkeleton(),IndexA,SkelA.GetName(IndexA),
-					PosA.x.ToFloat(),PosA.y.ToFloat(),
-					SkelB.GetSkeleton(),IndexB,SkelB.GetName(IndexB),
-					PosB.x.ToFloat(),PosB.y.ToFloat()
-					);
-//				for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
-//					_Log("(%.02f,%.02f) ", bbVertA[(idx<<1)+0],bbVertA[(idx<<1)+1]);
-//				}
-//				Log("");
-//				for ( int idx = 0; idx < bbVertBSize>>1; idx++ ) {
-//					_Log("(%.02f,%.02f) ", bbVertB[(idx<<1)+0],bbVertB[(idx<<1)+1]);
-//				}
-//				Log("");
-//				LogFlush();
-			}
-		}
-	}
-}
+//inline void Sense_GelSkelAnimator( const Vector2D& PosA, const GelSkelAnimator& SkelA, QSensorInfo& InfoA, const Vector2D& PosB, const GelSkelAnimator& SkelB, QSensorInfo& InfoB ) {
+//	for ( int IndexB = 0; IndexB < SkelB.GetSlotCount(); IndexB++ ) {
+//		spSlot* SlotB = SkelB._GetSlot(IndexB);
+//		//if ( !SlotB ) continue;
+//		spBoundingBoxAttachment* BBB = SkelB._GetBB(IndexB);
+//		if ( !BBB ) continue;
+//		for ( int IndexA = 0; IndexA < SkelA.GetSlotCount(); IndexA++ ) {
+//			spSlot* SlotA = SkelA._GetSlot(IndexA);
+//			//if ( !SlotA ) continue;
+//			spBoundingBoxAttachment* BBA = SkelA._GetBB(IndexA);
+//			if ( !BBA ) continue;
+//
+//			// NOTE: Max Verts 16! //
+//			float bbVertA[16*2];
+//			float bbVertB[16*2];
+//			
+//			SkelA._TransformBBVertices(SlotA,BBA,bbVertA);
+//			SkelB._TransformBBVertices(SlotB,BBB,bbVertB);
+//
+//			int bbVertASize = BBA->verticesCount;
+//			int bbVertBSize = BBB->verticesCount;
+//			
+//			for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
+//				bbVertA[(idx<<1)+0] *= 0.5f;
+//				bbVertA[(idx<<1)+0] += PosA.x.ToFloat();
+//				bbVertA[(idx<<1)+1] *= 0.5f;
+//				bbVertA[(idx<<1)+1] += PosA.y.ToFloat();
+//			}
+//
+//			for ( int idx = 0; idx < bbVertBSize>>1; idx++ ) {
+//				bbVertB[(idx<<1)+0] *= 0.5f;
+//				bbVertB[(idx<<1)+0] += PosB.x.ToFloat();
+//				bbVertB[(idx<<1)+1] *= 0.5f;
+//				bbVertB[(idx<<1)+1] += PosB.y.ToFloat();
+//			}
+//			
+//			if ( ConvexVsConvex(bbVertA,bbVertASize, bbVertB,bbVertBSize ) ) {
+//				Log( "** [%x][%i] %s (%.01f,%.01f) vs [%x][%i] %s (%.01f,%.01f)...", 
+//					SkelA.GetSkeleton(),IndexA,SkelA.GetName(IndexA),
+//					PosA.x.ToFloat(),PosA.y.ToFloat(),
+//					SkelB.GetSkeleton(),IndexB,SkelB.GetName(IndexB),
+//					PosB.x.ToFloat(),PosB.y.ToFloat()
+//					);
+////				for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
+////					_Log("(%.02f,%.02f) ", bbVertA[(idx<<1)+0],bbVertA[(idx<<1)+1]);
+////				}
+////				Log("");
+////				for ( int idx = 0; idx < bbVertBSize>>1; idx++ ) {
+////					_Log("(%.02f,%.02f) ", bbVertB[(idx<<1)+0],bbVertB[(idx<<1)+1]);
+////				}
+////				Log("");
+////				LogFlush();
+//			}
+//		}
+//	}
+//}
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_SKEL_GELSKELANIMATOR_H__ //
 // - ------------------------------------------------------------------------------------------ - //

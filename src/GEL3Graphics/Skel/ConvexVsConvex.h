@@ -43,7 +43,7 @@ inline bool ConvexVsConvex( const float* _PolyA, int PolyASize, const float* _Po
 		Real AxLen = AxMax - AxMin;
 		
 		if ( AxLen > ALen+BLen ) {
-//			Log("SHORT! %f %f", AxLen.ToFloat(), (ALen+BLen).ToFloat() );
+//			Log("GAP FOUND (A)! %f %f", AxLen.ToFloat(), (ALen+BLen).ToFloat() );
 			return false;
 		}
 	}
@@ -81,7 +81,7 @@ inline bool ConvexVsConvex( const float* _PolyA, int PolyASize, const float* _Po
 		Real AxLen = AxMax - AxMin;
 		
 		if ( AxLen > ALen+BLen ) {
-//			Log("SH0RT! %f %f", AxLen.ToFloat(), (ALen+BLen).ToFloat() );
+//			Log("GAP FOUND (B)! %f %f", AxLen.ToFloat(), (ALen+BLen).ToFloat() );
 			return false;
 		}
 	}

@@ -22,6 +22,7 @@ SQInteger register_qkObject(HSQUIRRELVM v);
 //#include "QSensorCapsule.h"
 //#include "QSensorOBB.h"
 //#include "QSensorPoly.h"
+#include "QSensorSpineBB.h"
 // - ------------------------------------------------------------------------------------------ - //
 // Will eventually only need a few Object types, but for the sake of dev/debugging we have extras.
 #include "QObjDummy.h"
