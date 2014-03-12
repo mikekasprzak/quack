@@ -157,6 +157,10 @@ public:
 		spSkeleton_updateWorldTransform( Skeleton ); 	// Build Matrix //
 	}
 
+	inline spSkeleton* GetSkeleton() const {
+		return Skeleton;
+	}
+
 	// Iterating Bonunding Boxes requires iterating over slots //
 	inline int GetSlotCount() const {
 		return Skeleton->slotCount;
@@ -369,66 +373,50 @@ inline void Sense_GelSkelAnimator( const Vector2D& PosA, const GelSkelAnimator& 
 			spBoundingBoxAttachment* BBA = SkelA._GetBB(IndexA);
 			if ( !BBA ) continue;
 
-			// NOTE: Max Verts 8! //
+			// NOTE: Max Verts 16! //
 			float bbVertA[16*2];
 			float bbVertB[16*2];
 			
-			int bbVertASize = BBA->verticesCount;
-			int bbVertBSize = BBB->verticesCount;
-
 			SkelA._TransformBBVertices(SlotA,BBA,bbVertA);
 			SkelB._TransformBBVertices(SlotB,BBB,bbVertB);
+
+			int bbVertASize = BBA->verticesCount;
+			int bbVertBSize = BBB->verticesCount;
 			
 			for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
+				bbVertA[(idx<<1)+0] *= 0.5f;
 				bbVertA[(idx<<1)+0] += PosA.x.ToFloat();
+				bbVertA[(idx<<1)+1] *= 0.5f;
 				bbVertA[(idx<<1)+1] += PosA.y.ToFloat();
 			}
 
 			for ( int idx = 0; idx < bbVertBSize>>1; idx++ ) {
+				bbVertB[(idx<<1)+0] *= 0.5f;
 				bbVertB[(idx<<1)+0] += PosB.x.ToFloat();
+				bbVertB[(idx<<1)+1] *= 0.5f;
 				bbVertB[(idx<<1)+1] += PosB.y.ToFloat();
 			}
 			
-			Log( "** [%x][%i] vs [%x][%i]...", SlotA,IndexA, SlotB,IndexB );
+			//Log( "** [%x][%i] vs [%x][%i]...", SlotA,IndexA, SlotB,IndexB );
 			if ( ConvexVsConvex(bbVertA,bbVertASize, bbVertB,bbVertBSize ) ) {
-				Log( "[%x][%i]%s vs [%x][%i]%s...", SlotA,IndexA,SkelA.GetName(IndexA), SlotB,IndexB,SkelB.GetName(IndexB) );
-				LogFlush();
-				for ( int idx = 0; idx < bbVertASize; idx++ ) {
-					_Log("%f, ", bbVertA[idx]);
-				}
-				Log("");
-				LogFlush();
-				for ( int idx = 0; idx < bbVertBSize; idx++ ) {
-					_Log("%f, ", bbVertB[idx]);
-				}
-				Log("");
-				LogFlush();
+				Log( "** [%x][%i] %s (%.01f,%.01f) vs [%x][%i] %s (%.01f,%.01f)...", 
+					SkelA.GetSkeleton(),IndexA,SkelA.GetName(IndexA),
+					PosA.x.ToFloat(),PosA.y.ToFloat(),
+					SkelB.GetSkeleton(),IndexB,SkelB.GetName(IndexB),
+					PosB.x.ToFloat(),PosB.y.ToFloat()
+					);
+//				for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
+//					_Log("(%.02f,%.02f) ", bbVertA[(idx<<1)+0],bbVertA[(idx<<1)+1]);
+//				}
+//				Log("");
+//				for ( int idx = 0; idx < bbVertBSize>>1; idx++ ) {
+//					_Log("(%.02f,%.02f) ", bbVertB[(idx<<1)+0],bbVertB[(idx<<1)+1]);
+//				}
+//				Log("");
+//				LogFlush();
 			}
 		}
 	}
-
-	// How we retieve Bounding Boxes //
-	/*
-	{
-		float bbVertices[16*2];
-		for (int i = 0; i < Skeleton->slotCount; ++i) {
-			spSlot* slot = Skeleton->drawOrder[i];
-			spAttachment* attachment = slot->attachment;
-			if (!attachment || attachment->type != ATTACHMENT_BOUNDING_BOX) 
-				continue;
-			spBoundingBoxAttachment* bbAttachment = (spBoundingBoxAttachment*)attachment;
-			
-			spBoundingBoxAttachment_computeWorldVertices(bbAttachment, slot->skeleton->x, slot->skeleton->y, slot->bone, bbVertices);
-			int Count = bbAttachment->verticesCount;
-			
-			_Log("%s: ",bbAttachment->super.name);
-			for ( int idx = 0; idx < Count; idx++ ) {
-				_Log("%f, ", bbVertices[idx]);
-			}
-			Log("");
-		}
-	}
-	*/
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_SKEL_GELSKELANIMATOR_H__ //
