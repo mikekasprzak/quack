@@ -66,6 +66,9 @@ public:
 		Restitution = _Restitution;
 	}
 
+	inline const QVec& GetPos() const {
+		return Pos;
+	}
 	inline QVec GetVelocity() const {
 		return Pos - Old; // Old -> Pos, Start -> Dest, A -> B, Dest (B) always goes first //
 	}

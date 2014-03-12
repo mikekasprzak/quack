@@ -155,30 +155,6 @@ public:
 		spAnimationState_update( AnimState, deltaTime * timeScale ); // Step all active animations //
 		spAnimationState_apply( AnimState, Skeleton );	// Apply and Mix Animations, trigger event callbacks //
 		spSkeleton_updateWorldTransform( Skeleton ); 	// Build Matrix //
-		
-
-		// How we retieve Bounding Boxes //
-		/*
-		{
-			float bbVertices[16*2];
-			for (int i = 0; i < Skeleton->slotCount; ++i) {
-				spSlot* slot = Skeleton->drawOrder[i];
-				spAttachment* attachment = slot->attachment;
-				if (!attachment || attachment->type != ATTACHMENT_BOUNDING_BOX) 
-					continue;
-				spBoundingBoxAttachment* bbAttachment = (spBoundingBoxAttachment*)attachment;
-				
-				spBoundingBoxAttachment_computeWorldVertices(bbAttachment, slot->skeleton->x, slot->skeleton->y, slot->bone, bbVertices);
-				int Count = bbAttachment->verticesCount;
-				
-				_Log("%s: ",bbAttachment->super.name);
-				for ( int idx = 0; idx < Count; idx++ ) {
-					_Log("%f, ", bbVertices[idx]);
-				}
-				Log("");
-			}
-		}
-		*/
 	}
 
 	// Iterating Bonunding Boxes requires iterating over slots //
@@ -292,9 +268,12 @@ public:
 		spSlot* Slot = _GetSlot(Index);
 		spAttachment* Attachment = Slot->attachment;
 		if ( !Attachment ) return 0;
-		spBoundingBoxAttachment* bbAttachment = _GetBB(Attachment);
-		if ( !Attachment ) return 0;
-		spBoundingBoxAttachment_computeWorldVertices(bbAttachment, Slot->skeleton->x, Slot->skeleton->y, Slot->bone, Out);
+		spBoundingBoxAttachment* BBAttachment = _GetBB(Attachment);
+		if ( !BBAttachment ) return 0;
+		return _TransformBBVertices(Slot,BBAttachment,Out);
+	}
+	inline float* _TransformBBVertices( spSlot* Slot, spBoundingBoxAttachment* BBAttachment, float* Out ) const {
+		spBoundingBoxAttachment_computeWorldVertices(BBAttachment, Slot->skeleton->x, Slot->skeleton->y, Slot->bone, Out);
 		return Out;
 	}
 		
@@ -377,6 +356,68 @@ public:
 		FlushDraw( Matrix, TexIndex, Vert );
 	}
 };
+// - ------------------------------------------------------------------------------------------ - //
+inline void Sense_GelSkelAnimator( const Vector2D& PosA, const GelSkelAnimator& SkelA, const Vector2D& PosB, const GelSkelAnimator& SkelB ) {
+	for ( int IndexA = 0; IndexA < SkelA.GetSlotCount(); IndexA++ ) {
+		spSlot* SlotA = SkelA._GetSlot(IndexA);
+		//if ( !SlotA ) continue;
+		spBoundingBoxAttachment* BBA = SkelA._GetBB(IndexA);
+		if ( !BBA ) continue;
+		for ( int IndexB = 0; IndexB < SkelB.GetSlotCount(); IndexB++ ) {
+			spSlot* SlotB = SkelB._GetSlot(IndexB);
+			//if ( !SlotB ) continue;
+			spBoundingBoxAttachment* BBB = SkelB._GetBB(IndexB);
+			if ( !BBB ) continue;
+
+			// NOTE: Max Verts 8! //
+			float bbVertA[16*2];
+			float bbVertB[16*2];
+			
+			int bbVertASize = BBA->verticesCount;
+			int bbVertBSize = BBB->verticesCount;
+			
+			for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
+				bbVertA[(idx<<1)+0] += PosA.x.ToFloat();
+				bbVertA[(idx<<1)+1] += PosA.y.ToFloat();
+			}
+
+			for ( int idx = 0; idx < bbVertBSize>>1; idx++ ) {
+				bbVertB[(idx<<1)+0] += PosB.x.ToFloat();
+				bbVertB[(idx<<1)+1] += PosB.y.ToFloat();
+			}
+
+			SkelA._TransformBBVertices(SlotA,BBA,bbVertA);
+			SkelB._TransformBBVertices(SlotB,BBB,bbVertB);
+			
+			if ( ConvexVsConvex(bbVertA,bbVertASize, bbVertB,bbVertBSize ) ) {
+				Log("FUCK");
+			}
+		}
+	}
+
+	// How we retieve Bounding Boxes //
+	/*
+	{
+		float bbVertices[16*2];
+		for (int i = 0; i < Skeleton->slotCount; ++i) {
+			spSlot* slot = Skeleton->drawOrder[i];
+			spAttachment* attachment = slot->attachment;
+			if (!attachment || attachment->type != ATTACHMENT_BOUNDING_BOX) 
+				continue;
+			spBoundingBoxAttachment* bbAttachment = (spBoundingBoxAttachment*)attachment;
+			
+			spBoundingBoxAttachment_computeWorldVertices(bbAttachment, slot->skeleton->x, slot->skeleton->y, slot->bone, bbVertices);
+			int Count = bbAttachment->verticesCount;
+			
+			_Log("%s: ",bbAttachment->super.name);
+			for ( int idx = 0; idx < Count; idx++ ) {
+				_Log("%f, ", bbVertices[idx]);
+			}
+			Log("");
+		}
+	}
+	*/
+}
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_SKEL_GELSKELANIMATOR_H__ //
 // - ------------------------------------------------------------------------------------------ - //

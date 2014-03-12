@@ -6,9 +6,9 @@
 // - ----------------------------------------------------------------------------------------- - //
 inline bool ConvexVsConvex( const float* _PolyA, int PolyASize, const float* _PolyB, int PolyBSize ) {
 	const Vector2D* PolyA = (const Vector2D*)_PolyA;
-	PolyASize <<= 1;
+	PolyASize >>= 1;
 	const Vector2D* PolyB = (const Vector2D*)_PolyB;
-	PolyBSize <<= 1;
+	PolyBSize >>= 1;
 
 	// For all Axis of PolyA //	
 	for ( int idx = 1; idx < PolyASize; idx++ ) {
