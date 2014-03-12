@@ -11,6 +11,8 @@ class QSensorSpineBB {
 public:
 	static void InitSensor( QSensor* self ) {
 		self->Type = QS_SPINE_BB;
+
+		self->_GetRect = (QSensor::QGetRectFunc)_GetRect;
 	}
 public:
 	GelSkelAnimator*	Skel;
@@ -24,6 +26,51 @@ public:
 	
 	inline void Set( GelSkelAnimator* _Skel ) {
 		Skel = _Skel;
+	}
+
+public:
+	// NOTE: This function would be faster if we had Rect methods to directly add points to a Rect (not Rects) //
+	static QRect _GetRect( thistype* self ) { return self->GetRect(); }
+	inline QRect GetRect() {
+		QRect Rect;
+
+		int SlotIndex = 0;
+		spSlot* Slot = 0;
+		spBoundingBoxAttachment* Attachment = 0;
+		// Find first BB Attachment //
+		for ( ; SlotIndex < Skel->GetSlotCount(); SlotIndex++ ) {
+			Slot = Skel->_GetSlot(SlotIndex);
+			Attachment = Skel->GetBB(Slot);
+			if ( Attachment )
+				break;
+		}
+		
+		if ( Attachment ) {
+			float bbVert[16*2];		// NOTE: Max Verts 16! //
+			Skel->_TransformBBVertices(Slot,Attachment,bbVert);
+
+			// Set First Point //
+			Rect = QRect(bbVert[(0<<1)+0],bbVert[(0<<1)+1],0,0);
+			// Set Remaining Points //
+			for ( int idx = 1; idx < (Attachment->verticesCount>>1); idx++ ) {
+				Rect += QRect(bbVert[(idx<<1)+0],bbVert[(idx<<1)+1],0,0);
+			}
+			
+			// Iterate through remaining slots, adding all points //
+			for ( ++SlotIndex; SlotIndex < Skel->GetSlotCount(); SlotIndex++ ) {
+				Slot = Skel->_GetSlot(SlotIndex);
+				Attachment = Skel->GetBB(Slot);
+				if ( Attachment ) {
+					Skel->_TransformBBVertices(Slot,Attachment,bbVert);
+
+					for ( int idx = 0; idx < (Attachment->verticesCount>>1); idx++ ) {
+						Rect += QRect(bbVert[(idx<<1)+0],bbVert[(idx<<1)+1],0,0);
+					}					
+				}
+			}
+		}
+		
+		return Rect;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
