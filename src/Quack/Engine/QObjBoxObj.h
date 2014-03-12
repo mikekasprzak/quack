@@ -70,6 +70,7 @@ public:
 	HSQOBJECT SqObj;
 	HSQOBJECT SqObj2;
 	HSQOBJECT SqInfo;
+	HSQOBJECT SqInfo2;
 
 public:
 	inline QObjBoxObj( const QVec& _Pos, const char* _Class ) :
@@ -121,6 +122,18 @@ public:
 		// Store the Instance, add a reference //
 		sq_getstackobj(vm,-1,&SqInfo);
 		sq_addref(vm,&SqInfo);
+//		sq_pop(vm,3);
+
+		// ** SQInfo2 Holder (Pointer is assigned before calls) ** //
+		sq_resetobject(&SqInfo2);
+		// Instance the Class //		
+		sq_pushroottable(vm);
+		sq_pushstring(vm,_SC("QkSensorInfo"),-1);
+		sq_get(vm,-2);
+		sq_createinstance(vm,-1);
+		// Store the Instance, add a reference //
+		sq_getstackobj(vm,-1,&SqInfo2);
+		sq_addref(vm,&SqInfo2);
 //		sq_pop(vm,3);
 		
 		
@@ -244,8 +257,8 @@ public:
 		sq_pop(vm,2);
 	}
 
-	static void _Sense( thistype* self, QObj& Obj, QObj& Vs ) { self->Sense( Obj, Vs ); }
-	inline void Sense( QObj& Obj, QObj& Vs ) {
+	static void _Sense( thistype* self, QObj& Obj, QObj& Vs, QSensorInfo& Info ) { self->Sense( Obj, Vs, Info ); }
+	inline void Sense( QObj& Obj, QObj& Vs, QSensorInfo& Info ) {
 		// Do Step Function //
 		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqSenseFunc);
@@ -255,8 +268,8 @@ public:
 		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);				// ARG2 - Vs //
 		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
-		sq_pushinteger(vm,Sensor.Message);		// ARG3 - Info //
-//		sq_pushinteger(vm,Vs.Sensor.Message);	// ARG4 - Vs Info //
+		sq_pushobject(vm,SqInfo2);				// ARG3 - Info //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Info);
 		sq_call(vm,4,false,false);
 		sq_pop(vm,2);
 	}
