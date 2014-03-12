@@ -129,41 +129,50 @@ inline bool Sense_Sensor( QObj& ObA, QSensorSpineBB& SenA, QObj& ObB, QSensorSpi
 			
 			if ( ConvexVsConvex(bbVertA,bbVertASize, bbVertB,bbVertBSize ) ) {
 				Sensed = true;
-				
+								
 				// ** A ** //
-				SenA.Name = BBA->super.name;
+				QSensorData DataA;
+				DataA.Name = BBA->super.name;
 				{
-					int* NamePtr = (int*)SenA.Name;
+					int* NamePtr = (int*)DataA.Name;
 					if ( *NamePtr == HITBOX ) {
-						SenA.Message = QSI_HITBOX;
+						DataA.Message = QSI_HITBOX;
 					}
 					else if ( *NamePtr == HURTBOX ) {
-						SenA.Message = QSI_HURTBOX;
+						DataA.Message = QSI_HURTBOX;
 					}
 					else {
 						// TODO: String to Number
-						SenA.Message = 0;
+						DataA.Message = 0;
 					}
 				}
 
 				// ** B ** //
-				SenB.Name = BBB->super.name;
+				QSensorData DataB;
+				DataB.Name = BBB->super.name;
 				{
-					int* NamePtr = (int*)SenB.Name;
+					int* NamePtr = (int*)DataB.Name;
 					if ( *NamePtr == HITBOX ) {
-						SenB.Message = QSI_HITBOX;
+						DataB.Message = QSI_HITBOX;
 					}
 					else if ( *NamePtr == HURTBOX ) {
-						SenB.Message = QSI_HURTBOX;
+						DataB.Message = QSI_HURTBOX;
 					}
 					else {
 						// TODO: String to Number
-						SenB.Message = 0;
+						DataB.Message = 0;
 					}
 				}
 
-				ObA.Sense(ObB);
-				ObB.Sense(ObA);
+				QSensorInfo Info;
+
+				Info.A = DataA;
+				Info.B = DataB;
+				ObA.Sense(ObB,Info);
+
+				Info.A = DataB;
+				Info.B = DataA;
+				ObB.Sense(ObA,Info);
 				
 //				Log( "** [%x][%i] %s (%.01f,%.01f) vs [%x][%i] %s (%.01f,%.01f)...", 
 //					SkelA.GetSkeleton(),IndexA,SkelA.GetName(IndexA),

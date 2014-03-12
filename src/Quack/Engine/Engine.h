@@ -6,6 +6,7 @@
 SQInteger register_qkEngine(HSQUIRRELVM v);
 SQInteger register_qkObject(HSQUIRRELVM v);
 SQInteger register_qkContactInfo(HSQUIRRELVM v);
+SQInteger register_qkSensorInfo(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 #include "QEngine.h"
 // - ------------------------------------------------------------------------------------------ - //

@@ -229,18 +229,16 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 bool Sense_Sensor( class QObj& ObA,QSensor& A, class QObj& ObB,QSensor& B );
 // - ------------------------------------------------------------------------------------------ - //
+class QSensorData {
+public:
+	int Message;
+	const char* Name;
+};
+// - ------------------------------------------------------------------------------------------ - //
 class QSensorInfo {
 public:
-	int 			Type;	// Type of Sensor (0-9999, 10000 for HURTBOX, 10001 for HITBOX) //
-	class QObj* 	Obj;	// Object //
-	
-public:
-	inline QSensorInfo() { }
-	inline QSensorInfo( QObj* const _Obj, const int _Type = 0 ) :
-		Obj(_Obj),
-		Type(_Type)
-	{
-	}
+	QSensorData A;
+	QSensorData B;
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Object (Engine Entity) //
@@ -264,7 +262,7 @@ public:
 	typedef void (*QNotifyFunc)( void* self, QObj& Obj, QObj& Sender, const int Message );
 
 	typedef QSensor* (*QGetSensorFunc)( void* self );
-	typedef void (*QSenseFunc)( void* self, QObj& Obj, QObj& Vs );
+	typedef void (*QSenseFunc)( void* self, QObj& Obj, QObj& Vs, QSensorInfo& Info );
 
 	typedef bool (*QInitFunc)( void* self, QObj& Obj );
 	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
@@ -321,7 +319,7 @@ public:
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
 
 	inline QSensor* GetSensor() { return _GetSensor(Data); }
-	inline void Sense( QObj& Vs ) { _Sense(Data,*this,Vs); }
+	inline void Sense( QObj& Vs, QSensorInfo& Info ) { _Sense(Data,*this,Vs,Info); }
 
 	inline void Contact( QObj& Vs, QContactInfo& Info ) { _Contact(Data,*this,Vs,Info); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,*this,Sender,Message); }
