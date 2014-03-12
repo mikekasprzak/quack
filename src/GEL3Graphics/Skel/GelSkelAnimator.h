@@ -185,9 +185,17 @@ public:
 	inline int GetSlotCount() const {
 		return Skeleton->slotCount;
 	}
+	// Retrieve Slot //
+	inline spSlot* GetSlot( const st Index ) const {
+		if ( Index >= GetSlotCount() ) return 0;
+		return _GetSlot(Index);
+	}
+	inline spSlot* _GetSlot( const st Index ) const {
+		return Skeleton->drawOrder[Index];
+	}
 	// Slots contain attachments //
 	inline spAttachment* GetAttachment( const st Index ) const {
-		if ( Index >= Skeleton->slotCount ) return 0;
+		if ( Index >= GetSlotCount() ) return 0;
 		return _GetAttachment(Index);
 	}
 	inline spAttachment* _GetAttachment( const st Index ) const {
@@ -195,7 +203,7 @@ public:
 	}
 	// An attachment can be a region (art box) //
 	inline spRegionAttachment* GetRegion( const st Index ) const {
-		if ( Index >= Skeleton->slotCount ) return 0;
+		if ( Index >= GetSlotCount() ) return 0;
 		return _GetRegion(Index);
 	}
 	inline spRegionAttachment* _GetRegion( const st Index ) const {
@@ -212,7 +220,7 @@ public:
 	}
 	// Or an attachment can be a BoundingBox //
 	inline spBoundingBoxAttachment* GetBB( const st Index ) const {
-		if ( Index >= Skeleton->slotCount ) return 0;
+		if ( Index >= GetSlotCount() ) return 0;
 		return _GetBB(Index);
 	}
 	inline spBoundingBoxAttachment* _GetBB( const st Index ) const {
@@ -229,7 +237,7 @@ public:
 	}
 	// Or go right to the name //
 	inline const char* GetName( const st Index ) const {
-		if ( Index >= Skeleton->slotCount ) return 0;
+		if ( Index >= GetSlotCount() ) return 0;
 		return _GetName(Index);
 	}
 	inline const char* _GetName( const st Index ) const {
@@ -245,7 +253,7 @@ public:
 	}
 	// Or right to the Polygon data (UNTRANSFORMED) //
 	inline float* GetBBVertices( const st Index ) const {
-		if ( Index >= Skeleton->slotCount ) return 0;
+		if ( Index >= GetSlotCount() ) return 0;
 		return _GetBBVertices(Index);
 	}
 	inline float* _GetBBVertices( const st Index ) const {
@@ -261,7 +269,7 @@ public:
 	}
 	// Or Vertex Count //
 	inline int GetBBVertexCount( const st Index ) const {
-		if ( Index >= Skeleton->slotCount ) return 0;
+		if ( Index >= GetSlotCount() ) return 0;
 		return _GetBBVertexCount(Index);
 	}
 	inline int _GetBBVertexCount( const st Index ) const {
@@ -275,17 +283,20 @@ public:
 	inline int _GetBBVertexCount( spBoundingBoxAttachment* Attachment ) const {
 		return Attachment->verticesCount;
 	}
-	// Transform some Polygon Data //
-//	inline void TransformBBVertices( const st Index, float* Out ) const {
-//		if ( Index >= Skeleton->slotCount ) return;
-//		return _TransformBBVertices(Index, Out);
-//	}
-//	inline void _TransformBBVertices( const st Index, float* Out ) const {
-//		spBoundingBoxAttachment* Attachment = _GetBB(Index);
-//		if ( !Attachment ) return;
-//		
-//		return Attachment->vertices;
-//	}
+	// Transform Polygon Data //
+	inline float* TransformBBVertices( const st Index, float* Out ) const {
+		if ( Index >= GetSlotCount() ) return 0;
+		return _TransformBBVertices(Index, Out);
+	}
+	inline float* _TransformBBVertices( const st Index, float* Out ) const {
+		spSlot* Slot = _GetSlot(Index);
+		spAttachment* Attachment = Slot->attachment;
+		if ( !Attachment ) return 0;
+		spBoundingBoxAttachment* bbAttachment = _GetBB(Attachment);
+		if ( !Attachment ) return 0;
+		spBoundingBoxAttachment_computeWorldVertices(bbAttachment, Slot->skeleton->x, Slot->skeleton->y, Slot->bone, Out);
+		return Out;
+	}
 		
 public:	
 	inline void FlushDraw( const Matrix4x4& Matrix, const GelTexturePool::UID& TexIndex, GelAlloc3UC& Vert ) const {
