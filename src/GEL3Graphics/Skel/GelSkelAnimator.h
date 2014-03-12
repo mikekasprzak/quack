@@ -358,16 +358,16 @@ public:
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline void Sense_GelSkelAnimator( const Vector2D& PosA, const GelSkelAnimator& SkelA, const Vector2D& PosB, const GelSkelAnimator& SkelB ) {
-	for ( int IndexA = 0; IndexA < SkelA.GetSlotCount(); IndexA++ ) {
-		spSlot* SlotA = SkelA._GetSlot(IndexA);
-		//if ( !SlotA ) continue;
-		spBoundingBoxAttachment* BBA = SkelA._GetBB(IndexA);
-		if ( !BBA ) continue;
-		for ( int IndexB = 0; IndexB < SkelB.GetSlotCount(); IndexB++ ) {
-			spSlot* SlotB = SkelB._GetSlot(IndexB);
-			//if ( !SlotB ) continue;
-			spBoundingBoxAttachment* BBB = SkelB._GetBB(IndexB);
-			if ( !BBB ) continue;
+	for ( int IndexB = 0; IndexB < SkelB.GetSlotCount(); IndexB++ ) {
+		spSlot* SlotB = SkelB._GetSlot(IndexB);
+		//if ( !SlotB ) continue;
+		spBoundingBoxAttachment* BBB = SkelB._GetBB(IndexB);
+		if ( !BBB ) continue;
+		for ( int IndexA = 0; IndexA < SkelA.GetSlotCount(); IndexA++ ) {
+			spSlot* SlotA = SkelA._GetSlot(IndexA);
+			//if ( !SlotA ) continue;
+			spBoundingBoxAttachment* BBA = SkelA._GetBB(IndexA);
+			if ( !BBA ) continue;
 
 			// NOTE: Max Verts 8! //
 			float bbVertA[16*2];
@@ -375,6 +375,9 @@ inline void Sense_GelSkelAnimator( const Vector2D& PosA, const GelSkelAnimator& 
 			
 			int bbVertASize = BBA->verticesCount;
 			int bbVertBSize = BBB->verticesCount;
+
+			SkelA._TransformBBVertices(SlotA,BBA,bbVertA);
+			SkelB._TransformBBVertices(SlotB,BBB,bbVertB);
 			
 			for ( int idx = 0; idx < bbVertASize>>1; idx++ ) {
 				bbVertA[(idx<<1)+0] += PosA.x.ToFloat();
@@ -385,12 +388,21 @@ inline void Sense_GelSkelAnimator( const Vector2D& PosA, const GelSkelAnimator& 
 				bbVertB[(idx<<1)+0] += PosB.x.ToFloat();
 				bbVertB[(idx<<1)+1] += PosB.y.ToFloat();
 			}
-
-			SkelA._TransformBBVertices(SlotA,BBA,bbVertA);
-			SkelB._TransformBBVertices(SlotB,BBB,bbVertB);
 			
+			Log( "** [%x][%i] vs [%x][%i]...", SlotA,IndexA, SlotB,IndexB );
 			if ( ConvexVsConvex(bbVertA,bbVertASize, bbVertB,bbVertBSize ) ) {
-				Log("FUCK");
+				Log( "[%x][%i]%s vs [%x][%i]%s...", SlotA,IndexA,SkelA.GetName(IndexA), SlotB,IndexB,SkelB.GetName(IndexB) );
+				LogFlush();
+				for ( int idx = 0; idx < bbVertASize; idx++ ) {
+					_Log("%f, ", bbVertA[idx]);
+				}
+				Log("");
+				LogFlush();
+				for ( int idx = 0; idx < bbVertBSize; idx++ ) {
+					_Log("%f, ", bbVertB[idx]);
+				}
+				Log("");
+				LogFlush();
 			}
 		}
 	}
