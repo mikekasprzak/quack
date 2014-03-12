@@ -9,7 +9,7 @@ namespace QK {
 // - ------------------------------------------------------------------------------------------ - //
 class QObjCappyStatic {
 	typedef QObjCappyStatic thistype;
-	typedef QBodyCapsule BT;
+	typedef QBodyCapsule BodyT;
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_CAPPY_STATIC;
@@ -25,16 +25,15 @@ public:
 		self->_Draw = (QObj::QDrawFunc)_Draw;
 	}
 public:
-	BT 		Body;		// Actual Physical Properties //
+	BodyT	Body;		// Actual Physical Properties //
 	QBody	BodyType;	// Signature type understood by the engine //
 
 public:
 	inline QObjCappyStatic( const QVec& _Pos, const QFloat& _RadiusA, const QVec& _Line, const QFloat& _RadiusB ) :
 		Body( _Pos, _RadiusA, _Line, _RadiusB, 0 ) 
 	{
-		BodyType.Type = QB_CAPSULE;
+		BodyT::InitBody( &BodyType );
 		BodyType.Data = &Body;
-		BodyType.GetInvMass = (QBody::QGetInvMassFunc)BT::_GetInvMass;
 	}
 
 public:

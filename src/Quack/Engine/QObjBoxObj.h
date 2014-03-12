@@ -18,7 +18,9 @@ namespace QK {
 // - ------------------------------------------------------------------------------------------ - //
 class QObjBoxObj {
 	typedef QObjBoxObj thistype;
-	typedef QBodyAABB BT;
+	typedef QBodyAABB BodyT;
+	typedef GelSkelAnimator ArtT;
+	typedef GelSkelAnimator SensorsT;
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_BOXOBJ;
@@ -44,11 +46,15 @@ public:
 		self->_Draw = (QObj::QDrawFunc)_Draw;
 	}
 public:
-	BT 		Body;		// Actual Physical Properties //
-	QBody	BodyType;	// Signature type understood by the engine //
+	BodyT 		Body;		// Actual Physical Properties //
+	QBody		BodyType;	// Signature type understood by the engine //
 
-	GelSkelAnimator* Skel;
-	QVec ArtScale;
+	ArtT* 		Art;		// Pointer
+	QArt		ArtType;
+	QVec 		ArtScale; 	// Hack //
+
+	// No SensorT type (using ST_SPINE_BB) //
+	QSensors	SensorsType;
 
 	HSQOBJECT SqHookObj;
 	HSQMEMBERHANDLE SqInitFunc;	// ?? //
@@ -63,12 +69,23 @@ public:
 	inline QObjBoxObj( const QVec& _Pos, const char* _Class ) :
 		Body( _Pos, QVec(8,8) ),
 		ArtScale(1,1),
-		Skel( 0 )
+		Art( 0 )
 	{
-		BodyType.Type = QB_AABB;
+		BodyT::InitBody( &BodyType );
 		BodyType.Data = &Body;
-		BodyType.GetInvMass = (QBody::QGetInvMassFunc)BT::_GetInvMass;
 
+		//BodyType.GetInvMass = (QBody::QGetInvMassFunc)BodyT::_GetInvMass;
+
+		ArtType.Type = QA_SPINE;
+		//ArtType.Data = Art;
+		//ArtType.
+		
+		SensorsType.Type = QS_SPINE_BB;
+		//SensorsType.Data = Art;
+		//SensorsType.GetFirst = (QSensors::QGetFirstFunc)SensorsT::_GetFirst;
+		//SensorsType.GetNext = (QSensors::QGetNextFunc)SensorsT::_GetNext;
+		
+		// ** Squirrel Setup *********************** //
 		// ** SqObj Holder (Pointer is assigned before calls) ** //
 		sq_resetobject(&SqObj);
 		// Instance the Class //		
@@ -125,8 +142,8 @@ public:
 		sq_release(vm,&SqObj2);
 		sq_release(vm,&SqObj);
 
-		if ( Skel ) {
-			delete Skel;
+		if ( Art ) {
+			delete Art;
 		}
 	}
 
@@ -159,15 +176,15 @@ public:
 
 	static void _SetArt( thistype* self, const char* ArtFile ) { self->SetArt( ArtFile ); }
 	inline void SetArt( const char* ArtFile ) {
-		if ( Skel ) {
-			delete Skel;
+		if ( Art ) {
+			delete Art;
 		}
-		Skel = new GelSkelAnimator();
-		Skel->Load( Gel::SkelPool.Load( ArtFile ) );
+		Art = new ArtT();
+		Art->Load( Gel::SkelPool.Load( ArtFile ) );
 	}
 	static void* _GetArt( thistype* self ) { return self->GetArt(); }
 	inline void* GetArt() {
-		return (void*)Skel;
+		return (void*)Art;
 	}
 
 	static void _SetArtScale( thistype* self, const QVec& _Scale ) { self->SetArtScale( _Scale ); }
@@ -231,8 +248,8 @@ public:
 
 	static bool _Step( thistype* self, QObj& Obj, const QProp& Prop ) { return self->Step( Obj, Prop ); }
 	inline bool Step( QObj& Obj, const QProp& Prop ) {
-		if ( Skel ) {
-			Skel->Step();
+		if ( Art ) {
+			Art->Step();
 		}
 		
 		// Do Step Function //
@@ -250,11 +267,11 @@ public:
 
 	static void _Draw( thistype* self, const Matrix4x4& Mat ) { self->Draw( Mat ); }
 	inline void Draw( const Matrix4x4& Mat ) {
-		if ( Skel ) {
+		if ( Art ) {
 			Matrix4x4 NewMat = Matrix4x4::ScalarMatrix( ArtScale * QFloat(0.5f) );
 			NewMat *= Matrix4x4::TranslationMatrix( Body.GetBasePoint() );
 			NewMat *= Mat;
-			Skel->Draw( NewMat );
+			Art->Draw( NewMat );
 		}
 		else {
 			gelDrawSquareFill(Mat,GetRect().Center().ToVector3D(),GetRect().HalfShape(),GEL_RGBA(64,192,64,192));

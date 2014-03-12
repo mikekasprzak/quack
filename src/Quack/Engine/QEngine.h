@@ -17,7 +17,7 @@ namespace QK {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-// QBody -- Quack Body (Collision) //
+// QBody Types -- Quack Body (Collision) //
 enum {
 	QB_NULL = 0,
 
@@ -38,6 +38,7 @@ enum {
 	QB_STATIC_END,
 
 	// Sensors -- Detect Collisions only, and send messages //
+	// NOTE: Obsolete? //
 	QB_SENSOR_START,
 		QB_SENSOR_AABB = QB_SENSOR_START,
 		QB_SENSOR_SPHERE,
@@ -54,7 +55,7 @@ enum {
 	QB_SENSOR_COUNT = QB_SENSOR_END - QB_SENSOR_START,
 };
 // - ------------------------------------------------------------------------------------------ - //
-// QObj -- Quack Object (Entity) //
+// QObj Types -- Quack Object (Entity) //
 enum {
 	QO_NULL = 0,
 	
@@ -66,6 +67,23 @@ enum {
 	QO_CAPPY_STATIC,	// Dumb Simple Capsule Shaped Solid Object //
 	
 	QO_BOXOBJ,			// Box Object, with Squirrel Hooks //
+};
+// - ------------------------------------------------------------------------------------------ - //
+// QArt Types -- Quack Art //
+enum {
+	QA_NULL = 0,
+	
+	QA_DUMMY = 1,		// Placeholder //
+	QA_SPINE,
+};
+// - ------------------------------------------------------------------------------------------ - //
+// QSensor Types -- Quack Sensors (Test-only Collision) //
+enum {
+	QS_NULL = 0,
+	
+	QS_DUMMY = 1,		// Placeholder //
+	SQ_BODY,			// Use the body as a sensor //
+	QS_SPINE_BB,		// Use Spine Bounding Boxes (Polygons) //
 };
 // - ------------------------------------------------------------------------------------------ - //
 
@@ -96,22 +114,20 @@ public:
 class QBody {
 public:
 	typedef QFloat (*QGetInvMassFunc)( const void* self );
-//	typedef bool (*QStepFunc)( const void* self, const QProp& Prop );
 
 public:
 	int		Type;
 	void*	Data;
 
-	QGetInvMassFunc 	GetInvMass;
-//	QStepFunc 			Step;
+	QGetInvMassFunc 	_GetInvMass;
 
 public:	
 	inline bool HasInfiniteMass() const {
-		return GetInvMass( this ) == QFloat::Zero;
+		return GetInvMass() == QFloat::Zero;
 	}
 	inline QFloat GetMass() const {
 		return_if_value( QFloat::Zero, HasInfiniteMass() );		
-		return QFloat::One / GetInvMass( this );
+		return QFloat::One / GetInvMass();
 	}
 	
 	inline bool IsNormal() const {
@@ -136,7 +152,51 @@ public:
 	}
 
 public:	
+	inline int GetType() const { return Type; }
+	inline void* Get() { return Data; }
+
+	inline QFloat GetInvMass() const { return _GetInvMass(Data); }
+
 	bool Solve( QBody& Vs ); // Solve/Resolve Collisions //
+};
+// - ------------------------------------------------------------------------------------------ - //
+// Quack Art (Thing that handles art and animation) //
+class QArt {
+public:
+	//typedef void* (*QGetFunc)( void* self );
+	
+public:
+	int		Type;
+	void*	Data;
+
+public:
+	inline int GetType() const { return Type; }
+	inline void* Get() { return Data; }
+
+	//inline void Step( ... ) { }
+	//inline void Draw( ... ) const { ... }
+};
+// - ------------------------------------------------------------------------------------------ - //
+// Quack Sensors (Test-Only Collisions) //
+class QSensors {
+public:
+	typedef void* (*QGetFirstFunc)( const void* self );
+	typedef void* (*QGetNextFunc)( const void* self, void* Prev );
+	
+public:
+	int		Type;
+	void*	Data;	
+
+public:	
+	QGetFirstFunc		_GetFirst;
+	QGetNextFunc		_GetNext;
+
+public:
+	inline int GetType() const { return Type; }
+	inline void* Get() { return Data; }
+
+	inline void* GetFirst() { return _GetFirst(Data); }
+	inline void* GetNext( void* Prev ) { return _GetNext(Data,Prev); }
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Object (Engine Entity) //
@@ -158,6 +218,8 @@ public:
 	typedef void (*QContactFunc)( void* self, QObj& Obj, QObj& Vs );
 	typedef void (*QNotifyFunc)( void* self, QObj& Obj, QObj& Sender, const int Message );
 
+	typedef QSensors* (*QGetSensorsFunc)( void* self );
+
 	typedef bool (*QInitFunc)( void* self, QObj& Obj );
 	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
@@ -168,7 +230,7 @@ public:
 
 	QRect	Rect;
 
-public:	
+public:
 	QSetArtFunc			_SetArt;
 	QGetArtFunc			_GetArt; // Add a header? //
 	QSetArtScaleFunc	_SetArtScale; // Odd scope? //
@@ -183,6 +245,8 @@ public:
 	QSetShapeFunc		_SetShape;
 	QAddForceFunc		_AddForce;
 
+	QGetSensorsFunc		_GetSensors;
+
 	QContactFunc		_Contact;
 	QNotifyFunc			_Notify;
 
@@ -191,6 +255,9 @@ public:
 	QDrawFunc			_Draw;
 
 public:
+	inline int GetType() const { return Type; }
+	inline void* Get() { return Data; }
+
 	inline void SetArt( const char* ArtFile ) { _SetArt(Data,ArtFile); }
 	inline void* GetArt() { return _GetArt(Data); }
 	inline void SetArtScale( const QVec& _Scale ) { _SetArtScale(Data,_Scale); }
@@ -202,8 +269,10 @@ public:
 	inline QFloat GetInvMass() { return _GetInvMass(Data); }
 	inline void SetMass( const QFloat Mass ) { _SetMass(Data,Mass); }
 	inline void SetShape( const QVec& Shape ) { _SetShape(Data,Shape); }
-
 	inline void AddForce( const QVec& Force ) { _AddForce(Data,Force); }
+
+	inline QSensors* GetSensors() { return _GetSensors(Data); }
+
 	inline void Contact( QObj& Vs ) { _Contact(Data,*this,Vs); }
 	inline void Notify( QObj& Sender, const int Message ) { _Notify(Data,*this,Sender,Message); }
 

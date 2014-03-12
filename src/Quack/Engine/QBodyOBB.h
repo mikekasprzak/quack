@@ -11,8 +11,8 @@ class QBodyOBB {
 public:
 	static void InitBody( QBody* self ) {
 		self->Type = QB_OBB;
-		self->GetInvMass = (QBody::QGetInvMassFunc)_GetInvMass;
-//		self->Step = (QBody::QStepFunc)_Step;
+		
+		self->_GetInvMass = (QBody::QGetInvMassFunc)_GetInvMass;
 	}
 public:
 	// OBB //

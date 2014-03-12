@@ -9,7 +9,7 @@ namespace QK {
 // - ------------------------------------------------------------------------------------------ - //
 class QObjBoxyStatic {
 	typedef QObjBoxyStatic thistype;
-	typedef QBodyAABB BT;
+	typedef QBodyAABB BodyT;
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_BOXY_STATIC;
@@ -25,16 +25,15 @@ public:
 		self->_Draw = (QObj::QDrawFunc)_Draw;
 	}
 public:
-	BT 		Body;		// Actual Physical Properties //
+	BodyT	Body;		// Actual Physical Properties //
 	QBody	BodyType;	// Signature type understood by the engine //
 
 public:
 	inline QObjBoxyStatic( const QVec& _Pos, const QVec& _Shape ) :
 		Body( _Pos, _Shape, 0 ) 
 	{
-		BodyType.Type = QB_AABB;
+		BodyT::InitBody( &BodyType );
 		BodyType.Data = &Body;
-		BodyType.GetInvMass = (QBody::QGetInvMassFunc)BT::_GetInvMass;
 	}
 
 public:
