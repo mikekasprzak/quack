@@ -6,10 +6,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 using namespace QK;
 // - ------------------------------------------------------------------------------------------ - //
-bool QBody::Solve( QBody& Vs ) {
-	QBody& A = *this;
-	QBody& B = Vs;
-	
+bool QK::Solve_Body( QBody& A, QBody& B ) {
 	// If a collision was resolved, return true //
 	if ( A.Type == QB_AABB ) {
 		if ( B.Type == QB_AABB ) { return Solve_Body( *(QBodyAABB*)A.Data, *(QBodyAABB*)B.Data ); }

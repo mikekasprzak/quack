@@ -88,6 +88,12 @@ enum {
 	QS_SPINE_BB,		// Use Spine Bounding Boxes (Polygons) //
 };
 // - ------------------------------------------------------------------------------------------ - //
+// QSensorInfo Type -- Additional Data for Sense function //
+enum {
+	QSI_HURTBOX = 10000,
+	QSI_HITBOX,
+};
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 // Primitive Types //
@@ -159,8 +165,9 @@ public:
 
 	inline QFloat GetInvMass() const { return _GetInvMass(Data); }
 
-	bool Solve( QBody& Vs ); // Solve/Resolve Collisions //
 };
+// - ------------------------------------------------------------------------------------------ - //
+bool Solve_Body( QBody& A, QBody& B ); // Solve/Resolve Collisions //
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Art (Thing that handles art and animation) //
 class QArt {
@@ -182,23 +189,39 @@ public:
 // Quack Sensors (Test-Only Collisions) //
 class QSensor {
 public:
-	typedef void* (*QGetFirstFunc)( const void* self );
-	typedef void* (*QGetNextFunc)( const void* self, void* Prev );
+//	typedef void* (*QGetFirstFunc)( const void* self );
+//	typedef void* (*QGetNextFunc)( const void* self, void* Prev );
 	
 public:
 	int		Type;
-	void*	Data;	
+	void*	Data;
 
 public:	
-	QGetFirstFunc		_GetFirst;
-	QGetNextFunc		_GetNext;
+//	QGetFirstFunc		_GetFirst;
+//	QGetNextFunc		_GetNext;
 
 public:
 	inline int GetType() const { return Type; }
 	inline void* Get() { return Data; }
 
-	inline void* GetFirst() { return _GetFirst(Data); }
-	inline void* GetNext( void* Prev ) { return _GetNext(Data,Prev); }
+//	inline void* GetFirst() { return _GetFirst(Data); }
+//	inline void* GetNext( void* Prev ) { return _GetNext(Data,Prev); }
+};
+// - ------------------------------------------------------------------------------------------ - //
+bool Sense_Sensor( class QObj& ObA,QSensor& A, class QObj& ObB,QSensor& B );
+// - ------------------------------------------------------------------------------------------ - //
+class QSensorInfo {
+public:
+	int 			Type;	// Type of Sensor (0-9999, 10000 for HURTBOX, 10001 for HITBOX) //
+	class QObj* 	Obj;	// Object //
+	
+public:
+	inline QSensorInfo() { }
+	inline QSensorInfo( QObj* const _Obj, const int _Type = 0 ) :
+		Obj(_Obj),
+		Type(_Type)
+	{
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Object (Engine Entity) //
@@ -358,7 +381,7 @@ public:
 					// Only if Objects have Bodies //
 					if ( BodyA && BodyB ) {
 						// Solve/Resolve Collision //
-						if ( BodyA->Solve( *BodyB ) ) {
+						if ( Solve_Body(*BodyA,*BodyB) ) {
 							// If a collision was solved/resolved, trigger Contact events //
 							ObA.Contact( ObB );
 							ObB.Contact( ObA );						
@@ -374,12 +397,20 @@ public:
 
 				// Only Sense if both Objects have Sensors //
 				if ( SensorA && SensorB ) {
-					GelSkelAnimator* AnimA = (GelSkelAnimator*)SensorA->Get();
-					GelSkelAnimator* AnimB = (GelSkelAnimator*)SensorB->Get();
-										
-					Sense_GelSkelAnimator(
-						ObA.GetPos(),*AnimA,
-						ObB.GetPos(),*AnimB );
+					if ( Sense_Sensor(ObA,*SensorA, ObB,*SensorB) ) {
+						// *shrug* I dunno //
+					}
+//					GelSkelAnimator* AnimA = (GelSkelAnimator*)SensorA->Get();
+//					GelSkelAnimator* AnimB = (GelSkelAnimator*)SensorB->Get();
+					
+//					QSensorInfo InfoA(&ObA);
+//					QSensorInfo InfoB(&ObB);
+					
+//					Sense_Sensor(
+//						ObA.GetPos(),*AnimA,&InfoA,
+//						ObB.GetPos(),*AnimB,&InfoB
+//						// Func //
+//						);
 				}
 			}
 		}

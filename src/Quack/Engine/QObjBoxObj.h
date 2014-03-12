@@ -20,7 +20,7 @@ class QObjBoxObj {
 	typedef QObjBoxObj thistype;
 	typedef QBodyAABB BodyT;
 	typedef GelSkelAnimator ArtT;
-	typedef GelSkelAnimator SensorT;
+	typedef QSensorSpineBB SensorT;
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_BOXOBJ;
@@ -56,8 +56,8 @@ public:
 	QArt		ArtType;
 	QVec 		ArtScale; 	// Hack //
 
-	// No SensorT type (using ST_SPINE_BB) //
-	QSensor		SensorType;
+	SensorT		Sensor;		// Actual (reference) to Sensing Data //
+	QSensor		SensorType;	// Signature type understood by the engine //
 
 	HSQOBJECT SqHookObj;
 	HSQMEMBERHANDLE SqInitFunc;	// ?? //
@@ -77,16 +77,11 @@ public:
 		BodyT::InitBody( &BodyType );
 		BodyType.Data = &Body;
 
-		//BodyType.GetInvMass = (QBody::QGetInvMassFunc)BodyT::_GetInvMass;
-
 		ArtType.Type = QA_SPINE;
 		//ArtType.Data = Art;
-		//ArtType.
-		
-		SensorType.Type = QS_SPINE_BB;
-		//SensorType.Data = Art;
-		//SensorType.GetFirst = (QSensor::QGetFirstFunc)SensorT::_GetFirst;
-		//SensorType.GetNext = (QSensor::QGetNextFunc)SensorT::_GetNext;
+
+		SensorT::InitSensor( &SensorType );
+		SensorType.Data = &Sensor;
 		
 		// ** Squirrel Setup *********************** //
 		// ** SqObj Holder (Pointer is assigned before calls) ** //
@@ -191,7 +186,7 @@ public:
 
 		// Store copies of the pointer in Art and Sensor Types //		
 		ArtType.Data = Art;
-		SensorType.Data = Art;
+		Sensor.Set( Art );
 	}
 	static void* _GetArt( thistype* self ) { return self->GetArt(); }
 	inline void* GetArt() {
@@ -253,15 +248,14 @@ public:
 	}
 
 public:
-	static bool _Init( thistype* self, QObj& Obj ) { return self->Init( Obj ); }
-	inline bool Init( QObj& Obj ) {
-		
+	static bool _Init( thistype* self, QObj* Obj ) { return self->Init( Obj ); }
+	inline bool Init( QObj* Obj ) {
 		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqInitFunc);
 		// ARGS (must be accurate) //
 		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
 		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
-		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
 		sq_call(vm,2,false,false);
 		sq_pop(vm,2);
 		
@@ -305,7 +299,7 @@ inline void AddBoxObj_QEngine( QEngine& Engine, const QVec& _Pos, const char* _C
 	QObj& Ob = Engine.Add();
 	QObjBoxObj::InitObj( &Ob );
 	Ob.Data = new QObjBoxObj( _Pos, _Class );
-	((QObjBoxObj*)Ob.Data)->Init(Ob);
+	((QObjBoxObj*)Ob.Data)->Init( &Ob );
 	Ob.UpdateRect();
 }
 // - ------------------------------------------------------------------------------------------ - //
