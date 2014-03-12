@@ -69,6 +69,7 @@ public:
 
 	HSQOBJECT SqObj;
 	HSQOBJECT SqObj2;
+	HSQOBJECT SqInfo;
 
 public:
 	inline QObjBoxObj( const QVec& _Pos, const char* _Class ) :
@@ -108,6 +109,18 @@ public:
 		// Store the Instance, add a reference //
 		sq_getstackobj(vm,-1,&SqObj2);
 		sq_addref(vm,&SqObj2);
+//		sq_pop(vm,3);
+
+		// ** SQInfo Holder (Pointer is assigned before calls) ** //
+		sq_resetobject(&SqInfo);
+		// Instance the Class //		
+		sq_pushroottable(vm);
+		sq_pushstring(vm,_SC("QkContactInfo"),-1);
+		sq_get(vm,-2);
+		sq_createinstance(vm,-1);
+		// Store the Instance, add a reference //
+		sq_getstackobj(vm,-1,&SqInfo);
+		sq_addref(vm,&SqInfo);
 //		sq_pop(vm,3);
 		
 		
@@ -214,8 +227,8 @@ public:
 		return &SensorType;
 	}
 
-	static void _Contact( thistype* self, QObj& Obj, QObj& Vs ) { self->Contact( Obj, Vs ); }
-	inline void Contact( QObj& Obj, QObj& Vs ) {
+	static void _Contact( thistype* self, QObj& Obj, QObj& Vs, QContactInfo& Info ) { self->Contact( Obj, Vs, Info ); }
+	inline void Contact( QObj& Obj, QObj& Vs, QContactInfo& Info ) {
 		// Do Step Function //
 		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqContactFunc);
@@ -225,7 +238,8 @@ public:
 		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);		// ARG2 - Vs //
 		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
-		sq_pushinteger(vm,0);			// ARG3 - Info //
+		sq_pushobject(vm,SqInfo);		// ARG3 - Info //
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Info);
 		sq_call(vm,4,false,false);
 		sq_pop(vm,2);
 	}

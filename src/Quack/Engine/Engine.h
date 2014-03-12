@@ -5,6 +5,7 @@
 #include <API/API_Squirrel.h>
 SQInteger register_qkEngine(HSQUIRRELVM v);
 SQInteger register_qkObject(HSQUIRRELVM v);
+SQInteger register_qkContactInfo(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 #include "QEngine.h"
 // - ------------------------------------------------------------------------------------------ - //

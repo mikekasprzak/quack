@@ -103,7 +103,7 @@ public:
 //	return FinishSolve_Body( A, B, B.Pos-ANearestPoint, B.Radius );
 //}
 // - ------------------------------------------------------------------------------------------ - //
-inline bool Solve_Body( QBodySphere& A, QBodyOBB& B ) {
+inline bool Solve_Body( QBodySphere& A, QBodyOBB& B, QContactInfo& Info ) {
 	// 2x2 Matrix //
 	QVec  Row1 = -B.Normal.Tangent();
 	QVec& Row2 = B.Normal;
