@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p Output
+
 for file in *.json ; do
 	../../../../../tools/bin/Text2C $file Output/$file.c "_json"
 done
