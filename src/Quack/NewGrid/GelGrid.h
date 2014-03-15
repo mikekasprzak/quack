@@ -15,7 +15,7 @@ class GelGrid {
 	st32 w,h;		// Shape //
 	std::vector<T> Data;
 	
-	friend GelSubGrid<T>;
+	friend class GelSubGrid<T>;
 public:
 	typedef T Type;
 	
