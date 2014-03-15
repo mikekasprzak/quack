@@ -105,7 +105,7 @@ typedef Rect2D		QRect;
 class QProp {
 public:
 	QVec Gravity;
-	bool ShowRects;
+	bool Debug;
 	
 public:
 	// 9.80665f -- Earth's Gravity (Meters per Second Squared) //
@@ -113,7 +113,7 @@ public:
 	// 60.0f    -- Frames Per Second //
 	QProp( const QVec& _Gravity = QVec(0, -3.13155f / (60.0f/2.0f)) ) :
 		Gravity( _Gravity ),
-		ShowRects( false )
+		Debug( false )
 	{
 	}
 };
@@ -455,8 +455,7 @@ public:
 				Ob.Draw( Mat );
 			}
 			
-//			if ( Prop.ShowRects )
-			{
+			if ( Prop.Debug ) {
 				gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
 
 				QSensor* Sensor = Ob.GetSensor();

@@ -36,19 +36,19 @@ SQInteger qk_engine_destructor( SQUserPointer Engine, SQInteger Size ) {
 // - ------------------------------------------------------------------------------------------ - //
 // _get metamethod //
 SQInteger qk_engine_get( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// Get the requested member //
-//	const char* MemberName;
-//	sq_getstring(v,2,&MemberName);
-//	
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		sq_pushinteger(v,GEL_GET_R(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+	
+	// Get the requested member //
+	const char* MemberName;
+	sq_getstring(v,2,&MemberName);
+	
+	// Return different data depending on requested member //
+	if ( strcmp(MemberName,"Debug") == 0 ) {
+		sq_pushbool(v,Engine->Prop.Debug);		// +1 //
+		return SQ_RETURN;
+	}
 //	else if ( MemberName[0] == 'g' ) {
 //		sq_pushinteger(v,GEL_GET_G(*Color));	// +1 //
 //		return SQ_RETURN;
@@ -67,26 +67,30 @@ SQInteger qk_engine_get( HSQUIRRELVM v ) {
 	return sq_throwobject(v);	// -1 //
 }
 // - ------------------------------------------------------------------------------------------ - //
+namespace App {
+	extern bool Debug;
+};
+// - ------------------------------------------------------------------------------------------ - //
 // _set metamethod //
 SQInteger qk_engine_set( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// Get the requested member //
-//	const char* MemberName;
-//	sq_getstring(v,2,&MemberName);
-//
-//	// Get the value //
-//	int Value;
-//	sq_getinteger(v,3,&Value);
-//	
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		*Color = GEL_SET_R( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+	
+	// Get the requested member //
+	const char* MemberName;
+	sq_getstring(v,2,&MemberName);
+	
+	// Return different data depending on requested member //
+	if ( strcmp(MemberName,"Debug") == 0 ) {
+		SQBool Value;
+		sq_getbool(v,3,&Value);
+
+		Engine->Prop.Debug = Value;
+		App::Debug = Value;
+		sq_pushbool( v, Value );
+		return SQ_RETURN;
+	}
 //	else if ( MemberName[0] == 'g' ) {
 //		*Color = GEL_SET_G( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
 //		sq_pushinteger( v, Value );
@@ -141,21 +145,21 @@ SQInteger qk_engine_tostring( HSQUIRRELVM v ) {
 _FUNC_TYPEOF(QEngine,qk_engine_typeof,"QkEngine",8);
 // - ------------------------------------------------------------------------------------------ - //
 
-// - ------------------------------------------------------------------------------------------ - //
-SQInteger qk_engine_ShowRects( HSQUIRRELVM v ) {
-	// Retrieve Data (Pointer) //
-	QK::QEngine* Engine;
-	sq_getinstanceup(v,1,(void**)&Engine,0);
-	
-	// Get the requested member //
-	SQBool Show;
-	sq_getbool(v,2,&Show);
-	
-	Engine->Prop.ShowRects = Show;
-
-	return SQ_VOID;	
-}
-// - ------------------------------------------------------------------------------------------ - //
+//// - ------------------------------------------------------------------------------------------ - //
+//SQInteger qk_engine_ShowRects( HSQUIRRELVM v ) {
+//	// Retrieve Data (Pointer) //
+//	QK::QEngine* Engine;
+//	sq_getinstanceup(v,1,(void**)&Engine,0);
+//	
+//	// Get the requested member //
+//	SQBool Show;
+//	sq_getbool(v,2,&Show);
+//	
+//	Engine->Prop.ShowRects = Show;
+//
+//	return SQ_VOID;	
+//}
+//// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_engine_AddDummy( HSQUIRRELVM v ) {
@@ -338,7 +342,7 @@ SQRegFunction qkEngine_funcs[] = {
 	
 	_DECL_FUNC(qk_engine_AddBoxObj,3,NULL),
 	
-	_DECL_FUNC(qk_engine_ShowRects,2,NULL),
+//	_DECL_FUNC(qk_engine_ShowRects,2,NULL),
 
 	_DECL_FUNC(qk_engine_step,1,NULL),
 	_DECL_FUNC(qk_engine_draw,3,NULL),
@@ -383,7 +387,7 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		
 		_CLASS_ADDFUNC(qk_engine_AddBoxObj,AddBoxObj);
 		
-		_CLASS_ADDFUNC(qk_engine_ShowRects,ShowRects);
+//		_CLASS_ADDFUNC(qk_engine_ShowRects,ShowRects);
 
 		_CLASS_ADDFUNC(qk_engine_step,Step);
 		_CLASS_ADDFUNC(qk_engine_draw,Draw);
