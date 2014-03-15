@@ -23,6 +23,7 @@
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
 int Mode = AM_NULL;
+bool Debug = false;
 // - ------------------------------------------------------------------------------------------ - //
 void SetMode( const int _Mode ) {
 	Log( "App::Mode set to %s (%i)", GetModeName(_Mode), _Mode );
@@ -252,7 +253,7 @@ void AppDraw() {
 	}
 
 	// Draw FPS Counter //
-	{
+	if ( App::Debug ) {
 		Vector3D MessagePos = Vector3D(+254,+254-24,0);
 		MessagePos.y /= App::AspectRatio;
 			
