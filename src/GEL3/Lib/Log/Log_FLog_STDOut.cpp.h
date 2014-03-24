@@ -24,9 +24,41 @@ inline void _FLogFlush() {
 #include <android/log.h>
 #include <Main/Main_Product.h>
 
+inline void __fixed_log_vprint( const char* Format, va_list Args ) {
+	char Text[(1024-128)*8];
+	vsprintf( Text, Format, Args );
+	
+	int Offset = 0;
+	int Len = strlen(Text);
+	char Text2[1024-128+1];
+	Text2[1024-128] = 0;
+	while ( Len > (1024-128) ) {
+		memcpy(Text2,&Text[Offset],1024-128);
+		const char* Out = Text2;
+		__android_log_print( ANDROID_LOG_DEBUG, ProductName, "%s", Out );
+		Offset += 1024-128;
+		Len -= 1024-128;
+	};
+
+	const char* Out = &Text[Offset];
+	__android_log_print( ANDROID_LOG_DEBUG, ProductName, "%s", Out );
+}
+
+
+inline void __fixed_log_print( const char* Format, ... ) {
+	va_list Args;
+	va_start( Args, Format );
+	__fixed_log_vprint( Format, Args );
+	va_end( Args );
+}
+
 FILE* FLOG_TARGET = 			stdout;
-#define FLOG_FUNCV( ... )		__android_log_vprint( ANDROID_LOG_DEBUG, ProductName, __VA_ARGS__ )
-#define FLOG_FUNC( ... )		__android_log_print( ANDROID_LOG_DEBUG, ProductName, __VA_ARGS__ )
+#define FLOG_FUNCV( ... )		__fixed_log_vprint( __VA_ARGS__ )
+#define FLOG_FUNC( ... )		__fixed_log_print( __VA_ARGS__ )
+
+// These can print a max of 1024 characters total //
+//#define FLOG_FUNCV( ... )		__android_log_vprint( ANDROID_LOG_DEBUG, ProductName, __VA_ARGS__ )
+//#define FLOG_FUNC( ... )		__android_log_print( ANDROID_LOG_DEBUG, ProductName, __VA_ARGS__ )
 
 inline void _FLogFlush() {
 }
