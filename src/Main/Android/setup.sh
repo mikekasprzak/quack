@@ -6,4 +6,6 @@ export PATH="/opt/android-sdk/tools:/opt/android-sdk/platform-tools:/opt/android
 echo "** Android Variables Set **"
 echo "Don't forget to run: make TARGET_FILE=target/Common/makefile_android"
 echo "(and make.sh inside src/GEL3Graphics/Render/Embedded/GLSL)"
+echo ""
+echo "Did you remember to run this script as source? i.e. \"source ./setup.sh\" or \". ./setup.sh\"?"
 
