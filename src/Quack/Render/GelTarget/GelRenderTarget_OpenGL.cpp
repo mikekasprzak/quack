@@ -11,6 +11,8 @@
 typedef Gel::cRenderTarget RTType;
 // - ------------------------------------------------------------------------------------------ - //
 GelRenderTarget::GelRenderTarget( const int _w, const int _h, const int Textures, const int DepthBuffers, const int StencilBuffers, const bool UseMRT ) {
+	Log("* RenderTarget Created (%i,%i) [%i %i %i]%s.", _w,_h,Textures,DepthBuffers,StencilBuffers,UseMRT ? " MRT" : "");
+
 	Data = new RTType(_w,_h,Textures,DepthBuffers,StencilBuffers,UseMRT);
 }
 // - ------------------------------------------------------------------------------------------ - //
