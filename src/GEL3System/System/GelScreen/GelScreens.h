@@ -40,7 +40,7 @@ extern float ScreenScalar;
 void gelSetScreenScalar( const float _Scalar );
 // - ------------------------------------------------------------------------------------------ - //
 void gelInitScreen( const st Index );
-void gelInitScreens();		// Required Screens Only //
+void gelInitScreens();		// Required Screens Only (i.e. Usually 1, but 2 on 3DS/Wii U) //
 void gelInitAllScreens();	// All Screens, Required or not //
 // - ------------------------------------------------------------------------------------------ - //
 void gelSwapScreen( const st Index );
