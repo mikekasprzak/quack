@@ -26,7 +26,7 @@ int GelNativeTarget::GetHeight() const {
 	return ((NSType*)Data)->GetHeight();
 }
 // - ------------------------------------------------------------------------------------------ - //
-void GelNativeTarget::_Bind( const int /*Layer*/ ) const {
+void GelNativeTarget::Bind() const {
 	((NSType*)Data)->MakeCurrent();
 }
 // - ------------------------------------------------------------------------------------------ - //

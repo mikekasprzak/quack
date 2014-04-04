@@ -18,14 +18,11 @@ public:
 	
 	int GetWidth() const;
 	int GetHeight() const;
-
-	inline void Bind( const int Layer = 0 ) const {
-		_Bind(Layer);
-		Viewport();
-	}
 		
-	void _Bind( const int Layer = 0 ) const;
+	void Bind( const int Layer = 0 ) const;
 	void Viewport( const int x = 0, const int y = 0, int w = -1, int h = -1 ) const;
+	void UnBind() const;
+
 	void BindAsTexture( const int Layer = 0, const int TextureUnit = 0 ) const;
 };
 // - ------------------------------------------------------------------------------------------ - //
