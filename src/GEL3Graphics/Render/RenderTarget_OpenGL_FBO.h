@@ -71,20 +71,20 @@ private:
 	std::vector< GLuint > StencilBuffer;		
 		
 public:
-	inline cRenderTarget( const size_t _w, const size_t _h, const size_t _Textures, const size_t _DepthBuffers = 1, const size_t _StencilBuffers = 0, const bool UseMRT = true ) :
+	inline cRenderTarget( const size_t _w, const size_t _h, const size_t _Textures = 1, const size_t _DepthBuffers = 1, const size_t _StencilBuffers = 0, const bool UseMRT = true ) :
 		Width( _w ),
 		Height( _h )
 	{
 		// Number of FBOs //
 #ifdef USES_MRT
 		if ( UseMRT )
-			FBO.resize( 1 );
+			FBO.resize( 1 );	// Only one FBO needed, because we have MRT //
 		else
 #endif // USES_MRT //
 		FBO.resize( _Textures );
 
 		// Generate FBO IDs //
-		gels_GenFramebuffers( FBO.size(), &FBO[0] );
+		_glGenFramebuffers( FBO.size(), &FBO[0] );
 		
 		
 		// Depth Buffers //
@@ -92,14 +92,14 @@ public:
 			// Number of DepthBuffers //
 			DepthBuffer.resize( _DepthBuffers );
 			// Generate DepthBuffers IDs //
-			gels_GenRenderBuffers( DepthBuffer.size(), &DepthBuffer[0] );
+			_glGenRenderBuffers( DepthBuffer.size(), &DepthBuffer[0] );
 			
 			// For all Depth Buffers //
 			for ( size_t idx = 0; idx < _DepthBuffers; idx++ ) {
-				gels_BindRenderbuffer( GELS_RENDERBUFFER, DepthBuffer[idx] );
-				gels_RenderbufferStorage( GELS_RENDERBUFFER, GL_DEPTH_COMPONENT16, Width, Height );
+				_glBindRenderbuffer( _GL_RENDERBUFFER, DepthBuffer[idx] );
+				_glRenderbufferStorage( _GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, Width, Height );
 			}
-			gels_BindRenderbuffer( GELS_RENDERBUFFER, 0 ); // Unbind //
+			_glBindRenderbuffer( _GL_RENDERBUFFER, 0 ); // Unbind //
 		}		
 
 
@@ -108,14 +108,14 @@ public:
 			// Number of StencilBuffers //
 			StencilBuffer.resize( _StencilBuffers );
 			// Generate StencilBuffer IDs //
-			gels_GenRenderBuffers( StencilBuffer.size(), &StencilBuffer[0] );
+			_glGenRenderBuffers( StencilBuffer.size(), &StencilBuffer[0] );
 			
 			// For all Stencil Buffers //
 			for ( size_t idx = 0; idx < _StencilBuffers; idx++ ) {
-				gels_BindRenderbuffer( GELS_RENDERBUFFER, StencilBuffer[idx] );
-				gels_RenderbufferStorage( GELS_RENDERBUFFER, GL_STENCIL_INDEX8, Width, Height );
+				_glBindRenderbuffer( _GL_RENDERBUFFER, StencilBuffer[idx] );
+				_glRenderbufferStorage( _GL_RENDERBUFFER, GL_STENCIL_INDEX8, Width, Height );
 			}
-			gels_BindRenderbuffer( GELS_RENDERBUFFER, 0 ); // Unbind //			
+			_glBindRenderbuffer( _GL_RENDERBUFFER, 0 ); // Unbind //			
 		}
 
 		// Number of Textures //
@@ -129,10 +129,10 @@ public:
 		for ( size_t idx = 0; idx < _Textures; idx++ ) {
 #ifdef USES_MRT
 			if ( UseMRT )
-				gels_BindFramebuffer( GELS_FRAMEBUFFER, FBO[0] );
+				_glBindFramebuffer( _GL_FRAMEBUFFER, FBO[0] );
 			else
 #endif // USES_MRT //
-			gels_BindFramebuffer( GELS_FRAMEBUFFER, FBO[idx] );
+			_glBindFramebuffer( _GL_FRAMEBUFFER, FBO[idx] );
 			
 			glBindTexture( GL_TEXTURE_2D, Texture[idx] );
 			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
@@ -148,20 +148,20 @@ public:
 			// Bind texture to current FBO //
 #ifdef USES_MRT
 			if ( UseMRT )
-				gels_FramebufferTexture2D( GELS_FRAMEBUFFER, GELS_COLOR_ATTACHMENT0+idx, GL_TEXTURE_2D, Texture[idx], 0 );
+				_glFramebufferTexture2D( _GL_FRAMEBUFFER, _GL_COLOR_ATTACHMENT0+idx, GL_TEXTURE_2D, Texture[idx], 0 );
 			else
 #endif // USES_MRT //
-			gels_FramebufferTexture2D( GELS_FRAMEBUFFER, GELS_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Texture[idx], 0 );
+			_glFramebufferTexture2D( _GL_FRAMEBUFFER, _GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Texture[idx], 0 );
 
 #ifdef USES_MRT
 			if ( (UseMRT && (idx == 0)) || (!UseMRT) ) {
 #endif // USES_MRT //
 				// Bind the Depth Buffer //
 				if ( _DepthBuffers > 1 ) {
-					gels_FramebufferRenderbuffer( GELS_FRAMEBUFFER, GELS_DEPTH_ATTACHMENT, GELS_RENDERBUFFER, DepthBuffer[idx] );
+					_glFramebufferRenderbuffer( _GL_FRAMEBUFFER, _GL_DEPTH_ATTACHMENT, _GL_RENDERBUFFER, DepthBuffer[idx] );
 				}
 				else if ( _DepthBuffers == 1 ) {
-					gels_FramebufferRenderbuffer( GELS_FRAMEBUFFER, GELS_DEPTH_ATTACHMENT, GELS_RENDERBUFFER, DepthBuffer[0] );
+					_glFramebufferRenderbuffer( _GL_FRAMEBUFFER, _GL_DEPTH_ATTACHMENT, _GL_RENDERBUFFER, DepthBuffer[0] );
 				}
 #ifdef USES_MRT
 			}
@@ -172,10 +172,10 @@ public:
 #endif // USES_MRT //
 				// Bind the Stencil Buffer //
 				if ( _StencilBuffers > 1 ) {
-					gels_FramebufferRenderbuffer( GELS_FRAMEBUFFER, GELS_STENCIL_ATTACHMENT, GELS_RENDERBUFFER, StencilBuffer[idx] );
+					_glFramebufferRenderbuffer( _GL_FRAMEBUFFER, _GL_STENCIL_ATTACHMENT, _GL_RENDERBUFFER, StencilBuffer[idx] );
 				}
 				else if ( _StencilBuffers == 1 ) {
-					gels_FramebufferRenderbuffer( GELS_FRAMEBUFFER, GELS_STENCIL_ATTACHMENT, GELS_RENDERBUFFER, StencilBuffer[0] );
+					_glFramebufferRenderbuffer( _GL_FRAMEBUFFER, _GL_STENCIL_ATTACHMENT, _GL_RENDERBUFFER, StencilBuffer[0] );
 				}
 #ifdef USES_MRT
 			}
@@ -184,9 +184,9 @@ public:
 		
 		// Validate FBOs //
 		for ( size_t idx = 0; idx < FBO.size(); idx++ ) {
-			gels_BindFramebuffer( GELS_FRAMEBUFFER, FBO[idx] );
+			_glBindFramebuffer( _GL_FRAMEBUFFER, FBO[idx] );
 			
-			if ( gels_CheckFramebufferStatus( GELS_FRAMEBUFFER ) != GELS_FRAMEBUFFER_COMPLETE ) {
+			if ( _glCheckFramebufferStatus( _GL_FRAMEBUFFER ) != _GL_FRAMEBUFFER_COMPLETE ) {
 				Log( "* ERROR: FBO %i Unavailable! (%i)", idx, FBO[idx] );
 			}
 			else {
@@ -194,36 +194,42 @@ public:
 			}
 		}
 		
-		gels_BindFramebuffer( GELS_FRAMEBUFFER, 0 ); // Unbind //
+		_glBindFramebuffer( _GL_FRAMEBUFFER, 0 ); // Unbind //
 	}
 	
 	inline ~cRenderTarget() {
 		if ( FBO.size() > 0 )
-			gels_DeleteFramebuffers( FBO.size(), &FBO[0] );
+			_glDeleteFramebuffers( FBO.size(), &FBO[0] );
 
 		if ( Texture.size() > 0 )
 			glDeleteTextures( Texture.size(), &Texture[0] );
 
 		if ( DepthBuffer.size() > 0 )
-			gels_DeleteRenderbuffers( DepthBuffer.size(), &DepthBuffer[0] );
+			_glDeleteRenderbuffers( DepthBuffer.size(), &DepthBuffer[0] );
 
 		if ( StencilBuffer.size() > 0 )
-			gels_DeleteRenderbuffers( StencilBuffer.size(), &StencilBuffer[0] );
+			_glDeleteRenderbuffers( StencilBuffer.size(), &StencilBuffer[0] );
 	}
 	
-	inline void Bind( const size_t Index = 0 ) const {
-		gels_BindFramebuffer( GELS_FRAMEBUFFER, FBO[Index] );
+	inline void Viewport( const int x = 0, const int y = 0, int w = -1, int h = -1 ) const {
+		if ( w == -1 )
+			w = Width;
+		if ( h == -1 )
+			h = Height;
 		
-		glViewport( 
-			0,
-			0,
-			Width, 
-			Height
-			);	
+		glViewport( x,y, w,h );
+	}
+	
+	inline void _Bind( const size_t Index = 0 ) const {
+		_glBindFramebuffer( _GL_FRAMEBUFFER, FBO[Index] );
+	}
+	inline void Bind( const size_t Index = 0 ) const {
+		_Bind(Index);
+		Viewport();
 	}
 		
 	inline static void _UnBind( ) {
-		gels_BindFramebuffer( GELS_FRAMEBUFFER, 0 );
+		_glBindFramebuffer( _GL_FRAMEBUFFER, 0 );
 	}
 		
 	inline static void UnBind( ) {
