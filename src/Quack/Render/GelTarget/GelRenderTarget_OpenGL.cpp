@@ -29,12 +29,16 @@ int GelRenderTarget::GetHeight() const {
 	return ((RTType*)Data)->Height;
 }
 // - ------------------------------------------------------------------------------------------ - //
-void GelRenderTarget::_Bind( const int Layer ) const {
+void GelRenderTarget::Bind( const int Layer ) const {
 	((RTType*)Data)->_Bind( Layer );
 }
 // - ------------------------------------------------------------------------------------------ - //
 void GelRenderTarget::Viewport( const int x, const int y, const int w, const int h ) const {
 	((RTType*)Data)->Viewport( x,y, w,h );
+}
+// - ------------------------------------------------------------------------------------------ - //
+void GelRenderTarget::UnBind() const {
+	((RTType*)Data)->_UnBind();
 }
 // - ------------------------------------------------------------------------------------------ - //
 
