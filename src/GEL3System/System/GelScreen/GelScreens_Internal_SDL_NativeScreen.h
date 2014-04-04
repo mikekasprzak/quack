@@ -128,8 +128,13 @@ public:
 		return GEL_OK;
 	}
 	
-	inline GelError UpdateViewport() const {
-		glViewport( 0, 0, Bounds.w, Bounds.h );
+	inline GelError UpdateViewport( const int x = 0, const int y = 0, int w = -1, int h = -1 ) const {
+		if ( w == -1 )
+			w = Bounds.w;
+		if ( h == -1 )
+			h = Bounds.h;
+			
+		glViewport( x,y, w,h );
 		
 		return GEL_OK;
 	}

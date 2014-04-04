@@ -1,61 +1,50 @@
 // - ------------------------------------------------------------------------------------------ - //
 // GelTarget wraps screens and render targets, for a single targettable entity. //
-// GelSubTarget 
+// GelSubTarget's are sub-sections of GelTargets, such as split screen regions. //
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_RENDER_GELTARGET_H__
 #define __GEL_RENDER_GELTARGET_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
-//#include <Math/Math.h>
-//#include <Graphics/Graphics.h>
+#include "GelTarget/GelNativeTarget.h"
+#include "GelTarget/GelRenderTarget.h"
+// - ------------------------------------------------------------------------------------------ - //
+namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 enum {
-	GEL_GT_NATIVE = 1,
-	GEL_GT_FBO
+	GT_NULL = 0,
+	
+	GT_NATIVE,			// Native Screens/Windows //
+	GT_RENDERTARGET,	// FBO (FrameBuffer Object) //
 };
 // - ------------------------------------------------------------------------------------------ - //
+}; // namespace Gel //
+// - ------------------------------------------------------------------------------------------ - //
 class GelTarget {
-	int x,y,w,h;
-
+public:
+	int x,y;
+	int Width,Height;
+protected:
 	int		Flags;
 	void*	Data;
 public:
-	inline int GetX() const {
-		return x;
-	}
-	inline int GetY() const {
-		return y;
-	}
-	inline int GetWidth() const {
-		return w;
-	}
-	inline int GetHeight() const {
-		return h;
-	}
 	
 public:
-	inline void Bind() {
-		// Bind RT (FBO), or screen //
+	inline void Bind( const int Layer = 0 ) {
+		if ( Flags == Gel::GT_NATIVE )
+			((GelNativeTarget*)Data)->Bind( Layer );
+		else if ( Flags == Gel::GT_RENDERTARGET )
+			((GelRenderTarget*)Data)->Bind( Layer );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 class GelSubTarget {
-	int x,y,w,h;
-
+public:
+	int x,y;
+	int Width,Height;
+protected:
 	GelTarget* Parent;	
 public:
-	inline int GetX() const {
-		return x;
-	}
-	inline int GetY() const {
-		return y;
-	}
-	inline int GetWidth() const {
-		return w;
-	}
-	inline int GetHeight() const {
-		return h;
-	}
 
 public:
 	inline void Bind() {
