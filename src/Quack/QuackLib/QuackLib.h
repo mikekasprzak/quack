@@ -13,6 +13,7 @@ SQInteger register_qkRect2(HSQUIRRELVM v);
 SQInteger register_qkRect3(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkScreen(HSQUIRRELVM v);
+SQInteger register_qkTarget(HSQUIRRELVM v);
 SQInteger register_qkBlending(HSQUIRRELVM v);
 SQInteger register_qkDepth(HSQUIRRELVM v);
 SQInteger register_qkShader(HSQUIRRELVM v);

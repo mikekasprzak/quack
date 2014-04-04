@@ -113,6 +113,7 @@ void QuackVMInit() {
 		Log("* qkInput (nut)"); sqext_load_nut( vm, "qkInput.nut" );
 
 		Log("* qkScreen"); register_qkScreen( vm );
+		Log("* qkTarget"); register_qkTarget( vm );
 		Log("* qkBlending"); register_qkBlending( vm );
 		Log("* qkDepth"); register_qkDepth( vm );
 		Log("* qkShader"); register_qkShader( vm );
