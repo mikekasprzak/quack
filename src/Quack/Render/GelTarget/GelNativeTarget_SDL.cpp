@@ -10,6 +10,8 @@
 typedef GelNativeScreen NSType;
 // - ------------------------------------------------------------------------------------------ - //
 GelNativeTarget::GelNativeTarget( const int /*_w*/, const int /*_h*/, const int Index ) {
+	Log("* NativeTarget Created [%i].", Index);
+
 	// HACK! Ignore Dimensions, and use existing Native Indexes //
 	Data = &Gel::Native[Index];
 }
