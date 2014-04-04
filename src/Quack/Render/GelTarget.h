@@ -20,6 +20,8 @@ enum {
 	GT_NATIVE = 		0x1,	// Native Screens/Windows
 	GT_RENDERTARGET =	0x2,	// FBO (FrameBuffer Object)
 	
+	GT_TYPEMASK = 		0xFF,
+	
 	GT_TARGET = 		0x1000,
 	GT_SUBTARGET =		0x2000,
 };
@@ -43,6 +45,35 @@ protected:
 	
 	friend class GelSubTarget;
 public:
+	inline GelTarget( const int _Flags, void* _Data ) :
+		x(0),
+		y(0),
+		Flags( _Flags | Gel::GT_TARGET ),
+		Data( _Data ) 
+	{
+		if ( IsNativeTarget() ) {
+			Width = ((GelNativeTarget*)Data)->GetWidth();
+			Height = ((GelNativeTarget*)Data)->GetHeight();
+		}
+		else if ( IsRenderTarget() ) {
+			Width = ((GelRenderTarget*)Data)->GetWidth();
+			Height = ((GelRenderTarget*)Data)->GetHeight();
+		}
+		else {
+			Log("! Bad GelTarget!!!");
+		}
+	}
+	
+	inline ~GelTarget()	{
+		if ( Data ) {
+			if ( IsNativeTarget() ) {
+				delete ((GelNativeTarget*)Data);
+			}
+			else if ( IsRenderTarget() ) {
+				delete ((GelRenderTarget*)Data);
+			}
+		}			
+	}
 	
 public:
 	inline bool _Bind( const int Layer = 0 ) {
@@ -105,13 +136,20 @@ public:
 	
 	
 	inline bool Bind( const int Layer = 0 ) {
-		bool Change = _Bind( Layer );
-		if ( Change )
-			Viewport();
+		bool Change = false;
+		
+		if ( IsTarget() ) {
+			Change = _Bind( Layer );
+			if ( Change )
+				Viewport();
+		}
+		else if ( IsSubTarget() ) {
+			Change = BindSubTarget( Layer );
+		}
 
 		return Change;
 	}
-	
+	// Automatically called //
 	inline void UnBind() {
 		if ( IsRenderTarget() ) {
 			((GelRenderTarget*)Data)->UnBind();
@@ -136,6 +174,8 @@ public:
 	inline class GelSubTarget* ToSubTarget() {
 		return (GelSubTarget*)this;
 	}
+
+	inline bool BindSubTarget( const int Layer = 0 );
 	inline void UnBindSubTarget();
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -156,7 +196,7 @@ public:
 		y(_y),
 		Width(_w),
 		Height(_h),
-		Flags(_Parent->Flags),
+		Flags( (_Parent->Flags & Gel::GT_TYPEMASK) | Gel::GT_SUBTARGET ),
 		Parent(_Parent)
 	{
 	}
@@ -205,8 +245,42 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+bool GelTarget::BindSubTarget( const int Layer ) {
+	return ToSubTarget()->Bind( Layer );
+}
+// - ------------------------------------------------------------------------------------------ - //
 void GelTarget::UnBindSubTarget() {
 	ToSubTarget()->Parent->UnBind();
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+inline void placement_Native_GelTarget( GelTarget* Out, const int _w = 0, const int _h = 0, const int ScreenIndex = 0 ) {
+	GelNativeTarget* NT = new GelNativeTarget(_w,_h,ScreenIndex);
+
+	new(Out) GelTarget(Gel::GT_NATIVE,NT);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline GelTarget* new_Native_GelTarget( const int _w = 0, const int _h = 0, const int ScreenIndex = 0 ) {
+	GelNativeTarget* NT = new GelNativeTarget(_w,_h,ScreenIndex);
+
+	return new GelTarget(Gel::GT_NATIVE,NT);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline void placement_Render_GelTarget( GelTarget* Out, const int _w, const int _h, const int Textures = 1, const int DepthBuffers = 1, const int StencilBuffers = 0, const bool UseMRT = false ) {
+	GelRenderTarget* RT = new GelRenderTarget(_w,_h,Textures,DepthBuffers,StencilBuffers,UseMRT);
+
+	new(Out) GelTarget(Gel::GT_RENDERTARGET,RT);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline GelTarget* new_Render_GelTarget(  const int _w, const int _h, const int Textures = 1, const int DepthBuffers = 1, const int StencilBuffers = 0, const bool UseMRT = false ) {
+	GelRenderTarget* RT = new GelRenderTarget(_w,_h,Textures,DepthBuffers,StencilBuffers,UseMRT);
+
+	return new GelTarget(Gel::GT_RENDERTARGET,RT);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline void delete_GelTarget( GelTarget* In ) {
+	delete In;
 }
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_RENDER_GELTARGET_H__ //
