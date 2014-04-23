@@ -20,23 +20,13 @@ SQInteger qk_target_constructor( HSQUIRRELVM v ) {
 	// Check the number of arguments //
 	int Top = sq_gettop(v);
 
-//	// Build our color channels //
-//	SQInteger r,g,b;
-//	SQInteger a = 255;
-//	sq_getinteger(v,2,&r);
-//	sq_getinteger(v,3,&g);
-//	sq_getinteger(v,4,&b);
-//	if ( Top > 4 )
-//		sq_getinteger(v,5,&a);
-//	
-//	// Clamp Colors to 0-255 range //
-//	r = GEL_CLAMP_COLOR_COMPONENT(r);
-//	g = GEL_CLAMP_COLOR_COMPONENT(g);
-//	b = GEL_CLAMP_COLOR_COMPONENT(b);
-//	a = GEL_CLAMP_COLOR_COMPONENT(a);
-//	
-//	// Write Data //
-//	*Color = GEL_RGBA(r,g,b,a);
+	// Build our color channels //
+	SQInteger w,h;
+	sq_getinteger(v,2,&w);
+	sq_getinteger(v,3,&h);
+
+	// Write Data //
+	placement_Render_GelTarget( Target, w, h );
 
 	// Finished //
 	return SQ_VOID;
@@ -159,6 +149,27 @@ SQInteger qk_target_GetAspectRatio( HSQUIRRELVM v ) {
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_target_Bind( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelTarget* Target;
+	sq_getinstanceup(v,1,(void**)&Target,0);
+	
+	Target->Bind( 0 );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_target_BindAsTexture( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelTarget* Target;
+	sq_getinstanceup(v,1,(void**)&Target,0);
+	
+	// TODO: Allow Layer and Texture Unit Selection //
+	Target->BindAsTexture( 0, 0 );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -168,7 +179,7 @@ SQRegFunction qkTarget_funcs[] = {
 	// 2: Number of Args (Positive=Required Arg Count, Negative=Minimum Arg Count, 0=Don't check).
 	// 3: Arg type check string (or NULL for no checking). See sq_setparamscheck for options.
 	
-	_DECL_FUNC(qk_target_constructor,-1,NULL),
+	_DECL_FUNC(qk_target_constructor,3,NULL),
 	_DECL_FUNC(qk_target_get,2,NULL),
 	_DECL_FUNC(qk_target_set,3,NULL),
 	_DECL_FUNC(qk_target_typeof,0,NULL),
@@ -176,6 +187,8 @@ SQRegFunction qkTarget_funcs[] = {
 //	_DECL_FUNC(qk_target_cloned,2,NULL),
 
 	_DECL_FUNC(qk_target_GetAspectRatio,1,NULL),
+	_DECL_FUNC(qk_target_Bind,-1,NULL),
+	_DECL_FUNC(qk_target_BindAsTexture,-1,NULL),
 	
 	{0,0,0,0}
 };
@@ -203,6 +216,8 @@ SQInteger register_qkTarget(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_target_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_target_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_target_GetAspectRatio,GetAspectRatio);
+		_CLASS_ADDFUNC(qk_target_Bind,Bind);
+		_CLASS_ADDFUNC(qk_target_BindAsTexture,BindAsTexture);
 		_ADD_CLASS_END(GelTarget);
 	}
 
@@ -215,6 +230,8 @@ SQInteger register_qkTarget(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_target_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_target_cloned,_cloned);
 		_CLASS_ADDFUNC(qk_target_GetAspectRatio,GetAspectRatio);
+		_CLASS_ADDFUNC(qk_target_Bind,Bind);
+		_CLASS_ADDFUNC(qk_target_BindAsTexture,BindAsTexture);
 		_ADD_CLASS_END(GelTarget);
 	}
 	
