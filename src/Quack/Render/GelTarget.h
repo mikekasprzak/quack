@@ -155,7 +155,14 @@ public:
 			((GelRenderTarget*)Data)->UnBind();
 		}		
 	}
-	
+
+public:
+	inline void BindAsTexture( const int Layer = 0, const int TextureUnit = 0 ) const {
+		if ( IsRenderTarget() ) {
+			((GelRenderTarget*)Data)->BindAsTexture(Layer,TextureUnit);
+		}
+	}
+
 public:
 	inline bool IsTall() const {
 		return Width < Height;
