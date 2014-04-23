@@ -37,9 +37,9 @@ SQInteger qkScreensSetScalar( HSQUIRRELVM v ) {
 SQInteger qkScreensInit( HSQUIRRELVM v ) {
 	gelInitScreens();
 //	placement_Native_GelTarget( &Qk::Target[0], 0,0, 0 );
-	Qk::Target[0] = new_Native_GelTarget( 0,0, 0 );
-	Qk::Target[1] = new_Render_GelTarget( Qk::Target[0]->Width,Qk::Target[0]->Height );
-	Qk::Target[1]->Bind();
+	Qk::Target[0] = new_Screen_GelTarget( 0,0, 0 );
+//	Qk::Target[1] = new_Render_GelTarget( Qk::Target[0]->Width,Qk::Target[0]->Height );
+//	Qk::Target[1]->Bind();
 	Qk::Target[0]->Bind();
 	// NOTE: Missing delete //
 

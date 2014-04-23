@@ -8,7 +8,7 @@ namespace Gel {
 GelTarget*	LastBoundTarget = 0;
 int			LastBoundLayer = 0;
 GelTarget*	CurrentTarget = 0;
-GelTarget*	CurrentNativeTarget = 0;
+GelTarget*	CurrentScreenTarget = 0;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //

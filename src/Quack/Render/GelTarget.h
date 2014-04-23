@@ -6,7 +6,7 @@
 #define __GEL_RENDER_GELTARGET_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
-#include "GelTarget/GelNativeTarget.h"
+#include "GelTarget/GelScreenTarget.h"
 #include "GelTarget/GelRenderTarget.h"
 // - ------------------------------------------------------------------------------------------ - //
 class GelTarget;
@@ -17,7 +17,7 @@ namespace Gel {
 enum {
 	GT_NULL = 0,
 	
-	GT_NATIVE = 		0x1,	// Native Screens/Windows
+	GT_SCREENTARGET =	0x1,	// Screens and Windows (formerly NativeTarget)
 	GT_RENDERTARGET =	0x2,	// FBO (FrameBuffer Object)
 	
 	GT_TYPEMASK = 		0xFF,
@@ -28,8 +28,8 @@ enum {
 // - ------------------------------------------------------------------------------------------ - //
 extern class GelTarget* LastBoundTarget;		// a GelTarget or a GelSubTarget //
 extern int				LastBoundLayer;			// The last bound layer of a RenderTarget //
-extern class GelTarget* CurrentTarget;			// GelTarget Only. Native or RenderTarget. //
-extern class GelTarget* CurrentNativeTarget;	// GelTarget Only. Native Only (Screen). //
+extern class GelTarget* CurrentTarget;			// GelTarget Only. ScreenTarget or RenderTarget. //
+extern class GelTarget* CurrentScreenTarget;	// GelTarget Only. ScreenTarget Only (Screen). //
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
@@ -51,9 +51,9 @@ public:
 		Flags( _Flags | Gel::GT_TARGET ),
 		Data( _Data ) 
 	{
-		if ( IsNativeTarget() ) {
-			Width = ((GelNativeTarget*)Data)->GetWidth();
-			Height = ((GelNativeTarget*)Data)->GetHeight();
+		if ( IsScreenTarget() ) {
+			Width = ((GelScreenTarget*)Data)->GetWidth();
+			Height = ((GelScreenTarget*)Data)->GetHeight();
 		}
 		else if ( IsRenderTarget() ) {
 			Width = ((GelRenderTarget*)Data)->GetWidth();
@@ -66,8 +66,8 @@ public:
 	
 	inline ~GelTarget()	{
 		if ( Data ) {
-			if ( IsNativeTarget() ) {
-				delete ((GelNativeTarget*)Data);
+			if ( IsScreenTarget() ) {
+				delete ((GelScreenTarget*)Data);
 			}
 			else if ( IsRenderTarget() ) {
 				delete ((GelRenderTarget*)Data);
@@ -79,8 +79,8 @@ public:
 	inline bool _Bind( const int Layer = 0 ) {
 		bool Change = false;
 		
-		if ( IsNativeTarget() ) {
-			// If now binding a Native, and was a RenderTarget, I must UnBind //
+		if ( IsScreenTarget() ) {
+			// If now binding a ScreenTarget, and was a RenderTarget, I must UnBind //
 			if ( Gel::LastBoundTarget ) {
 				if ( Gel::LastBoundTarget->IsRenderTarget() ) {
 					if ( Gel::LastBoundTarget->IsSubTarget() )
@@ -91,17 +91,17 @@ public:
 				}
 			}
 			
-			// Check if the same Native (not necessarily the same as last bound) //
-			if ( Gel::CurrentNativeTarget != this ) { // Zero case okay //
-				((GelNativeTarget*)Data)->Bind();
-				//((GelNativeTarget*)Data)->Viewport();
+			// Check if it is the same ScreenTarget (not necessarily the same as last bound) //
+			if ( Gel::CurrentScreenTarget != this ) { // Zero case okay //
+				((GelScreenTarget*)Data)->Bind();
+				//((GelScreenTarget*)Data)->Viewport();
 				
-				Gel::CurrentNativeTarget = this;
+				Gel::CurrentScreenTarget = this;
 				Change = true;
 			}
 		}
 		else if ( IsRenderTarget() ) {
-			// No need to UnBind if prior state was a Native or RT! //
+			// No need to UnBind if prior state was a Screen or RT! //
 			
 			// Check if the Last Bound and this Target are different //
 			if ( (Gel::LastBoundTarget != this) || (Gel::LastBoundLayer != Layer) ) {	// Zero case okay //
@@ -123,8 +123,8 @@ public:
 	}
 
 	inline void Viewport() {
-		if ( IsNativeTarget() ) {
-			((GelNativeTarget*)Data)->Viewport();
+		if ( IsScreenTarget() ) {
+			((GelScreenTarget*)Data)->Viewport();
 		}
 		else if ( IsRenderTarget() ) {
 			((GelRenderTarget*)Data)->Viewport();
@@ -164,8 +164,8 @@ public:
 	inline bool IsSubTarget() const {
 		return Flags & Gel::GT_SUBTARGET;
 	}
-	inline bool IsNativeTarget() const {
-		return Flags & Gel::GT_NATIVE;
+	inline bool IsScreenTarget() const {
+		return Flags & Gel::GT_SCREENTARGET;
 	}
 	inline bool IsRenderTarget() const {
 		return Flags & Gel::GT_RENDERTARGET;
@@ -213,9 +213,9 @@ public:
 		
 		void* Data = Parent->Data;
 		
-		if ( IsNativeTarget() ) {
-			//((GelNativeTarget*)Data)->Bind();
-			((GelNativeTarget*)Data)->Viewport( x,y, Width,Height );
+		if ( IsScreenTarget() ) {
+			//((GelScreenTarget*)Data)->Bind();
+			((GelScreenTarget*)Data)->Viewport( x,y, Width,Height );
 			Change = true;
 		}
 		else if ( IsRenderTarget() ) {
@@ -237,8 +237,8 @@ public:
 	inline bool IsSubTarget() const {
 		return Flags & Gel::GT_SUBTARGET;
 	}
-	inline bool IsNativeTarget() const {
-		return Flags & Gel::GT_NATIVE;
+	inline bool IsScreenTarget() const {
+		return Flags & Gel::GT_SCREENTARGET;
 	}
 	inline bool IsRenderTarget() const {
 		return Flags & Gel::GT_RENDERTARGET;
@@ -255,16 +255,16 @@ void GelTarget::UnBindSubTarget() {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-inline void placement_Native_GelTarget( GelTarget* Out, const int _w = 0, const int _h = 0, const int ScreenIndex = 0 ) {
-	GelNativeTarget* NT = new GelNativeTarget(_w,_h,ScreenIndex);
+inline void placement_Screen_GelTarget( GelTarget* Out, const int _w = 0, const int _h = 0, const int ScreenIndex = 0 ) {
+	GelScreenTarget* NT = new GelScreenTarget(_w,_h,ScreenIndex);
 
-	new(Out) GelTarget(Gel::GT_NATIVE,NT);
+	new(Out) GelTarget(Gel::GT_SCREENTARGET,NT);
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline GelTarget* new_Native_GelTarget( const int _w = 0, const int _h = 0, const int ScreenIndex = 0 ) {
-	GelNativeTarget* NT = new GelNativeTarget(_w,_h,ScreenIndex);
+inline GelTarget* new_Screen_GelTarget( const int _w = 0, const int _h = 0, const int ScreenIndex = 0 ) {
+	GelScreenTarget* NT = new GelScreenTarget(_w,_h,ScreenIndex);
 
-	return new GelTarget(Gel::GT_NATIVE,NT);
+	return new GelTarget(Gel::GT_SCREENTARGET,NT);
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void placement_Render_GelTarget( GelTarget* Out, const int _w, const int _h, const int Textures = 1, const int DepthBuffers = 1, const int StencilBuffers = 0, const bool UseMRT = false ) {
