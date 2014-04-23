@@ -1,4 +1,7 @@
 // - ------------------------------------------------------------------------------------------ - //
+// Typically, any QkTarget's instantiated from Squirrel will be Render Targets. QkTarget.
+// Native Targets will usually be requested via some "tell me the screen" call. QkTargetPtr.
+// - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <API/API_Squirrel.h>
 #include "QuackLib_Internal.h"
@@ -220,6 +223,17 @@ SQInteger register_qkTarget(HSQUIRRELVM v) {
 	int Root = sq_gettop(v); // root table pos //
 	{
 		_ADD_CLASS_START(GelTarget,"QkTarget",QK_TAG_TARGET);
+		_CLASS_ADDFUNC(qk_target_constructor,constructor);
+		_CLASS_ADDFUNC(qk_target_get,_get);
+		_CLASS_ADDFUNC(qk_target_set,_set);
+		_CLASS_ADDFUNC_STATIC(qk_target_typeof,_typeof);
+		_CLASS_ADDFUNC(qk_target_tostring,_tostring);
+//		_CLASS_ADDFUNC(qk_color_cloned,_cloned);
+		_ADD_CLASS_END(GelTarget);
+	}
+
+	{
+		_ADD_PTRCLASS_START(GelTarget,"QkTargetPtr",QK_TAG_TARGET);
 		_CLASS_ADDFUNC(qk_target_constructor,constructor);
 		_CLASS_ADDFUNC(qk_target_get,_get);
 		_CLASS_ADDFUNC(qk_target_set,_set);

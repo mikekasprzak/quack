@@ -3,37 +3,37 @@
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelNativeTarget.h"
+#include "GelScreenTarget.h"
 #include <System/GelScreen/GelScreens.h>
 #include <System/GelScreen/GelScreens_Internal_SDL.h>
 // - ------------------------------------------------------------------------------------------ - //
 typedef GelNativeScreen NSType;
 // - ------------------------------------------------------------------------------------------ - //
-GelNativeTarget::GelNativeTarget( const int /*_w*/, const int /*_h*/, const int Index ) {
-	Log("* NativeTarget Created [%i].", Index);
+GelScreenTarget::GelScreenTarget( const int /*_w*/, const int /*_h*/, const int Index ) {
+	Log("* ScreenTarget Created [%i].", Index);
 
-	// HACK! Ignore Dimensions, and use existing Native Indexes //
+	// HACK! Ignore Dimensions, and use existing Screen Indexes //
 	Data = &Gel::Native[Index];
 }
 // - ------------------------------------------------------------------------------------------ - //
-GelNativeTarget::~GelNativeTarget() {
+GelScreenTarget::~GelScreenTarget() {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-int GelNativeTarget::GetWidth() const {
+int GelScreenTarget::GetWidth() const {
 	return ((NSType*)Data)->GetWidth();
 }
 // - ------------------------------------------------------------------------------------------ - //
-int GelNativeTarget::GetHeight() const {
+int GelScreenTarget::GetHeight() const {
 	return ((NSType*)Data)->GetHeight();
 }
 // - ------------------------------------------------------------------------------------------ - //
-void GelNativeTarget::Bind() const {
+void GelScreenTarget::Bind() const {
 	((NSType*)Data)->MakeCurrent();
 }
 // - ------------------------------------------------------------------------------------------ - //
-void GelNativeTarget::Viewport( const int x, const int y, const int w, const int h ) const {
+void GelScreenTarget::Viewport( const int x, const int y, const int w, const int h ) const {
 	((NSType*)Data)->UpdateViewport( x,y, w,h );
 }
 // - ------------------------------------------------------------------------------------------ - //

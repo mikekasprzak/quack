@@ -1,18 +1,18 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifdef USES_NATIVETARGET_STUB
+#ifdef USES_SCREENTARGET_STUB
 // - ------------------------------------------------------------------------------------------ - //
-#include "GelNativeTarget.h"
+#include "GelScreenTarget.h"
 // - ------------------------------------------------------------------------------------------ - //
-int GelNativeTarget::GetWidth() {
+int GelScreenTarget::GetWidth() {
 	return 0;
 }
 // - ------------------------------------------------------------------------------------------ - //
-int GelNativeTarget::GetHeight() {
+int GelScreenTarget::GetHeight() {
 	return 0;
 }
 // - ------------------------------------------------------------------------------------------ - //
-void GelNativeTarget::Bind( const int /*Layer*/ ) {
+void GelScreenTarget::Bind( const int /*Layer*/ ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
-#endif // USES_NATIVETARGET_STUB //
+#endif // USES_SCREENTARGET_STUB //
 // - ------------------------------------------------------------------------------------------ - //
