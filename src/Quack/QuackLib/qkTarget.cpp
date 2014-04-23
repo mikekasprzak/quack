@@ -19,7 +19,7 @@ SQInteger qk_target_constructor( HSQUIRRELVM v ) {
 	
 	// Check the number of arguments //
 	int Top = sq_gettop(v);
-//	
+
 //	// Build our color channels //
 //	SQInteger r,g,b;
 //	SQInteger a = 255;
@@ -47,28 +47,28 @@ SQInteger qk_target_get( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 	GelTarget* Target;
 	sq_getinstanceup(v,1,(void**)&Target,0);
-//	
-//	// Get the requested member //
-//	const char* MemberName;
-//	sq_getstring(v,2,&MemberName);
-//	
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		sq_pushinteger(v,GEL_GET_R(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'g' ) {
-//		sq_pushinteger(v,GEL_GET_G(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		sq_pushinteger(v,GEL_GET_B(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		sq_pushinteger(v,GEL_GET_A(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
+	
+	// Get the requested member //
+	const char* MemberName;
+	sq_getstring(v,2,&MemberName);
+	
+	// Return different data depending on requested member //
+	if ( MemberName[0] == 'x' ) {
+		sq_pushinteger(v,Target->x);			// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'y' ) {
+		sq_pushinteger(v,Target->y);			// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'w' ) {
+		sq_pushinteger(v,Target->Width);		// +1 //
+		return SQ_RETURN;
+	}
+	else if ( MemberName[0] == 'h' ) {
+		sq_pushinteger(v,Target->Height);		// +1 //
+		return SQ_RETURN;
+	}
 
 	// Throw null on member not found //
 	sq_pushnull(v);				// +1 //
@@ -122,11 +122,10 @@ SQInteger qk_target_tostring( HSQUIRRELVM v ) {
 	GelTarget* Target;
 	sq_getinstanceup(v,1,(void**)&Target,0);
 	
-//	// (RRR,GGG,BBB,AAA) //
-//	char Text[2 + 3+1 + 3+1 + 3+1 + 3 + 1];
-//	sprintf(Text,"(%i,%i,%i,%i)", GEL_GET_R(*Color), GEL_GET_G(*Color), GEL_GET_B(*Color), GEL_GET_A(*Color) );
-//	
-//	sq_pushstring(v,Text,-1);
+	char Text[128];
+	sprintf(Text,"(%i,%i,%i,%i): %f", Target->x,Target->y, Target->Width,Target->Height, Target->GetAspectRatio().ToFloat() );
+	
+	sq_pushstring(v,Text,-1);
 	
 	return SQ_RETURN;
 }
@@ -149,41 +148,16 @@ SQInteger qk_target_tostring( HSQUIRRELVM v ) {
 _FUNC_TYPEOF(GelTarget,qk_target_typeof,"QkTarget",8);
 // - ------------------------------------------------------------------------------------------ - //
 
-//// - ------------------------------------------------------------------------------------------ - //
-//SQInteger qk_target_RGB( HSQUIRRELVM v ) {
-//	// Check the number of arguments //
-//	int Top = sq_gettop(v);
-//
-//	// Create an instance of the QkColor Class //
-//	sq_pushroottable(v);				// +1 //
-//	sq_pushstring(v,"QkColor",7);		// +1 //
-//	sq_get(v,-2);						// =0 //
-//	sq_createinstance(v,-1);			// +1 //
-//
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,-1,(void**)&Color,0);
-//	
-//	// Build our color channels //
-//	SQInteger r,g,b;
-//	SQInteger a = 255;
-//	sq_getinteger(v,2,&r);
-//	sq_getinteger(v,3,&g);
-//	sq_getinteger(v,4,&b);
-//	if ( Top > 4 )
-//		sq_getinteger(v,5,&a);
-//	
-//	// Clamp Colors to 0-255 range //
-//	r = GEL_CLAMP_COLOR_COMPONENT(r);
-//	g = GEL_CLAMP_COLOR_COMPONENT(g);
-//	b = GEL_CLAMP_COLOR_COMPONENT(b);
-//	a = GEL_CLAMP_COLOR_COMPONENT(a);
-//	
-//	// Write Data //
-//	*Color = GEL_RGBA(r,g,b,a);
-//	
-//	return SQ_RETURN;
-//}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_target_GetAspectRatio( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelTarget* Target;
+	sq_getinstanceup(v,1,(void**)&Target,0);
+		
+	sq_pushfloat(v,Target->GetAspectRatio().ToFloat());
+	
+	return SQ_RETURN;
+}
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -199,10 +173,9 @@ SQRegFunction qkTarget_funcs[] = {
 	_DECL_FUNC(qk_target_set,3,NULL),
 	_DECL_FUNC(qk_target_typeof,0,NULL),
 	_DECL_FUNC(qk_target_tostring,1,NULL),
-//	_DECL_FUNC(qk_target_cloned,2,NULL),	
+//	_DECL_FUNC(qk_target_cloned,2,NULL),
 
-//	_DECL_FUNC_ALT("RGB",qk_color_RGB,-4,NULL),
-//	_DECL_FUNC_ALT("RGBA",qk_color_RGB,5,NULL),
+	_DECL_FUNC(qk_target_GetAspectRatio,1,NULL),
 	
 	{0,0,0,0}
 };
@@ -228,7 +201,8 @@ SQInteger register_qkTarget(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_target_set,_set);
 		_CLASS_ADDFUNC_STATIC(qk_target_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_target_tostring,_tostring);
-//		_CLASS_ADDFUNC(qk_color_cloned,_cloned);
+//		_CLASS_ADDFUNC(qk_target_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_target_GetAspectRatio,GetAspectRatio);
 		_ADD_CLASS_END(GelTarget);
 	}
 
@@ -239,7 +213,8 @@ SQInteger register_qkTarget(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_target_set,_set);
 		_CLASS_ADDFUNC_STATIC(qk_target_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_target_tostring,_tostring);
-//		_CLASS_ADDFUNC(qk_color_cloned,_cloned);
+//		_CLASS_ADDFUNC(qk_target_cloned,_cloned);
+		_CLASS_ADDFUNC(qk_target_GetAspectRatio,GetAspectRatio);
 		_ADD_CLASS_END(GelTarget);
 	}
 	

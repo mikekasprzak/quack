@@ -18,6 +18,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 namespace Qk {
 // - ------------------------------------------------------------------------------------------ - //
+// Hack //
 GelTarget* Target[2];
 // - ------------------------------------------------------------------------------------------ - //
 }; // namepspace Qk //
@@ -49,8 +50,21 @@ SQInteger qkScreensInit( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qkScreenGetAspectRatio(HSQUIRRELVM vm) {
-	sq_pushfloat( vm, (float)Gel::Native[0].GetWidth() / (float)Gel::Native[0].GetHeight() );
+SQInteger qkScreenGetAspectRatio(HSQUIRRELVM v) {
+	sq_pushfloat( v, (float)Gel::Native[0].GetWidth() / (float)Gel::Native[0].GetHeight() );
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkScreenGet(HSQUIRRELVM v) {
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"QkTargetPtr",-1);	// +1 //
+	sq_get(v,-2);						// =0 (-1 then +1) //
+	sq_createinstance(v,-1);			// +1 //
+
+	sq_setinstanceup(v,-1,(void**)Qk::Target[0]);
 
 	return SQ_RETURN;
 }
@@ -95,6 +109,7 @@ SQRegFunction qkScreen_funcs[] = {
 	_DECL_FUNC(qkScreensSetScalar,2,_SC(".n")),
 	// Screen Singular //
 	_DECL_FUNC(qkScreenGetAspectRatio,1,NULL),
+	_DECL_FUNC(qkScreenGet,1,NULL),
 	_DECL_FUNC(qkScreenClear,-1,NULL),
 
 	{0,0,0,0}
