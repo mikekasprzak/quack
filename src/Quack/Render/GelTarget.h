@@ -6,6 +6,7 @@
 #define __GEL_RENDER_GELTARGET_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
+#include <Math/Real.h>
 #include "GelTarget/GelScreenTarget.h"
 #include "GelTarget/GelRenderTarget.h"
 // - ------------------------------------------------------------------------------------------ - //
@@ -74,7 +75,6 @@ public:
 			}
 		}			
 	}
-	
 public:
 	inline bool _Bind( const int Layer = 0 ) {
 		bool Change = false;
@@ -157,6 +157,18 @@ public:
 	}
 	
 public:
+	inline bool IsTall() const {
+		return Width < Height;
+	}
+	inline bool IsWide() const {
+		return Width > Height;
+	}
+	
+	inline Real GetAspectRatio() const {
+		return Real((float)Width / (float)Height);
+	}
+	
+public:
 	// Helper Functions //
 	inline bool IsTarget() const {
 		return Flags & Gel::GT_TARGET;
@@ -229,6 +241,18 @@ public:
 		return Change;
 	}
 
+public:
+	inline bool IsTall() const {
+		return Width < Height;
+	}
+	inline bool IsWide() const {
+		return Width > Height;
+	}
+	
+	inline Real GetAspectRatio() const {
+		return Real((float)Width / (float)Height);
+	}
+	
 public:
 	// Helper Functions //
 	inline bool IsTarget() const {
