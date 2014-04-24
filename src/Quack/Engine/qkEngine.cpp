@@ -87,21 +87,6 @@ SQInteger qk_engine_set( HSQUIRRELVM v ) {
 		sq_pushbool( v, Value );
 		return SQ_RETURN;
 	}
-//	else if ( MemberName[0] == 'g' ) {
-//		*Color = GEL_SET_G( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		*Color = GEL_SET_B( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		*Color = GEL_SET_A( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
 
 	// Throw null on member not found //
 	sq_pushnull(v);				// +1 //
