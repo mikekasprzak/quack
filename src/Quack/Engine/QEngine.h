@@ -440,6 +440,11 @@ public:
 	inline st Size() {
 		return Obj.size();
 	}
+	
+//	inline QCamera& AddCamera( Handle ) {
+//		Camera.push_back( QCamera() );
+//		return Camera.back();
+//	}
 
 	inline QObj& operator [] ( const st Index ) {
 		return Obj[Index];
@@ -552,6 +557,24 @@ public:
 		if ( Swaps ) {
 			Log("Optimized: %i Object Swaps", Swaps);
 		}
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
+// Quack Object Handle - Used to reference Objects inside an Engine (QkObj). //
+class QObjHandle {
+public:
+	QEngine*	Engine;
+	st32 		Index;
+
+	inline QObjHandle( QEngine* _Engine = 0, const st32 _Index = 0 ) :
+		Engine( _Engine ),
+		Index( _Index )
+	{
+	}
+	
+public:
+	inline QObj* Get() {
+		return &Engine->Obj[Index];
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
