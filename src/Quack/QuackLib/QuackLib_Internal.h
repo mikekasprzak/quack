@@ -320,7 +320,7 @@ inline SQInteger qk_arr_constructor_body( HSQUIRRELVM v, float* Arr, const int A
 				}
 			}
 			else if ( Type == OT_INSTANCE ) {
-				int Tag;			
+				int Tag;
 				sq_gettypetag(v,idx,(SQUserPointer*)&Tag);
 				if ( Tag == QK_TAG_VEC2 ) {
 					if ( ArrIndex+1 < ArrSize ) {

@@ -167,7 +167,8 @@ _PRIMITIVE_DRAW_CAPSULE(qkDrawFlatCapsuleFill,FlatCapsule,GEL_TRIANGLE_FAN);
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: Add a .Draw member to the QkTexture that does exactly this. //
 SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
-	float Radius = 10.0f;
+	float RadiusW = 10.0f;
+	float RadiusH = RadiusW;
 	Vector3D Pos;
 	
 	Matrix4x4* uMatrix = 0;
@@ -192,7 +193,22 @@ SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 		
 		// ARG3: Radius
 		if ( NumArgs >= 4 ) {
-			sq_getfloat(vm,4,&Radius);
+			int Type = sq_gettype(vm,4);
+			if ( Type & (OT_FLOAT|OT_INTEGER) ) {
+				sq_getfloat(vm,4,&RadiusW);
+				RadiusH = RadiusW;
+			}
+			else if ( Type == OT_INSTANCE ) {
+				int Tag;
+				sq_gettypetag(vm,4,(SQUserPointer*)&Tag);
+				if ( Tag == QK_TAG_VEC2 ) {
+					float* Vec;
+					sq_getinstanceup(vm,4,(void**)&Vec,0);
+					
+					RadiusW = Vec[0];
+					RadiusH = Vec[1];
+				}
+			}
 		}
 		
 		// ARG4: Color
@@ -205,12 +221,12 @@ SQInteger qkDrawTexturedQuad(HSQUIRRELVM vm) {
 	
 		const st32 VertCount = 6;
 		Vector3D Verts[ VertCount ];
-		Verts[0] = Vector3D(-Radius,-Radius,0);
-		Verts[1] = Vector3D(+Radius,-Radius,0);
-		Verts[2] = Vector3D(+Radius,+Radius,0);
-		Verts[3] = Vector3D(+Radius,+Radius,0);
-		Verts[4] = Vector3D(-Radius,+Radius,0);
-		Verts[5] = Vector3D(-Radius,-Radius,0);
+		Verts[0] = Vector3D(-RadiusW,-RadiusH,0);
+		Verts[1] = Vector3D(+RadiusW,-RadiusH,0);
+		Verts[2] = Vector3D(+RadiusW,+RadiusH,0);
+		Verts[3] = Vector3D(+RadiusW,+RadiusH,0);
+		Verts[4] = Vector3D(-RadiusW,+RadiusH,0);
+		Verts[5] = Vector3D(-RadiusW,-RadiusH,0);
 		
 		for ( st32 idx = 0; idx < VertCount; idx++ ) {
 			Verts[idx] += Pos;

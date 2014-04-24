@@ -140,7 +140,7 @@ public:
 		
 		if ( IsTarget() ) {
 			Change = _Bind( Layer );
-			if ( Change )
+//			if ( Change )
 				Viewport();
 		}
 		else if ( IsSubTarget() ) {
@@ -304,11 +304,23 @@ inline void placement_Render_GelTarget( GelTarget* Out, const int _w, const int 
 	new(Out) GelTarget(Gel::GT_RENDERTARGET,RT);
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline GelTarget* new_Render_GelTarget(  const int _w, const int _h, const int Textures = 1, const int DepthBuffers = 1, const int StencilBuffers = 0, const bool UseMRT = false ) {
+inline GelTarget* new_Render_GelTarget( const int _w, const int _h, const int Textures = 1, const int DepthBuffers = 1, const int StencilBuffers = 0, const bool UseMRT = false ) {
 	GelRenderTarget* RT = new GelRenderTarget(_w,_h,Textures,DepthBuffers,StencilBuffers,UseMRT);
 
 	return new GelTarget(Gel::GT_RENDERTARGET,RT);
 }
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+inline void placement_Sub_GelTarget( GelTarget* Out, GelTarget* Parent, const int _x, const int _y, const int _w, const int _h ) {
+	new(Out) GelSubTarget(Parent,_x,_y,_w,_h);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline GelTarget* new_Sub_GelTarget( GelTarget* Parent, const int _x, const int _y, const int _w, const int _h ) {
+	return (GelTarget*)new GelSubTarget(Parent,_x,_y,_w,_h);
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 // - ------------------------------------------------------------------------------------------ - //
 inline void delete_GelTarget( GelTarget* In ) {
 	delete In;

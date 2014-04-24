@@ -20,7 +20,7 @@ SQInteger qk_target_constructor( HSQUIRRELVM v ) {
 	// Check the number of arguments //
 	int Top = sq_gettop(v);
 
-	// Build our color channels //
+	// Get the Dimensions of the Render Target //
 	SQInteger w,h;
 	sq_getinteger(v,2,&w);
 	sq_getinteger(v,3,&h);
@@ -70,36 +70,6 @@ SQInteger qk_target_set( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 	GelTarget* Target;
 	sq_getinstanceup(v,1,(void**)&Target,0);
-//	
-//	// Get the requested member //
-//	const char* MemberName;
-//	sq_getstring(v,2,&MemberName);
-//
-//	// Get the value //
-//	SQInteger Value;
-//	sq_getinteger(v,3,&Value);
-//	
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		*Color = GEL_SET_R( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'g' ) {
-//		*Color = GEL_SET_G( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		*Color = GEL_SET_B( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		*Color = GEL_SET_A( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
 
 	// Throw null on member not found //
 	sq_pushnull(v);				// +1 //
@@ -172,6 +142,36 @@ SQInteger qk_target_BindAsTexture( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_target_GetRegion( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelTarget* Parent;
+	sq_getinstanceup(v,1,(void**)&Parent,0);
+
+	SQInteger x,y,w,h;
+	sq_getinteger(v,2,&x);
+	sq_getinteger(v,3,&y);
+	sq_getinteger(v,4,&w);
+	sq_getinteger(v,5,&h);
+	
+	sq_pushroottable(v);				// +1 //
+	sq_pushstring(v,"QkTarget",-1);		// +1 //
+	sq_get(v,-2);						// =0 (-1 then +1) //
+	sq_createinstance(v,-1);			// +1 //
+
+	//sq_setinstanceup(v,-1,(void**)Qk::Target[0]);
+
+	GelTarget* Target;
+	sq_getinstanceup(v,-1,(void**)&Target,0);
+
+//	placement_Sub_GelTarget( Target, w, h );
+	placement_Sub_GelTarget( Target, Parent, x,y, w,h );
+	
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
 #define _DECL_FUNC_ALT(sqname,name,nparams,pmask) {_SC(sqname),name,nparams,pmask}
 SQRegFunction qkTarget_funcs[] = {
@@ -189,6 +189,8 @@ SQRegFunction qkTarget_funcs[] = {
 	_DECL_FUNC(qk_target_GetAspectRatio,1,NULL),
 	_DECL_FUNC(qk_target_Bind,-1,NULL),
 	_DECL_FUNC(qk_target_BindAsTexture,-1,NULL),
+
+	_DECL_FUNC(qk_target_GetRegion,5,NULL),
 	
 	{0,0,0,0}
 };
@@ -218,6 +220,7 @@ SQInteger register_qkTarget(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_target_GetAspectRatio,GetAspectRatio);
 		_CLASS_ADDFUNC(qk_target_Bind,Bind);
 		_CLASS_ADDFUNC(qk_target_BindAsTexture,BindAsTexture);
+		_CLASS_ADDFUNC(qk_target_GetRegion,GetRegion);
 		_ADD_CLASS_END(GelTarget);
 	}
 
@@ -232,6 +235,7 @@ SQInteger register_qkTarget(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_target_GetAspectRatio,GetAspectRatio);
 		_CLASS_ADDFUNC(qk_target_Bind,Bind);
 		_CLASS_ADDFUNC(qk_target_BindAsTexture,BindAsTexture);
+		_CLASS_ADDFUNC(qk_target_GetRegion,GetRegion);
 		_ADD_CLASS_END(GelTarget);
 	}
 	
