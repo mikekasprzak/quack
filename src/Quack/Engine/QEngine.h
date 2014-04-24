@@ -362,6 +362,9 @@ public:
 		Scale( 256.0f ),
 		Target( _Target )
 	{
+		if ( Target ) {
+			Pos = Target->GetPos();
+		}
 	}
 
 public:
