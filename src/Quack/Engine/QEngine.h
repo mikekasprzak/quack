@@ -100,6 +100,7 @@ enum {
 typedef Real 		QFloat;
 typedef Vector2D	QVec;
 typedef Rect2D		QRect;
+typedef Matrix4x4	QMat;
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Simulation Properties -- i.e. Gravity //
 class QProp {
@@ -344,15 +345,78 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+// Quack Camera //
+class QCamera { 
+public:
+//	int		Type;		// Camera Type (not needed yet) //
+	QVec	Pos;
+	QFloat	Scale;
+	
+	// TODO: Cameras need some reason (and way) to zoom in and out.
+
+	// THIS WILL BE UNSAFE! THE POINTER INVALIDATES WHEN ENOUGH OBJECTS ARE ADDED TO THE ENGINE //	
+	QObj* Target;
+	// TODO: Add a way to target multiple objects (loosely).
+
+	inline QCamera( QObj* _Target = 0 ) :
+		Scale( 256.0f ),
+		Target( _Target )
+	{
+	}
+
+public:
+	inline void Step() {
+		if ( Target ) {
+			QVec Diff = Target->GetPos() - Pos;
+			Pos += Diff * QFloat(0.25f);
+		}
+	}
+
+public:
+	inline QMat GetMatrix( const int ViewportWidth, const int ViewportHeight ) const {
+		QMat Ret = QMat::Identity;
+
+		QFloat InvScale = QFloat::One / Scale;
+		Ret *= QMat::TranslationMatrix( -Pos );
+		Ret *= QMat::ScalarMatrix( InvScale );
+
+		QFloat AspectRatio = QFloat( ViewportWidth / ViewportHeight );
+		bool WideRatio = AspectRatio > QFloat::One;
+		QVec AspectVec = QVec(AspectRatio,QFloat::One);
+		if ( WideRatio )
+			AspectVec = QVec(QFloat::One,QFloat::One/AspectRatio);
+		QVec InvAspectVec = QFloat::One / AspectVec;
+
+		Ret *= QMat::ScalarMatrix( InvAspectVec );
+		
+		return Ret;
+	}
+	
+	inline QVec GetView( const int ViewportWidth, const int ViewportHeight ) const {
+		QFloat AspectRatio = QFloat( ViewportWidth / ViewportHeight );
+		bool WideRatio = AspectRatio > QFloat::One;
+		QVec AspectVec = QVec(AspectRatio,QFloat::One);
+		if ( WideRatio )
+			AspectVec = QVec(QFloat::One,QFloat::One/AspectRatio);
+		
+		return QVec(Scale,Scale) * AspectVec;
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
 // Quack Engine //
 // TODO: Client and Server Engines //
 class QEngine {
 public:
 	QProp Prop;
-	std::vector<QObj> Obj;	// An Engine contains Objects //
+	// NOTE: THIS IS THE SOURCE OF THE SEGFALT! POINTERS TO OBJECTS in an STD::VECTOR! //
+	std::vector<QObj> Obj;			// An Engine contains Objects //
+	std::vector<QCamera> Camera;	// It also contains Cameras //
 
 public:
 	inline QEngine() {
+		// Workaround for the Object Adding Segfault //
+		Obj.reserve(128);
+		Camera.reserve(4);
 		Log("** Engine Created %x",this);
 	}
 	inline ~QEngine() {
@@ -438,6 +502,11 @@ public:
 				// If the Object moved, update the Rectangle //
 				Ob.UpdateRect();
 			}
+		}
+
+		// Move Cameras //
+		for ( st idx = 0; idx < Camera.size(); idx++ ) {
+			Camera[idx].Step();
 		}
 		
 		// Reorganize Objects in a better order //
