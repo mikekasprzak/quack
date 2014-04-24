@@ -271,6 +271,7 @@ public:
 
 public:
 	int		Type;
+	st32 	MyIndex;		// Which Object I am in the engine //
 	void*	Data;
 
 	QRect	Rect;
@@ -300,6 +301,12 @@ public:
 	QInitFunc			_Init; // Doesn't Constructor do this? //
 	QStepFunc			_Step;
 	QDrawFunc			_Draw;
+
+public:
+	inline QObj( const st32 _MyIndex ) :
+		MyIndex(_MyIndex)
+	{
+	}
 
 public:
 	inline int GetType() const { return Type; }
@@ -348,7 +355,8 @@ public:
 // Quack Camera //
 class QCamera { 
 public:
-//	int		Type;		// Camera Type (not needed yet) //
+//	int		Type;			// Camera Type (not needed yet) //
+	st32 	MyIndex;		// Which camera I am in the engine //
 	QVec	Pos;
 	QFloat	Scale;
 	
@@ -419,7 +427,10 @@ public:
 	inline QEngine() {
 		// Workaround for the Object Adding Segfault //
 		Obj.reserve(128);
+		// TODO: Add Dummy (Index 0) //
 		Camera.reserve(4);
+		// TODO: Add Dummy (Index 0) //
+
 		Log("** Engine Created %x",this);
 	}
 	inline ~QEngine() {
@@ -428,7 +439,7 @@ public:
 
 public:
 	inline QObj& Add() {
-		Obj.push_back( QObj() );
+		Obj.push_back( QObj( Obj.size() ) );
 		return Obj.back();
 	}
 	inline QObj& Back() {

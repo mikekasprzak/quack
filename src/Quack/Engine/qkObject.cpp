@@ -20,7 +20,10 @@ SQInteger qk_object_constructor( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Obj,0);
 
 	// Construct Data //
-	new(Obj) QK::QObj();
+//	new(Obj) QK::QObj();
+
+	// HEY! THIS SHOULD NOT BE CALLED! //
+	Log("! THIS SHOULD NOT BE CALLED !");
 
 	// Finished //
 	return SQ_VOID;
@@ -113,7 +116,7 @@ SQInteger qk_object_tostring( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Ob,0);
 	
 	char Text[128];
-	sprintf(Text,"[QkObject:0x%x,?,?]", (int)(st)Ob );
+	sprintf(Text,"[QkObject:0x%x (%i),?,?]", (int)(st)Ob, Ob->MyIndex );
 	
 	sq_pushstring(v,Text,-1);
 	
