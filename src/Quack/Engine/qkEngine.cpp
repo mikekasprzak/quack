@@ -46,21 +46,17 @@ SQInteger qk_engine_get( HSQUIRRELVM v ) {
 	
 	// Return different data depending on requested member //
 	if ( strcmp(MemberName,"Debug") == 0 ) {
-		sq_pushbool(v,Engine->Prop.Debug);		// +1 //
+		sq_pushbool(v,Engine->Prop.Debug);			// +1 //
 		return SQ_RETURN;
 	}
-//	else if ( MemberName[0] == 'g' ) {
-//		sq_pushinteger(v,GEL_GET_G(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		sq_pushinteger(v,GEL_GET_B(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		sq_pushinteger(v,GEL_GET_A(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
+	else if ( strcmp(MemberName,"NumObj") == 0 ) {
+		sq_pushinteger(v,Engine->Obj.size());		// +1 //
+		return SQ_RETURN;
+	}
+	else if ( strcmp(MemberName,"NumCamera") == 0 ) {
+		sq_pushinteger(v,Engine->Camera.size());	// +1 //
+		return SQ_RETURN;
+	}
 
 	// Throw null on member not found //
 	sq_pushnull(v);				// +1 //
@@ -114,15 +110,14 @@ SQInteger qk_engine_set( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 // _tostring metamethod //
 SQInteger qk_engine_tostring( HSQUIRRELVM v ) {
-//	// Retrieve Data (Pointer) //
-//	GelColor* Color;
-//	sq_getinstanceup(v,1,(void**)&Color,0);
-//	
-//	// (RRR,GGG,BBB,AAA) //
-//	char Text[2 + 3+1 + 3+1 + 3+1 + 3 + 1];
-//	sprintf(Text,"(%i,%i,%i,%i)", GEL_GET_R(*Color), GEL_GET_G(*Color), GEL_GET_B(*Color), GEL_GET_A(*Color) );
+	// Retrieve Data (Pointer) //
+	QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
 	
-	sq_pushstring(v,"[QkEngine:?,?,?]",-1);
+	char Text[128];
+	sprintf(Text,"[QkEngine Obj:%i Camera:%i]", (int)Engine->Obj.size(), (int)Engine->Camera.size() );
+	
+	sq_pushstring(v,Text,-1);
 	
 	return SQ_RETURN;
 }
