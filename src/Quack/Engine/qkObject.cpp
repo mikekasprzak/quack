@@ -16,8 +16,9 @@ HSQOBJECT DummySkelAnimator;
 // the constructor //
 SQInteger qk_object_constructor( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Obj;
-	sq_getinstanceup(v,1,(void**)&Obj,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 
 	// Construct Data //
 //	new(Obj) QK::QObj();
@@ -32,8 +33,9 @@ SQInteger qk_object_constructor( HSQUIRRELVM v ) {
 // _get metamethod //
 SQInteger qk_object_get( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	// Get the requested member //
 	const char* MemberName;
@@ -71,8 +73,9 @@ SQInteger qk_object_get( HSQUIRRELVM v ) {
 // _set metamethod //
 SQInteger qk_object_set( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	// Get the requested member //
 	const char* MemberName;
@@ -112,8 +115,9 @@ SQInteger qk_object_set( HSQUIRRELVM v ) {
 // _tostring metamethod //
 SQInteger qk_object_tostring( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	char Text[128];
 	sprintf(Text,"[QkObject:0x%x (%i),?,?]", (int)(st)Ob, Ob->MyIndex );
@@ -138,14 +142,15 @@ SQInteger qk_object_tostring( HSQUIRRELVM v ) {
 //	return SQ_VOID;
 //}
 // - ------------------------------------------------------------------------------------------ - //
-_FUNC_TYPEOF(QObj,qk_object_typeof,"QkObj",5);
+_FUNC_TYPEOF(QObjHandle,qk_object_typeof,"QkObj",5);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_SetArt( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	// Get the requested member //
 	const char* ArtFile;
@@ -158,8 +163,9 @@ SQInteger qk_object_SetArt( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_SetArtScale( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	Vector2D Vec(1,1);
 	_SQ_GET_VEC2_ARG(Vec,2);	
@@ -173,8 +179,9 @@ SQInteger qk_object_SetArtScale( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_SetMass( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	SQFloat Mass = 1.0f;
 	sq_getfloat(v,2,&Mass);
@@ -186,8 +193,9 @@ SQInteger qk_object_SetMass( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_SetShape( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	Vector2D Vec(1,1);
 	_SQ_GET_VEC2_ARG(Vec,2);	
@@ -199,8 +207,9 @@ SQInteger qk_object_SetShape( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_AddForce( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 	
 	Vector2D Vec;
 	_SQ_GET_VEC2_ARG(Vec,2);	
@@ -214,8 +223,9 @@ SQInteger qk_object_AddForce( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_GetVelocity( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 
 	// Create a Vector Instance //	
 	sq_pushroottable(v);
@@ -234,8 +244,9 @@ SQInteger qk_object_GetVelocity( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_GetPos( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 
 	// Create a Vector Instance //	
 	sq_pushroottable(v);
@@ -256,11 +267,16 @@ SQInteger qk_object_GetPos( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_Notify( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
-	QK::QObj* Ob;
-	sq_getinstanceup(v,1,(void**)&Ob,0);
+	QK::QObjHandle* ObjHandle;
+	sq_getinstanceup(v,1,(void**)&ObjHandle,0);
+	QK::QObj* Ob = ObjHandle->Get();
 
-	QK::QObj* Vs;
-	sq_getinstanceup(v,2,(void**)&Vs,0);
+	QK::QObjHandle* VsObjHandle;
+	sq_getinstanceup(v,2,(void**)&VsObjHandle,0);
+	QK::QObj* Vs = VsObjHandle->Get();
+
+//	QK::QObj* Vs;
+//	sq_getinstanceup(v,2,(void**)&Vs,0);
 
 	SQInteger Message;
 	sq_getinteger(v,3,&Message);
@@ -317,7 +333,8 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 	// NOTE: NEVER CREATED! ALWAYS RETURNED BY ENGINE METHODS! //
 	int Root = sq_gettop(v); // root table pos //
 	{
-		_ADD_PTRCLASS_START(QObj,"QkObj",QK_TAG_OBJECT);
+//		_ADD_PTRCLASS_START(QObj,"QkObj",QK_TAG_OBJECT);
+		_ADD_CLASS_START(QObjHandle,"QkObj",QK_TAG_OBJECT);
 		_CLASS_ADDFUNC(qk_object_constructor,constructor);
 		_CLASS_ADDFUNC(qk_object_get,_get);
 		_CLASS_ADDFUNC(qk_object_set,_set);
@@ -337,7 +354,8 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 
 		_CLASS_ADDFUNC(qk_object_Notify,Notify);
 
-		_ADD_CLASS_END(QObj);
+//		_ADD_CLASS_END(QObj);
+		_ADD_CLASS_END(QObjHandle);
 	}
 	
 	// ** SqObj Holder (Pointer is assigned before calls) ** //

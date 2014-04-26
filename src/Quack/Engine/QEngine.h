@@ -270,11 +270,13 @@ public:
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
 
 public:
-	int		Type;
-	st32 	MyIndex;		// Which Object I am in the engine //
-	void*	Data;
+	int				Type;
+	// NOTE: MyIndex is unreliable as a reference due to the Optimize function reassigning them. //
+	st32 			MyIndex;		// Which Object I am in the Engine (by Index). //
+	class QEngine*	Parent;			// My Parent (Engine) //
+	void*			Data;
 
-	QRect	Rect;
+	QRect			Rect;
 
 public:
 	QGetArtFunc			_GetArt; // Add a header? //
@@ -303,7 +305,8 @@ public:
 	QDrawFunc			_Draw;
 
 public:
-	inline QObj( const st32 _MyIndex ) :
+	inline QObj( class QEngine* _Parent, const st32 _MyIndex ) :
+		Parent(_Parent),
 		MyIndex(_MyIndex)
 	{
 	}
@@ -426,7 +429,7 @@ public:
 public:
 	inline QEngine() {
 		// Workaround for the Object Adding Segfault //
-		Obj.reserve(128);
+//		Obj.reserve(128);
 		// TODO: Add Dummy (Index 0) //
 		Camera.reserve(4);
 		// TODO: Add Dummy (Index 0) //
@@ -439,7 +442,7 @@ public:
 
 public:
 	inline QObj& Add() {
-		Obj.push_back( QObj( Obj.size() ) );
+		Obj.push_back( QObj( this, Obj.size() ) );
 		return Obj.back();
 	}
 	inline QObj& Back() {
@@ -465,19 +468,23 @@ public:
 	}
 		
 public:
-	void Step() {		
+	void Step() {
+		// NOTES: We can't use object references or pointers here, as any of the Squirrel calls //
+		//   run the risk of causing a resize of the Object Array. //
+		
 		// Do Collisions First //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
-		for ( st idx = 0; idx < Obj.size(); idx++ ) {
+		for ( st ObA = 0; ObA < Obj.size(); ObA++ ) {
 			// To eliminitae != self check, start at idx+1 //
-			for ( st idx2 = idx+1; idx2 < Obj.size(); idx2++ ) {
-				QObj& ObA = Obj[idx];
-				QObj& ObB = Obj[idx2];
+			for ( st ObB = ObA+1; ObB < Obj.size(); ObB++ ) {
+//				QObj& ObA = Obj[idx];
+//				QObj& ObB = Obj[idx2];
 				
 				// Broad Phase 2 (Rectangles) //
-				if ( ObA.Rect == ObB.Rect ) {
-					QBody* BodyA = ObA.GetBody();
-					QBody* BodyB = ObB.GetBody();
+				if ( Obj[ObA].Rect == Obj[ObB].Rect ) {
+					// This is safe, as the Bodies are not used by Squirrel code //
+					QBody* BodyA = Obj[ObA].GetBody();
+					QBody* BodyB = Obj[ObB].GetBody();
 					
 					// Only if Objects have Bodies //
 					if ( BodyA && BodyB ) {
@@ -485,25 +492,26 @@ public:
 						// Solve/Resolve Collision //
 						if ( Solve_Body(*BodyA,*BodyB,Info) ) {
 							// If a collision was solved/resolved, trigger Contact events //
-							ObA.Contact( ObB, Info );
+							Obj[ObA].Contact( Obj[ObB], Info );
 							Info.Contact.Normal = -Info.Contact.Normal; // Flip the Normal //
-							ObB.Contact( ObA, Info );						
+							Obj[ObB].Contact( Obj[ObA], Info );			
 							// Update Rectangles //
-							ObA.UpdateRect();
-							ObB.UpdateRect();
+							Obj[ObA].UpdateRect();
+							Obj[ObB].UpdateRect();
 						}
 					}
 				}
 				
-				QSensor* SensorA = ObA.GetSensor();
-				QSensor* SensorB = ObB.GetSensor();
+				// Danger?? //
+				QSensor* SensorA = Obj[ObA].GetSensor();
+				QSensor* SensorB = Obj[ObB].GetSensor();
 
 				// Only Sense if both Objects have Sensors //
 				if ( SensorA && SensorB ) {
 					// Broad Phase 2 (Rectangles) //
 					if ( SensorA->Rect == SensorB->Rect ) {
 						// Compare Sensors //
-						if ( Sense_Sensor(ObA,*SensorA, ObB,*SensorB) ) {
+						if ( Sense_Sensor(Obj[ObA],*SensorA, Obj[ObB],*SensorB) ) {
 							// Sense Functions are called in Sense_Sensor //
 						}
 					}
@@ -513,23 +521,21 @@ public:
 
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
-		for ( st idx = 0; idx < Obj.size(); idx++ ) {
-			QObj& Ob = Obj[idx];
-
-			// Step Object //
-			if ( Ob.Step( Prop ) ) {
+		for ( st Ob = 0; Ob < Obj.size(); Ob++ ) {
+			// Step Object (Can't use a Reference here, as Obj can be resized by Step) //
+			if ( Obj[Ob].Step( Prop ) ) {
 				// If the Object moved, update the Rectangle //
-				Ob.UpdateRect();
+				Obj[Ob].UpdateRect();
 			}
 		}
 
 		// Move Cameras //
-		for ( st idx = 0; idx < Camera.size(); idx++ ) {
-			Camera[idx].Step();
+		for ( st Cam = 0; Cam < Camera.size(); Cam++ ) {
+			Camera[Cam].Step();
 		}
 		
 		// Reorganize Objects in a better order //
-		Optimize();
+//		Optimize();
 	}
 	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
@@ -555,6 +561,8 @@ public:
 	}
 	
 	void Optimize() {
+		// TODO: Reassign Indexes based on new positions. //
+		// TODO: Reassign Indexes in the Named Object Search Table //
 		int Swaps = 0;
 		// Reorganize so that Infinite Mass Objects go last //
 		for ( st idx = 1; idx < Obj.size(); idx++ ) {
