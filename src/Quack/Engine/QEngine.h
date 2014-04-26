@@ -69,6 +69,8 @@ enum {
 	QO_CAPPY_STATIC,	// Dumb Simple Capsule Shaped Solid Object //
 	
 	QO_BOXOBJ,			// Box Object, with Squirrel Hooks //
+
+	QO_CAMERA,			// Camera //
 };
 // - ------------------------------------------------------------------------------------------ - //
 // QArt Types -- Quack Art //
@@ -101,6 +103,8 @@ typedef Real 		QFloat;
 typedef Vector2D	QVec;
 typedef Rect2D		QRect;
 typedef Matrix4x4	QMat;
+
+typedef void*		QHandle;
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Simulation Properties -- i.e. Gravity //
 class QProp {
@@ -358,7 +362,7 @@ public:
 // Quack Camera //
 class QCamera { 
 public:
-//	int		Type;			// Camera Type (not needed yet) //
+	int		Type;			// Camera Type (not needed yet) //
 	st32 	MyIndex;		// Which camera I am in the engine //
 	QVec	Pos;
 	QFloat	Scale;
@@ -367,9 +371,11 @@ public:
 
 	// THIS WILL BE UNSAFE! THE POINTER INVALIDATES WHEN ENOUGH OBJECTS ARE ADDED TO THE ENGINE //	
 	QObj* Target;
+//	QHandle Target;
 	// TODO: Add a way to target multiple objects (loosely).
 
 	inline QCamera( QObj* _Target = 0 ) :
+		Type( QO_CAMERA ),
 		Scale( 256.0f ),
 		Target( _Target )
 	{
