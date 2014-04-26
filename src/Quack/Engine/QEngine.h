@@ -472,6 +472,8 @@ public:
 		// NOTES: We can't use object references or pointers here, as any of the Squirrel calls //
 		//   run the risk of causing a resize of the Object Array. //
 		
+		// DANGER!! Notify() called inside any function, if it creates an Object, will cause death! //
+		
 		// Do Collisions First //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
 		for ( st ObA = 0; ObA < Obj.size(); ObA++ ) {
@@ -521,6 +523,9 @@ public:
 							// Sense functions (both of them). //
 							// If any objects were added in a sense function, the additional //
 							// tests between Sensors of Objects can break horribly (segfalt). //
+							
+							// This is unsafe because the data used to derive the handles changes. //
+							// Actual references become invalid in the middle of loops. //
 						}
 					}
 				}
