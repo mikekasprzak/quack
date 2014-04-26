@@ -168,7 +168,7 @@ inline bool Sense_Sensor( QObj& ObA, QSensorSpineBB& SenA, QObj& ObB, QSensorSpi
 
 				Info.A = DataA;
 				Info.B = DataB;
-				ObA.Sense(ObB,Info);
+				ObA.Sense(ObB,Info);	// DANGER! May break following Call if Object Resized! //
 
 				Info.A = DataB;
 				Info.B = DataA;
