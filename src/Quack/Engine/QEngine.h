@@ -477,8 +477,6 @@ public:
 		for ( st ObA = 0; ObA < Obj.size(); ObA++ ) {
 			// To eliminitae != self check, start at idx+1 //
 			for ( st ObB = ObA+1; ObB < Obj.size(); ObB++ ) {
-//				QObj& ObA = Obj[idx];
-//				QObj& ObB = Obj[idx2];
 				
 				// Broad Phase 2 (Rectangles) //
 				if ( Obj[ObA].Rect == Obj[ObB].Rect ) {
@@ -502,7 +500,9 @@ public:
 					}
 				}
 				
-				// Danger?? //
+				// DANGER!! Sense_Sensor should be fed Object Handles! //
+				// DANGER!! UNTIL FIXED, DO NOT CREATE OBJECTS IN SENSORS! //
+				// I will need this some day to, e.g. Kill a character, spawn body and head debris objects. 
 				QSensor* SensorA = Obj[ObA].GetSensor();
 				QSensor* SensorB = Obj[ObB].GetSensor();
 
@@ -512,7 +512,15 @@ public:
 					if ( SensorA->Rect == SensorB->Rect ) {
 						// Compare Sensors //
 						if ( Sense_Sensor(Obj[ObA],*SensorA, Obj[ObB],*SensorB) ) {
-							// Sense Functions are called in Sense_Sensor //
+							// Sense Squirrel Functions are called in Sense_Sensor //
+							
+							// Inside Sense_Sensor (QSensorSpineBB.h), we iterate over //
+							// all sensors of the object. Then compare, one by one, each //
+							// sensor vs eachother. //
+							// After that, we populate a QSensorInfo and call the Squirrel //
+							// Sense functions (both of them). //
+							// If any objects were added in a sense function, the additional //
+							// tests between Sensors of Objects can break horribly (segfalt). //
 						}
 					}
 				}
