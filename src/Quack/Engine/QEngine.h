@@ -543,7 +543,7 @@ public:
 		}
 		
 		// Reorganize Objects in a better order //
-//		Optimize();
+		Optimize();
 	}
 	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
@@ -577,6 +577,12 @@ public:
 			if ( Obj[idx-1].GetInvMass() == Real::Zero ) {
 				if ( Obj[idx].GetInvMass() != Real::Zero ) {
 					std::swap(Obj[idx-1],Obj[idx]);
+
+					// Update internal Indexes, now that they've changed position //
+					st32 OldIndex = Obj[idx-1].MyIndex;
+					Obj[idx-1].MyIndex = Obj[idx].MyIndex;
+					Obj[idx].MyIndex = OldIndex;
+
 					Swaps++;
 				}
 			}
