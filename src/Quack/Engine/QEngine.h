@@ -442,8 +442,8 @@ protected:
 public:
 	inline QObjGrid() :
 		Data(128,128),
-		CellW( 48 ),
-		CellH( 48 ),
+		CellW( 96/*48*/ ),
+		CellH( 96/*48*/ ),
 		//Rect( -((Data.Width()*CellW)>>1),-((Data.Height()*CellH)>>1), Data.Width()*CellW,Data.Height()*CellH )
 		Rect( GridX(),GridY(), GridWidth(),GridHeight() )
 	{
@@ -478,6 +478,13 @@ public:
 	}
 	inline st32 GridHeight() const {
 		return Data.Height()*CellH;
+	}
+	
+	inline st32 Width() const {
+		return Data.Width();
+	}
+	inline st32 Height() const {
+		return Data.Height();
 	}
 	
 	
@@ -597,12 +604,29 @@ public:
 			// Check against all objects in my cell //
 			if ( Grid.Size( CellIndex ) ) {
 				QObjList& VsList = Grid[ CellIndex ];
-				Log("Vs %i",VsList.size());
 				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
-					Check( *ItrA, **ItrB );
+					Solve( *ItrA, **ItrB );
 				}
 			}
 			// Check against all objects in other cells //
+			if ( Grid.Size( CellIndex+1 ) ) {
+				QObjList& VsList = Grid[ CellIndex+1 ];
+				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
+					Solve( *ItrA, **ItrB );
+				}
+			}
+			if ( Grid.Size( CellIndex+Grid.Width() ) ) {
+				QObjList& VsList = Grid[ CellIndex+Grid.Width() ];
+				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
+					Solve( *ItrA, **ItrB );
+				}
+			}
+			if ( Grid.Size( CellIndex+Grid.Width()+1 ) ) {
+				QObjList& VsList = Grid[ CellIndex+Grid.Width()+1 ];
+				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
+					Solve( *ItrA, **ItrB );
+				}
+			}
 
 			// Add me to the cell //
 			Grid.Add( CellIndex, &(*ItrA) );
@@ -614,7 +638,7 @@ public:
 //			// To eliminitae != self check, start at idx+1 //
 //			typename std::list<QObj>::iterator ItrB = ItrA;
 //			for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
-//				Check( *ItrA, *ItrB );
+//				Solve( *ItrA, *ItrB );
 //			}
 //		}
 
@@ -639,7 +663,7 @@ public:
 	}
 
 
-	void Check( QObj& ObA, QObj& ObB ) { 
+	void Solve( QObj& ObA, QObj& ObB ) { 
 		// Broad Phase 2 (Rectangles) //
 		if ( ObA.Rect == ObB.Rect ) {
 			// This is safe, as the Bodies are not used by Squirrel code //
