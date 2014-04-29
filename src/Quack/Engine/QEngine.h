@@ -426,20 +426,22 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+typedef std::list<QObj*> QObjList;
+// - ------------------------------------------------------------------------------------------ - //
 // Quack Object Grid (a Partitioning Scheme... gotta have something for now) //
 template <typename T>
 class QObjGrid {
-	typedef std::list<T> QObjList;
+	typedef std::list<T> QList;
 protected:	
-	GelGrid<QObjList*> Data;
-	std::list<QObjList*> UsedLists;
-	std::list<QObjList*> UnusedLists;
+	GelGrid<QList> Data;
+//	std::list<QList*> UsedLists;
+//	std::list<QList*> UnusedLists;
 	
 	st32 CellW, CellH;
 	QRect Rect;
 public:
 	inline QObjGrid() :
-		Data(128,128,0),
+		Data(128,128),
 		CellW( 48 ),
 		CellH( 48 ),
 		//Rect( -((Data.Width()*CellW)>>1),-((Data.Height()*CellH)>>1), Data.Width()*CellW,Data.Height()*CellH )
@@ -448,13 +450,20 @@ public:
 		// Things outside Rect are considered "in the void" //
 	}
 	
-	inline ~QObjGrid() {
-		for ( typename std::list<QObjList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
-			delete *Itr;
-		}
-		for ( typename std::list<QObjList*>::iterator Itr = UnusedLists.begin(); Itr != UnusedLists.end(); ++Itr ) {
-			delete *Itr;
-		}		
+//	inline ~QObjGrid() {
+//		for ( typename std::list<QList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
+//			delete *Itr;
+//		}
+//		for ( typename std::list<QList*>::iterator Itr = UnusedLists.begin(); Itr != UnusedLists.end(); ++Itr ) {
+//			delete *Itr;
+//		}		
+//	}
+
+	inline QList& operator [] ( const int Index ) {
+		return Data[Index];
+	}
+	inline const QList& operator [] ( const int Index ) const {
+		return Data[Index];
 	}
 	
 public:
@@ -478,11 +487,11 @@ public:
 	}
 
 	inline st Size( const int idx ) const {
-		QObjList* Cell = Data[idx];
-		if ( Cell ) {
-			return Cell->size();
-		}
-		return 0;
+//		QList& Cell = Data[idx];
+//		if ( Cell ) {
+			return Data[idx].size();
+//		}
+//		return 0;
 	}
 	inline st Size( const int _x, const int _y ) const {
 		return Size( Index(_x,_y) );
@@ -490,11 +499,14 @@ public:
 
 public:
 	inline void Clear() {
-		Data.Fill( 0 );
-		for ( typename std::list<QObjList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
-			(**Itr).clear();
+		for ( st idx = 0; idx < Data.Size(); idx++ ) {
+			Data[idx].clear();
 		}
-		UnusedLists.splice( UnusedLists.begin(), UsedLists );
+//		Data.Fill( 0 );
+//		for ( typename std::list<QList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
+//			(**Itr).clear();
+//		}
+//		UnusedLists.splice( UnusedLists.begin(), UsedLists );
 	}
 	
 	inline int FindCellIndex( const QRect& VsRect ) const {
@@ -509,6 +521,27 @@ public:
 		//Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
 		
 		return Index( (int)(Pos.x.ToFloat()), (int)(Pos.y.ToFloat()) );
+	}
+	
+	inline void Add( const int idx, T Value ) {
+		QList& Cell = Data[idx];
+//		if ( Cell == 0 ) {		
+//			if ( UnusedLists.size() ) {
+//				// Take the list off the UnusedList and move it to the UsedList //
+//				UsedLists.splice( UsedLists.begin(), UnusedLists, UnusedLists.begin() );
+//				Cell = UsedLists.front();
+//			}
+//			else {
+//				// No UnusedLists left, so create a new one //
+//				UsedLists.push_front( new QList() );
+//				Cell = UsedLists.front();
+//			}
+//		}
+//		
+//		Log( "[%llx] = %x", Cell, Value );
+		
+		// ?? //
+		Cell.push_front( Value );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -568,72 +601,35 @@ public:
 		// Top of the frame, clear the grid. We'll be reinserting as we go. //
 		Grid.Clear();
 
-//		Log( "******" );
+		Log( "******" );
 		// Broad Phase: Iterate for all elements. Check the cells they overlap, then add self. //
 		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
 			int CellIndex = Grid.FindCellIndex( ItrA->Rect );
-//			Log( "[%llX] = %i", &(*ItrA), CellIndex );
+			Log( "* [%llX] = %i", &(*ItrA), CellIndex );
 
 			// Check against all objects in my cell //
 			if ( Grid.Size( CellIndex ) ) {
-				
+				QObjList& VsList = Grid[ CellIndex ];
+				Log("Vs %i",VsList.size());
+				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
+					Check( *ItrA, **ItrB );
+				}
 			}
 			// Check against all objects in other cells //
 
 			// Add me to the cell //
-			
+			Grid.Add( CellIndex, &(*ItrA) );
 		}
 		
 		// Do Collisions First //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
-		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
-			// To eliminitae != self check, start at idx+1 //
-			typename std::list<QObj>::iterator ItrB = ItrA;
-			for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
-				Check( *ItrA, *ItrB );				
-//				// Broad Phase 2 (Rectangles) //
-//				if ( ItrA->Rect == ItrB->Rect ) {
-//					// This is safe, as the Bodies are not used by Squirrel code //
-//					QBody* BodyA = ItrA->GetBody();
-//					QBody* BodyB = ItrB->GetBody();
-//					
-//					// Only if Objects have Bodies //
-//					if ( BodyA && BodyB ) {
-//						QContactInfo Info;
-//						// Solve/Resolve Collision //
-//						if ( Solve_Body(*BodyA,*BodyB,Info) ) {
-//							// If a collision was solved/resolved, trigger Contact events //
-//							ItrA->Contact( *ItrB, Info );
-//							Info.Contact.Normal = -Info.Contact.Normal; // Flip the Normal //
-//							ItrB->Contact( *ItrA, Info );			
-//							// Update Rectangles //
-//							ItrA->UpdateRect();
-//							ItrB->UpdateRect();
-//						}
-//					}
-//				}
-//				
-//				QSensor* SensorA = ItrA->GetSensor();
-//				QSensor* SensorB = ItrB->GetSensor();
-//
-//				// Only Sense if both Objects have Sensors //
-//				if ( SensorA && SensorB ) {
-//					// Broad Phase 2 (Rectangles) //
-//					if ( SensorA->Rect == SensorB->Rect ) {
-//						// Compare Sensors //
-//						if ( Sense_Sensor(*ItrA,*SensorA, *ItrB,*SensorB) ) {
-//							// Sense Squirrel Functions are called in Sense_Sensor //
-//							
-//							// Inside Sense_Sensor (QSensorSpineBB.h), we iterate over //
-//							// all sensors of the object. Then compare, one by one, each //
-//							// sensor vs eachother. //
-//							// After that, we populate a QSensorInfo and call the Squirrel //
-//							// Sense functions (both of them). //
-//						}
-//					}
-//				}
-			}
-		}
+//		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
+//			// To eliminitae != self check, start at idx+1 //
+//			typename std::list<QObj>::iterator ItrB = ItrA;
+//			for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
+//				Check( *ItrA, *ItrB );
+//			}
+//		}
 
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
