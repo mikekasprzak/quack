@@ -13,6 +13,7 @@
 #include <Skel/Skel.h>	// Temp //
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
+#include <list>
 #include <algorithm>
 // - ------------------------------------------------------------------------------------------ - //
 namespace QK {
@@ -429,7 +430,8 @@ class QEngine {
 public:
 	QProp Prop;
 	// NOTE: THIS IS THE SOURCE OF THE SEGFALT! POINTERS TO OBJECTS in an STD::VECTOR! //
-	std::vector<QObj> Obj;			// An Engine contains Objects //
+//	std::vector<QObj> Obj;			// An Engine contains Objects //
+	std::list<QObj> Obj;
 	std::vector<QCamera> Camera;	// It also contains Cameras //
 
 public:
@@ -466,12 +468,12 @@ public:
 //		return Camera.back();
 //	}
 
-	inline QObj& operator [] ( const st Index ) {
-		return Obj[Index];
-	}
-	inline const QObj& operator [] ( const st Index ) const {
-		return Obj[Index];
-	}
+//	inline QObj& operator [] ( const st Index ) {
+//		return Obj[Index];
+//	}
+//	inline const QObj& operator [] ( const st Index ) const {
+//		return Obj[Index];
+//	}
 		
 public:
 	void Step() {
@@ -482,15 +484,16 @@ public:
 		
 		// Do Collisions First //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
-		for ( st ObA = 0; ObA < Obj.size(); ObA++ ) {
+		for ( std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
 			// To eliminitae != self check, start at idx+1 //
-			for ( st ObB = ObA+1; ObB < Obj.size(); ObB++ ) {
+			std::list<QObj>::iterator ItrB = ItrA;
+			for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
 				
 				// Broad Phase 2 (Rectangles) //
-				if ( Obj[ObA].Rect == Obj[ObB].Rect ) {
+				if ( ItrA->Rect == ItrB->Rect ) {
 					// This is safe, as the Bodies are not used by Squirrel code //
-					QBody* BodyA = Obj[ObA].GetBody();
-					QBody* BodyB = Obj[ObB].GetBody();
+					QBody* BodyA = ItrA->GetBody();
+					QBody* BodyB = ItrB->GetBody();
 					
 					// Only if Objects have Bodies //
 					if ( BodyA && BodyB ) {
@@ -498,12 +501,12 @@ public:
 						// Solve/Resolve Collision //
 						if ( Solve_Body(*BodyA,*BodyB,Info) ) {
 							// If a collision was solved/resolved, trigger Contact events //
-							Obj[ObA].Contact( Obj[ObB], Info );
+							ItrA->Contact( *ItrB, Info );
 							Info.Contact.Normal = -Info.Contact.Normal; // Flip the Normal //
-							Obj[ObB].Contact( Obj[ObA], Info );			
+							ItrB->Contact( *ItrA, Info );			
 							// Update Rectangles //
-							Obj[ObA].UpdateRect();
-							Obj[ObB].UpdateRect();
+							ItrA->UpdateRect();
+							ItrB->UpdateRect();
 						}
 					}
 				}
@@ -511,15 +514,15 @@ public:
 				// DANGER!! Sense_Sensor should be fed Object Handles! //
 				// DANGER!! UNTIL FIXED, DO NOT CREATE OBJECTS IN SENSORS! //
 				// I will need this some day to, e.g. Kill a character, spawn body and head debris objects. 
-				QSensor* SensorA = Obj[ObA].GetSensor();
-				QSensor* SensorB = Obj[ObB].GetSensor();
+				QSensor* SensorA = ItrA->GetSensor();
+				QSensor* SensorB = ItrB->GetSensor();
 
 				// Only Sense if both Objects have Sensors //
 				if ( SensorA && SensorB ) {
 					// Broad Phase 2 (Rectangles) //
 					if ( SensorA->Rect == SensorB->Rect ) {
 						// Compare Sensors //
-						if ( Sense_Sensor(Obj[ObA],*SensorA, Obj[ObB],*SensorB) ) {
+						if ( Sense_Sensor(*ItrA,*SensorA, *ItrB,*SensorB) ) {
 							// Sense Squirrel Functions are called in Sense_Sensor //
 							
 							// Inside Sense_Sensor (QSensorSpineBB.h), we iterate over //
@@ -540,11 +543,11 @@ public:
 
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
-		for ( st Ob = 0; Ob < Obj.size(); Ob++ ) {
+		for ( std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
 			// Step Object (Can't use a Reference here, as Obj can be resized by Step) //
-			if ( Obj[Ob].Step( Prop ) ) {
+			if ( Itr->Step( Prop ) ) {
 				// If the Object moved, update the Rectangle //
-				Obj[Ob].UpdateRect();
+				Itr->UpdateRect();
 			}
 		}
 
@@ -559,8 +562,9 @@ public:
 	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
 		// TODO: A Better Visibilty Check //
-		for ( st idx = 0; idx < Obj.size(); idx++ ) {
-			QObj& Ob = Obj[idx];
+		for ( std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+//		for ( st idx = 0; idx < Obj.size(); idx++ ) {
+			QObj& Ob = *Itr;
 
 			// If in the view (Rectangle Test) //
 			if ( Ob.Rect == View ) {
@@ -580,7 +584,7 @@ public:
 	}
 	
 	void Optimize() {
-		// TODO: Reassign Indexes based on new positions. //
+/*		// TODO: Reassign Indexes based on new positions. //
 		// TODO: Reassign Indexes in the Named Object Search Table //
 		int Swaps = 0;
 		// Reorganize so that Infinite Mass Objects go last //
@@ -600,7 +604,7 @@ public:
 		}
 		if ( Swaps ) {
 			Log("Optimized: %i Object Swaps", Swaps);
-		}
+		}*/
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -609,16 +613,18 @@ class QObjHandle {
 public:
 	QEngine*	Engine;
 	st32 		Index;
+	QObj*		Ptr;
 
-	inline QObjHandle( QEngine* _Engine = 0, const st32 _Index = 0 ) :
+	inline QObjHandle( QEngine* _Engine = 0, const st32 _Index = 0, QObj* _Ptr = 0 ) :
 		Engine( _Engine ),
-		Index( _Index )
+		Index( _Index ),
+		Ptr( _Ptr )
 	{
 	}
 	
 public:
 	inline QObj* Get() {
-		return &Engine->Obj[Index];
+		return Ptr;//&Engine->Obj[Index];
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
