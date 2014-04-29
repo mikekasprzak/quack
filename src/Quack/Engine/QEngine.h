@@ -435,14 +435,15 @@ protected:
 	std::list<QObjList*> UsedLists;
 	std::list<QObjList*> UnusedLists;
 	
-	int CellW, CellH;
+	st32 CellW, CellH;
 	QRect Rect;
 public:
 	inline QObjGrid() :
 		Data(128,128,0),
 		CellW( 48 ),
 		CellH( 48 ),
-		Rect( -((Data.Width()*CellW)>>1),-((Data.Height()*CellH)>>1), Data.Width()*CellW,Data.Height()*CellH )
+		//Rect( -((Data.Width()*CellW)>>1),-((Data.Height()*CellH)>>1), Data.Width()*CellW,Data.Height()*CellH )
+		Rect( GridX(),GridY(), GridWidth(),GridHeight() )
 	{
 		// Things outside Rect are considered "in the void" //
 	}
@@ -457,11 +458,26 @@ public:
 	}
 	
 public:
-	inline int Index( const int _x, const int _y ) {
+	inline int GridX() const {
+		return -((Data.Width()*CellW)>>1);
+	}
+	inline int GridY() const {
+		return -((Data.Height()*CellH)>>1);
+	}
+	inline st32 GridWidth() const {
+		return Data.Width()*CellW;
+	}
+	inline st32 GridHeight() const {
+		return Data.Height()*CellH;
+	}
+	
+	
+	inline int Index( const int _x, const int _y ) const {
+//		Log( "%i %i", _x,_y );
 		return Data.Index(_x,_y);
 	}
 		
-	inline st Size( const int _x, const int _y ) {
+	inline st Size( const int _x, const int _y ) const {
 		QObjList* Cell = Data(_x,_y);
 		if ( Cell ) {
 			return Cell->size();
@@ -469,13 +485,28 @@ public:
 		return 0;
 	}
 
+public:
 	inline void Clear() {
 		Data.Fill( 0 );
 		for ( typename std::list<QObjList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
 			(**Itr).clear();
 		}
 		UnusedLists.splice( UnusedLists.begin(), UsedLists );
-	}	
+	}
+	
+	inline int FindCellIndex( const QRect& VsRect ) const {
+		//Log( "%f %f - %f %f", Rect.P1().x.ToFloat(),Rect.P1().y.ToFloat(), Rect.Width().ToFloat(),Rect.Height().ToFloat() );
+		//Log( "%f %f", VsRect.P1().x.ToFloat(), VsRect.P1().y.ToFloat() );
+
+		if ( Rect != VsRect.P1() ) {
+			return -1;
+		}
+		QVec Pos = VsRect.P1() - Rect.P1();
+		Pos /= QVec(CellW,CellH); // Reciprocal //
+		//Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
+		
+		return Index( (int)(Pos.x.ToFloat()), (int)(Pos.y.ToFloat()) );
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Engine //
@@ -533,6 +564,13 @@ public:
 	void Step() {
 		// Top of the frame, clear the grid. We'll be reinserting as we go. //
 		Grid.Clear();
+
+//		Log( "******" );
+		// Broad Phase: Iterate for all elements. Check the cells they overlap, then add self. //
+		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
+			int CellIndex = Grid.FindCellIndex( ItrA->Rect );
+//			Log( "[%llX] = %i", &(*ItrA), CellIndex );
+		}
 		
 		// Do Collisions First //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
