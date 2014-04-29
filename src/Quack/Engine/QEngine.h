@@ -442,8 +442,8 @@ protected:
 public:
 	inline QObjGrid() :
 		Data(128,128),
-		CellW( 96/*48*/ ),
-		CellH( 96/*48*/ ),
+		CellW( 48 ),
+		CellH( 48 ),
 		//Rect( -((Data.Width()*CellW)>>1),-((Data.Height()*CellH)>>1), Data.Width()*CellW,Data.Height()*CellH )
 		Rect( GridX(),GridY(), GridWidth(),GridHeight() )
 	{
@@ -496,9 +496,10 @@ public:
 	inline st Size( const int idx ) const {
 //		QList& Cell = Data[idx];
 //		if ( Cell ) {
+		if ( (idx >= 0) && (idx < Data.Size()) ) {
 			return Data[idx].size();
-//		}
-//		return 0;
+		}
+		return 0;
 	}
 	inline st Size( const int _x, const int _y ) const {
 		return Size( Index(_x,_y) );
@@ -515,28 +516,76 @@ public:
 //		}
 //		UnusedLists.splice( UnusedLists.begin(), UsedLists );
 	}
+
+	inline bool IsInside( const QRect& VsRect ) const {
+		// NOTE: THIS WILL FAIL IF YOU ARE TOUCHING THE EDGE! //
+		// THIS NEEDS TO BE THE "INSIDE" CHECK! AND I DON'T KNOW WHERE THAT CODE WENT! //
+		return Rect == VsRect;
+	}
 	
 	inline int FindCellIndex( const QRect& VsRect ) const {
 		//Log( "%f %f - %f %f", Rect.P1().x.ToFloat(),Rect.P1().y.ToFloat(), Rect.Width().ToFloat(),Rect.Height().ToFloat() );
 		//Log( "%f %f", VsRect.P1().x.ToFloat(), VsRect.P1().y.ToFloat() );
 
-		if ( Rect != VsRect.P1() ) {
-			return -1;
-		}
+//		if ( Rect != VsRect.P1() ) {
+//			return -1;
+//		}
 		QVec Pos = VsRect.P1() - Rect.P1();
-		Pos /= QVec(CellW,CellH); // Reciprocal //
-		//Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
+		Pos /= QVec(CellW,CellH); // TODO: Reciprocal //
+//		Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
 		
 		return Index( (int)(Pos.x.ToFloat()), (int)(Pos.y.ToFloat()) );
 	}
-	
-	inline void Add( const int idx, T Value ) {
-		QList& Cell = Data[idx];
-		
-		Log( "Add [%llx] = %x", &Cell, Value );
 
-		Cell.push_front( Value );
+	inline int FindCellWidth( const QRect& VsRect ) const {
+		QVec Pos1 = VsRect.P1() - Rect.P1();
+		Pos1 /= QVec(CellW,CellH); // TODO: Reciprocal //
+		QVec Pos2 = VsRect.P2() - Rect.P1();
+		Pos2 /= QVec(CellW,CellH); // TODO: Reciprocal //
+//		Log( "%f %f vs %f %f", Pos1.x.ToFloat(), Pos1.y.ToFloat(), Pos2.x.ToFloat(), Pos2.y.ToFloat() );
+		
+		return (int)(ceil(Pos2.x.ToFloat())-floor(Pos1.x.ToFloat()));
 	}
+	inline int FindCellHeight( const QRect& VsRect ) const {
+		QVec Pos1 = VsRect.P1() - Rect.P1();
+		Pos1 /= QVec(CellW,CellH); // TODO: Reciprocal //
+		QVec Pos2 = VsRect.P2() - Rect.P1();
+		Pos2 /= QVec(CellW,CellH); // TODO: Reciprocal //
+		
+		return (int)(ceil(Pos2.y.ToFloat())-floor(Pos1.y.ToFloat()));
+	}
+
+	
+//	inline void Add( const int idx, T Value ) {
+//		if ( (idx < 0) && (idx >= Data.Size()) )
+//			return;
+//
+//		QList& Cell = Data[idx];
+//		
+////		Log( "Add [%llx] = %x", &Cell, Value );
+//
+//		Cell.push_front( Value );
+//	}
+
+	inline void Add( const QRect& VsRect, T Value ) {
+		QVec Pos1 = VsRect.P1() - Rect.P1();
+		Pos1 /= QVec(CellW,CellH); // TODO: Reciprocal //
+		QVec Pos2 = VsRect.P2() - Rect.P1();
+		Pos2 /= QVec(CellW,CellH); // TODO: Reciprocal //
+		//Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
+		
+		int X1 = (int)(Pos1.x.ToFloat());
+		int Y1 = (int)(Pos1.y.ToFloat());
+		int X2 = (int)(Pos2.x.ToFloat());
+		int Y2 = (int)(Pos2.y.ToFloat());
+		
+		for ( int y = Y1; y <= Y2; ++y ) {
+			for ( int x = X1; x <= X2; ++x ) {
+				Data(x,y).push_front( Value );
+			}
+		}
+	}
+
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Engine //
@@ -595,41 +644,32 @@ public:
 		// Top of the frame, clear the grid. We'll be reinserting as we go. //
 		Grid.Clear();
 
-		Log( "******" );
+//		Log( "******" );
 		// Broad Phase: Iterate for all elements. Check the cells they overlap, then add self. //
 		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
-			int CellIndex = Grid.FindCellIndex( ItrA->Rect );
-			Log( "* [%llX] = %i", &(*ItrA), CellIndex );
-
-			// Check against all objects in my cell //
-			if ( Grid.Size( CellIndex ) ) {
-				QObjList& VsList = Grid[ CellIndex ];
-				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
-					Solve( *ItrA, **ItrB );
+			if ( Grid.IsInside( ItrA->Rect ) ) {
+				int CellIndex = Grid.FindCellIndex( ItrA->Rect );
+				int CellWidth = Grid.FindCellWidth( ItrA->Rect );
+				int CellHeight = Grid.FindCellHeight( ItrA->Rect );
+	
+	//			Log( "* [%llX] = %i (%i,%i)", &(*ItrA), CellIndex, CellWidth, CellHeight );
+	
+				for ( int y = 0; y < CellHeight; ++y ) {
+					for ( int x = 0; x < CellWidth; ++x ) {
+						int IndexItr = CellIndex + (y*Grid.Width()) + x;
+						// Check against all objects in my cell //
+						if ( Grid.Size( IndexItr ) ) {
+							QObjList& VsList = Grid[ IndexItr ];
+							for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
+								Solve( *ItrA, **ItrB );
+							}
+						}
+					}
 				}
+	
+				// Add me to the cell //
+				Grid.Add( ItrA->Rect, &(*ItrA) );
 			}
-			// Check against all objects in other cells //
-			if ( Grid.Size( CellIndex+1 ) ) {
-				QObjList& VsList = Grid[ CellIndex+1 ];
-				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
-					Solve( *ItrA, **ItrB );
-				}
-			}
-			if ( Grid.Size( CellIndex+Grid.Width() ) ) {
-				QObjList& VsList = Grid[ CellIndex+Grid.Width() ];
-				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
-					Solve( *ItrA, **ItrB );
-				}
-			}
-			if ( Grid.Size( CellIndex+Grid.Width()+1 ) ) {
-				QObjList& VsList = Grid[ CellIndex+Grid.Width()+1 ];
-				for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
-					Solve( *ItrA, **ItrB );
-				}
-			}
-
-			// Add me to the cell //
-			Grid.Add( CellIndex, &(*ItrA) );
 		}
 		
 		// Do Collisions First //
@@ -645,10 +685,12 @@ public:
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
 		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
-			// Step Object (Can't use a Reference here, as Obj can be resized by Step) //
-			if ( Itr->Step( Prop ) ) {
-				// If the Object moved, update the Rectangle //
-				Itr->UpdateRect();
+			if ( Grid.IsInside( Itr->Rect ) ) {
+				// Step Object (Can't use a Reference here, as Obj can be resized by Step) //
+				if ( Itr->Step( Prop ) ) {
+					// If the Object moved, update the Rectangle //
+					Itr->UpdateRect();
+				}
 			}
 		}
 
