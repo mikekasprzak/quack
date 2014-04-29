@@ -752,6 +752,40 @@ public:
 
 public:	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
+		// NOTE: Double Drawing is due to multiple cells having multiple instances of objects. //
+		// TODO: Do timestamping here as well!! //
+		int CellIndex = Grid.FindCellIndex( View );
+		int CellWidth = Grid.FindCellWidth( View );
+		int CellHeight = Grid.FindCellHeight( View );
+
+		for ( int y = 0; y < CellHeight; ++y ) {
+			for ( int x = 0; x < CellWidth; ++x ) {
+				int IndexItr = CellIndex + (y*Grid.Width()) + x;
+				// Check against all objects in my cell //
+				if ( Grid.Size( IndexItr ) ) {
+					QObjList& VsList = Grid[ IndexItr ];
+					for ( typename std::list<QObj*>::iterator Itr = VsList.begin(); Itr != VsList.end(); ++Itr ) {
+						QObj& Ob = **Itr;
+			
+						// If in the view (Rectangle Test) //
+						if ( Ob.Rect == View ) {
+							// TODO: Add to Draw Queue, to allow sorting/layering. //
+							Ob.Draw( Mat );
+						}
+
+						if ( Prop.Debug ) {
+							gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
+			
+							QSensor* Sensor = Ob.GetSensor();
+							if ( Sensor ) {
+								gelDrawSquare(Mat,Sensor->Rect.BasePoint().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
+							}
+						}
+					}
+				}
+			}
+		}
+/*
 		// TODO: A Better Visibilty Check //
 		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
 			QObj& Ob = *Itr;
@@ -771,6 +805,7 @@ public:
 				}
 			}
 		}
+		*/
 	}
 
 	// This is something that needs to happen inside the partitioning, not the natural stepping of objects. //	
