@@ -53,24 +53,6 @@ SQInteger qk_object_get( HSQUIRRELVM v ) {
 		return SQ_RETURN;		
 	}
 
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		sq_pushinteger(v,GEL_GET_R(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'g' ) {
-//		sq_pushinteger(v,GEL_GET_G(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		sq_pushinteger(v,GEL_GET_B(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		sq_pushinteger(v,GEL_GET_A(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-
 	// Throw null on member not found //
 	sq_pushnull(v);				// +1 //
 	return sq_throwobject(v);	// -1 //

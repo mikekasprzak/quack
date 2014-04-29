@@ -429,18 +429,15 @@ public:
 class QEngine {
 public:
 	QProp Prop;
-	// NOTE: THIS IS THE SOURCE OF THE SEGFALT! POINTERS TO OBJECTS in an STD::VECTOR! //
-//	std::vector<QObj> Obj;			// An Engine contains Objects //
-	std::list<QObj> Obj;
+	std::list<QObj> Obj;			// An Engine contains Objects //
+	// NOTE: THIS IS A SOURCE OF SEGFALT! POINTERS TO CAMERAS in an STD::VECTOR! //
 	std::vector<QCamera> Camera;	// It also contains Cameras //
 
 public:
 	inline QEngine() {
 		// Workaround for the Object Adding Segfault //
-//		Obj.reserve(128);
 		// TODO: Add Dummy (Index 0) //
 		Camera.reserve(4);
-		// TODO: Add Dummy (Index 0) //
 
 		Log("** Engine Created %x",this);
 	}
@@ -478,11 +475,6 @@ public:
 		
 public:
 	void Step() {
-		// NOTES: We can't use object references or pointers here, as any of the Squirrel calls //
-		//   run the risk of causing a resize of the Object Array. //
-		
-		// DANGER!! Notify() called inside any function, if it creates an Object, will cause death! //
-		
 		// Do Collisions First //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
 		for ( std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
@@ -512,9 +504,6 @@ public:
 					}
 				}
 				
-				// DANGER!! Sense_Sensor should be fed Object Handles! //
-				// DANGER!! UNTIL FIXED, DO NOT CREATE OBJECTS IN SENSORS! //
-				// I will need this some day to, e.g. Kill a character, spawn body and head debris objects. 
 				QSensor* SensorA = ItrA->GetSensor();
 				QSensor* SensorB = ItrB->GetSensor();
 
@@ -531,11 +520,6 @@ public:
 							// sensor vs eachother. //
 							// After that, we populate a QSensorInfo and call the Squirrel //
 							// Sense functions (both of them). //
-							// If any objects were added in a sense function, the additional //
-							// tests between Sensors of Objects can break horribly (segfalt). //
-							
-							// This is unsafe because the data used to derive the handles changes. //
-							// Actual references become invalid in the middle of loops. //
 						}
 					}
 				}
@@ -557,8 +541,9 @@ public:
 			Camera[Cam].Step();
 		}
 		
+		// NOTE: This is partitioning only! Optimizing the original list of objects is unnecessary and unsafe! //
 		// Reorganize Objects in a better order //
-		Optimize();
+		//Optimize();
 	}
 	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
@@ -582,50 +567,35 @@ public:
 			}
 		}
 	}
-	
-	void Optimize() {
-/*		// TODO: Reassign Indexes based on new positions. //
-		// TODO: Reassign Indexes in the Named Object Search Table //
-		int Swaps = 0;
-		// Reorganize so that Infinite Mass Objects go last //
-		for ( st idx = 1; idx < Obj.size(); idx++ ) {
-			if ( Obj[idx-1].GetInvMass() == Real::Zero ) {
-				if ( Obj[idx].GetInvMass() != Real::Zero ) {
-					std::swap(Obj[idx-1],Obj[idx]);
 
-					// Update internal Indexes, now that they've changed position //
-					st32 OldIndex = Obj[idx-1].MyIndex;
-					Obj[idx-1].MyIndex = Obj[idx].MyIndex;
-					Obj[idx].MyIndex = OldIndex;
-
-					Swaps++;
-				}
-			}
-		}
-		if ( Swaps ) {
-			Log("Optimized: %i Object Swaps", Swaps);
-		}*/
-	}
-};
-// - ------------------------------------------------------------------------------------------ - //
-// Quack Object Handle - Used to reference Objects inside an Engine (QkObj). //
-class QObjHandle {
-public:
-	QEngine*	Engine;
-	st32 		Index;
-	QObj*		Ptr;
-
-	inline QObjHandle( QEngine* _Engine = 0, const st32 _Index = 0, QObj* _Ptr = 0 ) :
-		Engine( _Engine ),
-		Index( _Index ),
-		Ptr( _Ptr )
-	{
-	}
-	
-public:
-	inline QObj* Get() {
-		return Ptr;//&Engine->Obj[Index];
-	}
+	// This is something that needs to happen inside the partitioning, not the natural stepping of objects. //	
+//	void Optimize() {
+//		// TODO: Reassign Indexes based on new positions. //
+//		// TODO: Reassign Indexes in the Named Object Search Table //
+//		int Swaps = 0;
+//		// Reorganize so that Infinite Mass Objects go last //
+////		for ( st idx = 1; idx < Obj.size(); idx++ ) {
+//		std::list<QObj>::iterator ItrA = Obj.begin();
+//		std::list<QObj>::iterator ItrB = ItrA;
+//		for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
+//			if ( ItrB->GetInvMass() == Real::Zero ) {
+//				if ( ItrA->GetInvMass() != Real::Zero ) {
+////					std::swap(Obj[idx-1],Obj[idx]);
+//					std::swap(ItrB,ItrA);
+//
+//					// Update internal Indexes, now that they've changed position //
+//					st32 OldIndex = Obj[idx-1].MyIndex;
+//					Obj[idx-1].MyIndex = Obj[idx].MyIndex;
+//					Obj[idx].MyIndex = OldIndex;
+//
+//					Swaps++;
+//				}
+//			}
+//		}
+//		if ( Swaps ) {
+//			Log("Optimized: %i Object Swaps", Swaps);
+//		}
+//	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
