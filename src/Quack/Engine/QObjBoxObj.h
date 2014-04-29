@@ -249,21 +249,21 @@ public:
 		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
 		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
 
-		QObjHandle* ObjHandle;
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Obj.Parent;
-		ObjHandle->Index = Obj.MyIndex;
-		ObjHandle->Ptr = &Obj;
+//		QObjHandle* ObjHandle;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Obj.Parent;
+//		ObjHandle->Index = Obj.MyIndex;
+//		ObjHandle->Ptr = &Obj;
 
-//		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);		// ARG2 - Vs //
 
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Vs.Parent;
-		ObjHandle->Index = Vs.MyIndex;
-		ObjHandle->Ptr = &Vs;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Vs.Parent;
+//		ObjHandle->Index = Vs.MyIndex;
+//		ObjHandle->Ptr = &Vs;
 
-//		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
 		sq_pushobject(vm,SqInfo);		// ARG3 - Info //
 		sq_setinstanceup(vm,-1,(SQUserPointer)&Info);
 		sq_call(vm,4,false,false);
@@ -279,21 +279,21 @@ public:
 		sq_pushobject(vm,SqHookObj);			// ARG0 - this //
 		sq_pushobject(vm,SqObj);				// ARG1 - Obj //
 		
-		QObjHandle* ObjHandle;
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Obj.Parent;
-		ObjHandle->Index = Obj.MyIndex;
-		ObjHandle->Ptr = &Obj;
+//		QObjHandle* ObjHandle;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Obj.Parent;
+//		ObjHandle->Index = Obj.MyIndex;
+//		ObjHandle->Ptr = &Obj;
 		
-//		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);				// ARG2 - Vs //
 		
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Vs.Parent;
-		ObjHandle->Index = Vs.MyIndex;
-		ObjHandle->Ptr = &Vs;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Vs.Parent;
+//		ObjHandle->Index = Vs.MyIndex;
+//		ObjHandle->Ptr = &Vs;
 		
-//		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
 		sq_pushobject(vm,SqInfo2);				// ARG3 - Info //
 		sq_setinstanceup(vm,-1,(SQUserPointer)&Info);
 		sq_call(vm,4,false,false);
@@ -309,21 +309,21 @@ public:
 		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
 		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
 
-		QObjHandle* ObjHandle;
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Obj.Parent;
-		ObjHandle->Index = Obj.MyIndex;
-		ObjHandle->Ptr = &Obj;
+//		QObjHandle* ObjHandle;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Obj.Parent;
+//		ObjHandle->Index = Obj.MyIndex;
+//		ObjHandle->Ptr = &Obj;
 
-//		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);		// ARG2 - Sender //
 
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Sender.Parent;
-		ObjHandle->Index = Sender.MyIndex;
-		ObjHandle->Ptr = &Sender;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Sender.Parent;
+//		ObjHandle->Index = Sender.MyIndex;
+//		ObjHandle->Ptr = &Sender;
 
-//		sq_setinstanceup(vm,-1,(SQUserPointer)&Sender);
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Sender);
 		sq_pushinteger(vm,Message);		// ARG3 - Message //
 		sq_call(vm,4,false,false);
 		sq_pop(vm,2);
@@ -338,13 +338,13 @@ public:
 		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
 		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
 
-		QObjHandle* ObjHandle;
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Obj->Parent;
-		ObjHandle->Index = Obj->MyIndex;
-		ObjHandle->Ptr = Obj;
+//		QObjHandle* ObjHandle;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Obj->Parent;
+//		ObjHandle->Index = Obj->MyIndex;
+//		ObjHandle->Ptr = Obj;
 
-//		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
+		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
 		sq_call(vm,2,false,false);
 		sq_pop(vm,2);
 		
@@ -364,13 +364,13 @@ public:
 		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
 		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
 
-		QObjHandle* ObjHandle;
-		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
-		ObjHandle->Engine = Obj.Parent;
-		ObjHandle->Index = Obj.MyIndex;
-		ObjHandle->Ptr = &Obj;
+//		QObjHandle* ObjHandle;
+//		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
+//		ObjHandle->Engine = Obj.Parent;
+//		ObjHandle->Index = Obj.MyIndex;
+//		ObjHandle->Ptr = &Obj;
 
-//		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
+		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_call(vm,2,false,false);
 		sq_pop(vm,2);
 		

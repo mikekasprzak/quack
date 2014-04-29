@@ -450,6 +450,7 @@ public:
 
 public:
 	inline QObj& Add() {
+		// TODO: Add an Object Recycling System. Deleted go on a list. //
 		Obj.push_back( QObj( this, Obj.size() ) );
 		return Obj.back();
 	}
@@ -563,7 +564,6 @@ public:
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
 		// TODO: A Better Visibilty Check //
 		for ( std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
-//		for ( st idx = 0; idx < Obj.size(); idx++ ) {
 			QObj& Ob = *Itr;
 
 			// If in the view (Rectangle Test) //
