@@ -253,6 +253,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Obj.Parent;
 		ObjHandle->Index = Obj.MyIndex;
+		ObjHandle->Ptr = &Obj;
 
 //		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);		// ARG2 - Vs //
@@ -260,6 +261,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Vs.Parent;
 		ObjHandle->Index = Vs.MyIndex;
+		ObjHandle->Ptr = &Vs;
 
 //		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
 		sq_pushobject(vm,SqInfo);		// ARG3 - Info //
@@ -281,6 +283,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Obj.Parent;
 		ObjHandle->Index = Obj.MyIndex;
+		ObjHandle->Ptr = &Obj;
 		
 //		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);				// ARG2 - Vs //
@@ -288,6 +291,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Vs.Parent;
 		ObjHandle->Index = Vs.MyIndex;
+		ObjHandle->Ptr = &Vs;
 		
 //		sq_setinstanceup(vm,-1,(SQUserPointer)&Vs);
 		sq_pushobject(vm,SqInfo2);				// ARG3 - Info //
@@ -309,6 +313,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Obj.Parent;
 		ObjHandle->Index = Obj.MyIndex;
+		ObjHandle->Ptr = &Obj;
 
 //		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_pushobject(vm,SqObj2);		// ARG2 - Sender //
@@ -316,6 +321,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Sender.Parent;
 		ObjHandle->Index = Sender.MyIndex;
+		ObjHandle->Ptr = &Sender;
 
 //		sq_setinstanceup(vm,-1,(SQUserPointer)&Sender);
 		sq_pushinteger(vm,Message);		// ARG3 - Message //
@@ -336,6 +342,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Obj->Parent;
 		ObjHandle->Index = Obj->MyIndex;
+		ObjHandle->Ptr = Obj;
 
 //		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
 		sq_call(vm,2,false,false);
@@ -361,6 +368,7 @@ public:
 		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 		ObjHandle->Engine = Obj.Parent;
 		ObjHandle->Index = Obj.MyIndex;
+		ObjHandle->Ptr = &Obj;
 
 //		sq_setinstanceup(vm,-1,(SQUserPointer)&Obj);
 		sq_call(vm,2,false,false);
