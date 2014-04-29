@@ -10,6 +10,8 @@
 #include <Render/GelDraw.h>
 #include <RTCD/RTCD.h>
 
+#include <NewGrid/NewGrid.h>
+
 #include <Skel/Skel.h>	// Temp //
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
@@ -424,12 +426,66 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+// Quack Object Grid (a Partitioning Scheme... gotta have something for now) //
+template <typename T>
+class QObjGrid {
+	typedef std::list<T> QObjList;
+protected:	
+	GelGrid<QObjList*> Data;
+	std::list<QObjList*> UsedLists;
+	std::list<QObjList*> UnusedLists;
+	
+	int CellW, CellH;
+	QRect Rect;
+public:
+	inline QObjGrid() :
+		Data(128,128,0),
+		CellW( 48 ),
+		CellH( 48 ),
+		Rect( -((Data.Width()*CellW)>>1),-((Data.Height()*CellH)>>1), Data.Width()*CellW,Data.Height()*CellH )
+	{
+		// Things outside Rect are considered "in the void" //
+	}
+	
+	inline ~QObjGrid() {
+		for ( typename std::list<QObjList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
+			delete *Itr;
+		}
+		for ( typename std::list<QObjList*>::iterator Itr = UnusedLists.begin(); Itr != UnusedLists.end(); ++Itr ) {
+			delete *Itr;
+		}		
+	}
+	
+public:
+	inline int Index( const int _x, const int _y ) {
+		return Data.Index(_x,_y);
+	}
+		
+	inline st Size( const int _x, const int _y ) {
+		QObjList* Cell = Data(_x,_y);
+		if ( Cell ) {
+			return Cell->size();
+		}
+		return 0;
+	}
+
+	inline void Clear() {
+		Data.Fill( 0 );
+		for ( typename std::list<QObjList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
+			(**Itr).clear();
+		}
+		UnusedLists.splice( UnusedLists.begin(), UsedLists );
+	}	
+};
+// - ------------------------------------------------------------------------------------------ - //
 // Quack Engine //
 // TODO: Client and Server Engines //
 class QEngine {
 public:
 	QProp Prop;
 	std::list<QObj> Obj;			// An Engine contains Objects //
+	QObjGrid<QObj*> Grid;
+
 	// NOTE: THIS IS A SOURCE OF SEGFALT! POINTERS TO CAMERAS in an STD::VECTOR! //
 	std::vector<QCamera> Camera;	// It also contains Cameras //
 
@@ -475,11 +531,14 @@ public:
 		
 public:
 	void Step() {
+		// Top of the frame, clear the grid. We'll be reinserting as we go. //
+		Grid.Clear();
+		
 		// Do Collisions First //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
-		for ( std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
+		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
 			// To eliminitae != self check, start at idx+1 //
-			std::list<QObj>::iterator ItrB = ItrA;
+			typename std::list<QObj>::iterator ItrB = ItrA;
 			for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
 				
 				// Broad Phase 2 (Rectangles) //
@@ -528,7 +587,7 @@ public:
 
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
-		for ( std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
 			// Step Object (Can't use a Reference here, as Obj can be resized by Step) //
 			if ( Itr->Step( Prop ) ) {
 				// If the Object moved, update the Rectangle //
@@ -548,7 +607,7 @@ public:
 	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
 		// TODO: A Better Visibilty Check //
-		for ( std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
 			QObj& Ob = *Itr;
 
 			// If in the view (Rectangle Test) //
