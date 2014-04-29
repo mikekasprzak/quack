@@ -476,13 +476,16 @@ public:
 //		Log( "%i %i", _x,_y );
 		return Data.Index(_x,_y);
 	}
-		
-	inline st Size( const int _x, const int _y ) const {
-		QObjList* Cell = Data(_x,_y);
+
+	inline st Size( const int idx ) const {
+		QObjList* Cell = Data[idx];
 		if ( Cell ) {
 			return Cell->size();
 		}
 		return 0;
+	}
+	inline st Size( const int _x, const int _y ) const {
+		return Size( Index(_x,_y) );
 	}
 
 public:
@@ -570,6 +573,15 @@ public:
 		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
 			int CellIndex = Grid.FindCellIndex( ItrA->Rect );
 //			Log( "[%llX] = %i", &(*ItrA), CellIndex );
+
+			// Check against all objects in my cell //
+			if ( Grid.Size( CellIndex ) ) {
+				
+			}
+			// Check against all objects in other cells //
+
+			// Add me to the cell //
+			
 		}
 		
 		// Do Collisions First //
@@ -578,48 +590,48 @@ public:
 			// To eliminitae != self check, start at idx+1 //
 			typename std::list<QObj>::iterator ItrB = ItrA;
 			for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
-				
-				// Broad Phase 2 (Rectangles) //
-				if ( ItrA->Rect == ItrB->Rect ) {
-					// This is safe, as the Bodies are not used by Squirrel code //
-					QBody* BodyA = ItrA->GetBody();
-					QBody* BodyB = ItrB->GetBody();
-					
-					// Only if Objects have Bodies //
-					if ( BodyA && BodyB ) {
-						QContactInfo Info;
-						// Solve/Resolve Collision //
-						if ( Solve_Body(*BodyA,*BodyB,Info) ) {
-							// If a collision was solved/resolved, trigger Contact events //
-							ItrA->Contact( *ItrB, Info );
-							Info.Contact.Normal = -Info.Contact.Normal; // Flip the Normal //
-							ItrB->Contact( *ItrA, Info );			
-							// Update Rectangles //
-							ItrA->UpdateRect();
-							ItrB->UpdateRect();
-						}
-					}
-				}
-				
-				QSensor* SensorA = ItrA->GetSensor();
-				QSensor* SensorB = ItrB->GetSensor();
-
-				// Only Sense if both Objects have Sensors //
-				if ( SensorA && SensorB ) {
-					// Broad Phase 2 (Rectangles) //
-					if ( SensorA->Rect == SensorB->Rect ) {
-						// Compare Sensors //
-						if ( Sense_Sensor(*ItrA,*SensorA, *ItrB,*SensorB) ) {
-							// Sense Squirrel Functions are called in Sense_Sensor //
-							
-							// Inside Sense_Sensor (QSensorSpineBB.h), we iterate over //
-							// all sensors of the object. Then compare, one by one, each //
-							// sensor vs eachother. //
-							// After that, we populate a QSensorInfo and call the Squirrel //
-							// Sense functions (both of them). //
-						}
-					}
-				}
+				Check( *ItrA, *ItrB );				
+//				// Broad Phase 2 (Rectangles) //
+//				if ( ItrA->Rect == ItrB->Rect ) {
+//					// This is safe, as the Bodies are not used by Squirrel code //
+//					QBody* BodyA = ItrA->GetBody();
+//					QBody* BodyB = ItrB->GetBody();
+//					
+//					// Only if Objects have Bodies //
+//					if ( BodyA && BodyB ) {
+//						QContactInfo Info;
+//						// Solve/Resolve Collision //
+//						if ( Solve_Body(*BodyA,*BodyB,Info) ) {
+//							// If a collision was solved/resolved, trigger Contact events //
+//							ItrA->Contact( *ItrB, Info );
+//							Info.Contact.Normal = -Info.Contact.Normal; // Flip the Normal //
+//							ItrB->Contact( *ItrA, Info );			
+//							// Update Rectangles //
+//							ItrA->UpdateRect();
+//							ItrB->UpdateRect();
+//						}
+//					}
+//				}
+//				
+//				QSensor* SensorA = ItrA->GetSensor();
+//				QSensor* SensorB = ItrB->GetSensor();
+//
+//				// Only Sense if both Objects have Sensors //
+//				if ( SensorA && SensorB ) {
+//					// Broad Phase 2 (Rectangles) //
+//					if ( SensorA->Rect == SensorB->Rect ) {
+//						// Compare Sensors //
+//						if ( Sense_Sensor(*ItrA,*SensorA, *ItrB,*SensorB) ) {
+//							// Sense Squirrel Functions are called in Sense_Sensor //
+//							
+//							// Inside Sense_Sensor (QSensorSpineBB.h), we iterate over //
+//							// all sensors of the object. Then compare, one by one, each //
+//							// sensor vs eachother. //
+//							// After that, we populate a QSensorInfo and call the Squirrel //
+//							// Sense functions (both of them). //
+//						}
+//					}
+//				}
 			}
 		}
 
@@ -642,7 +654,54 @@ public:
 		// Reorganize Objects in a better order //
 		//Optimize();
 	}
-	
+
+
+	void Check( QObj& ObA, QObj& ObB ) { 
+		// Broad Phase 2 (Rectangles) //
+		if ( ObA.Rect == ObB.Rect ) {
+			// This is safe, as the Bodies are not used by Squirrel code //
+			QBody* BodyA = ObA.GetBody();
+			QBody* BodyB = ObB.GetBody();
+			
+			// Only if Objects have Bodies //
+			if ( BodyA && BodyB ) {
+				QContactInfo Info;
+				// Solve/Resolve Collision //
+				if ( Solve_Body(*BodyA,*BodyB,Info) ) {
+					// If a collision was solved/resolved, trigger Contact events //
+					ObA.Contact( ObB, Info );
+					Info.Contact.Normal = -Info.Contact.Normal; // Flip the Normal //
+					ObB.Contact( ObA, Info );			
+					// Update Rectangles //
+					ObA.UpdateRect();
+					ObB.UpdateRect();
+				}
+			}
+		}
+		
+		QSensor* SensorA = ObA.GetSensor();
+		QSensor* SensorB = ObB.GetSensor();
+
+		// Only Sense if both Objects have Sensors //
+		if ( SensorA && SensorB ) {
+			// Broad Phase 2 (Rectangles) //
+			if ( SensorA->Rect == SensorB->Rect ) {
+				// Compare Sensors //
+				if ( Sense_Sensor(ObA,*SensorA, ObB,*SensorB) ) {
+					// Sense Squirrel Functions are called in Sense_Sensor //
+					
+					// Inside Sense_Sensor (QSensorSpineBB.h), we iterate over //
+					// all sensors of the object. Then compare, one by one, each //
+					// sensor vs eachother. //
+					// After that, we populate a QSensorInfo and call the Squirrel //
+					// Sense functions (both of them). //
+				}
+			}
+		}
+		
+	}
+
+public:	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
 		// TODO: A Better Visibilty Check //
 		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
