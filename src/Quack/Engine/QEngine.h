@@ -442,8 +442,8 @@ protected:
 public:
 	inline QObjGrid() :
 		Data(128,128),
-		CellW( 48 ),
-		CellH( 48 ),
+		CellW( 48+48 ),
+		CellH( 48+48 ),
 		//Rect( -((Data.Width()*CellW)>>1),-((Data.Height()*CellH)>>1), Data.Width()*CellW,Data.Height()*CellH )
 		Rect( GridX(),GridY(), GridWidth(),GridHeight() )
 	{
