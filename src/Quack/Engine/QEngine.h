@@ -525,22 +525,9 @@ public:
 	
 	inline void Add( const int idx, T Value ) {
 		QList& Cell = Data[idx];
-//		if ( Cell == 0 ) {		
-//			if ( UnusedLists.size() ) {
-//				// Take the list off the UnusedList and move it to the UsedList //
-//				UsedLists.splice( UsedLists.begin(), UnusedLists, UnusedLists.begin() );
-//				Cell = UsedLists.front();
-//			}
-//			else {
-//				// No UnusedLists left, so create a new one //
-//				UsedLists.push_front( new QList() );
-//				Cell = UsedLists.front();
-//			}
-//		}
-//		
-//		Log( "[%llx] = %x", Cell, Value );
 		
-		// ?? //
+		Log( "Add [%llx] = %x", &Cell, Value );
+
 		Cell.push_front( Value );
 	}
 };
