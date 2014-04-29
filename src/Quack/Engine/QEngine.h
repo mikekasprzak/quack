@@ -11,6 +11,7 @@
 #include <RTCD/RTCD.h>
 
 #include <NewGrid/NewGrid.h>
+#include <GelStamp/GelStamp.h>
 
 #include <Skel/Skel.h>	// Temp //
 // - ------------------------------------------------------------------------------------------ - //
@@ -278,8 +279,13 @@ public:
 
 public:
 	int				Type;
+	// NOTE NEW: MyIndex should be replaced by a unique Id. (a stamp?)
 	// NOTE: MyIndex is unreliable as a reference due to the Optimize function reassigning them. //
 	st32 			MyIndex;		// Which Object I am in the Engine (by Index). //
+	
+	GelStamp		Stamp;			// Step and Draw need to stamp me whenever I've been checked. //
+	
+	// NOTE NEW: This can probable be removed //
 	class QEngine*	Parent;			// My Parent (Engine) //
 	void*			Data;
 
@@ -313,6 +319,7 @@ public:
 
 public:
 	inline QObj( class QEngine* _Parent, const st32 _MyIndex ) :
+		Stamp( 0 ),	// New Objects should be Zero Stamped //
 		Parent(_Parent),
 		MyIndex(_MyIndex)
 	{
@@ -434,8 +441,6 @@ class QObjGrid {
 	typedef std::list<T> QList;
 protected:	
 	GelGrid<QList> Data;
-//	std::list<QList*> UsedLists;
-//	std::list<QList*> UnusedLists;
 	
 	st32 CellW, CellH;
 	QRect Rect;
@@ -449,15 +454,6 @@ public:
 	{
 		// Things outside Rect are considered "in the void" //
 	}
-	
-//	inline ~QObjGrid() {
-//		for ( typename std::list<QList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
-//			delete *Itr;
-//		}
-//		for ( typename std::list<QList*>::iterator Itr = UnusedLists.begin(); Itr != UnusedLists.end(); ++Itr ) {
-//			delete *Itr;
-//		}		
-//	}
 
 	inline QList& operator [] ( const int Index ) {
 		return Data[Index];
@@ -494,8 +490,6 @@ public:
 	}
 
 	inline st Size( const int idx ) const {
-//		QList& Cell = Data[idx];
-//		if ( Cell ) {
 		if ( (idx >= 0) && (idx < Data.Size()) ) {
 			return Data[idx].size();
 		}
@@ -510,11 +504,6 @@ public:
 		for ( st idx = 0; idx < Data.Size(); idx++ ) {
 			Data[idx].clear();
 		}
-//		Data.Fill( 0 );
-//		for ( typename std::list<QList*>::iterator Itr = UsedLists.begin(); Itr != UsedLists.end(); ++Itr ) {
-//			(**Itr).clear();
-//		}
-//		UnusedLists.splice( UnusedLists.begin(), UsedLists );
 	}
 
 	inline bool IsInside( const QRect& VsRect ) const {
@@ -527,9 +516,6 @@ public:
 		//Log( "%f %f - %f %f", Rect.P1().x.ToFloat(),Rect.P1().y.ToFloat(), Rect.Width().ToFloat(),Rect.Height().ToFloat() );
 		//Log( "%f %f", VsRect.P1().x.ToFloat(), VsRect.P1().y.ToFloat() );
 
-//		if ( Rect != VsRect.P1() ) {
-//			return -1;
-//		}
 		QVec Pos = VsRect.P1() - Rect.P1();
 		Pos /= QVec(CellW,CellH); // TODO: Reciprocal //
 //		Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
@@ -554,18 +540,6 @@ public:
 		
 		return (int)(ceil(Pos2.y.ToFloat())-floor(Pos1.y.ToFloat()));
 	}
-
-	
-//	inline void Add( const int idx, T Value ) {
-//		if ( (idx < 0) && (idx >= Data.Size()) )
-//			return;
-//
-//		QList& Cell = Data[idx];
-//		
-////		Log( "Add [%llx] = %x", &Cell, Value );
-//
-//		Cell.push_front( Value );
-//	}
 
 	inline void Add( const QRect& VsRect, T Value ) {
 		QVec Pos1 = VsRect.P1() - Rect.P1();
@@ -598,6 +572,8 @@ public:
 
 	// NOTE: THIS IS A SOURCE OF SEGFALT! POINTERS TO CAMERAS in an STD::VECTOR! //
 	std::vector<QCamera> Camera;	// It also contains Cameras //
+
+	GelStamper Stamper;
 
 public:
 	inline QEngine() {
@@ -661,18 +637,27 @@ public:
 						if ( Grid.Size( IndexItr ) ) {
 							QObjList& VsList = Grid[ IndexItr ];
 							for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
-								Solve( *ItrA, **ItrB );
+								if ( Stamper.Check( (**ItrB).Stamp ) ) {
+									Solve( *ItrA, **ItrB );
+								}
 							}
 						}
 					}
 				}
-	
+
+				if ( Stamper.NewStamp() ) {
+					Log( "! OMG WE'RE FALL DEAD !" );
+					for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+						Stamper.Clear( Itr->Stamp );
+					}
+				}
+
 				// Add me to the cell //
 				Grid.Add( ItrA->Rect, &(*ItrA) );
 			}
 		}
 		
-		// Do Collisions First //
+		// Old Brute Force Collision Check Code //
 		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
 //		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
 //			// To eliminitae != self check, start at idx+1 //
@@ -764,48 +749,57 @@ public:
 				// Check against all objects in my cell //
 				if ( Grid.Size( IndexItr ) ) {
 					QObjList& VsList = Grid[ IndexItr ];
+
 					for ( typename std::list<QObj*>::iterator Itr = VsList.begin(); Itr != VsList.end(); ++Itr ) {
 						QObj& Ob = **Itr;
-			
-						// If in the view (Rectangle Test) //
-						if ( Ob.Rect == View ) {
-							// TODO: Add to Draw Queue, to allow sorting/layering. //
-							Ob.Draw( Mat );
-						}
-
-						if ( Prop.Debug ) {
-							gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
-			
-							QSensor* Sensor = Ob.GetSensor();
-							if ( Sensor ) {
-								gelDrawSquare(Mat,Sensor->Rect.BasePoint().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
+						
+						if ( Stamper.Check( Ob.Stamp ) ) {
+							// If in the view (Rectangle Test) //
+							if ( Ob.Rect == View ) {
+								// TODO: Add to Draw Queue, to allow sorting/layering. //
+								Ob.Draw( Mat );
+							}
+	
+							if ( Prop.Debug ) {
+								gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
+				
+								QSensor* Sensor = Ob.GetSensor();
+								if ( Sensor ) {
+									gelDrawSquare(Mat,Sensor->Rect.BasePoint().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-/*
-		// TODO: A Better Visibilty Check //
-		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
-			QObj& Ob = *Itr;
 
-			// If in the view (Rectangle Test) //
-			if ( Ob.Rect == View ) {
-				// TODO: Add to Draw Queue, to allow sorting/layering. //
-				Ob.Draw( Mat );
-			}
-			
-			if ( Prop.Debug ) {
-				gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
-
-				QSensor* Sensor = Ob.GetSensor();
-				if ( Sensor ) {
-					gelDrawSquare(Mat,Sensor->Rect.BasePoint().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
-				}
+		if ( Stamper.NewStamp() ) {
+			Log( "! OMG WE'RE ALL DEAD !" );
+			for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+				Stamper.Clear( Itr->Stamp );
 			}
 		}
-		*/
+
+		// Old Brute Force Draw code //
+//		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+//			QObj& Ob = *Itr;
+//
+//			// If in the view (Rectangle Test) //
+//			if ( Ob.Rect == View ) {
+//				// TODO: Add to Draw Queue, to allow sorting/layering. //
+//				Ob.Draw( Mat );
+//			}
+//			
+//			if ( Prop.Debug ) {
+//				gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
+//
+//				QSensor* Sensor = Ob.GetSensor();
+//				if ( Sensor ) {
+//					gelDrawSquare(Mat,Sensor->Rect.BasePoint().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
+//				}
+//			}
+//		}		
 	}
 
 	// This is something that needs to happen inside the partitioning, not the natural stepping of objects. //	
