@@ -15,6 +15,7 @@ public:
 		self->Type = QK::QO_DUMMY;
 
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
+		self->_GetBodyRect = (QObj::QGetRectFunc)_GetRect;
 
 		self->_GetArt = (QObj::QGetArtFunc)_GetArt;
 		self->_GetSensor = (QObj::QGetSensorFunc)_GetSensor;

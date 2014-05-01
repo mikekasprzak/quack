@@ -18,6 +18,7 @@ public:
 		self->_GetSensor = (QObj::QGetSensorFunc)_GetSensor;
 
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
+		self->_GetBodyRect = (QObj::QGetRectFunc)_GetRect;
 
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
 		self->_GetPos = (QObj::QGetPosFunc)_GetPos;
