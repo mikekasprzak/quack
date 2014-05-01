@@ -30,6 +30,7 @@ public:
 		self->_SetArtScale = (QObj::QSetArtScaleFunc)_SetArtScale;
 
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
+		self->_GetBodyRect = (QObj::QGetRectFunc)_GetBodyRect;
 			
 		self->_GetBody = (QObj::QGetBodyFunc)_GetBody;
 		self->_GetPos = (QObj::QGetPosFunc)_GetPos;
@@ -178,8 +179,18 @@ public:
 public:
 	static QRect _GetRect( thistype* self ) { return self->GetRect(); }
 	inline QRect GetRect() {
+//		QRect Ret = GetBodyRect();
+////		Ret += 
+//		Ret = Sensor.GetRect();
+//		return Ret;
+		return GetBodyRect();
+	}
+
+	static QRect _GetBodyRect( thistype* self ) { return self->GetBodyRect(); }
+	inline QRect GetBodyRect() {
 		return Body.GetRect();
 	}
+
 
 	static QBody* _GetBody( thistype* self ) { return self->GetBody(); }
 	inline QBody* GetBody() {

@@ -298,6 +298,8 @@ public:
 	QSetArtScaleFunc	_SetArtScale; // Odd scope? //
 	
 	QGetRectFunc		_GetRect;
+	QGetRectFunc		_GetBodyRect;
+	QGetRectFunc		_GetSensorRect;
 
 	QGetBodyFunc		_GetBody;
 	// TODO: Move all of the following to the Body (perhaps a single member of Body, i.e. vtable) //
@@ -336,6 +338,7 @@ public:
 	inline void SetArtScale( const QVec& _Scale ) { _SetArtScale(Data,_Scale); }
 
 	inline QRect GetRect() { return _GetRect(Data); }
+	inline QRect GetBodyRect() { return _GetBodyRect(Data); }
 
 	inline QBody* GetBody() { return _GetBody(Data); }
 	inline QVec GetPos() { return _GetPos(Data); }
@@ -646,10 +649,16 @@ public:
 //		Log( "******" );
 		// Broad Phase: Iterate for all elements. Check the cells they overlap, then add self. //
 		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
-			if ( Grid.IsInside( ItrA->Rect ) ) {
-				int CellIndex = Grid.FindCellIndex( ItrA->Rect );
-				int CellWidth = Grid.FindCellWidth( ItrA->Rect );
-				int CellHeight = Grid.FindCellHeight( ItrA->Rect );
+			QRect RectA = ItrA->Rect;
+			QSensor* Sensor = ItrA->GetSensor();
+			if ( Sensor ) {
+				RectA += Sensor->Rect;
+			}
+
+			if ( Grid.IsInside( RectA ) ) {
+				int CellIndex = Grid.FindCellIndex( RectA );
+				int CellWidth = Grid.FindCellWidth( RectA );
+				int CellHeight = Grid.FindCellHeight( RectA );
 	
 	//			Log( "* [%llX] = %i (%i,%i)", &(*ItrA), CellIndex, CellWidth, CellHeight );
 	
@@ -676,7 +685,7 @@ public:
 				}
 
 				// Add me to the cell //
-				Grid.Add( ItrA->Rect, &(*ItrA) );
+				Grid.Add( RectA, &(*ItrA) );
 			}
 		}
 		
@@ -693,6 +702,7 @@ public:
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
 		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+			// NOTE: This check should be the sum of all rectangles, but it's less important here as it's just step //
 			if ( Grid.IsInside( Itr->Rect ) ) {
 				// Step Object (Can't use a Reference here, as Obj can be resized by Step) //
 				if ( Itr->Step( Prop ) ) {
