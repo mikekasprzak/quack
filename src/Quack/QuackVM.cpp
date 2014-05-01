@@ -127,6 +127,7 @@ void QuackVMInit() {
 		
 		Log("* qkEngine"); register_qkEngine( vm );
 		Log("* qkObject"); register_qkObject( vm );
+		Log("* qkCamera"); register_qkCamera( vm );
 		Log("* qkContactInfo"); register_qkContactInfo( vm );
 		Log("* qkSensorInfo"); register_qkSensorInfo( vm );
 	sq_pop( vm, 1 );		// -1 //

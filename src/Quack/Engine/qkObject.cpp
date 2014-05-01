@@ -281,6 +281,17 @@ SQInteger qk_object_GetPos( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_object_GetUID( HSQUIRRELVM v ) {
+	QK::QObj* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+
+	sq_pushinteger( v, Ob->UID );
+
+	return SQ_RETURN;	
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_object_Notify( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
 //	QK::QObjHandle* ObjHandle;
@@ -332,6 +343,8 @@ SQRegFunction qkObject_funcs[] = {
 	
 	_DECL_FUNC(qk_object_GetPos,1,NULL),
 	_DECL_FUNC(qk_object_GetVelocity,1,NULL),
+
+	_DECL_FUNC(qk_object_GetUID,1,NULL),
 	
 	{0,0,0,0}
 };
@@ -372,6 +385,8 @@ SQInteger register_qkObject(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_object_GetVelocity,GetVelocity);
 
 		_CLASS_ADDFUNC(qk_object_Notify,Notify);
+
+		_CLASS_ADDFUNC(qk_object_GetUID,GetUID);
 
 		_ADD_CLASS_END(QObj);
 //		_ADD_CLASS_END(QObjHandle);

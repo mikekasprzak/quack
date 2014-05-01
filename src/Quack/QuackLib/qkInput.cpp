@@ -82,6 +82,24 @@ SQInteger qkInputPadVibrate( HSQUIRRELVM v ) {
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qkInputPadCount( HSQUIRRELVM v ) {
 	sq_pushinteger(v,Gel::Input::Devices);
+		
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qkPadCount( HSQUIRRELVM v ) {
+	int PadCount = 0;
+#ifdef USES_STEAM
+	PadCount += Gel::Input::Steam::DevicesConnected();
+#endif // USES_STEAM //
+#ifdef USES_XINPUT
+	PadCount += Gel::Input::XInput::DevicesConnected();
+#endif // USES_XINPUT //
+#ifdef USES_SDL2
+	PadCount += Gel::Input::SDLInput::DevicesConnected();
+#endif // USES_SDL2 //
+
+	sq_pushinteger( v, PadCount );
+		
 	return SQ_RETURN;
 }
 // - ------------------------------------------------------------------------------------------ - //
@@ -111,6 +129,7 @@ SQRegFunction qkInput_funcs[] = {
 	_DECL_FUNC(qkInputPadStubGetSimple,2,_SC(".i")),
 	
 	_DECL_FUNC(qkInputPadCount,0,NULL),
+	_DECL_FUNC(qkPadCount,0,NULL),
 
 	_DECL_FUNC(qkInputPadGet,2,_SC(".i")),
 	_DECL_FUNC(qkInputPadPulse,-2,_SC(".i")),
