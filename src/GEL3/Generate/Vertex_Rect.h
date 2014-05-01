@@ -8,22 +8,22 @@
 #include <Math/Vector.h>
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
-inline void generate_Vertex3D_Rect( T* Dest, const Vector3D& Pos, const Vector3D& Shape ) {
+inline void generate_Vertex3D_Rect( T* Dest, const Vector3D& Pos, const Vector2D& Shape ) {
 	Vector3D* Out;
 	
 	Out = (Vector3D*)Dest++;
 	*Out = Pos;
 	Out = (Vector3D*)Dest++;
-	*Out = Pos + Vector3D(Shape.x,0,Shape.z*Real::Half);
+	*Out = Pos + Vector3D(Shape.x,0,0);
 	Out = (Vector3D*)Dest++;
-	*Out = Pos + Shape;
+	*Out = Pos + Shape.ToVector3D();
 	Out = (Vector3D*)Dest++;
-	*Out = Pos + Vector3D(0,Shape.y,Shape.z*Real::Half);
+	*Out = Pos + Vector3D(0,Shape.y,0);
 }
 // - ------------------------------------------------------------------------------------------ - //
 template< typename T >
 inline void generate_Vertex3D_Rect( T* Dest, const Vector2D& Pos, const Vector2D& Shape ) {
-	generate_Vertex3D_Rect( Dest, Pos.ToVector3D(), Shape.ToVector3D() );
+	generate_Vertex3D_Rect( Dest, Pos.ToVector3D(), Shape );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline const st32 size_Vertex3D_Rect() {
