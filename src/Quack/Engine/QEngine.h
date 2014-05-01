@@ -519,9 +519,7 @@ public:
 	}
 
 	inline bool IsInside( const QRect& VsRect ) const {
-		// NOTE: THIS WILL FAIL IF YOU ARE TOUCHING THE EDGE! //
-		// THIS NEEDS TO BE THE "INSIDE" CHECK! AND I DON'T KNOW WHERE THAT CODE WENT! //
-		return Rect == VsRect;
+		return VsRect.IsInside( Rect );
 	}
 	
 	inline int FindCellIndex( const QRect& VsRect ) const {

@@ -201,6 +201,24 @@ public:
 		return *this;
 	}
 	// - -------------------------------------------------------------------------------------- - //
+
+	// - -------------------------------------------------------------------------------------- - //
+	// Am I entirely contained within another Rectangle (Vs)? //
+	inline bool IsInside( const ShapeRect2D& Vs ) const {
+		ShapeRect2D r( Vs.P1(), Vs.Shape() - Shape() );
+		Vector2D v( P1() );
+		
+		// NOTE: I'm not sure what will happen if I am larger than Vs. //
+		
+		if ( v.x >= r.P1().x )
+			if ( v.x < r.P2().x )
+				if ( v.y >= r.P1().y )
+					return ( v.y < r.P2().y );
+		return false;
+	}
+	// - -------------------------------------------------------------------------------------- - //
+
+	// - -------------------------------------------------------------------------------------- - //
 	inline Real NearestX( const Real& x ) const {
 		if ( x < P1().x )
 			return P1().x;
