@@ -29,11 +29,13 @@ _PRIMITIVE_DRAW_RADIUS(gelDrawDiamond,Diamond,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_RADIUS(gelDrawTriangle,Circle,GEL_LINE_LOOP,3);
 _PRIMITIVE_DRAW_RADIUS(gelDrawCross,Cross,GEL_LINES);
 _PRIMITIVE_DRAW_RADIUS(gelDrawX,X,GEL_LINES);
+_PRIMITIVE_DRAW_RADIUS(gelDrawRect,Rect,GEL_LINE_LOOP);
 
 _PRIMITIVE_DRAW_RADIUS(gelDrawCircleFill,Circle,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(gelDrawSquareFill,RadiusRect,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(gelDrawDiamondFill,Diamond,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(gelDrawTriangleFill,Circle,GEL_TRIANGLE_FAN,3);
+_PRIMITIVE_DRAW_RADIUS(gelDrawRectFill,Rect,GEL_TRIANGLE_FAN);
 // - ------------------------------------------------------------------------------------------ - //
 #undef _PRIMITIVE_DRAW_RADIUS
 // - ------------------------------------------------------------------------------------------ - //

@@ -485,6 +485,13 @@ public:
 		return Data.Height();
 	}
 	
+	inline st32 CellWidth() const {
+		return CellW;
+	}
+	inline st32 CellHeight() const {
+		return CellH;
+	}
+	
 	
 	inline int Index( const int _x, const int _y ) const {
 //		Log( "%i %i", _x,_y );
@@ -525,6 +532,14 @@ public:
 		return Index( (int)(Pos.x.ToFloat()), (int)(Pos.y.ToFloat()) );
 	}
 
+	inline QVec FindCornerCellPos( const QRect& VsRect ) const {
+		QVec Pos = VsRect.P1();// - Rect.P1();
+		Pos /= QVec(CellW,CellH); // TODO: Reciprocal //
+		Pos = QVec(Pos.x.Floor(),Pos.y.Floor());
+		Pos *= QVec(CellW,CellH);
+		return Pos;	
+	}
+
 	inline int FindCellWidth( const QRect& VsRect ) const {
 		QVec Pos1 = VsRect.P1() - Rect.P1();
 		Pos1 /= QVec(CellW,CellH); // TODO: Reciprocal //
@@ -562,6 +577,10 @@ public:
 		}
 	}
 
+public:
+	inline void Draw() {
+		
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Engine //
@@ -784,6 +803,22 @@ public:
 				Stamper.Clear( Itr->Stamp );
 			}
 		}
+
+		if ( Prop.Debug ) {			
+			QVec CellPos = Grid.FindCornerCellPos( View );
+			QVec CellShape(Grid.CellWidth(),Grid.CellHeight());
+			for ( int y = 0; y < CellHeight; ++y ) {
+				for ( int x = 0; x < CellWidth; ++x ) {
+					QVec Pos = CellPos + QVec(x*Grid.CellWidth(),y*Grid.CellHeight());
+					gelDrawRect(
+						Mat,
+						Pos.ToVector3D(),
+						CellShape,
+						GEL_RGBA(48,0,96,96));
+				}
+			}
+		}
+
 
 		// Old Brute Force Draw code //
 //		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
