@@ -114,7 +114,8 @@ SQInteger qk_object_tostring( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Ob,0);
 	
 	char Text[128];
-	sprintf(Text,"[QkObject:0x%x (%i),?,?]", (int)(st)Ob, Ob->MyIndex );
+	// NOTE: When we switch UID to be 64bit, make sure to update this printf!! //
+	sprintf(Text,"[QkObject:0x%x (%i),?,?]", (int)(st)Ob, Ob->UID );
 	
 	sq_pushstring(v,Text,-1);
 	

@@ -33,6 +33,11 @@ public:
 		}
 		return false;
 	}
+
+	// DANGER! This function is unsafe! It will not handle overflows! //
+	inline GelStamp RetNewStamp() {
+		return Current++;
+	}
 	
 	inline void Clear( GelStamp& Target ) const {
 		Target = 0;

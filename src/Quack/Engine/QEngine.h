@@ -278,15 +278,16 @@ public:
 	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
 
 public:
-	int				Type;
+	int				Type;	
+	GelStamp		Stamp;			// Step and Draw need to stamp me whenever I've been checked. //
+
 	// NOTE NEW: MyIndex should be replaced by a unique Id. (a stamp?)
 	// NOTE: MyIndex is unreliable as a reference due to the Optimize function reassigning them. //
-	st32 			MyIndex;		// Which Object I am in the Engine (by Index). //
-	
-	GelStamp		Stamp;			// Step and Draw need to stamp me whenever I've been checked. //
+//	st32 			MyIndex;		// Which Object I am in the Engine (by Index). //
+	GelStamp		UID;			// Unique Identifier of this Object //
 	
 	// NOTE NEW: This can probable be removed //
-	class QEngine*	Parent;			// My Parent (Engine) //
+//	class QEngine*	Parent;			// My Parent (Engine) //
 	void*			Data;
 
 	QRect			Rect;
@@ -318,10 +319,11 @@ public:
 	QDrawFunc			_Draw;
 
 public:
-	inline QObj( class QEngine* _Parent, const st32 _MyIndex ) :
+	inline QObj( const GelStamp _UID ) : // class QEngine* _Parent, const st32 _MyIndex ) :
 		Stamp( 0 ),	// New Objects should be Zero Stamped //
-		Parent(_Parent),
-		MyIndex(_MyIndex)
+		UID( _UID )
+//		Parent(_Parent),
+//		MyIndex(_MyIndex)
 	{
 	}
 
@@ -574,6 +576,7 @@ public:
 	std::vector<QCamera> Camera;	// It also contains Cameras //
 
 	GelStamper Stamper;
+	GelStamper UniqueID;
 
 public:
 	inline QEngine() {
@@ -590,7 +593,8 @@ public:
 public:
 	inline QObj& Add() {
 		// TODO: Add an Object Recycling System. Deleted go on a list. //
-		Obj.push_back( QObj( this, Obj.size() ) );
+		// NOTE: The UniqueID code runs a small risk of overflowing. 
+		Obj.push_back( QObj( UniqueID.RetNewStamp() ) );
 		return Obj.back();
 	}
 	inline QObj& Back() {
