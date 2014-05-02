@@ -311,7 +311,7 @@ SQInteger qk_engine_draw( HSQUIRRELVM v ) {
 	Matrix4x4* Mat;
 	sq_getinstanceup(v,3,(void**)&Mat,NULL);
 
-	// Do Step //	
+	// Do Draw //	
 	Engine->Draw(*View,*Mat);	
 		
 	return SQ_VOID;
@@ -329,14 +329,6 @@ SQInteger qk_engine_DrawCamera( HSQUIRRELVM v ) {
 	SQInteger CameraIndex;
 	sq_getinteger(v,2,&CameraIndex);
 
-//	Rect2D* View;
-//	sq_getinstanceup(v,2,(void**)&View,NULL);
-	
-//	Matrix4x4* Mat;
-//	sq_getinstanceup(v,3,(void**)&Mat,NULL);
-
-	// Do Step //	
-//	Engine->Draw(*View,*Mat);	
 	Engine->DrawCamera( CameraIndex );	
 		
 	return SQ_VOID;
@@ -400,8 +392,6 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_engine_constructor,constructor);
 		_CLASS_ADDFUNC(qk_engine_get,_get);
 		_CLASS_ADDFUNC(qk_engine_set,_set);
-//		_CLASS_ADDFUNC(qk_engine_step,Step);
-//		_CLASS_ADDFUNC(qk_engine_draw,Draw);
 		_CLASS_ADDFUNC_STATIC(qk_engine_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_engine_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_engine_cloned,_cloned);

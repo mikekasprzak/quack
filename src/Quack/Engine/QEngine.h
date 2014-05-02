@@ -280,14 +280,8 @@ public:
 public:
 	int				Type;	
 	GelStamp		Stamp;			// Step and Draw need to stamp me whenever I've been checked. //
+	GelStamp		UID;			// Unique Identifier of this Object //	
 
-	// NOTE NEW: MyIndex should be replaced by a unique Id. (a stamp?)
-	// NOTE: MyIndex is unreliable as a reference due to the Optimize function reassigning them. //
-//	st32 			MyIndex;		// Which Object I am in the Engine (by Index). //
-	GelStamp		UID;			// Unique Identifier of this Object //
-	
-	// NOTE NEW: This can probable be removed //
-//	class QEngine*	Parent;			// My Parent (Engine) //
 	void*			Data;
 
 	QRect			Rect;
@@ -324,8 +318,6 @@ public:
 	inline QObj( const GelStamp _UID ) : // class QEngine* _Parent, const st32 _MyIndex ) :
 		Stamp( 0 ),	// New Objects should be Zero Stamped //
 		UID( _UID )
-//		Parent(_Parent),
-//		MyIndex(_MyIndex)
 	{
 	}
 
@@ -383,10 +375,7 @@ public:
 	QFloat	Scale;
 	
 	// TODO: Cameras need some reason (and way) to zoom in and out.
-
-	// THIS WILL BE UNSAFE! THE POINTER INVALIDATES WHEN ENOUGH OBJECTS ARE ADDED TO THE ENGINE //	
 	QObj* Target;
-//	QHandle Target;
 	// TODO: Add a way to target multiple objects (loosely).
 
 	inline QCamera( QObj* _Target ) :
@@ -539,7 +528,7 @@ public:
 
 		QVec Pos = VsRect.P1() - Rect.P1();
 		Pos /= QVec(CellW,CellH); // TODO: Reciprocal //
-//		Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
+		//Log( "%f %f", Pos.x.ToFloat(), Pos.y.ToFloat() );
 		
 		return Index( (int)(Pos.x.ToFloat()), (int)(Pos.y.ToFloat()) );
 	}
@@ -608,7 +597,7 @@ public:
 	inline QEngine() {
 		// Workaround for the Object Adding Segfault //
 		// TODO: Add Dummy (Index 0) //
-		Camera.reserve(4);
+		Camera.reserve(8);
 
 		Log("** Engine Created %x",this);
 	}
@@ -650,7 +639,6 @@ public:
 		// Top of the frame, clear the grid. We'll be reinserting as we go. //
 		Grid.Clear();
 
-//		Log( "******" );
 		// Broad Phase: Iterate for all elements. Check the cells they overlap, then add self. //
 		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
 			QRect RectA = ItrA->Rect;
@@ -664,7 +652,7 @@ public:
 				int CellWidth = Grid.FindCellWidth( RectA );
 				int CellHeight = Grid.FindCellHeight( RectA );
 	
-	//			Log( "* [%llX] = %i (%i,%i)", &(*ItrA), CellIndex, CellWidth, CellHeight );
+				//Log( "* [%llX] = %i (%i,%i)", &(*ItrA), CellIndex, CellWidth, CellHeight );
 	
 				for ( int y = 0; y < CellHeight; ++y ) {
 					for ( int x = 0; x < CellWidth; ++x ) {
@@ -693,16 +681,6 @@ public:
 			}
 		}
 		
-		// Old Brute Force Collision Check Code //
-		// TODO: Broad Phase 1 (Cells): Test only against objects in same region //
-//		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
-//			// To eliminitae != self check, start at idx+1 //
-//			typename std::list<QObj>::iterator ItrB = ItrA;
-//			for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
-//				Solve( *ItrA, *ItrB );
-//			}
-//		}
-
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
 		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
@@ -720,10 +698,6 @@ public:
 		for ( st Cam = 0; Cam < Camera.size(); Cam++ ) {
 			Camera[Cam].Step();
 		}
-		
-		// NOTE: This is partitioning only! Optimizing the original list of objects is unnecessary and unsafe! //
-		// Reorganize Objects in a better order //
-		//Optimize();
 	}
 
 
@@ -838,57 +812,7 @@ public:
 				}
 			}
 		}
-
-
-		// Old Brute Force Draw code //
-//		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
-//			QObj& Ob = *Itr;
-//
-//			// If in the view (Rectangle Test) //
-//			if ( Ob.Rect == View ) {
-//				// TODO: Add to Draw Queue, to allow sorting/layering. //
-//				Ob.Draw( Mat );
-//			}
-//			
-//			if ( Prop.Debug ) {
-//				gelDrawSquare(Mat,Ob.Rect.Center().ToVector3D(),Ob.Rect.HalfShape(),GEL_RGBA(96,96,0,96));
-//
-//				QSensor* Sensor = Ob.GetSensor();
-//				if ( Sensor ) {
-//					gelDrawSquare(Mat,Sensor->Rect.BasePoint().ToVector3D(),Sensor->Rect.HalfShape(),GEL_RGBA(32,96,32,96));
-//				}
-//			}
-//		}		
 	}
-
-	// This is something that needs to happen inside the partitioning, not the natural stepping of objects. //	
-//	void Optimize() {
-//		// TODO: Reassign Indexes based on new positions. //
-//		// TODO: Reassign Indexes in the Named Object Search Table //
-//		int Swaps = 0;
-//		// Reorganize so that Infinite Mass Objects go last //
-////		for ( st idx = 1; idx < Obj.size(); idx++ ) {
-//		std::list<QObj>::iterator ItrA = Obj.begin();
-//		std::list<QObj>::iterator ItrB = ItrA;
-//		for ( ItrB++; ItrB != Obj.end(); ++ItrB ) {
-//			if ( ItrB->GetInvMass() == Real::Zero ) {
-//				if ( ItrA->GetInvMass() != Real::Zero ) {
-////					std::swap(Obj[idx-1],Obj[idx]);
-//					std::swap(ItrB,ItrA);
-//
-//					// Update internal Indexes, now that they've changed position //
-//					st32 OldIndex = Obj[idx-1].MyIndex;
-//					Obj[idx-1].MyIndex = Obj[idx].MyIndex;
-//					Obj[idx].MyIndex = OldIndex;
-//
-//					Swaps++;
-//				}
-//			}
-//		}
-//		if ( Swaps ) {
-//			Log("Optimized: %i Object Swaps", Swaps);
-//		}
-//	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 inline void AddCamera_QEngine( QEngine& Engine, QObj& Ob ) {
