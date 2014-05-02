@@ -13,6 +13,7 @@
 #include <NewGrid/NewGrid.h>
 #include <GelStamp/GelStamp.h>
 
+#include <Render/GelTarget.h>
 #include <Skel/Skel.h>	// Temp //
 // - ------------------------------------------------------------------------------------------ - //
 #include <vector>
@@ -404,14 +405,15 @@ public:
 		Ret *= QMat::TranslationMatrix( -Pos );
 		Ret *= QMat::ScalarMatrix( Vector3D(InvScale, InvScale, InvScale) );
 
-		QFloat AspectRatio = QFloat( ViewportWidth / ViewportHeight );
+		QFloat AspectRatio = QFloat( (float)ViewportWidth / (float)ViewportHeight );
 		bool WideRatio = AspectRatio > QFloat::One;
 		QVec AspectVec = QVec(AspectRatio,QFloat::One);
 		if ( WideRatio )
-			AspectVec = QVec(QFloat::One,QFloat::One/AspectRatio);
+			AspectVec = QVec( QFloat::One, QFloat::One/AspectRatio );
 		QVec InvAspectVec = QFloat::One / AspectVec;
 
 		Ret *= QMat::ScalarMatrix( InvAspectVec );
+		
 
 //		for ( int y = 0; y < 4; ++y ) {
 //			_Log("[");
@@ -425,7 +427,7 @@ public:
 	}
 	
 	inline QRect GetView( const int ViewportWidth, const int ViewportHeight ) const {
-		QFloat AspectRatio = QFloat( ViewportWidth / ViewportHeight );
+		QFloat AspectRatio = QFloat( (float)ViewportWidth / (float)ViewportHeight );
 		bool WideRatio = AspectRatio > QFloat::One;
 		QVec AspectVec = QVec(AspectRatio,QFloat::One);
 		if ( WideRatio )
@@ -749,8 +751,13 @@ public:
 public:
 	void DrawCamera( const int CameraIndex ) {
 		QCamera& Cam = Camera[CameraIndex];
+
+		int Width = Gel::LastBoundTarget->Width;
+		int Height = Gel::LastBoundTarget->Height;
 		
-		Draw( Cam.GetView(3,2), Cam.GetMatrix(3,2) );
+		//Log( "DrawCamera: %i %i", Width, Height );
+		
+		Draw( Cam.GetView(Width,Height), Cam.GetMatrix(Width,Height) );
 	}
 	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
