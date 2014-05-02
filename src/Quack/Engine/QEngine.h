@@ -389,7 +389,7 @@ public:
 //	QHandle Target;
 	// TODO: Add a way to target multiple objects (loosely).
 
-	inline QCamera( QObj* _Target = 0 ) :
+	inline QCamera( QObj* _Target ) :
 		Type( QO_CAMERA ),
 		Scale( 256.0f ),
 		Target( _Target )
@@ -403,7 +403,7 @@ public:
 	inline void Step() {
 		if ( Target ) {
 			QVec Diff = Target->GetPos() - Pos;
-			Pos += Diff * QFloat(0.25f);
+			Pos += Diff * QFloat(0.125f);
 		}
 	}
 
@@ -413,7 +413,7 @@ public:
 
 		QFloat InvScale = QFloat::One / Scale;
 		Ret *= QMat::TranslationMatrix( -Pos );
-		Ret *= QMat::ScalarMatrix( InvScale );
+		Ret *= QMat::ScalarMatrix( Vector3D(InvScale, InvScale, InvScale) );
 
 		QFloat AspectRatio = QFloat( ViewportWidth / ViewportHeight );
 		bool WideRatio = AspectRatio > QFloat::One;
@@ -423,18 +423,29 @@ public:
 		QVec InvAspectVec = QFloat::One / AspectVec;
 
 		Ret *= QMat::ScalarMatrix( InvAspectVec );
+
+//		for ( int y = 0; y < 4; ++y ) {
+//			_Log("[");
+//			for ( int x = 0; x < 4; ++x ) {
+//				_Log("%f ", Ret(x,y).ToFloat() );
+//			}
+//			Log("]");
+//		}
 		
 		return Ret;
 	}
 	
-	inline QVec GetView( const int ViewportWidth, const int ViewportHeight ) const {
+	inline QRect GetView( const int ViewportWidth, const int ViewportHeight ) const {
 		QFloat AspectRatio = QFloat( ViewportWidth / ViewportHeight );
 		bool WideRatio = AspectRatio > QFloat::One;
 		QVec AspectVec = QVec(AspectRatio,QFloat::One);
 		if ( WideRatio )
 			AspectVec = QVec(QFloat::One,QFloat::One/AspectRatio);
+
+		QVec ViewVec = QVec(Scale,Scale) * AspectVec;
+		QRect View(-ViewVec.x+Pos.x,-ViewVec.y+Pos.y, ViewVec.x+ViewVec.x,ViewVec.y+ViewVec.y);
 		
-		return QVec(Scale,Scale) * AspectVec;
+		return View;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
@@ -577,11 +588,6 @@ public:
 			}
 		}
 	}
-
-public:
-	inline void Draw() {
-		
-	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 // Quack Engine //
@@ -627,10 +633,10 @@ public:
 		return Obj.size();
 	}
 	
-//	inline QCamera& AddCamera( Handle ) {
-//		Camera.push_back( QCamera() );
-//		return Camera.back();
-//	}
+	inline QCamera& AddCamera( QObj* Ob ) {
+		Camera.push_back( QCamera( Ob ) );
+		return Camera.back();
+	}
 
 //	inline QObj& operator [] ( const st Index ) {
 //		return Obj[Index];
@@ -766,7 +772,13 @@ public:
 		
 	}
 
-public:	
+public:
+	void DrawCamera( const int CameraIndex ) {
+		QCamera& Cam = Camera[CameraIndex];
+		
+		Draw( Cam.GetView(3,2), Cam.GetMatrix(3,2) );
+	}
+	
 	void Draw( const QRect& View, const Matrix4x4& Mat ) {
 		// NOTE: Double Drawing is due to multiple cells having multiple instances of objects. //
 		// TODO: Do timestamping here as well!! //
@@ -878,6 +890,10 @@ public:
 //		}
 //	}
 };
+// - ------------------------------------------------------------------------------------------ - //
+inline void AddCamera_QEngine( QEngine& Engine, QObj& Ob ) {
+	Engine.AddCamera( &Ob );
+}
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace QK //
 // - ------------------------------------------------------------------------------------------ - //
