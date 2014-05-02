@@ -16,7 +16,7 @@ SQInteger qk_camera_constructor( HSQUIRRELVM v ) {
 	sq_getinstanceup(v,1,(void**)&Info,0);
 
 	// Construct Data //
-	new(Info) QK::QCamera();
+//	new(Info) QK::QCamera();
 
 	// Finished //
 	return SQ_VOID;

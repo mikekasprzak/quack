@@ -263,6 +263,26 @@ SQInteger qk_engine_AddBoxObj( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddCamera( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	QK::QObj* Ob;
+	sq_getinstanceup(v,2,(void**)&Ob,NULL);
+//	float Radius;
+//	sq_getfloat(v,3,&Radius);
+	
+	QK::AddCamera_QEngine( *Engine, *Ob );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
+
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_engine_step( HSQUIRRELVM v ) {
 	// Retrieve Data (Pointer) //
@@ -297,6 +317,31 @@ SQInteger qk_engine_draw( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_DrawCamera( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// Check the number of arguments //
+	int Top = sq_gettop(v);
+	
+	// Need a View and a Matrix //
+	SQInteger CameraIndex;
+	sq_getinteger(v,2,&CameraIndex);
+
+//	Rect2D* View;
+//	sq_getinstanceup(v,2,(void**)&View,NULL);
+	
+//	Matrix4x4* Mat;
+//	sq_getinstanceup(v,3,(void**)&Mat,NULL);
+
+	// Do Step //	
+//	Engine->Draw(*View,*Mat);	
+	Engine->DrawCamera( CameraIndex );	
+		
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -324,9 +369,12 @@ SQRegFunction qkEngine_funcs[] = {
 	
 //	_DECL_FUNC(qk_engine_ShowRects,2,NULL),
 
+	_DECL_FUNC(qk_engine_AddCamera,2,NULL),
+
 	_DECL_FUNC(qk_engine_step,1,NULL),
 	_DECL_FUNC(qk_engine_draw,3,NULL),
-	
+	_DECL_FUNC(qk_engine_DrawCamera,2,NULL),
+
 	{0,0,0,0}
 };
 #undef _DECL_FUNC
@@ -352,8 +400,8 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_engine_constructor,constructor);
 		_CLASS_ADDFUNC(qk_engine_get,_get);
 		_CLASS_ADDFUNC(qk_engine_set,_set);
-		_CLASS_ADDFUNC(qk_engine_step,Step);
-		_CLASS_ADDFUNC(qk_engine_draw,Draw);
+//		_CLASS_ADDFUNC(qk_engine_step,Step);
+//		_CLASS_ADDFUNC(qk_engine_draw,Draw);
 		_CLASS_ADDFUNC_STATIC(qk_engine_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_engine_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_engine_cloned,_cloned);
@@ -369,8 +417,11 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		
 //		_CLASS_ADDFUNC(qk_engine_ShowRects,ShowRects);
 
+		_CLASS_ADDFUNC(qk_engine_AddCamera,AddCamera);
+
 		_CLASS_ADDFUNC(qk_engine_step,Step);
 		_CLASS_ADDFUNC(qk_engine_draw,Draw);
+		_CLASS_ADDFUNC(qk_engine_DrawCamera,DrawCamera);
 
 		_ADD_CLASS_END(QEngine);
 	}
