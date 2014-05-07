@@ -84,6 +84,13 @@ endif # USES_BATCHING #
 
 
 # - ------------------------------------------------------------------------ - #
+ifdef USES_GELNET
+DEFINES				+=	USES_GELNET
+endif # USES_GELNET #
+# - ------------------------------------------------------------------------ - #
+
+
+# - ------------------------------------------------------------------------ - #
 include target/Common/common_libraries_gel
 
 include target/Common/common_libraries_sdl

@@ -346,10 +346,10 @@ ifdef USES_ENET
 SRC_FOLDERS			+=	src/External/ENet \
 # - ------------------------------------------------------------------------ - #
 # Places to ONLY include from #
-INCLUDE_FOLDERS		+=	src/External/ENet/include \
+#INCLUDE_FOLDERS		+=	src/External/ENet \
 # - ------------------------------------------------------------------------ - #
 # Defines specific to this file #
-DEFINES				+=	USES_ENET
+DEFINES				+=	USES_ENET HAS_SOCKLEN_T
 # - ------------------------------------------------------------------------ - #
 # Libraries specific to this file (full include path or -l) #
 LIBRARIES			+=	
@@ -360,11 +360,11 @@ COPY_FILES			+=
 # Other Object files you want to link against (i.e. an embedded Windows Icon) #
 OTHER_O_FILES		+=	
 # - ------------------------------------------------------------------------ - #
-ifdef USES_WINDOWS
-LIBRARIES			+=	-lenet -lws2_32 -lwinmm
-else # USES_WINDOWS #
-LIBRARIES			+=	/usr/local/lib/libenet.a
-endif # USES_WINDOWS #
+#ifdef USES_WINDOWS
+#LIBRARIES			+=	-lenet -lws2_32 -lwinmm
+#else # USES_WINDOWS #
+#LIBRARIES			+=	/usr/local/lib/libenet.a
+#endif # USES_WINDOWS #
 # - ------------------------------------------------------------------------ - #
 endif # USES_ENET #
 # - ------------------------------------------------------------------------ - #
