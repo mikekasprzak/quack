@@ -152,7 +152,7 @@ void AppInit() {
 
 	// **** //
 
-	App::Emitter = new QK::QEmitter();
+	App::Emitter = new QK::QEmitter( "ItemIcons.atlas" );
 
 //	{
 //		Log("**** ENGINE");
@@ -228,12 +228,15 @@ void AppStep() {
 	static float boof = 0.0f;
 	boof += 0.2f;
 	
-	QK::QParticle* Me = App::Emitter->Add( 64, Vector2D::Zero, 0 );
-	Me->Shape = Vector2D(8,8);
+	QK::QParticle* Me = App::Emitter->Add( 128, Vector2D::Zero, ((int)(boof*(1.0/0.2)))%6 );
+	Me->Shape = Vector2D(2,2);
 		
-	Me->Velocity = Vector2D(cos(boof),sin(boof)) * Real(0.5);
-	Me->ColorVelocity = GEL_SRGBA(-256*8,-256*8,-256*8,-256*2);
-	Me->ColorDrift = GEL_SRGBA(+64,+64,+64,0);
+	Me->Velocity = Vector2D(cos(boof),sin(boof)) * Real(4 + (sin(boof*3.2f)*2.0f));
+	Me->ColorVelocity = GEL_SRGBA(-256*1,-256*1,-256*1,-256*1);
+	Me->Orientation = Vector2D(sin(boof*3412.0f),-cos(boof*3412.0f));
+	
+	Me->AngularVelocity = Real(sin(boof)*0.125f);
+	Me->ShapeVelocity = Vector2D(sin(boof*411.0f)*0.02f,sin(boof*411.0f)*0.02f);
 	
 	// *** //
 	App::StepProfiler.Stop();
