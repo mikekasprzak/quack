@@ -334,6 +334,26 @@ SQInteger qk_engine_AddCamera( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_GetCamera( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+	
+	SQInteger CameraIndex;
+	sq_getinteger(v,2,&CameraIndex);
+
+	// Create a Matrix Instance //	
+	sq_pushroottable(v);
+	sq_pushstring(v,"QkCamera",-1);
+	sq_get(v,-2);
+	sq_createinstance(vm,-1);
+	
+	QK::QCamera* Camera;
+	sq_setinstanceup(vm,-1,Engine->GetCamera(CameraIndex));
+
+	return SQ_RETURN;	
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -416,6 +436,7 @@ SQRegFunction qkEngine_funcs[] = {
 //	_DECL_FUNC(qk_engine_ShowRects,2,NULL),
 
 	_DECL_FUNC(qk_engine_AddCamera,2,NULL),
+	_DECL_FUNC(qk_engine_GetCamera,2,NULL),
 
 	_DECL_FUNC(qk_engine_step,1,NULL),
 	_DECL_FUNC(qk_engine_draw,3,NULL),
@@ -463,6 +484,7 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 //		_CLASS_ADDFUNC(qk_engine_ShowRects,ShowRects);
 
 		_CLASS_ADDFUNC(qk_engine_AddCamera,AddCamera);
+		_CLASS_ADDFUNC(qk_engine_GetCamera,GetCamera);
 
 		_CLASS_ADDFUNC(qk_engine_step,Step);
 		_CLASS_ADDFUNC(qk_engine_draw,Draw);

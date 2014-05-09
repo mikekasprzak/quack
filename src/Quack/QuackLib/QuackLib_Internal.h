@@ -44,6 +44,7 @@ enum {
 	QK_TAG_SENSOR,
 	QK_TAG_SENSORINFO,
 	QK_TAG_CAMERA,
+	QK_TAG_SKY,
 	
 	QK_TAG_MAX		// Last Symbol //
 };

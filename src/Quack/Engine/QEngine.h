@@ -750,6 +750,26 @@ public:
 	}
 
 public:
+	QRect GetCameraView( const int CameraIndex ) const {
+		const QCamera& Cam = Camera[CameraIndex];
+
+		int Width = Gel::LastBoundTarget->Width;
+		int Height = Gel::LastBoundTarget->Height;
+
+		return Cam.GetView(Width,Height);
+	}
+	Matrix4x4 GetCameraMatrix( const int CameraIndex ) const {
+		const QCamera& Cam = Camera[CameraIndex];
+
+		int Width = Gel::LastBoundTarget->Width;
+		int Height = Gel::LastBoundTarget->Height;
+
+		return Cam.GetMatrix(Width,Height);
+	}
+	QCamera* GetCamera( const int CameraIndex ) {
+		return &Camera[CameraIndex];
+	}
+	
 	void DrawCamera( const int CameraIndex ) {
 		QCamera& Cam = Camera[CameraIndex];
 
