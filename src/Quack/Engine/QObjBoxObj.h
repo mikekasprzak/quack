@@ -342,22 +342,25 @@ public:
 
 public:
 	//static bool _Init( thistype* self, QObj* Obj ) { return self->Init( Obj ); }
-	inline bool Init( QObj* Obj ) {
+	inline bool Init( QObj* Obj, const HSQOBJECT& SqArgs ) {
 		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqInitFunc);
 		// ARGS (must be accurate) //
 		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
 		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
+		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
 
 //		QObjHandle* ObjHandle;
 //		sq_getinstanceup(vm,-1,(void**)&ObjHandle,0);
 //		ObjHandle->Engine = Obj->Parent;
 //		ObjHandle->Index = Obj->MyIndex;
 //		ObjHandle->Ptr = Obj;
+//		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
 
-		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
-		sq_call(vm,2,false,false);
-		sq_pop(vm,2);
+		sq_pushobject(vm,SqArgs);		// ARG2 - Arguments //
+
+		sq_call(vm,3,false,false);
+		sq_pop(vm,3);
 		
 		return true;
 	}
@@ -402,11 +405,11 @@ public:
 	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline void AddBoxObj_QEngine( QEngine& Engine, const QVec& _Pos, const char* _Class ) {
+inline void AddBoxObj_QEngine( QEngine& Engine, const QVec& _Pos, const char* _Class, const HSQOBJECT& SqArgs ) {
 	QObj& Ob = Engine.Add();
 	QObjBoxObj::InitObj( &Ob );
 	Ob.Data = new QObjBoxObj( _Pos, _Class );
-	((QObjBoxObj*)Ob.Data)->Init( &Ob );
+	((QObjBoxObj*)Ob.Data)->Init( &Ob, SqArgs );
 	Ob.UpdateRect();
 }
 // - ------------------------------------------------------------------------------------------ - //
