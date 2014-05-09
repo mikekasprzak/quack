@@ -11,6 +11,8 @@
 #include <Asset/Asset.h>
 #include <Texture/Texture.h>
 #include <Render/Render.h>
+
+#include <Graphics/GelUV.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <spine/spine.h>
 // - ------------------------------------------------------------------------------------------ - //
@@ -101,8 +103,8 @@ public:
 //		}
 	}
 	
-	inline void Draw( const Matrix4x4& Matrix, int Index ) {
-		GelColor Color = GEL_RGB(255,255,255);
+	inline void Draw( const Matrix4x4& Matrix, const int Index ) {
+		GelColor Color = GEL_RGB_DEFAULT;
 		
 		spAtlasRegion* Reg = Region[Index];//Atlas->regions->next; // ...
 
@@ -142,6 +144,45 @@ public:
 		Tex.Bind();
 		Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
 	}
+
+	inline void FakeDraw( Vector2D* Verts, GelUV* UVs, const int Index ) {
+		spAtlasRegion* Reg = Region[Index];//Atlas->regions->next; // ...
+
+		const st32 VertCount = 4;
+		//Vector2D Verts[ VertCount ];
+		Verts[0] = Vector2D(0,Reg->height);
+		Verts[1] = Vector2D(Reg->width,Reg->height);
+		Verts[2] = Vector2D(Reg->width,0);
+		Verts[3] = Vector2D(0,0);
+		
+		for ( st32 idx = 0; idx < VertCount; idx++ ) {
+			// Add Offsets and subtract half the original width (i.e. center) //
+			Verts[idx] += Vector2D(Reg->offsetX-(Reg->originalWidth>>1),Reg->offsetY-(Reg->originalHeight>>1));
+		}
+
+//		GelTexture& Tex = Gel::TexturePool[(st)Reg->page->rendererObject];
+
+//		GelUV UVs[ VertCount ];
+		UVs[0] = GelUV(Reg->u,Reg->v);
+		UVs[1] = GelUV(Reg->u2,Reg->v);
+		UVs[2] = GelUV(Reg->u2,Reg->v2);
+		UVs[3] = GelUV(Reg->u,Reg->v2);
+
+//		vertexArray->append(vertices[0]);
+//		vertexArray->append(vertices[1]);
+//		vertexArray->append(vertices[2]);
+//		vertexArray->append(vertices[3]);
+
+		// TODO: Do batching cleverness here. If same texture, continue batching. If different, render the current batch.
+		//       Advance poniter, so further render ops don't re-draw prior data.
+//		Tex.Bind();
+//		Gel::RenderTexture( GEL_TRIANGLES, Matrix, Color, Verts, UVs, VertCount );
+	}
+		
+	inline GelTexture& GetTex() {
+		spAtlasRegion* Reg = Region[0];
+		return Gel::TexturePool[(st)Reg->page->rendererObject];
+	}	
 	
 	inline st32 Size() const {
 		return RegionCount;
