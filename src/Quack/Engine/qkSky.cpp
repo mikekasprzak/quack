@@ -129,6 +129,52 @@ SQInteger qk_sky_tostring( HSQUIRRELVM v ) {
 _FUNC_TYPEOF(QSky,qk_sky_typeof,"QkSky",5);
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_sky_Add( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QSky* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+
+	SQInteger Bands;
+	sq_getinteger(v,2,&Bands);
+	
+	GelColor* Color;
+	sq_getinstanceup(v,3,(void**)&Color,NULL);
+
+	Ob->Add( Bands, *Color );
+	
+	// Finished //
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_sky_SetBandPos( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QSky* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+
+	SQFloat Pos;
+	sq_getfloat(v,2,&Pos);
+	
+	Ob->SetBandPos( Real(Pos) );
+	
+	// Finished //
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_sky_SetBandSize( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QSky* Ob;
+	sq_getinstanceup(v,1,(void**)&Ob,0);
+
+	SQFloat Pos;
+	sq_getfloat(v,2,&Pos);
+	
+	Ob->SetBandSize( Real(Pos) );
+	
+	// Finished //
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_sky_step( HSQUIRRELVM v ) {
@@ -180,6 +226,11 @@ SQRegFunction qkSky_funcs[] = {
 	_DECL_FUNC(qk_sky_tostring,1,NULL),
 //	_DECL_FUNC(qk_sky_cloned,2,NULL),
 
+	_DECL_FUNC(qk_sky_Add,3,NULL),
+
+	_DECL_FUNC(qk_sky_SetBandPos,2,NULL),
+	_DECL_FUNC(qk_sky_SetBandSize,2,NULL),
+
 	_DECL_FUNC(qk_sky_step,1,NULL),
 	_DECL_FUNC(qk_sky_draw,3,NULL),
 	
@@ -209,6 +260,10 @@ SQInteger register_qkSky(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC_STATIC(qk_sky_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_sky_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_sky_cloned,_cloned);
+
+		_CLASS_ADDFUNC(qk_sky_Add,Add);
+		_CLASS_ADDFUNC(qk_sky_SetBandPos,SetBandPos);
+		_CLASS_ADDFUNC(qk_sky_SetBandSize,SetBandSize);
 
 		_CLASS_ADDFUNC(qk_sky_step,Step);
 		_CLASS_ADDFUNC(qk_sky_draw,Draw);
