@@ -71,6 +71,7 @@ bool HadVMError;
 // - ------------------------------------------------------------------------------------------ - //
 //QK::QEngine* Engine;
 QK::QEmitter* Emitter;
+QK::QSky* Sky;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -153,6 +154,7 @@ void AppInit() {
 	// **** //
 
 	App::Emitter = new QK::QEmitter( "ItemIcons.atlas" );
+	App::Sky = new QK::QSky();
 
 //	{
 //		Log("**** ENGINE");
@@ -224,6 +226,7 @@ void AppStep() {
 //	App::Engine->Step();
 
 	App::Emitter->Step();
+	App::Sky->Step();
 	
 	static float boof = 0.0f;
 	boof += 0.2f;
@@ -252,7 +255,8 @@ void AppDraw() {
 
 //	App::Engine->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
-//	App::Emitter->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
+	App::Sky->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
+	App::Emitter->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
