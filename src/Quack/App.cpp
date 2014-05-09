@@ -229,8 +229,9 @@ void AppStep() {
 	boof += 0.2f;
 	
 	QK::QParticle* Me = App::Emitter->Add( 64, Vector2D::Zero, 0 );
+	Me->Shape = Vector2D(8,8);
 		
-	Me->Velocity = Vector2D(cos(boof),sin(boof)) * Real(3);
+	Me->Velocity = Vector2D(cos(boof),sin(boof)) * Real(0.5);
 	Me->ColorVelocity = GEL_SRGBA(-256*8,-256*8,-256*8,-256*2);
 	Me->ColorDrift = GEL_SRGBA(+64,+64,+64,0);
 	
