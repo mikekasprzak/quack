@@ -262,6 +262,22 @@ SQInteger qk_engine_AddBoxObj( HSQUIRRELVM v ) {
 	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_engine_AddStaticBoxObj( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	QK::QEngine* Engine;
+	sq_getinstanceup(v,1,(void**)&Engine,0);
+
+	// TODO: Fancy interpretation //	
+	Vector2D* Pos;
+	sq_getinstanceup(v,2,(void**)&Pos,NULL);	
+	const char* ClassName;
+	sq_getstring(v,3,&ClassName);
+	
+	QK::AddStaticBoxObj_QEngine( *Engine, *Pos, ClassName );
+	
+	return SQ_VOID;
+}
+// - ------------------------------------------------------------------------------------------ - //
 
 
 // - ------------------------------------------------------------------------------------------ - //
@@ -358,6 +374,7 @@ SQRegFunction qkEngine_funcs[] = {
 	_DECL_FUNC(qk_engine_AddCappyStatic,5,NULL),
 	
 	_DECL_FUNC(qk_engine_AddBoxObj,3,NULL),
+	_DECL_FUNC(qk_engine_AddStaticBoxObj,3,NULL),
 	
 //	_DECL_FUNC(qk_engine_ShowRects,2,NULL),
 
@@ -404,6 +421,7 @@ SQInteger register_qkEngine(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_engine_AddCappyStatic,AddCappyStatic);
 		
 		_CLASS_ADDFUNC(qk_engine_AddBoxObj,AddBoxObj);
+		_CLASS_ADDFUNC(qk_engine_AddStaticBoxObj,AddStaticBoxObj);
 		
 //		_CLASS_ADDFUNC(qk_engine_ShowRects,ShowRects);
 

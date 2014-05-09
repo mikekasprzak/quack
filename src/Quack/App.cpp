@@ -252,7 +252,7 @@ void AppDraw() {
 
 //	App::Engine->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
-	App::Emitter->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
+//	App::Emitter->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
