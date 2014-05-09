@@ -263,7 +263,6 @@ public:
 	inline st Size() const {
 		return Data.MaxSize();
 	}
-	// You should iterate over all elements //
 	inline st GetTime() const {
 		return Time;
 	}
