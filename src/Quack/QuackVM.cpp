@@ -130,6 +130,7 @@ void QuackVMInit() {
 		Log("* qkCamera"); register_qkCamera( vm );
 		Log("* qkContactInfo"); register_qkContactInfo( vm );
 		Log("* qkSensorInfo"); register_qkSensorInfo( vm );
+		Log("* qkSky"); register_qkSky( vm );
 	sq_pop( vm, 1 );		// -1 //
 	Log( "" );
 	

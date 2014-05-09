@@ -8,6 +8,7 @@ SQInteger register_qkObject(HSQUIRRELVM v);
 SQInteger register_qkCamera(HSQUIRRELVM v);
 SQInteger register_qkContactInfo(HSQUIRRELVM v);
 SQInteger register_qkSensorInfo(HSQUIRRELVM v);
+SQInteger register_qkSky(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 #include "QEngine.h"
 // - ------------------------------------------------------------------------------------------ - //
