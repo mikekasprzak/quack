@@ -74,6 +74,7 @@ enum {
 	QO_CAPPY_STATIC,	// Dumb Simple Capsule Shaped Solid Object //
 	
 	QO_BOXOBJ,			// Box Object, with Squirrel Hooks //
+	QO_STATICBOXOBJ,	// Static Box Object, with Squirrel Hooks //
 
 	QO_CAMERA,			// Camera //
 };

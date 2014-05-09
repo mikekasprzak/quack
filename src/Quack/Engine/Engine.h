@@ -36,6 +36,7 @@ SQInteger register_qkSensorInfo(HSQUIRRELVM v);
 #include "QObjCappyStatic.h"
 
 #include "QObjBoxObj.h"
+#include "QObjStaticBoxObj.h"
 // - ------------------------------------------------------------------------------------------ - //
 // Particle Systems //
 #include "QEmitter.h"
