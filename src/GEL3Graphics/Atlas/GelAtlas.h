@@ -57,6 +57,12 @@ public:
 			Atlas = spAtlas_readAtlas( Asset.Get(), Asset.GetSize(), Gel::String::GetDirectorySlash(InFile).c_str() );
 			Log("- spAtlas_readAtlas (%x)",Atlas);
 			
+			
+			if ( Atlas == 0 ) {
+				Log( "!!! ERROR! ATLAS \"%s\" NOT LOADED! (Bad File?)",  Gel::String::GetDirectorySlash(InFile).c_str() );
+				return;
+			}
+			
 			//spAtlasRegion* MyRegion = spAtlas_findRegion(Atlas,"regionName");
 			// spAtlas contains linked lists. A list of Pages, and a list of Regions //
 			
