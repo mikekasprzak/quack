@@ -10,11 +10,14 @@ namespace QK {
 class QObjStaticBoxObj {
 	typedef QObjStaticBoxObj thistype;
 	typedef QBodyAABB BodyT;
+	typedef GelAtlasPool::UID ArtT;
 public:
 	static void InitObj( QObj* self ) {
 		self->Type = QK::QO_STATICBOXOBJ;
 
 		self->_GetArt = (QObj::QGetArtFunc)_GetArt;
+		self->_SetArt = (QObj::QSetArtFunc)_SetArt;
+//		self->_SetArtScale = (QObj::QSetArtScaleFunc)_SetArtScale;
 		self->_GetSensor = (QObj::QGetSensorFunc)_GetSensor;
 
 		self->_GetRect = (QObj::QGetRectFunc)_GetRect;
@@ -36,12 +39,70 @@ public:
 	BodyT	Body;		// Actual Physical Properties //
 	QBody	BodyType;	// Signature type understood by the engine //
 
+	ArtT 		Art;
+	int			ArtIndex;
+//	QArt		ArtType;
+//	QVec 		ArtScale; 	// Hack //
+
+	HSQOBJECT SqHookObj;
+	HSQMEMBERHANDLE SqInitFunc;	// ?? //
+	HSQMEMBERHANDLE SqStepFunc;
+	HSQMEMBERHANDLE SqContactFunc;
+	HSQMEMBERHANDLE SqSenseFunc;
+	HSQMEMBERHANDLE SqNoticeFunc;
+
+	HSQOBJECT SqObj;
+
 public:
 	inline QObjStaticBoxObj( const QVec& _Pos, const char* _Class ) :
-		Body( _Pos, QVec(24,24), 0 ) 
+		Body( _Pos, QVec(24,24), 0 ),
+		Art( 0 ),
+		ArtIndex( -1 )
 	{
 		BodyT::InitBody( &BodyType );
 		BodyType.Data = &Body;
+
+		// ** Squirrel Setup *********************** //
+		// ** SqObj Holder (Pointer is assigned before calls) ** //
+		sq_resetobject(&SqObj);
+		// Instance the Class //		
+		sq_pushroottable(vm);
+		sq_pushstring(vm,_SC("QkObj"),-1);
+		sq_get(vm,-2);
+		sq_createinstance(vm,-1);
+		// Store the Instance, add a reference //
+		sq_getstackobj(vm,-1,&SqObj);
+		sq_addref(vm,&SqObj);
+//		sq_pop(vm,3);
+
+
+		// ** Class Instance Holder ** //
+		// Clear the Instance Storage //
+		sq_resetobject(&SqHookObj);
+				
+		// Instance the Class //		
+		sq_pushroottable(vm);
+		sq_pushstring(vm,_SC(_Class),-1);
+		sq_get(vm,-2);
+		sq_createinstance(vm,-1);
+		// Store the Instance, add a reference //
+		sq_getstackobj(vm,-1,&SqHookObj);
+		sq_addref(vm,&SqHookObj);
+
+		// Get Members (with Class index, not the instance index) //
+		sq_pushstring(vm,_SC("Init"),-1);
+		sq_getmemberhandle(vm,-3,&SqInitFunc);
+//		sq_pushstring(vm,_SC("Step"),-1);
+//		sq_getmemberhandle(vm,-3,&SqStepFunc);
+//		sq_pushstring(vm,_SC("Contact"),-1);
+//		sq_getmemberhandle(vm,-3,&SqContactFunc);
+//		sq_pushstring(vm,_SC("Sense"),-1);
+//		sq_getmemberhandle(vm,-3,&SqSenseFunc);
+//		sq_pushstring(vm,_SC("Notice"),-1);
+//		sq_getmemberhandle(vm,-3,&SqNoticeFunc);
+		// Finished, clean up the stack //
+//		sq_pop(vm,3);
+
 	}
 
 public:
@@ -90,8 +151,36 @@ public:
 	}
 
 
-	inline bool Init( QObj* /*Obj*/ ) {
-		return false;
+	static void _SetArt( thistype* self, const char* ArtFile ) { self->SetArt( ArtFile ); }
+	inline void SetArt( const char* ArtFile ) {
+		Art = Gel::AtlasPool.Load( ArtFile );
+		ArtIndex = 0;
+		
+//		if ( Art ) {
+//			delete Art;
+//		}
+		//Art = new ArtT();
+//		Art->Load( Gel::SkelPool.Load( ArtFile ) );
+
+		// Store copies of the pointer in Art and Sensor Types //		
+//		ArtType.Data = Art;
+//		Sensor.Set( Art );
+	}
+
+
+
+	inline bool Init( QObj* Obj ) {
+		sq_pushobject(vm,SqHookObj);
+		sq_getbyhandle(vm,-1,&SqInitFunc);
+		// ARGS (must be accurate) //
+		sq_pushobject(vm,SqHookObj);	// ARG0 - this //
+		sq_pushobject(vm,SqObj);		// ARG1 - Obj //
+
+		sq_setinstanceup(vm,-1,(SQUserPointer)Obj);
+		sq_call(vm,2,false,false);
+		sq_pop(vm,2);
+		
+		return true;
 	}
 
 	static bool _Step( thistype* self, QObj& Obj, const QProp& Prop ) { return self->Step( Obj, Prop ); }
@@ -101,7 +190,15 @@ public:
 
 	static void _Draw( thistype* self, const Matrix4x4& Mat ) { self->Draw( Mat ); }
 	inline void Draw( const Matrix4x4& Mat ) {
-		gelDrawSquareFill(Mat,GetRect().Center().ToVector3D(),GetRect().HalfShape(),GEL_RGBA(64,128,64,128));
+		if ( ArtIndex >= 0 ) {
+			GelAtlas& Atlas = Gel::AtlasPool[Art];
+			Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector3D(0.5f, 0.5f, 1.0f) );
+			MyMat *= Matrix4x4::TranslationMatrix( GetRect().Center() );
+			MyMat *= Mat;
+				
+			Atlas.Draw( MyMat, ArtIndex );
+			//gelDrawSquareFill(Mat,GetRect().Center().ToVector3D(),GetRect().HalfShape(),GEL_RGBA(64,128,64,128));
+		}
 	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
