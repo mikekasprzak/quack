@@ -153,8 +153,23 @@ public:
 
 	static void _SetArt( thistype* self, const char* ArtFile ) { self->SetArt( ArtFile ); }
 	inline void SetArt( const char* ArtFile ) {
-		Art = Gel::AtlasPool.Load( ArtFile );
-		ArtIndex = 0;
+		std::string AtlasName = ArtFile;
+		std::string AssetName;
+		
+		st StrPos = AtlasName.find(":");
+		if ( StrPos != std::string::npos ) {
+			AssetName = AtlasName.substr(StrPos+1);
+			AtlasName = AtlasName.substr(0,StrPos);
+		}
+		
+		Art = Gel::AtlasPool.Load( AtlasName.c_str() );
+		if ( AssetName.size() ) {
+			GelAtlas& Atlas = Gel::AtlasPool[Art];
+			ArtIndex = Atlas.Find( AssetName.c_str() );
+		}
+		else {			
+			ArtIndex = 0;
+		}
 		
 //		if ( Art ) {
 //			delete Art;
@@ -192,12 +207,12 @@ public:
 	inline void Draw( const Matrix4x4& Mat ) {
 		if ( ArtIndex >= 0 ) {
 			GelAtlas& Atlas = Gel::AtlasPool[Art];
+			
 			Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector3D(0.5f, 0.5f, 1.0f) );
-			MyMat *= Matrix4x4::TranslationMatrix( GetRect().Center() );
+			MyMat *= Matrix4x4::TranslationMatrix( GetPos() );
 			MyMat *= Mat;
 				
 			Atlas.Draw( MyMat, ArtIndex );
-			//gelDrawSquareFill(Mat,GetRect().Center().ToVector3D(),GetRect().HalfShape(),GEL_RGBA(64,128,64,128));
 		}
 	}	
 };
