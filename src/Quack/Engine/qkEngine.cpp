@@ -263,6 +263,9 @@ SQInteger qk_engine_AddBoxObj( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger qk_engine_AddStaticBoxObj( HSQUIRRELVM v ) {
+	// Check the number of arguments //
+	int Top = sq_gettop(v);	
+	
 	// Retrieve Data (Pointer) //
 	QK::QEngine* Engine;
 	sq_getinstanceup(v,1,(void**)&Engine,0);
@@ -270,10 +273,26 @@ SQInteger qk_engine_AddStaticBoxObj( HSQUIRRELVM v ) {
 	// TODO: Fancy interpretation //	
 	Vector2D* Pos;
 	sq_getinstanceup(v,2,(void**)&Pos,NULL);	
+
+	// Which Class to Associate //
 	const char* ClassName;
 	sq_getstring(v,3,&ClassName);
 	
-	QK::AddStaticBoxObj_QEngine( *Engine, *Pos, ClassName );
+	
+	HSQOBJECT SqArgs;
+	sq_resetobject(&SqArgs);
+
+	// Optional Arguments to the Class //
+	if ( Top >= 4 ) {
+		sq_getstackobj(vm,4,&SqArgs);
+		sq_addref(vm,&SqArgs);
+	}
+	
+	QK::AddStaticBoxObj_QEngine( *Engine, *Pos, ClassName, SqArgs );
+		
+	if ( Top >= 4 ) {
+		sq_release(vm,&SqArgs);
+	}
 	
 	return SQ_VOID;
 }
@@ -374,7 +393,7 @@ SQRegFunction qkEngine_funcs[] = {
 	_DECL_FUNC(qk_engine_AddCappyStatic,5,NULL),
 	
 	_DECL_FUNC(qk_engine_AddBoxObj,3,NULL),
-	_DECL_FUNC(qk_engine_AddStaticBoxObj,3,NULL),
+	_DECL_FUNC(qk_engine_AddStaticBoxObj,-3,NULL),
 	
 //	_DECL_FUNC(qk_engine_ShowRects,2,NULL),
 
