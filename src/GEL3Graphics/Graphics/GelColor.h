@@ -102,7 +102,7 @@ inline GelColor GEL_HSV( float Hue, float Sat, float Val, int a = 255 ) {
 // - ------------------------------------------------------------------------------------------ - //
 typedef long long int GelSColor;
 // - ------------------------------------------------------------------------------------------ - //
-#define GEL_SRGB(_r,_g,_b)		((_r&0xffffll)|((_g&0xffffll)<<16)|((_b&0xffffll)<<32)|((255ll)<<48))
+#define GEL_SRGB(_r,_g,_b)		((_r&0xffffll)|((_g&0xffffll)<<16)|((_b&0xffffll)<<32)|((0x7ffffll)<<48))
 #define GEL_SRGBA(_r,_g,_b,_a)	((_r&0xffffll)|((_g&0xffffll)<<16)|((_b&0xffffll)<<32)|((_a&0xffffll)<<48))
 // - ------------------------------------------------------------------------------------------ - //
 inline int SignExtend8To32( const int Value ) {
@@ -137,23 +137,23 @@ inline int SignExtend24To32( const int Value ) {
 #define GEL_SGET_A(c)			(short)(((c)>>48)&0xffff)
 // - ------------------------------------------------------------------------------------------ - //
 #define GEL_SRGB_BLACK			GEL_SRGB(0,0,0)
-#define GEL_SRGB_GREY			GEL_SRGB(127,127,127)
-#define GEL_SRGB_WHITE			GEL_SRGB(255,255,255)
+#define GEL_SRGB_GREY			GEL_SRGB(0x3FFF,0x3FFF,0x3FFF)
+#define GEL_SRGB_WHITE			GEL_SRGB(0x7FFF,0x7FFF,0x7FFF)
 
-#define GEL_SRGB_RED			GEL_SRGB(255,0,0)
-#define GEL_SRGB_GREEN			GEL_SRGB(0,255,0)
-#define GEL_SRGB_BLUE			GEL_SRGB(0,0,255)
+#define GEL_SRGB_RED			GEL_SRGB(0x7FFF,0,0)
+#define GEL_SRGB_GREEN			GEL_SRGB(0,0x7FFF,0)
+#define GEL_SRGB_BLUE			GEL_SRGB(0,0,0x7FFF)
 
-#define GEL_SRGB_MAGENTA		GEL_SRGB(255,0,255)
-#define GEL_SRGB_YELLOW			GEL_SRGB(255,255,0)
-#define GEL_SRGB_CYAN			GEL_SRGB(0,255,255)
+#define GEL_SRGB_MAGENTA		GEL_SRGB(0x7FFF,0,0x7FFF)
+#define GEL_SRGB_YELLOW			GEL_SRGB(0x7FFF,0x7FFF,0)
+#define GEL_SRGB_CYAN			GEL_SRGB(0,0x7FFF,0x7FFF)
 
-#define GEL_SRGB_ORANGE			GEL_SRGB(255,127,0)
-#define GEL_SRGB_PINK			GEL_SRGB(255,0,127)
-#define GEL_SRGB_PURPLE			GEL_SRGB(127,0,255)
-#define GEL_SRGB_PUKE			GEL_SRGB(127,255,0)
-#define GEL_SRGB_MINT			GEL_SRGB(0,255,127)
-#define GEL_SRGB_SKY			GEL_SRGB(0,127,255)
+#define GEL_SRGB_ORANGE			GEL_SRGB(0x7FFF,0x3FFF,0)
+#define GEL_SRGB_PINK			GEL_SRGB(0x7FFF,0,0x3FFF)
+#define GEL_SRGB_PURPLE			GEL_SRGB(0x3FFF,0,0x7FFF)
+#define GEL_SRGB_PUKE			GEL_SRGB(0x3FFF,0x7FFF,0)
+#define GEL_SRGB_MINT			GEL_SRGB(0,0x7FFF,0x3FFF)
+#define GEL_SRGB_SKY			GEL_SRGB(0,0x3FFF,0x7FFF)
 
 #define GEL_SRGB_DEFAULT		GEL_SRGB_WHITE
 // - ------------------------------------------------------------------------------------------ - //
@@ -168,9 +168,35 @@ inline int SaturateToU8( const int In ) {
 	return In;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline GelColor ToGelColor( const GelSColor In ) {
-	return GEL_RGBA( GEL_SGET_R(In), GEL_SGET_G(In), GEL_SGET_B(In), GEL_SGET_A(In) );
+inline int SaturateToS16( const int In ) {
+	if ( In > 0x7FFF )
+		return 0x7FFF;
+	else if ( In < -(0x8000) )
+		return -(0x8000);
+	
+	return In;
 }
+// - ------------------------------------------------------------------------------------------ - //
+inline GelSColor AddGelSColor( const GelSColor A, const GelSColor B ) {
+	return GEL_SRGBA( 
+		SaturateToS16(GEL_SGET_R(A) + GEL_SGET_R(B)), 
+		SaturateToS16(GEL_SGET_G(A) + GEL_SGET_G(B)), 
+		SaturateToS16(GEL_SGET_B(A) + GEL_SGET_B(B)), 
+		SaturateToS16(GEL_SGET_A(A) + GEL_SGET_A(B))
+		);
+}
+// - ------------------------------------------------------------------------------------------ - //
+inline GelColor ToGelColor( const GelSColor In ) {
+	return GEL_RGBA( 
+		SaturateToU8(GEL_SGET_R(In)>>7), 
+		SaturateToU8(GEL_SGET_G(In)>>7), 
+		SaturateToU8(GEL_SGET_B(In)>>7),
+		SaturateToU8(GEL_SGET_A(In)>>7) );
+}
+// - ------------------------------------------------------------------------------------------ - //
+//inline GelColor ToGelColor( const GelSColor In ) {
+//	return GEL_RGBA( GEL_SGET_R(In), GEL_SGET_G(In), GEL_SGET_B(In), GEL_SGET_A(In) );
+//}
 // - ------------------------------------------------------------------------------------------ - //
 inline GelColor ToGelColorSaturate( const GelSColor In ) {
 	return GEL_RGBA( SaturateToU8(GEL_SGET_R(In)), SaturateToU8(GEL_SGET_G(In)), SaturateToU8(GEL_SGET_B(In)), SaturateToU8(GEL_SGET_A(In)) );

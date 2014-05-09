@@ -69,7 +69,8 @@ Real AspectRatio;
 Matrix4x4 InfoMatrix;
 bool HadVMError;
 // - ------------------------------------------------------------------------------------------ - //
-QK::QEngine* Engine;
+//QK::QEngine* Engine;
+QK::QEmitter* Emitter;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -151,6 +152,8 @@ void AppInit() {
 
 	// **** //
 
+	App::Emitter = new QK::QEmitter();
+
 //	{
 //		Log("**** ENGINE");
 //		
@@ -219,6 +222,17 @@ void AppStep() {
 	App::SqStepProfiler.Stop();
 
 //	App::Engine->Step();
+
+	App::Emitter->Step();
+	
+	static float boof = 0.0f;
+	boof += 0.2f;
+	
+	QK::QParticle* Me = App::Emitter->Add( 64, Vector2D::Zero, 0 );
+		
+	Me->Velocity = Vector2D(cos(boof),sin(boof)) * Real(3);
+	Me->ColorVelocity = GEL_SRGBA(-256*8,-256*8,-256*8,-256*2);
+	Me->ColorDrift = GEL_SRGBA(+64,+64,+64,0);
 	
 	// *** //
 	App::StepProfiler.Stop();
@@ -233,6 +247,8 @@ void AppDraw() {
 	App::SqDrawProfiler.Stop();
 
 //	App::Engine->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
+
+	App::Emitter->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {

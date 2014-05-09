@@ -276,7 +276,7 @@ public:
 
 	typedef bool (*QInitFunc)( void* self, QObj& Obj );
 	typedef bool (*QStepFunc)( void* self, QObj& Obj, const QProp& );
-	typedef void (*QDrawFunc)( void* self, const Matrix4x4& );
+	typedef void (*QDrawFunc)( void* self, const QMat& );
 
 public:
 	int				Type;	
@@ -349,7 +349,7 @@ public:
 
 	inline bool Init() { return _Init(Data,*this); }
 	inline bool Step( const QProp& Prop ) { return _Step(Data,*this,Prop); }
-	inline void Draw( const Matrix4x4& Mat ) { _Draw(Data,Mat); }
+	inline void Draw( const QMat& Mat ) { _Draw(Data,Mat); }
 
 public:
 	inline void UpdateRect() {
@@ -653,9 +653,9 @@ public:
 				int CellIndex = Grid.FindCellIndex( RectA );
 				int CellWidth = Grid.FindCellWidth( RectA );
 				int CellHeight = Grid.FindCellHeight( RectA );
-	
+
 				//Log( "* [%llX] = %i (%i,%i)", &(*ItrA), CellIndex, CellWidth, CellHeight );
-	
+
 				for ( int y = 0; y < CellHeight; ++y ) {
 					for ( int x = 0; x < CellWidth; ++x ) {
 						int IndexItr = CellIndex + (y*Grid.Width()) + x;
@@ -760,7 +760,7 @@ public:
 		Draw( Cam.GetView(Width,Height), Cam.GetMatrix(Width,Height) );
 	}
 	
-	void Draw( const QRect& View, const Matrix4x4& Mat ) {
+	void Draw( const QRect& View, const QMat& Mat ) {
 		// NOTE: Double Drawing is due to multiple cells having multiple instances of objects. //
 		// TODO: Do timestamping here as well!! //
 		int CellIndex = Grid.FindCellIndex( View );
