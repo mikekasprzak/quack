@@ -100,9 +100,15 @@ inline GelColor GEL_HSV( float Hue, float Sat, float Val, int a = 255 ) {
 	return GEL_RGBA( (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f), a );
 }
 // - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+// GelSColor is a 16bit signed value instead of an 8bit unsigned value per color.
+// NOTE: This code is not what it used to be. "255" is now "0x7FFF".
+// It used to be 255, and saturating the value back to the 0-255 range (from -32k to +32k).
+// - ------------------------------------------------------------------------------------------ - //
 typedef long long int GelSColor;
 // - ------------------------------------------------------------------------------------------ - //
-#define GEL_SRGB(_r,_g,_b)		((_r&0xffffll)|((_g&0xffffll)<<16)|((_b&0xffffll)<<32)|((0x7ffffll)<<48))
+#define GEL_SRGB(_r,_g,_b)		((_r&0xffffll)|((_g&0xffffll)<<16)|((_b&0xffffll)<<32)|((0x7fffll)<<48))
 #define GEL_SRGBA(_r,_g,_b,_a)	((_r&0xffffll)|((_g&0xffffll)<<16)|((_b&0xffffll)<<32)|((_a&0xffffll)<<48))
 // - ------------------------------------------------------------------------------------------ - //
 inline int SignExtend8To32( const int Value ) {

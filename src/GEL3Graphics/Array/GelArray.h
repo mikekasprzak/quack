@@ -213,6 +213,18 @@ public:
 
 		return operator->();
 	}
+//	inline T* Add( const int Count ) {
+//		Index += Count;
+//		Used += Count;
+//		
+//		// TODO: Assert Index > Capacity
+//		if ( Capacity >= Index ) {
+//			Capacity += Count;
+//			Data.PushBack();
+//		}
+//
+//		return operator->();
+//	}
 
 	// Wrapping Add Mode (Allocator) -- For ease of understanding, no optional initializer. //
 	inline T* Next() {
@@ -227,6 +239,24 @@ public:
 		
 		return operator->();
 	}
+	inline T* Next( const int Count ) {
+		T* Ret = &(Data[Index+1]);
+		
+		Index += Count;
+		Used += Count;
+		
+		// NOTE: THIS CODE IS WEIRD! //
+
+		// TODO: Assert Capacity == 0
+		// TODO: Assert Index < 0
+		while ( Index >= Capacity ) {
+			Index -= Capacity;
+		}
+		
+		return Ret;//operator->();
+	}
+
+
 };
 // - ------------------------------------------------------------------------------------------ - //
 

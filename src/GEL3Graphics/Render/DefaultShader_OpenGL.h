@@ -139,6 +139,18 @@ inline void RenderTextureColorPacked( const int Mode, const Matrix4x4& Matrix, c
 	Default->DrawArrays( Mode, VertCount );
 }
 // - ------------------------------------------------------------------------------------------ - //
+inline void RenderTextureColor2D_Packed( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const void* UVs, const void* Colors, const st32 VertCount ) {
+	Default->Bind( ColorTextureShader2D_Packed );
+	Default->UniformMatrix4x4( 0, Matrix );
+	Default->UniformColor( 1, Color ); // GlobalColor //
+	Default->Uniform1i( 2, 0 ); // "TexImage0" //
+	Default->BindUniforms();
+	Default->Attrib( 0, Verts );
+	Default->Attrib( 1, UVs );
+	Default->Attrib( 2, Colors );
+	Default->DrawArrays( Mode, VertCount );
+}
+// - ------------------------------------------------------------------------------------------ - //
 inline void RenderNoise( const int Mode, const Matrix4x4& Matrix, const GelColor Color, const void* Verts, const void* UVs, const st32 VertCount ) {
 	Default->Bind( NoiseShader );
 	Default->UniformMatrix4x4( 0, Matrix );
