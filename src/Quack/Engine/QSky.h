@@ -38,21 +38,18 @@ public:
 		BandSize( 8 ),
 		Changed( false )
 	{
-		Add( 12, GEL_RGB(148,171,248) );
-//		Add( 3, GEL_RGB(46,73,202) );
-		Add( 12, GEL_RGB(46,73,202) );
-//		Add( 1, GEL_RGB_BLACK );
-		Add( 1, GEL_RGB_BLACK );
-
-//		Add( 8, GEL_RGB_GREEN );
-//		Add( 8, GEL_RGB_BLUE );
-//		Add( 1, GEL_RGB_RED );
-//		Add( 1, GEL_RGB_BLACK );
 	}
 	
 	inline void Add( const int BandSize, const GelColor Color ) {
 		Gradient.push_back( QSkyGradient(BandSize, Color) );
 		Changed = true;
+	}
+	
+	inline void SetBandPos( const Real Pos ) {
+		BaseYPos = Pos;
+	}
+	inline void SetBandSize( const Real Size ) {
+		BandSize = Size;
 	}
 	
 	inline void Step() {
@@ -65,7 +62,21 @@ public:
 				GelColor C2 = G2.Color;
 				
 				for ( st idx2 = 0; idx2 < G1.Bands; ++idx2 ) {
-					float StepScalar = Real((float)idx2 / (float)G1.Bands).EaseIn().ToFloat();
+					float StepScalar = (float)idx2 / (float)G1.Bands;
+					// TODO: Smoothing Modes Between Gradients //
+//					if ( SmoothStep ) {
+//						StepScalar = Real(StepScalar).SmoothStep().ToFloat();
+//					}
+//					if ( EaseIn ) {
+//						StepScalar = Real(StepScalar).EaseIn().ToFloat();
+//					}
+//					if ( EaseOut ) {
+//						StepScalar = Real(StepScalar).EaseOut().ToFloat();
+//					}
+//					//else {
+//					//	// Default is LERP //
+//					//}
+					
 					GelSColor ColorDiff = GEL_SRGBA( 
 						GEL_GET_R(C2)-GEL_GET_R(C1), 
 						GEL_GET_G(C2)-GEL_GET_G(C1), 
