@@ -184,7 +184,7 @@ public:
 
 
 
-	inline bool Init( QObj* Obj, HSQOBJECT SqArgs ) {
+	inline bool Init( QObj* Obj, const HSQOBJECT& SqArgs ) {
 		sq_pushobject(vm,SqHookObj);
 		sq_getbyhandle(vm,-1,&SqInitFunc);
 		// ARGS (must be accurate) //
@@ -194,8 +194,8 @@ public:
 		
 		sq_pushobject(vm,SqArgs);		// ARG2 - Arguments //
 
-		sq_call(vm,2+1,false,false);
-		sq_pop(vm,2+1);
+		sq_call(vm,3,false,false);
+		sq_pop(vm,3);
 		
 		return true;
 	}
@@ -219,7 +219,7 @@ public:
 	}	
 };
 // - ------------------------------------------------------------------------------------------ - //
-inline void AddStaticBoxObj_QEngine( QEngine& Engine, const QVec& _Pos, const char* _Class, HSQOBJECT SqArgs ) {
+inline void AddStaticBoxObj_QEngine( QEngine& Engine, const QVec& _Pos, const char* _Class, const HSQOBJECT& SqArgs ) {
 	QObj& Ob = Engine.Add();
 	QObjStaticBoxObj::InitObj( &Ob );
 	Ob.Data = new QObjStaticBoxObj( _Pos, _Class );
