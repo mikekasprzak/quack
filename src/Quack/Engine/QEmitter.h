@@ -103,6 +103,7 @@ public:
 	}
 		
 	inline void Draw( const QRect& View, const QMat& Mat ) {
+		// TODO: Use View //
 		Vert.Clear();
 		
 		GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
