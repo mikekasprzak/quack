@@ -188,10 +188,20 @@ public:
 	inline GelTexture& GetTex() {
 		spAtlasRegion* Reg = Region[0];
 		return Gel::TexturePool[(st)Reg->page->rendererObject];
-	}	
+	}
 	
 	inline st32 Size() const {
 		return RegionCount;
+	}
+	
+	inline int Find( const char* Name ) const {
+		for ( st idx = 0; idx < Size(); idx++ ) {
+			if ( strcmp(Name,Region[idx]->name) == 0 ) {
+				//Log( "%s", Region[idx]->name );
+				return idx;
+			}
+		}
+		return -1;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
