@@ -86,6 +86,43 @@ struct GelNetChunk {
 //	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+class GelNetClient {
+	typedef GelNetClient thistype;
+public:
+	ENetAddress Address;
+
+	char IpText[256];
+	char NameText[256];
+	char NiceText[512];
+public:
+	inline GelNetClient( const ENetAddress& _Address ) :
+		Address( _Address )
+	{
+		IpText[0] = 0;
+		NameText[0] = 0;
+		NiceText[0] = 0;
+		
+		UpdateText();
+	}
+	
+	inline void UpdateText() {
+		enet_address_get_host_ip(&Address, IpText, sizeof(IpText));
+				
+		if ( NameText[0] == 0 ) {
+			sprintf(NiceText, "%s:%i", IpText, Address.port );
+		}
+		else {
+			sprintf(NiceText, "%s (%s:%i)", (NameText[0] == 0) ? "??" : NameText, IpText, Address.port );
+		}
+	}
+
+	// This should be done in a thread, as it can sometimes take a while (to fail) //	
+	inline void FetchName() {
+		enet_address_get_host(&Address, NameText, sizeof(NameText));
+		UpdateText();
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
 class GelNet {
 	typedef GelNet thistype;
 	
@@ -93,6 +130,8 @@ class GelNet {
 	int Port;
 	int Channels;
 	int MaxClients;
+
+	std::list<GelNetClient> Client;
 	
 	// ENET VARS //
 	ENetHost* Host;
@@ -146,17 +185,15 @@ public:
 				return;
 			}
 	
-			{		
-				char IpText[256];
-//				char NameText[4096];
-//				enet_address_get_host_ip(&Host->address, IpText, sizeof(IpText));
-//				enet_address_get_host(&Host->address, NameText, sizeof(NameText));
-				enet_address_get_host_ip(&Addr, IpText, sizeof(IpText));
-//				enet_address_get_host(&Addr, NameText, sizeof(NameText));
+			char IpText[256];
+//			char NameText[4096];
+//			enet_address_get_host_ip(&Host->address, IpText, sizeof(IpText));
+//			enet_address_get_host(&Host->address, NameText, sizeof(NameText));
+			enet_address_get_host_ip(&Addr, IpText, sizeof(IpText));
+//			enet_address_get_host(&Addr, NameText, sizeof(NameText));
 	
-//				printf("Server Created: %s [%s]\n", IpText, NameText);
-				Log("* Server Created: %s", IpText);
-			}
+//			printf("Server Created: %s [%s]\n", IpText, NameText);
+			Log("* Server Created [%s]", IpText);
 		}
 		else /* ClientMode */ {
 			Host = enet_host_create( 
@@ -171,12 +208,19 @@ public:
 				printf("! Client Create Failed");
 				return;
 			}
+
+			char IpText[256];
+//			char NameText[4096];
+			enet_address_get_host_ip(&Host->address, IpText, sizeof(IpText));
+//			enet_address_get_host(&Host->address, NameText, sizeof(NameText));
+	
+			Log("* Client Created [%s]", IpText);
 		}
 	}
 	
 	inline void Stop() {
 		if ( Peer ) {
-			enet_peer_reset(Peer);
+			enet_peer_disconnect_now(Peer, 2 /* DATA */ );
 		}
 		if ( Host ) {
 			enet_host_destroy(Host);
@@ -198,8 +242,65 @@ public:
 
 		while( enet_host_service(Host, &Event, 0) > 0 ) {
 			switch( Event.type ) {					
+				case ENET_EVENT_TYPE_CONNECT: {
+					Client.push_back( GelNetClient( Event.peer->address ) );
+					GelNetClient& NewClient = Client.back();
+
+					// Store the IP
+//					enet_address_get_host_ip(&Event.peer->address, NewClient.IpText, sizeof(NewClient.IpText));
+
+					Log("* A new client connected from %s [%i].", 
+						NewClient.NiceText,
+						Event.data
+					);
+					
+					Event.peer->data = &NewClient;
+										
+					/* Store any relevant client information here. */
+//					Event.peer -> data = (void*)"Client information";
+					break;
+				}
+				case ENET_EVENT_TYPE_RECEIVE:
+					Log("A packet of length %lu containing \"%s\" was received from %s on channel %u [%i].",
+						Event.packet -> dataLength,
+						Event.packet -> data,
+						//(char*)Event.peer -> data,
+						((GelNetClient*)Event.peer->data)->NiceText,
+						Event.channelID,
+						Event.data
+					);
+						
+					/* Clean up the packet now that we're done using it. */
+					enet_packet_destroy( Event.packet );
+				
+					break;
+				
+				case ENET_EVENT_TYPE_DISCONNECT: {
+					Log( "* %s disconnected [%i].", 
+						((GelNetClient*)Event.peer->data)->NiceText,
+						Event.data
+						//(char*)Event.peer->data 
+					);
+
+					/* Reset the peer's client information. */
+					Event.peer -> data = NULL;
+
+					break;
+				default:
+					Log("other\n");
+				}
+			}
+		}
+		
+	}
+	
+	inline void ClientStep() {
+		ENetEvent Event;
+
+		while( enet_host_service(Host, &Event, 0) > 0 ) {
+			switch( Event.type ) {					
 				case ENET_EVENT_TYPE_CONNECT:
-					Log("A new client connected from %x:%u.", 
+					Log("Connected to %x:%u.", 
 						Event.peer -> address.host,
 						Event.peer -> address.port
 					);
@@ -231,12 +332,6 @@ public:
 				}
 			}
 		}		
-		
-	}
-	
-	inline void ClientStep() {
-		//ENetEvent Event;
-		ServerStep();
 	}
 	
 public:
@@ -259,10 +354,16 @@ public:
 	}
 	
 	inline void Connect( ENetAddress& Addr ) {
-		Peer = enet_host_connect( Host, &Addr, Channels, 0 /* DATA */ );
+		Peer = enet_host_connect( Host, &Addr, Channels, 7 /* DATA */ );
 		
 		if ( Peer == NULL ) {
 			Log("* Peer not found");
+		}
+	}
+	
+	inline void Disconnect() {
+		if ( Peer ) {
+			enet_peer_disconnect( Peer, 1 /* DATA */ );
 		}
 	}
 };

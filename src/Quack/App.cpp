@@ -213,8 +213,14 @@ void AppStep() {
 	App::StepProfiler.Start();
 	// *** //
 
-	static bool OldKeyF5 = Gel::KeyF5;
-	static bool OldKeyF6 = Gel::KeyF6;
+	static bool OldKeyF5 = false;
+	static bool OldKeyF6 = false;
+	static bool KeyF5 = false;
+	static bool KeyF6 = false;
+	OldKeyF5 = KeyF5;
+	OldKeyF6 = KeyF6;
+	KeyF5 = Gel::KeyF5;
+	KeyF6 = Gel::KeyF6;
 	
 	Gel::Input::Poll();
 	
@@ -223,10 +229,10 @@ void AppStep() {
 		QuackVMCallInit();
 	}
 	
-	if ( Gel::KeyF5 && !OldKeyF5 ) {
+	if ( KeyF5 && !OldKeyF5 ) {
 		App::Net->Start( true );
 	}
-	if ( Gel::KeyF6 && !OldKeyF6 ) {
+	if ( KeyF6 && !OldKeyF6 ) {
 		App::Net->Start( false );
 		App::Net->ConnectLocal();
 	}
