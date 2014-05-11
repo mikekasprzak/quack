@@ -207,6 +207,8 @@ void AppExit() {
 namespace Gel {
 	extern bool KeyF5;
 	extern bool KeyF6;
+	extern bool KeyF7;
+	extern bool KeyF8;
 };
 // - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
@@ -215,12 +217,20 @@ void AppStep() {
 
 	static bool OldKeyF5 = false;
 	static bool OldKeyF6 = false;
+	static bool OldKeyF7 = false;
+	static bool OldKeyF8 = false;
 	static bool KeyF5 = false;
 	static bool KeyF6 = false;
+	static bool KeyF7 = false;
+	static bool KeyF8 = false;
 	OldKeyF5 = KeyF5;
 	OldKeyF6 = KeyF6;
+	OldKeyF7 = KeyF7;
+	OldKeyF8 = KeyF8;
 	KeyF5 = Gel::KeyF5;
 	KeyF6 = Gel::KeyF6;
+	KeyF7 = Gel::KeyF7;
+	KeyF8 = Gel::KeyF8;
 	
 	Gel::Input::Poll();
 	
@@ -235,6 +245,11 @@ void AppStep() {
 	if ( KeyF6 && !OldKeyF6 ) {
 		App::Net->Start( false );
 		App::Net->ConnectLocal();
+	}
+	if ( KeyF8 && !OldKeyF8 ) {
+		Log("+ Client List");
+		App::Net->LogClients();
+		Log("- End of Client List");
 	}
 	
 	App::Net->Step();
