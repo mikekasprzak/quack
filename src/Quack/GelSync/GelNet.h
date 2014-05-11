@@ -251,19 +251,13 @@ public:
 				case ENET_EVENT_TYPE_CONNECT: {
 					Client.push_back( GelNetClient( Event.peer->address ) );
 					GelNetClient& NewClient = Client.back();
-
-					// Store the IP
-//					enet_address_get_host_ip(&Event.peer->address, NewClient.IpText, sizeof(NewClient.IpText));
+					Event.peer->data = &NewClient;
 
 					Log("* A new client connected from %s [%i].", 
 						NewClient.NiceText,
 						Event.data
 					);
 					
-					Event.peer->data = &NewClient;
-										
-					/* Store any relevant client information here. */
-//					Event.peer -> data = (void*)"Client information";
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE:
@@ -288,7 +282,6 @@ public:
 						//(char*)Event.peer->data 
 					);
 					
-					// TODO: Remove this peer from the clients list! //
 					DeleteClient( ((GelNetClient*)Event.peer->data) );
 
 					/* Reset the peer's client information. */
@@ -308,15 +301,18 @@ public:
 
 		while( enet_host_service(Host, &Event, 0) > 0 ) {
 			switch( Event.type ) {					
-				case ENET_EVENT_TYPE_CONNECT:
-					Log("Connected to %x:%u.", 
-						Event.peer -> address.host,
-						Event.peer -> address.port
+				case ENET_EVENT_TYPE_CONNECT: {
+					Client.push_back( GelNetClient( Event.peer->address ) );
+					GelNetClient& NewClient = Client.back();
+					Event.peer->data = &NewClient;
+
+					Log("* Connected to %s [%i].", 
+						NewClient.NiceText,
+						Event.data
 					);
-					
-					/* Store any relevant client information here. */
-					Event.peer -> data = (void*)"Client information";
-				break;
+
+					break;
+				}
 				case ENET_EVENT_TYPE_RECEIVE:
 					Log("A packet of length %lu containing \"%s\" was received from %s on channel %u.",
 						Event.packet -> dataLength,
