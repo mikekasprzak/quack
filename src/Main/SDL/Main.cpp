@@ -36,6 +36,11 @@ namespace Gel {
 bool KeyESC = false;
 bool KeyRefresh = false;
 
+bool KeyF5 = false;
+bool KeyF6 = false;
+bool KeyF7 = false;
+bool KeyF8 = false;
+
 int KeyFakeLStick = 0;
 int KeyFakeRStick = 0;
 int KeyFakeButtons = 0;
@@ -81,6 +86,14 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F2 ) {
 			Gel::KeyRefresh = false;
 		}
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F5 )
+			Gel::KeyF5 = false;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F6 )
+			Gel::KeyF6 = false;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F7 )
+			Gel::KeyF7 = false;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F8 )
+			Gel::KeyF8 = false;
 		else if ( Event->key.keysym.scancode == SDL_SCANCODE_UP )
 			Gel::KeyFakeLStick &= ~(Gel::KeyFakeLStick & Gel::KEY_UP);
 		else if ( Event->key.keysym.scancode == SDL_SCANCODE_DOWN )
@@ -131,6 +144,14 @@ int EventHandler( void* /*UserData*/, SDL_Event* Event ) {
 			Log( "> Refresh Signal Recieved (F2)" );
 			Gel::KeyRefresh = true;
 		}
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F5 )
+			Gel::KeyF5 = true;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F6 )
+			Gel::KeyF6 = true;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F7 )
+			Gel::KeyF7 = true;
+		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F8 )
+			Gel::KeyF8 = true;
 		else if ( Event->key.keysym.scancode == SDL_SCANCODE_F10 ) {
 			#ifdef PRODUCT_DEV_MODE
 				// This *ALWAYS* kills the app if available, without bothering with a request. //

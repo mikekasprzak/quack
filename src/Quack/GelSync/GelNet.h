@@ -185,10 +185,12 @@ public:
 
 public:
 	inline void Step() {
-		if ( Server )
-			ServerStep();
-		else
-			ClientStep();
+		if ( Host ) {
+			if ( Server )
+				ServerStep();
+			else
+				ClientStep();
+		}
 	}
 	
 	inline void ServerStep() {
