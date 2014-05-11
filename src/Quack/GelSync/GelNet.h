@@ -121,6 +121,12 @@ public:
 		enet_address_get_host(&Address, NameText, sizeof(NameText));
 		UpdateText();
 	}
+	
+	inline bool operator == ( const GelNetClient& Vs ) const {
+		if ( Address.host == Vs.Address.host )
+			return Address.port == Vs.Address.port;
+		return false;
+	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 class GelNet {
@@ -281,6 +287,9 @@ public:
 						Event.data
 						//(char*)Event.peer->data 
 					);
+					
+					// TODO: Remove this peer from the clients list! //
+					DeleteClient( ((GelNetClient*)Event.peer->data) );
 
 					/* Reset the peer's client information. */
 					Event.peer -> data = NULL;
@@ -364,6 +373,21 @@ public:
 	inline void Disconnect() {
 		if ( Peer ) {
 			enet_peer_disconnect( Peer, 1 /* DATA */ );
+		}
+	}
+	
+	inline void LogClients() {
+		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
+			Log("* %s", itr->NiceText);
+		}
+	}
+	inline void DeleteClient( GelNetClient* Me ) {
+		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
+			if ( *itr == *Me ) {
+				Log("* Client %s removed", itr->NiceText);
+				Client.erase( itr );
+				return;
+			}
 		}
 	}
 };
