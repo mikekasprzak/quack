@@ -72,6 +72,8 @@ bool HadVMError;
 //QK::QEngine* Engine;
 QK::QEmitter* Emitter;
 //QK::QSky* Sky;
+
+GelNet*	Net;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -156,6 +158,8 @@ void AppInit() {
 	App::Emitter = new QK::QEmitter( "ItemIcons.atlas" );
 //	App::Sky = new QK::QSky();
 
+	App::Net = new GelNet();
+
 //	{
 //		Log("**** ENGINE");
 //		
@@ -187,6 +191,10 @@ void AppInit() {
 void AppExit() {
 //	delete App::Engine;
 
+	delete App::Net;
+
+	delete App::Emitter;
+
 	/***/
 
 	QuackVMCallExit();
@@ -196,9 +204,17 @@ void AppExit() {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+namespace Gel {
+	extern bool KeyF5;
+	extern bool KeyF6;
+};
+// - ------------------------------------------------------------------------------------------ - //
 void AppStep() {
 	App::StepProfiler.Start();
 	// *** //
+
+	static bool OldKeyF5 = Gel::KeyF5;
+	static bool OldKeyF6 = Gel::KeyF6;
 	
 	Gel::Input::Poll();
 	
@@ -206,6 +222,16 @@ void AppStep() {
 	if ( Gel::KeyRefresh ) {
 		QuackVMCallInit();
 	}
+	
+	if ( Gel::KeyF5 && !OldKeyF5 ) {
+		App::Net->Start( true );
+	}
+	if ( Gel::KeyF6 && !OldKeyF6 ) {
+		App::Net->Start( false );
+		App::Net->ConnectLocal();
+	}
+	
+	App::Net->Step();
 
 	// START: Update FrameTime //
 	sq_pushroottable(vm);
