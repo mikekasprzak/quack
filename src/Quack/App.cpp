@@ -246,11 +246,16 @@ void AppStep() {
 		App::Net->Start( false );
 		App::Net->ConnectLocal();
 	}
-	if ( KeyF8 && !OldKeyF8 ) {
-		Log("+ Client List");
-		App::Net->LogClients();
-		Log("- End of Client List");
+	if ( KeyF7 && !OldKeyF7 ) {
+		Log("+ Enet Peer List");
+		App::Net->LogPeers();
+		Log("- End of Peer List");
 	}
+//	if ( KeyF8 && !OldKeyF8 ) {
+//		Log("+ Client List");
+//		App::Net->LogClients();
+//		Log("- End of Client List");
+//	}
 	
 	App::Net->Step();
 

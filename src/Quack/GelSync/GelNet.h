@@ -137,7 +137,7 @@ class GelNet {
 	int Channels;
 	int MaxClients;
 
-	std::list<GelNetClient> Client;
+//	std::list<GelNetClient> Client;
 	
 	// ENET VARS //
 	ENetHost* Host;
@@ -147,7 +147,7 @@ public:
 		Server( _Server ),
 		Port( _Port ),
 		Channels( 2 ),
-		MaxClients( 32 ),
+		MaxClients( 8 ),
 		Host( 0 ),
 		Peer( 0 )
 	{
@@ -229,6 +229,16 @@ public:
 			enet_peer_disconnect_now(Peer, 2 /* DATA */ );
 		}
 		if ( Host ) {
+			int PeersDeleted = 0;
+			// Delete all the Peers //
+			for ( int idx = 0; idx < Host->peerCount; idx++ ) {
+				if ( Host->peers[idx].data ) {
+					delete (GelNetClient*)Host->peers[idx].data;
+					PeersDeleted++;
+				}
+			}
+			Log( "* Deleted %i of %i Peers.", PeersDeleted, Host->peerCount );
+			
 			enet_host_destroy(Host);
 		}
 	}
@@ -249,23 +259,29 @@ public:
 		while( enet_host_service(Host, &Event, 0) > 0 ) {
 			switch( Event.type ) {					
 				case ENET_EVENT_TYPE_CONNECT: {
-					Client.push_back( GelNetClient( Event.peer->address ) );
-					GelNetClient& NewClient = Client.back();
-					Event.peer->data = &NewClient;
+//					Client.push_back( GelNetClient( Event.peer->address ) );
+					//GelNetClient& NewClient = Client.back();
+					//Event.peer->data = &NewClient;
+					
+					Event.peer->data = new GelNetClient( Event.peer->address );
+					GelNetClient* Client = (GelNetClient*)Event.peer->data;
 
 					Log("* A new client connected from %s [%i].", 
-						NewClient.NiceText,
+						Client->NiceText,
 						Event.data
 					);
 					
 					break;
 				}
-				case ENET_EVENT_TYPE_RECEIVE:
+				case ENET_EVENT_TYPE_RECEIVE: {
+					GelNetClient* Client = (GelNetClient*)Event.peer->data;
+
 					Log("A packet of length %lu containing \"%s\" was received from %s on channel %u [%i].",
 						Event.packet -> dataLength,
 						Event.packet -> data,
 						//(char*)Event.peer -> data,
-						((GelNetClient*)Event.peer->data)->NiceText,
+//						((GelNetClient*)Event.peer->data)->NiceText,
+						Client->NiceText,
 						Event.channelID,
 						Event.data
 					);
@@ -274,22 +290,25 @@ public:
 					enet_packet_destroy( Event.packet );
 				
 					break;
-				
+				}
 				case ENET_EVENT_TYPE_DISCONNECT: {
+					GelNetClient* Client = (GelNetClient*)Event.peer->data;
+
 					Log( "* %s disconnected [%i].", 
-						((GelNetClient*)Event.peer->data)->NiceText,
+						//((GelNetClient*)Event.peer->data)->NiceText,
+						Client->NiceText,
 						Event.data
 						//(char*)Event.peer->data 
 					);
 					
-					DeleteClient( ((GelNetClient*)Event.peer->data) );
+//					DeleteClient( ((GelNetClient*)Event.peer->data) );
+					if ( Event.peer->data )
+						delete (GelNetClient*)Event.peer->data;
 
 					/* Reset the peer's client information. */
-					Event.peer -> data = NULL;
+					Event.peer->data = NULL;
 
 					break;
-				default:
-					Log("other\n");
 				}
 			}
 		}
@@ -302,22 +321,28 @@ public:
 		while( enet_host_service(Host, &Event, 0) > 0 ) {
 			switch( Event.type ) {					
 				case ENET_EVENT_TYPE_CONNECT: {
-					Client.push_back( GelNetClient( Event.peer->address ) );
-					GelNetClient& NewClient = Client.back();
-					Event.peer->data = &NewClient;
+//					Client.push_back( GelNetClient( Event.peer->address ) );
+//					GelNetClient& NewClient = Client.back();
+//					Event.peer->data = &NewClient;
+
+					Event.peer->data = new GelNetClient( Event.peer->address );
+					GelNetClient* Client = (GelNetClient*)Event.peer->data;
 
 					Log("* Connected to %s [%i].", 
-						NewClient.NiceText,
+						Client->NiceText,
 						Event.data
 					);
 
 					break;
 				}
-				case ENET_EVENT_TYPE_RECEIVE:
+				case ENET_EVENT_TYPE_RECEIVE: {
+					GelNetClient* Client = (GelNetClient*)Event.peer->data;
+					
 					Log("A packet of length %lu containing \"%s\" was received from %s on channel %u.",
 						Event.packet -> dataLength,
 						Event.packet -> data,
-						(char*)Event.peer -> data,
+						//(char*)Event.peer -> data,
+						Client->NiceText,
 						Event.channelID
 					);
 						
@@ -325,15 +350,20 @@ public:
 					enet_packet_destroy( Event.packet );
 				
 					break;
-				
+				}
 				case ENET_EVENT_TYPE_DISCONNECT: {
-					Log( "%s disconnected.", (char*)Event.peer->data );
-					/* Reset the peer's client information. */
-					Event.peer -> data = NULL;
+					GelNetClient* Client = (GelNetClient*)Event.peer->data;
+					
+					Log( "%s disconnected [%i].", 
+						Client->IpText,
+						Event.data
+					);
+
+					if ( Event.peer->data )
+						delete (GelNetClient*)Event.peer->data;
+					Event.peer->data = NULL;
 
 					break;
-				default:
-					Log("other\n");
 				}
 			}
 		}		
@@ -372,20 +402,40 @@ public:
 		}
 	}
 	
-	inline void LogClients() {
-		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
-			Log("* %s", itr->NiceText);
+//	inline void LogClients() {
+//		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
+//			Log("* %s", itr->NiceText);
+//		}
+//	}
+	inline void LogPeers() {
+		const char* States[] = {
+			"ENET_PEER_STATE_DISCONNECTED",
+			"ENET_PEER_STATE_CONNECTING",
+			"ENET_PEER_STATE_ACKNOWLEDGING_CONNECT",
+			"ENET_PEER_STATE_CONNECTION_PENDING",
+			"ENET_PEER_STATE_CONNECTION_SUCCEEDED",
+			"ENET_PEER_STATE_CONNECTED",
+			"ENET_PEER_STATE_DISCONNECT_LATER",
+			"ENET_PEER_STATE_DISCONNECTING",
+			"ENET_PEER_STATE_ACKNOWLEDGING_DISCONNECT",
+			"ENET_PEER_STATE_ZOMBIE",
+			"" 
+		};
+
+		for ( int idx = 0; idx < Host->peerCount; idx++ ) {
+			Log("* %x [%s]", Host->peers[idx].address.host, Host->peers[idx].address.host ? States[Host->peers[idx].state] : "-" );
 		}
 	}
-	inline void DeleteClient( GelNetClient* Me ) {
-		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
-			if ( *itr == *Me ) {
-				Log("* Client %s removed", itr->NiceText);
-				Client.erase( itr );
-				return;
-			}
-		}
-	}
+
+//	inline void DeleteClient( GelNetClient* Me ) {
+//		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
+//			if ( *itr == *Me ) {
+//				Log("* Client %s removed", itr->NiceText);
+//				Client.erase( itr );
+//				return;
+//			}
+//		}
+//	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_ENET //
