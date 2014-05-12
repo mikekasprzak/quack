@@ -136,8 +136,6 @@ class GelNet {
 	int Port;
 	int Channels;
 	int MaxClients;
-
-//	std::list<GelNetClient> Client;
 	
 	// ENET VARS //
 	ENetHost* Host;
@@ -192,13 +190,7 @@ public:
 			}
 	
 			char IpText[256];
-//			char NameText[4096];
-//			enet_address_get_host_ip(&Host->address, IpText, sizeof(IpText));
-//			enet_address_get_host(&Host->address, NameText, sizeof(NameText));
 			enet_address_get_host_ip(&Addr, IpText, sizeof(IpText));
-//			enet_address_get_host(&Addr, NameText, sizeof(NameText));
-	
-//			printf("Server Created: %s [%s]\n", IpText, NameText);
 			Log("* Server Created [%s]", IpText);
 		}
 		else /* ClientMode */ {
@@ -216,9 +208,7 @@ public:
 			}
 
 			char IpText[256];
-//			char NameText[4096];
 			enet_address_get_host_ip(&Host->address, IpText, sizeof(IpText));
-//			enet_address_get_host(&Host->address, NameText, sizeof(NameText));
 	
 			Log("* Client Created [%s]", IpText);
 		}
@@ -259,10 +249,6 @@ public:
 		while( enet_host_service(Host, &Event, 0) > 0 ) {
 			switch( Event.type ) {					
 				case ENET_EVENT_TYPE_CONNECT: {
-//					Client.push_back( GelNetClient( Event.peer->address ) );
-					//GelNetClient& NewClient = Client.back();
-					//Event.peer->data = &NewClient;
-					
 					Event.peer->data = new GelNetClient( Event.peer->address );
 					GelNetClient* Client = (GelNetClient*)Event.peer->data;
 
@@ -279,8 +265,6 @@ public:
 					Log("A packet of length %lu containing \"%s\" was received from %s on channel %u [%i].",
 						Event.packet -> dataLength,
 						Event.packet -> data,
-						//(char*)Event.peer -> data,
-//						((GelNetClient*)Event.peer->data)->NiceText,
 						Client->NiceText,
 						Event.channelID,
 						Event.data
@@ -295,13 +279,10 @@ public:
 					GelNetClient* Client = (GelNetClient*)Event.peer->data;
 
 					Log( "* %s disconnected [%i].", 
-						//((GelNetClient*)Event.peer->data)->NiceText,
 						Client->NiceText,
 						Event.data
-						//(char*)Event.peer->data 
 					);
 					
-//					DeleteClient( ((GelNetClient*)Event.peer->data) );
 					if ( Event.peer->data )
 						delete (GelNetClient*)Event.peer->data;
 
@@ -321,10 +302,6 @@ public:
 		while( enet_host_service(Host, &Event, 0) > 0 ) {
 			switch( Event.type ) {					
 				case ENET_EVENT_TYPE_CONNECT: {
-//					Client.push_back( GelNetClient( Event.peer->address ) );
-//					GelNetClient& NewClient = Client.back();
-//					Event.peer->data = &NewClient;
-
 					Event.peer->data = new GelNetClient( Event.peer->address );
 					GelNetClient* Client = (GelNetClient*)Event.peer->data;
 
@@ -402,11 +379,6 @@ public:
 		}
 	}
 	
-//	inline void LogClients() {
-//		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
-//			Log("* %s", itr->NiceText);
-//		}
-//	}
 	inline void LogPeers() {
 		const char* States[] = {
 			"ENET_PEER_STATE_DISCONNECTED",
@@ -426,16 +398,6 @@ public:
 			Log("* %x [%s]", Host->peers[idx].address.host, Host->peers[idx].address.host ? States[Host->peers[idx].state] : "-" );
 		}
 	}
-
-//	inline void DeleteClient( GelNetClient* Me ) {
-//		for ( std::list<GelNetClient>::iterator itr = Client.begin(); itr != Client.end(); ++itr ) {
-//			if ( *itr == *Me ) {
-//				Log("* Client %s removed", itr->NiceText);
-//				Client.erase( itr );
-//				return;
-//			}
-//		}
-//	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_ENET //
