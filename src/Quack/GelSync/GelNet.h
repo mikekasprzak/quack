@@ -318,6 +318,8 @@ public:
 							Send(Packet,Peer,0);
 						}
 						
+						OnConnect( this );
+						
 						break;
 					}
 					case ENET_EVENT_TYPE_RECEIVE: {
@@ -337,6 +339,8 @@ public:
 						break;
 					}
 					case ENET_EVENT_TYPE_DISCONNECT: {
+						OnDisconnect( this );
+
 						GelNetClient* Client = (GelNetClient*)Event.peer->data;
 	
 						Log( "* %s disconnected [%i].", 

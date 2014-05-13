@@ -161,7 +161,7 @@ void AppInit() {
 
 	App::Net = new GelNet();
 	App::Sync = new GelSync();
-	App::Sync->Bind(*App::Net);
+	App::Sync->Bind(App::Net);
 
 //	{
 //		Log("**** ENGINE");
@@ -248,7 +248,8 @@ void AppStep() {
 	}
 	if ( KeyF6 && !OldKeyF6 ) {
 		App::Net->Start( false );
-		App::Net->ConnectLocal();
+//		App::Net->ConnectLocal();
+		App::Net->Connect("localhost");
 	}
 	if ( KeyF7 && !OldKeyF7 ) {
 		Log("+ Enet Peer List");
