@@ -183,7 +183,7 @@ inline st read_Data( const char* _FileName, void* Data, const st _Size ) {
 	return BytesRead;
 }
 // - ------------------------------------------------------------------------------------------ - //
-inline st write_Data( const char* _FileName, void* Data, st _Size ) {
+inline st write_Data( const char* _FileName, const void* Data, const st _Size ) {
 	// Open File //
 	FILE* fp = fopen( _FileName, "wb" );
 	if ( fp == 0 ) {
