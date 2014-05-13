@@ -28,9 +28,6 @@ public:
 	}
 	
 	inline void Step() {
-//		if ( Net.IsServer() ) {
-//			LocalTime = get_ms_GelTime();
-//		}
 		Net.Step();
 	}
 	
@@ -43,8 +40,15 @@ public:
 			Packet.Add( Gel::PACKET_SYNC_REQUEST, &LocalTime, sizeof(LocalTime) );
 
 			Net.SendPeer(Packet,0);
-		}		
+		}
 	}
+	
+	// NOTE: Sending my TimeStamp, once we're in sync, we can determine the speed of each way by //
+	// taking the difference. Can probably converge on it.
+	
+	// TODO: Need to rig this up as hook functions (signals?). Need to recieve a call upon packets arriving.
+	
+	// TODO: Need to rig up some sort of delayed action queue. Or callbacks once we know we've connected.
 };
 // - ------------------------------------------------------------------------------------------ - //
 #endif // __GEL_GELSYNC_H__ //

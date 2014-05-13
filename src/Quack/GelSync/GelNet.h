@@ -174,19 +174,6 @@ public:
 				return &Data[1];
 		return &Data[0];
 	}
-	
-//	inline const void* GetNextChunk() const {
-//		if ( Size == 255u )
-//			if ( Data[0] == 65535u )
-//				return &Data[3];
-//			else
-//				return &Data[1];
-//		return &Data[0];	
-//	}
-	
-//	inline bool IsInput() const {
-//		return (PacketType >= GPT_INPUT_START) && (PacketType <= GPT_INPUT_END);
-//	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 class GelNet {
@@ -324,23 +311,7 @@ public:
 							Packet.Add( 1, Out2, sizeof(Out2) );
 							Packet.Add( 1, Out1, sizeof(Out1) );
 
-//							Send(Packet,Peer,0);
-
-/*							
-							//const char Message[] = { 1, 4>>1, 'H', 'e', 'y', 0 };
-							const char Message[] = { 
-								1, 4>>1, 'H', 'e', 'y', 0, 
-								1, 6>>1, 'D', 'u', 'd', 'e', '!', 0 
-							};
-							
-							ENetPacket* Packet = enet_packet_create (
-								Message,
-								sizeof(Message),
-								ENET_PACKET_FLAG_RELIABLE
-							);
-				
-							enet_peer_send( Peer, 0, Packet );
-							enet_host_flush( Host );*/
+							Send(Packet,Peer,0);
 						}
 						
 						break;
@@ -354,13 +325,7 @@ public:
 							Read += ReadChunk( Chunk, Event );
 						}
 
-//						Log("A packet of length %lu containing \"%s\" was received from %s on channel %u [%i].",
-//							Event.packet -> dataLength,
-//							Event.packet -> data,
-//							Client->NiceText,
-//							Event.channelID,
-//							Event.data
-//						);
+//						Event.data	// *shrug*, I dunno what to do with it, nor how to set it. //
 							
 						/* Clean up the packet now that we're done using it. */
 						enet_packet_destroy( Event.packet );
@@ -445,16 +410,12 @@ public:
 public:
 	
 	inline void Send( const GelPacket& _Packet, ENetPeer* _Peer, int _Channel, const bool Flush = true, const int Flags = ENET_PACKET_FLAG_RELIABLE ) {
-		Log("Go!");
 //		write_Data( "Mommy.bin", _Packet.Get(), _Packet.Size() );
 		
 		ENetPacket* Packet = enet_packet_create (
 			_Packet.Get(),
 			_Packet.Size(),
 			Flags
-//			Message,
-//			sizeof(Message),
-//			ENET_PACKET_FLAG_RELIABLE
 		);
 
 		enet_peer_send( _Peer, _Channel, Packet );
