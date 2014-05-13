@@ -19,8 +19,9 @@ public:
 	}
 	
 	// Bind my functions to the active GelNet //
-	inline void Bind( GelNet& Net ) {
-		// Bind _OnConnect! //		
+	inline void Bind( GelNet* Net ) {
+		Net->OnConnect.Connect( _OnConnect, this );
+		Net->OnDisconnect.Connect( _OnDisconnect, this );
 	}
 	
 public:
@@ -28,12 +29,14 @@ public:
 		Me->OnConnect( Net );
 	}
 	inline void OnConnect( GelNet* Net ) {
+		Log("SYNC CONNECT");
 	}
 	
 	static void _OnDisconnect( thistype* Me, GelNet* Net ) {
 		Me->OnDisconnect( Net );
 	}
 	inline void OnDisconnect( GelNet* Net ) {
+		Log("SYNC DISCONNECT");
 	}
 	
 //	inline void Start( const bool Server ) {
