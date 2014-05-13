@@ -73,7 +73,7 @@ bool HadVMError;
 QK::QEmitter* Emitter;
 //QK::QSky* Sky;
 
-//GelNet*	Net;
+GelNet*		Net;
 GelSync*	Sync;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
@@ -159,8 +159,9 @@ void AppInit() {
 	App::Emitter = new QK::QEmitter( "ItemIcons.atlas" );
 //	App::Sky = new QK::QSky();
 
-//	App::Net = new GelNet();
+	App::Net = new GelNet();
 	App::Sync = new GelSync();
+	App::Sync->Bind(*App::Net);
 
 //	{
 //		Log("**** ENGINE");
@@ -193,7 +194,7 @@ void AppInit() {
 void AppExit() {
 //	delete App::Engine;
 
-//	delete App::Net;
+	delete App::Net;
 	delete App::Sync;
 
 	delete App::Emitter;
@@ -243,15 +244,15 @@ void AppStep() {
 	}
 	
 	if ( KeyF5 && !OldKeyF5 ) {
-		App::Sync->Start( true );
+		App::Net->Start( true );
 	}
 	if ( KeyF6 && !OldKeyF6 ) {
-		App::Sync->Start( false );
-		App::Sync->Net.ConnectLocal();
+		App::Net->Start( false );
+		App::Net->ConnectLocal();
 	}
 	if ( KeyF7 && !OldKeyF7 ) {
 		Log("+ Enet Peer List");
-		App::Sync->Net.LogPeers();
+		App::Net->LogPeers();
 		Log("- End of Peer List");
 	}
 	if ( KeyF8 && !OldKeyF8 ) {
@@ -260,6 +261,7 @@ void AppStep() {
 	}
 	
 	App::Sync->Step();
+	App::Net->Step();
 
 	// START: Update FrameTime //
 	sq_pushroottable(vm);
