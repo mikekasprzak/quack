@@ -267,6 +267,9 @@ public:
 	}
 	
 	inline void Stop() {
+		OnDisconnect( this );
+		//ClearSignals();
+		
 		if ( Peer ) {
 			enet_peer_disconnect_now(Peer, 2 /* DATA */ );
 		}
@@ -284,6 +287,11 @@ public:
 			enet_host_destroy(Host);
 		}
 	}
+	
+//	inline void ClearSignals() {
+//		OnConnect.Clear();
+//		OnDisconnect.Clear();
+//	}
 
 public:
 	inline void Step() {
