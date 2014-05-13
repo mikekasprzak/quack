@@ -7,7 +7,7 @@
 class GelSync {
 	typedef GelSync thistype;
 public:
-	GelNet Net;
+//	GelNet Net;
 	
 	GelTime LocalTime;
 	GelTime RemoteTime;
@@ -18,29 +18,46 @@ public:
 	{
 	}
 	
-public:
-	inline void Start( const bool Server ) {
-		Net.Start( Server );
+	// Bind my functions to the active GelNet //
+	inline void Bind( GelNet& Net ) {
+		// Bind _OnConnect! //		
 	}
 	
-	inline void Stop() {
-		Net.Stop();
+public:
+	static void _OnConnect( thistype* Me, GelNet* Net ) {
+		Me->OnConnect( Net );
 	}
+	inline void OnConnect( GelNet* Net ) {
+	}
+	
+	static void _OnDisconnect( thistype* Me, GelNet* Net ) {
+		Me->OnDisconnect( Net );
+	}
+	inline void OnDisconnect( GelNet* Net ) {
+	}
+	
+//	inline void Start( const bool Server ) {
+//		Net.Start( Server );
+//	}
+//	
+//	inline void Stop() {
+//		Net.Stop();
+//	}
 	
 	inline void Step() {
-		Net.Step();
+//		Net.Step();
 	}
 	
 	inline void SendSync() {
 		Log("Send Sync");
-		if ( !Net.IsServer() ) {
-			LocalTime = get_ms_GelTime();
-
-			GelPacket Packet;
-			Packet.Add( Gel::PACKET_SYNC_REQUEST, &LocalTime, sizeof(LocalTime) );
-
-			Net.SendPeer(Packet,0);
-		}
+//		if ( !Net.IsServer() ) {
+//			LocalTime = get_ms_GelTime();
+//
+//			GelPacket Packet;
+//			Packet.Add( Gel::PACKET_SYNC_REQUEST, &LocalTime, sizeof(LocalTime) );
+//
+//			Net.SendPeer(Packet,0);
+//		}
 	}
 	
 	// NOTE: Sending my TimeStamp, once we're in sync, we can determine the speed of each way by //

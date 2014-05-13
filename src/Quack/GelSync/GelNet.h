@@ -15,9 +15,10 @@ namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 enum {
 	PACKET_NULL = 0,			// Null/Padding ** SIZE IN BYTES! NOT 2 BYTES!//
+	PACKET_TEST,				// Test Packet. Prints the result. //
 
 	// Timestamp Passing, to synchronize machines //
-	PACKET_SYNC_REQUEST = 2,
+	PACKET_SYNC_REQUEST,
 	PACKET_SYNC_RESPONSE,
 	
 //	GPT_PACKET_ID = 1,		//
@@ -178,12 +179,15 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 class GelNet {
 	typedef GelNet thistype;
-//protected:
 public:
 	bool Server;
 	int Port;
 	int Channels;
 	int MaxClients;
+
+	GelSignal OnConnect;
+	GelSignal OnDisconnect;
+//	GelSignal 
 	
 	// ENET VARS //
 	ENetHost* Host;
