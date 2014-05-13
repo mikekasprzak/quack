@@ -30,6 +30,7 @@ public:
 	}
 	inline void OnConnect( GelNet* Net ) {
 		Log("SYNC CONNECT");
+		SendSync(Net);
 	}
 	
 	static void _OnDisconnect( thistype* Me, GelNet* Net ) {
@@ -51,16 +52,16 @@ public:
 //		Net.Step();
 	}
 	
-	inline void SendSync() {
+	inline void SendSync( GelNet* Net ) {
 		Log("Send Sync");
-//		if ( !Net.IsServer() ) {
-//			LocalTime = get_ms_GelTime();
-//
-//			GelPacket Packet;
-//			Packet.Add( Gel::PACKET_SYNC_REQUEST, &LocalTime, sizeof(LocalTime) );
-//
-//			Net.SendPeer(Packet,0);
-//		}
+		if ( !Net->IsServer() ) {
+			LocalTime = get_ms_GelTime();
+
+			GelPacket Packet;
+			Packet.Add( Gel::PACKET_SYNC_REQUEST, &LocalTime, sizeof(LocalTime) );
+
+			Net->SendPeer(Packet,0);
+		}
 	}
 	
 	// NOTE: Sending my TimeStamp, once we're in sync, we can determine the speed of each way by //

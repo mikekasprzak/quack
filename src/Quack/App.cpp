@@ -258,7 +258,7 @@ void AppStep() {
 	}
 	if ( KeyF8 && !OldKeyF8 ) {
 		// Can't do this after Net.Connect(). Connection isn't open yet. //
-		App::Sync->SendSync();
+		//App::Sync->SendSync();
 	}
 	
 	App::Sync->Step();
