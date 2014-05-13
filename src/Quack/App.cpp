@@ -73,7 +73,8 @@ bool HadVMError;
 QK::QEmitter* Emitter;
 //QK::QSky* Sky;
 
-GelNet*	Net;
+//GelNet*	Net;
+GelSync*	Sync;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -158,7 +159,8 @@ void AppInit() {
 	App::Emitter = new QK::QEmitter( "ItemIcons.atlas" );
 //	App::Sky = new QK::QSky();
 
-	App::Net = new GelNet();
+//	App::Net = new GelNet();
+	App::Sync = new GelSync();
 
 //	{
 //		Log("**** ENGINE");
@@ -191,7 +193,8 @@ void AppInit() {
 void AppExit() {
 //	delete App::Engine;
 
-	delete App::Net;
+//	delete App::Net;
+	delete App::Sync;
 
 	delete App::Emitter;
 
@@ -240,24 +243,23 @@ void AppStep() {
 	}
 	
 	if ( KeyF5 && !OldKeyF5 ) {
-		App::Net->Start( true );
+		App::Sync->Start( true );
 	}
 	if ( KeyF6 && !OldKeyF6 ) {
-		App::Net->Start( false );
-		App::Net->ConnectLocal();
+		App::Sync->Start( false );
+		App::Sync->Net.ConnectLocal();
 	}
 	if ( KeyF7 && !OldKeyF7 ) {
 		Log("+ Enet Peer List");
-		App::Net->LogPeers();
+		App::Sync->Net.LogPeers();
 		Log("- End of Peer List");
 	}
-//	if ( KeyF8 && !OldKeyF8 ) {
-//		Log("+ Client List");
-//		App::Net->LogClients();
-//		Log("- End of Client List");
-//	}
+	if ( KeyF8 && !OldKeyF8 ) {
+		// Can't do this after Net.Connect(). Connection isn't open yet. //
+		App::Sync->SendSync();
+	}
 	
-	App::Net->Step();
+	App::Sync->Step();
 
 	// START: Update FrameTime //
 	sq_pushroottable(vm);

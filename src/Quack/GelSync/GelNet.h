@@ -6,21 +6,18 @@
 #ifdef USES_ENET
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
+#include <Lib/Data/Data.h>
 #include <Array/GelArray.h>
 // - ------------------------------------------------------------------------------------------ - //
 #include <enet/enet.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
-// Packet Header - 16 Bit Alignment //
-// [pt][sz] - pt: Packet Type.  sz: Size in 2-bytes.
-// Exception: if pt=0 (Null), then sz is size in bytes.
-// - ------------------------------------------------------------------------------------------ - //
 enum {
 	PACKET_NULL = 0,			// Null/Padding ** SIZE IN BYTES! NOT 2 BYTES!//
 
 	// Timestamp Passing, to synchronize machines //
-	PACKET_SYNC_REQUEST,
+	PACKET_SYNC_REQUEST = 2,
 	PACKET_SYNC_RESPONSE,
 	
 //	GPT_PACKET_ID = 1,		//
@@ -41,8 +38,99 @@ enum {
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
-class GelNetChunk {
-	typedef GelNetChunk thistype;
+class GelNetClient {
+	typedef GelNetClient thistype;
+public:
+	ENetAddress Address;
+
+	char IpText[256];
+	char NameText[256];
+	char NiceText[512];
+public:
+	inline GelNetClient( const ENetAddress& _Address ) :
+		Address( _Address )
+	{
+		IpText[0] = 0;
+		NameText[0] = 0;
+		NiceText[0] = 0;
+		
+		UpdateText();
+	}
+	
+	inline void UpdateText() {
+		enet_address_get_host_ip(&Address, IpText, sizeof(IpText));
+				
+		if ( NameText[0] == 0 ) {
+			sprintf(NiceText, "%s:%i", IpText, Address.port );
+		}
+		else {
+			sprintf(NiceText, "%s (%s:%i)", (NameText[0] == 0) ? "??" : NameText, IpText, Address.port );
+		}
+	}
+
+	// This should be done in a thread, as it can sometimes take a while (to fail) //	
+	inline void FetchName() {
+		enet_address_get_host(&Address, NameText, sizeof(NameText));
+		UpdateText();
+	}
+	
+	inline bool operator == ( const GelNetClient& Vs ) const {
+		if ( Address.host == Vs.Address.host )
+			return Address.port == Vs.Address.port;
+		return false;
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
+// Packet Header - 16 Bit Alignment //
+// [pt][sz] - pt: Packet Type.  sz: Size in 2-bytes.
+// Exception: if pt=0 (Null), then sz is size in bytes.
+// - ------------------------------------------------------------------------------------------ - //
+class GelPacket {
+	typedef GelPacket thistype;
+public:
+	GelArray<unsigned char> Data;
+	
+	void Add( const int _Type, const void* _Data, const int _Size ) {
+		// Byte 0 - The Type //
+		Data.Append( (unsigned char*)&_Type, 1 );
+		// Byte 1 - The Size //
+		if ( _Size > ((255-1)<<1) ) {
+			const unsigned char TwoFiveFive = 255u;
+			Data.Append( (unsigned char*)&TwoFiveFive, sizeof(TwoFiveFive) );
+			if ( _Size > (65535-1) ) {
+				const unsigned short SixFiveFiveThreeFive = 65535u;
+				Data.Append( (unsigned char*)&SixFiveFiveThreeFive, sizeof(SixFiveFiveThreeFive) );
+				Data.Append( (unsigned char*)&_Size, 4 );
+			}
+			else {
+				Data.Append( (unsigned char*)(&_Size), 2 );
+			}
+		}
+		else {
+			const unsigned char Sz = (_Size>>1)+(_Size&1);	// Include an extra byte for padding (if needed) //
+			Data.Append( &Sz, 1 );
+		}
+		
+		// Bytes 2-... - Data //
+		Data.Append( (unsigned char*)_Data, _Size );
+		
+		// [optional] Final byte - Padding //
+		if ( (_Size <= ((255-1)<<1)) && (_Size & 1) ) {
+			const unsigned char Zero = 0u;
+			Data.Append( (unsigned char*)&Zero, 1 );
+		}
+	}
+	
+	inline const void* Get() const {
+		return &Data[0];
+	}
+	inline st Size() const {
+		return Data.Size();
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
+class GelPacketChunk {
+	typedef GelPacketChunk thistype;
 public:		
 	unsigned char Type;		// Chunk Type (was Packet Type) //
 	unsigned char Size;		// Size of Chunk in 2-Bytes, or larger if 255 is used //
@@ -101,89 +189,10 @@ public:
 //	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-class GelNetClient {
-	typedef GelNetClient thistype;
-public:
-	ENetAddress Address;
-
-	char IpText[256];
-	char NameText[256];
-	char NiceText[512];
-public:
-	inline GelNetClient( const ENetAddress& _Address ) :
-		Address( _Address )
-	{
-		IpText[0] = 0;
-		NameText[0] = 0;
-		NiceText[0] = 0;
-		
-		UpdateText();
-	}
-	
-	inline void UpdateText() {
-		enet_address_get_host_ip(&Address, IpText, sizeof(IpText));
-				
-		if ( NameText[0] == 0 ) {
-			sprintf(NiceText, "%s:%i", IpText, Address.port );
-		}
-		else {
-			sprintf(NiceText, "%s (%s:%i)", (NameText[0] == 0) ? "??" : NameText, IpText, Address.port );
-		}
-	}
-
-	// This should be done in a thread, as it can sometimes take a while (to fail) //	
-	inline void FetchName() {
-		enet_address_get_host(&Address, NameText, sizeof(NameText));
-		UpdateText();
-	}
-	
-	inline bool operator == ( const GelNetClient& Vs ) const {
-		if ( Address.host == Vs.Address.host )
-			return Address.port == Vs.Address.port;
-		return false;
-	}
-};
-// - ------------------------------------------------------------------------------------------ - //
-class GelPacket {
-	typedef GelPacket thistype;
-public:
-	GelArray<unsigned char> Data;
-	
-	void Add( const int _Type, const void* _Data, const int _Size ) {
-		// Byte 0 - The Type //
-		Data.Append( (unsigned char*)&_Type, 1 );
-		// Byte 1 - The Size //
-		if ( _Size > ((255-1)<<1) ) {
-			const unsigned char TwoFiveFive = 255u;
-			Data.Append( (unsigned char*)&TwoFiveFive, sizeof(TwoFiveFive) );
-			if ( _Size > (65535-1) ) {
-				const unsigned short SixFiveFiveThreeFive = 65535u;
-				Data.Append( (unsigned char*)&SixFiveFiveThreeFive, sizeof(SixFiveFiveThreeFive) );
-				Data.Append( (unsigned char*)&_Size, 4 );
-			}
-			else {
-				Data.Append( (unsigned char*)(&_Size), 2 );
-			}
-		}
-		else {
-			const unsigned char Sz = (_Size>>1)+(_Size&1);	// Include an extra byte for padding (if needed) //
-			Data.Append( &Sz, 1 );
-		}
-		
-		// Bytes 2-... - Data //
-		Data.Append( (unsigned char*)_Data, _Size );
-		
-		// [optional] Final byte - Padding //
-		if ( (_Size <= ((255-1)<<1)) && (_Size & 1) ) {
-			const unsigned char Zero = 0u;
-			Data.Append( (unsigned char*)&Zero, 1 );
-		}
-	}
-};
-// - ------------------------------------------------------------------------------------------ - //
 class GelNet {
 	typedef GelNet thistype;
-protected:	
+//protected:
+public:
 	bool Server;
 	int Port;
 	int Channels;
@@ -308,6 +317,16 @@ public:
 								Event.data
 							);
 							
+							GelPacket Packet;
+							const char Out1[] = "Howdy!";
+							Packet.Add( 1, Out1, sizeof(Out1) );
+							const char Out2[] = "How French!";
+							Packet.Add( 1, Out2, sizeof(Out2) );
+							Packet.Add( 1, Out1, sizeof(Out1) );
+
+//							Send(Packet,Peer,0);
+
+/*							
 							//const char Message[] = { 1, 4>>1, 'H', 'e', 'y', 0 };
 							const char Message[] = { 
 								1, 4>>1, 'H', 'e', 'y', 0, 
@@ -320,8 +339,8 @@ public:
 								ENET_PACKET_FLAG_RELIABLE
 							);
 				
-							enet_peer_send( Peer, 0, Packet );			
-							enet_host_flush( Host );							
+							enet_peer_send( Peer, 0, Packet );
+							enet_host_flush( Host );*/
 						}
 						
 						break;
@@ -421,6 +440,35 @@ public:
 		for ( int idx = 0; idx < Host->peerCount; idx++ ) {
 			Log("* %x [%s]", Host->peers[idx].address.host, Host->peers[idx].address.host ? States[Host->peers[idx].state] : "-" );
 		}
+	}
+	
+public:
+	
+	inline void Send( const GelPacket& _Packet, ENetPeer* _Peer, int _Channel, const bool Flush = true, const int Flags = ENET_PACKET_FLAG_RELIABLE ) {
+		Log("Go!");
+//		write_Data( "Mommy.bin", _Packet.Get(), _Packet.Size() );
+		
+		ENetPacket* Packet = enet_packet_create (
+			_Packet.Get(),
+			_Packet.Size(),
+			Flags
+//			Message,
+//			sizeof(Message),
+//			ENET_PACKET_FLAG_RELIABLE
+		);
+
+		enet_peer_send( _Peer, _Channel, Packet );
+		
+		if ( Flush )
+			enet_host_flush( Host );
+	}
+	
+	inline void SendPeer( const GelPacket& _Packet, int _Channel, const bool Flush = true, const int Flags = ENET_PACKET_FLAG_RELIABLE ) {
+		Send( _Packet, Peer, _Channel, Flush, Flags );
+	}
+	
+	inline bool IsServer() const {
+		return Server;
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
