@@ -24,6 +24,7 @@
 #define __GEL_ARRAY_GELARRAY_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
+#include <Math/Math.h>
 #include <Graphics/Graphics.h>
 #include <vector>
 // - ------------------------------------------------------------------------------------------ - //
@@ -121,6 +122,12 @@ public:
 	}
 	inline void Delete( const st Index ) {
 		Data.erase( Data.at(Index) );
+	}
+	
+	inline void Append( const T* const _Data, const st _Count ) {
+		st Pos = Size();
+		Resize( Pos + _Count );
+		memcpy( &Data[Pos], _Data, _Count * sizeof(T) );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
