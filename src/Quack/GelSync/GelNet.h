@@ -5,19 +5,28 @@
 #ifdef USES_GELNET
 #ifdef USES_ENET
 // - ------------------------------------------------------------------------------------------ - //
+#include <Lib/Lib.h>
+#include <Array/GelArray.h>
+// - ------------------------------------------------------------------------------------------ - //
 #include <enet/enet.h>
+// - ------------------------------------------------------------------------------------------ - //
+namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 // Packet Header - 16 Bit Alignment //
 // [pt][sz] - pt: Packet Type.  sz: Size in 2-bytes.
 // Exception: if pt=0 (Null), then sz is size in bytes.
 // - ------------------------------------------------------------------------------------------ - //
 enum {
-	GPT_NULL = 0,			// Null/Padding ** SIZE IN BYTES! NOT 2 BYTES!//
+	PACKET_NULL = 0,			// Null/Padding ** SIZE IN BYTES! NOT 2 BYTES!//
+
+	// Timestamp Passing, to synchronize machines //
+	PACKET_SYNC_REQUEST,
+	PACKET_SYNC_RESPONSE,
 	
-	GPT_PACKET_ID = 1,		//
-	GPT_CONFIRM_ID,
+//	GPT_PACKET_ID = 1,		//
+//	GPT_CONFIRM_ID,
 	
-	GPT_FRAME_ID = 4,		//
+//	GPT_FRAME_ID = 4,		//
 	
 //	// Inputs (GamePads, etc) //
 //	GPT_INPUT_START = 32,
@@ -30,40 +39,46 @@ enum {
 //	GPT_RAW = 255,			// Stream of Raw Data
 };
 // - ------------------------------------------------------------------------------------------ - //
-struct GelNetChunk {
+}; // namespace Gel //
+// - ------------------------------------------------------------------------------------------ - //
+class GelNetChunk {
 	typedef GelNetChunk thistype;
-	
+public:		
 	unsigned char Type;		// Chunk Type (was Packet Type) //
 	unsigned char Size;		// Size of Chunk in 2-Bytes, or larger if 255 is used //
 	
 	unsigned short Data[0];
 	
 	inline int GetSize() const {
-		if ( Type == GPT_NULL )
+		// Special Case: PACKET_NULL doesn't use Size<<1
+		if ( Type == Gel::PACKET_NULL )
 			return Size;
+			
 		// Special Code: 255 (means use next short as size) //
-		if ( Size == 255u )
+		if ( Size == 255u ) {
 			// Special Code: 65535 (means use next-next int as size) //
-			if ( Data[0] == 65535u )
+			if ( Data[0] == 65535u ) {
 				// I give up, a whole integer for size. Forget the unsigned. //
 				return *((int*)&Data[1]);
-			else
-				// 2-Shorts (+2), or values from 2 to 131070 //
-				return 2+(Data[0]<<1);
+			}
+			else {
+				// 2-Shorts, or values from 2 to 131070 //
+				return Data[0];//(Data[0]<<1);
+			}
+		}
 		// 2-Bytes, or even values from 0-508 (510 [255] is a Special Code)
 		return (Size<<1);
 	}
 	
 	inline int GetTotalSize() const {
-		if ( Type == GPT_NULL )
+		if ( Type == Gel::PACKET_NULL ) {
 			return Size + sizeof(thistype);
-		
+		}
 		return (Size<<1) + sizeof(thistype);
 	}
 		
 	
 	inline void* GetData() {
-		// 
 		if ( Size == 255u )
 			if ( Data[0] == 65535u )
 				return &Data[3];
@@ -72,14 +87,14 @@ struct GelNetChunk {
 		return &Data[0];
 	}
 	
-	inline const void* GetNextChunk() const {
-		if ( Size == 255u )
-			if ( Data[0] == 65535u )
-				return &Data[3];
-			else
-				return &Data[1];
-		return &Data[0];	
-	}
+//	inline const void* GetNextChunk() const {
+//		if ( Size == 255u )
+//			if ( Data[0] == 65535u )
+//				return &Data[3];
+//			else
+//				return &Data[1];
+//		return &Data[0];	
+//	}
 	
 //	inline bool IsInput() const {
 //		return (PacketType >= GPT_INPUT_START) && (PacketType <= GPT_INPUT_END);
@@ -129,9 +144,46 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+class GelPacket {
+	typedef GelPacket thistype;
+public:
+	GelArray<unsigned char> Data;
+	
+	void Add( const int _Type, const void* _Data, const int _Size ) {
+		// Byte 0 - The Type //
+		Data.Append( (unsigned char*)&_Type, 1 );
+		// Byte 1 - The Size //
+		if ( _Size > ((255-1)<<1) ) {
+			const unsigned char TwoFiveFive = 255u;
+			Data.Append( (unsigned char*)&TwoFiveFive, sizeof(TwoFiveFive) );
+			if ( _Size > (65535-1) ) {
+				const unsigned short SixFiveFiveThreeFive = 65535u;
+				Data.Append( (unsigned char*)&SixFiveFiveThreeFive, sizeof(SixFiveFiveThreeFive) );
+				Data.Append( (unsigned char*)&_Size, 4 );
+			}
+			else {
+				Data.Append( (unsigned char*)(&_Size), 2 );
+			}
+		}
+		else {
+			const unsigned char Sz = (_Size>>1)+(_Size&1);	// Include an extra byte for padding (if needed) //
+			Data.Append( &Sz, 1 );
+		}
+		
+		// Bytes 2-... - Data //
+		Data.Append( (unsigned char*)_Data, _Size );
+		
+		// [optional] Final byte - Padding //
+		if ( (_Size <= ((255-1)<<1)) && (_Size & 1) ) {
+			const unsigned char Zero = 0u;
+			Data.Append( (unsigned char*)&Zero, 1 );
+		}
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
 class GelNet {
 	typedef GelNet thistype;
-	
+protected:	
 	bool Server;
 	int Port;
 	int Channels;
@@ -236,115 +288,87 @@ public:
 public:
 	inline void Step() {
 		if ( Host ) {
-			if ( Server )
-				ServerStep();
-			else
-				ClientStep();
-		}
-	}
+			ENetEvent Event;
 	
-	inline void ServerStep() {
-		ENetEvent Event;
-
-		while( enet_host_service(Host, &Event, 0) > 0 ) {
-			switch( Event.type ) {					
-				case ENET_EVENT_TYPE_CONNECT: {
-					Event.peer->data = new GelNetClient( Event.peer->address );
-					GelNetClient* Client = (GelNetClient*)Event.peer->data;
-
-					Log("* A new client connected from %s [%i].", 
-						Client->NiceText,
-						Event.data
-					);
-					
-					break;
-				}
-				case ENET_EVENT_TYPE_RECEIVE: {
-					GelNetClient* Client = (GelNetClient*)Event.peer->data;
-
-					Log("A packet of length %lu containing \"%s\" was received from %s on channel %u [%i].",
-						Event.packet -> dataLength,
-						Event.packet -> data,
-						Client->NiceText,
-						Event.channelID,
-						Event.data
-					);
+			while( enet_host_service(Host, &Event, 0) > 0 ) {
+				switch( Event.type ) {					
+					case ENET_EVENT_TYPE_CONNECT: {
+						Event.peer->data = new GelNetClient( Event.peer->address );
+						GelNetClient* Client = (GelNetClient*)Event.peer->data;
 						
-					/* Clean up the packet now that we're done using it. */
-					enet_packet_destroy( Event.packet );
+						if ( Server ) {
+							Log("* A new client connected from %s [%i].", 
+								Client->NiceText,
+								Event.data
+							);
+						}
+						else {
+							Log("* Connected to %s [%i].", 
+								Client->NiceText,
+								Event.data
+							);
+							
+							//const char Message[] = { 1, 4>>1, 'H', 'e', 'y', 0 };
+							const char Message[] = { 
+								1, 4>>1, 'H', 'e', 'y', 0, 
+								1, 6>>1, 'D', 'u', 'd', 'e', '!', 0 
+							};
+							
+							ENetPacket* Packet = enet_packet_create (
+								Message,
+								sizeof(Message),
+								ENET_PACKET_FLAG_RELIABLE
+							);
 				
-					break;
-				}
-				case ENET_EVENT_TYPE_DISCONNECT: {
-					GelNetClient* Client = (GelNetClient*)Event.peer->data;
+							enet_peer_send( Peer, 0, Packet );			
+							enet_host_flush( Host );							
+						}
+						
+						break;
+					}
+					case ENET_EVENT_TYPE_RECEIVE: {
+						GelNetClient* Client = (GelNetClient*)Event.peer->data;
+						
+						int Read = 0;
+						while ( Read < Event.packet->dataLength ) {
+							void* Chunk = &(Event.packet->data[Read]);
+							Read += ReadChunk( Chunk, Event );
+						}
 
-					Log( "* %s disconnected [%i].", 
-						Client->NiceText,
-						Event.data
-					);
+//						Log("A packet of length %lu containing \"%s\" was received from %s on channel %u [%i].",
+//							Event.packet -> dataLength,
+//							Event.packet -> data,
+//							Client->NiceText,
+//							Event.channelID,
+//							Event.data
+//						);
+							
+						/* Clean up the packet now that we're done using it. */
+						enet_packet_destroy( Event.packet );
 					
-					if ( Event.peer->data )
-						delete (GelNetClient*)Event.peer->data;
-
-					/* Reset the peer's client information. */
-					Event.peer->data = NULL;
-
-					break;
+						break;
+					}
+					case ENET_EVENT_TYPE_DISCONNECT: {
+						GelNetClient* Client = (GelNetClient*)Event.peer->data;
+	
+						Log( "* %s disconnected [%i].", 
+							Client->NiceText,
+							Event.data
+						);
+						
+						if ( Event.peer->data )
+							delete (GelNetClient*)Event.peer->data;
+						Event.peer->data = 0;
+	
+						break;
+					}
 				}
 			}
 		}
-		
 	}
-	
-	inline void ClientStep() {
-		ENetEvent Event;
 
-		while( enet_host_service(Host, &Event, 0) > 0 ) {
-			switch( Event.type ) {					
-				case ENET_EVENT_TYPE_CONNECT: {
-					Event.peer->data = new GelNetClient( Event.peer->address );
-					GelNetClient* Client = (GelNetClient*)Event.peer->data;
-
-					Log("* Connected to %s [%i].", 
-						Client->NiceText,
-						Event.data
-					);
-
-					break;
-				}
-				case ENET_EVENT_TYPE_RECEIVE: {
-					GelNetClient* Client = (GelNetClient*)Event.peer->data;
-					
-					Log("A packet of length %lu containing \"%s\" was received from %s on channel %u.",
-						Event.packet -> dataLength,
-						Event.packet -> data,
-						//(char*)Event.peer -> data,
-						Client->NiceText,
-						Event.channelID
-					);
-						
-					/* Clean up the packet now that we're done using it. */
-					enet_packet_destroy( Event.packet );
-				
-					break;
-				}
-				case ENET_EVENT_TYPE_DISCONNECT: {
-					GelNetClient* Client = (GelNetClient*)Event.peer->data;
-					
-					Log( "%s disconnected [%i].", 
-						Client->IpText,
-						Event.data
-					);
-
-					if ( Event.peer->data )
-						delete (GelNetClient*)Event.peer->data;
-					Event.peer->data = NULL;
-
-					break;
-				}
-			}
-		}		
-	}
+	// Returns how much data used for this chunk //
+	int ReadChunk( const void* Data, const ENetEvent& Event );
 	
 public:
 	// Connect to a specific client (by IP or Name) //
