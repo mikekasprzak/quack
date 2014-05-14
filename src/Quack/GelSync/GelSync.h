@@ -40,6 +40,8 @@ public:
 		Log("SYNC DISCONNECT");
 	}
 	
+	//inline void OnPacket( GelPacketData& 
+	
 //	inline void Start( const bool Server ) {
 //		Net.Start( Server );
 //	}

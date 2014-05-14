@@ -39,6 +39,7 @@ enum {
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
+// GelNetClient contains data about a client (Data not found in ENetPeer) //
 class GelNetClient {
 	typedef GelNetClient thistype;
 public:
@@ -86,6 +87,7 @@ public:
 // [pt][sz] - pt: Packet Type.  sz: Size in 2-bytes.
 // Exception: if pt=0 (Null), then sz is size in bytes.
 // - ------------------------------------------------------------------------------------------ - //
+// GelPacket is a utility class for creating a packet //
 class GelPacket {
 	typedef GelPacket thistype;
 public:
@@ -130,6 +132,7 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+// GelPacketChunks are pieces of packets that need to be handled by subscribers of GelNet //
 class GelPacketChunk {
 	typedef GelPacketChunk thistype;
 public:		
@@ -177,6 +180,17 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+// GelPacketData is contains all the data a subscriber to the packet messages needs //
+class GelPacketData {
+	typedef GelPacketData thistype;
+public:
+	GelPacketChunk* Chunk;
+	ENetEvent* Event;
+//	ENetPeer* Peer;
+//	GelNetClient* Client;
+};
+// - ------------------------------------------------------------------------------------------ - //
+// GelNet is the Networking Class //
 class GelNet {
 	typedef GelNet thistype;
 public:
