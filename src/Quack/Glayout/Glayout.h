@@ -113,16 +113,22 @@ enum GlayNodeFlag {
 };
 // - ------------------------------------------------------------------------------------------ - //
 // GlayNode - A Node is an element of a layout. Nodes have children and parent nodes. //
+template<typename T>
 struct GlayNode {
-	GlayNode* Parent;
-	std::list<GlayNode> Child;
+	typedef GlayNode<T> NodeType;
+	
+	NodeType* Parent;
+	std::list<NodeType> Child;
 
 	GlayRegion Region;		// The visible Region (BaseRegion modified by Flags/Parent/Children)
 
 	GlayRegion BaseRegion;	// The initial Region (not what's shown) //
-	unsigned int Flags;
-		
-	inline GlayNode( GlayNode* _Parent, const unsigned int _Flag = GLAY_DEFAULT ) :
+	unsigned int Flags;		// Alignment and Layout Flags //
+	
+	T Data;
+
+public:
+	inline GlayNode( NodeType* _Parent, const unsigned int _Flag = GLAY_DEFAULT ) :
 		Parent( _Parent ),
 		Region( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
 		BaseRegion( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
@@ -132,18 +138,18 @@ struct GlayNode {
 
 public:
 	// Normal Child //
-	inline GlayNode& AddChild( const unsigned int _Flag = GLAY_DEFAULT ) {
-		Child.push_back( GlayNode(this, _Flag | GLAY_SUM) );
+	inline NodeType& AddChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+		Child.push_back( NodeType(this, _Flag | GLAY_SUM) );
 		return Child.back();
 	}
 	// Child that is relative the origin, not the parent //
-	inline GlayNode& AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT ) {
-		Child.push_back( GlayNode(this, _Flag) );
+	inline NodeType& AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+		Child.push_back( NodeType(this, _Flag) );
 		return Child.back();
 	}
 	// Doesn't affect layout //
-	inline GlayNode& AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT ) {
-		Child.push_back( GlayNode(this, _Flag | GLAY_SUM | GLAY_EMPTY ) );
+	inline NodeType& AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT ) {
+		Child.push_back( NodeType(this, _Flag | GLAY_SUM | GLAY_EMPTY ) );
 		Child.back().SetShape(GLAY_0,GLAY_0);
 		return Child.back();
 	}
@@ -176,7 +182,7 @@ public:
 	}
 	inline void CopyChildBases() {
 		CopyBaseToRegion();
-		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			Itr->CopyChildBases();
 		}
 	}
@@ -187,7 +193,7 @@ public:
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
 		GlayNum Height = GLAY_0;
-		for (std::list<GlayNode>::const_iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::const_iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			Width += Itr->Region.Shape.x;
 			if ( Itr->Region.Shape.y > Height ) {
 				Height = Itr->Region.Shape.y;
@@ -195,7 +201,7 @@ public:
 		}
 		
 		GlayNum Offset = GLAY_0;
-		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			// "Reg", so now to shadow my internal member "Region" //
 			GlayRegion& Reg = Itr->Region;
 			
@@ -227,7 +233,7 @@ public:
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
 		GlayNum Height = GLAY_0;
-		for (std::list<GlayNode>::const_iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::const_iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			if ( Itr->Region.Shape.x > Width ) {
 				Width = Itr->Region.Shape.x;
 			}
@@ -235,7 +241,7 @@ public:
 		}
 		
 		GlayNum Offset = GLAY_0;
-		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			// "Reg", so now to shadow my internal member "Region" //
 			GlayRegion& Reg = Itr->Region;
 						
@@ -271,14 +277,14 @@ public:
 		// Sum of both axis, so we know how to distribute //
 		GlayNum Width = GLAY_0;
 		GlayNum Height = GLAY_0;
-		for (std::list<GlayNode>::const_iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::const_iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			Width += Itr->Region.Shape.x;
 			Height += Itr->Region.Shape.y;
 		}
 
 		GlayNum OffsetX = GLAY_0;
 		GlayNum OffsetY = GLAY_0;
-		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			// "Reg", so now to shadow my internal member "Region" //
 			GlayRegion& Reg = Itr->Region;
 
@@ -327,15 +333,18 @@ public:
 		}
 
 		// Update Children //
-		for (std::list<GlayNode>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
 			Itr->Update();
 		}
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
 // GlayLayout - Contains a heiarchy of Nodes //
+template<typename T>
 struct GlayLayout {
-	GlayNode Root;
+	typedef GlayNode<T> NodeType;
+	
+	NodeType Root;
 	
 	inline GlayLayout() :
 		Root( 0 )
@@ -352,7 +361,7 @@ public:
 		DrawLayout( Mat, Root );
 	}
 	
-	inline void DrawLayout( const Matrix4x4& Mat, const GlayNode& Node ) {
+	inline void DrawLayout( const Matrix4x4& Mat, const NodeType& Node ) {
 		const st32 VertCount = 4;
 		Vector3D Verts[ VertCount ];
 		Verts[0].x = Node.GetPos().x;
@@ -367,7 +376,7 @@ public:
 		Gel::RenderFlat( GEL_LINE_LOOP, Mat, GEL_RGB_PURPLE, Verts, VertCount );
 		
 		
-		for (std::list<GlayNode>::const_iterator Itr = Node.Child.begin(), End = Node.Child.end(); Itr != End; ++Itr) {
+		for (typename std::list<NodeType>::const_iterator Itr = Node.Child.begin(), End = Node.Child.end(); Itr != End; ++Itr) {
 			DrawLayout( Mat, *Itr );
 		}
 	}
