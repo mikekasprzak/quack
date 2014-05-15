@@ -314,6 +314,8 @@ public:
 	inline void Update() {
 		// Properties of Self //
 		if ( Parent ) {
+			Log("! MOMMY ! %X", Flags );
+			// Fancy Alignment Modes (May Affect Shape) //
 			if ( Flags & GLAY_FIT ) {
 				Region = Parent->Region;
 			}
@@ -323,6 +325,32 @@ public:
 			else {
 				// Relative Origin... is automatic, by doing nothing //
 			}
+
+			// Standard Alignment (X Axis) //
+			if ( (Flags & GLAY_CENTER) == GLAY_CENTER ) {
+				Region.Pos.x = Parent->Region.Pos.x + GlayNumHalf(Parent->Region.Shape.x-Region.Shape.x);
+			}
+			else if ( Flags & GLAY_LEFT ) {
+				Region.Pos.x = Parent->Region.Pos.x;
+			}
+			else if ( Flags & GLAY_RIGHT ) {
+				Region.Pos.x = Parent->Region.Pos.x+Parent->Region.Shape.x - Region.Shape.x;
+			}
+
+			// Standard Alignment (Y Axis) //
+			if ( (Flags & GLAY_MIDDLE) == GLAY_MIDDLE ) {
+				Region.Pos.y = Parent->Region.Pos.y + GlayNumHalf(Parent->Region.Shape.y-Region.Shape.y);
+				Log("! HOOP!");
+			}
+			else if ( Flags & GLAY_BOTTOM ) {
+				Region.Pos.y = Parent->Region.Pos.y;
+				Log("! ZOOP!");
+			}
+			else if ( Flags & GLAY_TOP ) {
+				Region.Pos.y = Parent->Region.Pos.y+Parent->Region.Shape.y - Region.Shape.y;
+				Log("! MOOP!");
+			}
+			
 		}
 
 		// Properties of Children //
@@ -366,19 +394,6 @@ public:
 	}
 	
 	inline void DrawLayout( const Matrix4x4& Mat, const NodeType& Node ) {
-//		const st32 VertCount = 4;
-//		Vector3D Verts[ VertCount ];
-//		Verts[0].x = Node.GetPos().x;
-//		Verts[0].y = Node.GetPos().y;
-//		Verts[1].x = Node.GetPos().x + Node.GetShape().x;
-//		Verts[1].y = Node.GetPos().y;
-//		Verts[2].x = Node.GetPos().x + Node.GetShape().x;
-//		Verts[2].y = Node.GetPos().y + Node.GetShape().y;
-//		Verts[3].x = Node.GetPos().x;
-//		Verts[3].y = Node.GetPos().y + Node.GetShape().y;
-//	
-//		Gel::RenderFlat( GEL_LINE_LOOP, Mat, GEL_RGB_WHITE, Verts, VertCount );
-
 		Node.Data.Draw( Mat, Node );
 		
 		for (typename std::list<NodeType>::const_iterator Itr = Node.Child.begin(), End = Node.Child.end(); Itr != End; ++Itr) {
