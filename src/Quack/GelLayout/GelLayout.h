@@ -6,6 +6,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 #include <Math/Math.h>
+#include <Geometry/Rect.h>
 
 #include <Glayout/Glayout.h>
 
@@ -57,7 +58,11 @@ public:
 	}
 	
 	inline GelLayoutNode( const int _Type, const char* const _Text ) :
-		Type( _Type )
+		Type( _Type ),
+		AtlasUID( 0 ),
+		ArtIndex( 0 ),
+		FontUID( 0 ),
+		Color( GEL_RGB_WHITE )
 	{	
 		switch ( Type ) {
 			case Gel::GLO_IMAGE: {
@@ -109,7 +114,7 @@ public:
 				Gel::FontPool[FontUID].printf( 
 					Mat, 
 					Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y).ToVector3D(), 
-					Real(1), // FontSize, 
+					Real(2), // FontSize, 
 					Color,
 					GEL_ALIGN_DEFAULT,
 					Text.c_str()

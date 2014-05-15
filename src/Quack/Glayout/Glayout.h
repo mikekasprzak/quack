@@ -114,9 +114,9 @@ enum GlayNodeFlag {
 // - ------------------------------------------------------------------------------------------ - //
 // GlayNode - A Node is an element of a layout. Nodes have children and parent nodes. //
 template<typename T>
-struct GlayNode {
+class GlayNode {
 	typedef GlayNode<T> NodeType;
-	
+public:	
 	NodeType* Parent;
 	std::list<NodeType> Child;
 
