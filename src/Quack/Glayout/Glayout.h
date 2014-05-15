@@ -1,30 +1,35 @@
 // - ------------------------------------------------------------------------------------------ - //
 // Glayout - General Purpose Layout Engine for simple UIs //
 // - ------------------------------------------------------------------------------------------ - //
-// NOTES: By default a node is at (0,0) and is 1x1. Nodes can be 0x0, meaning they're both //
-//   unaffected and don't affect by Fitting operations. Say, if you needed to chain some data. //
+// NOTES: By default a node is at (0,0) and is of size 1x1. Nodes can be size 0x0, meaning they're
+//   both unaffected and don't affect Fitting operations. Say, if you needed to chain some data.
 // - ------------------------------------------------------------------------------------------ - //
 // TODO: Add a way that sizes cascade to children.
 // TODO: Make inner filling work (which means deciding what width/height mean to them).
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GLAYOUT_H__
-#define __GLAYOUT_H__
+#ifndef __GEL_GLAYOUT_H__
+#define __GEL_GLAYOUT_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <string>
 #include <list>
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-typedef float GlayNum;		// Number //
-#define GLAY_0		0.0f
-#define GLAY_1		1.0f
+// Floating Point Layout //
+typedef float GlayNum;			// Number //
+#define GLAY_0			0.0f
+#define GLAY_1			1.0f
 inline GlayNum GlayNumHalf( const GlayNum In ) { return In * 0.5f; }
 // - ------------------------------------------------------------------------------------------ - //
-//typedef int GlayNum;		// Number //
+// Fixed Point Layout //
+//typedef int GlayNum;			// Number //
 //#define GLAY_0		0
-//#define GLAY_1		1
+//#define GLAY_1		1		// Should be bigger than 1 //
 //inline GlayNum GlayNumHalf( const GlayNum In ) { return In >> 1; }
 // - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+// GlayPoint - Positions in the Layout //
 struct GlayPoint {
 	GlayNum x,y;
 	
@@ -52,6 +57,7 @@ __GLAY_OPERATOR_AB(/)
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+// GlayRegion - Rectangles //
 struct GlayRegion {
 	GlayPoint Pos, Shape;
 	
@@ -106,13 +112,14 @@ enum GlayNodeFlag {
 	GLAY_DEFAULT =		GLAY_CENTER | GLAY_MIDDLE,
 };
 // - ------------------------------------------------------------------------------------------ - //
+// GlayNode - A Node is an element of a layout. Nodes have children and parent nodes. //
 struct GlayNode {
 	GlayNode* Parent;
 	std::list<GlayNode> Child;
 
-	GlayRegion Region;
+	GlayRegion Region;		// The visible Region (BaseRegion modified by Flags/Parent/Children)
 
-	GlayRegion BaseRegion;
+	GlayRegion BaseRegion;	// The initial Region (not what's shown) //
 	unsigned int Flags;
 		
 	inline GlayNode( GlayNode* _Parent, const unsigned int _Flag = GLAY_DEFAULT ) :
@@ -326,6 +333,7 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
+// GlayLayout - Contains a heiarchy of Nodes //
 struct GlayLayout {
 	GlayNode Root;
 	
@@ -343,5 +351,5 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GLAYOUT_H__ //
+#endif // __GEL_GLAYOUT_H__ //
 // - ------------------------------------------------------------------------------------------ - //
