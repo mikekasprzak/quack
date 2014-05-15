@@ -5,8 +5,12 @@
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
+#include <Math/Math.h>
+
 #include <Glayout/Glayout.h>
+
 #include <Render/GelDraw.h>
+#include <Atlas/Atlas.h>
 #include <Font/Font.h>
 // - ------------------------------------------------------------------------------------------ - //
 namespace Gel {

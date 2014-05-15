@@ -32,6 +32,8 @@ enum {
 	QK_TAG_SKELANIMATOR,
 	QK_TAG_MODEL, 			// 3D //
 	QK_TAG_SHADER,
+
+	QK_TAG_LAYOUT,			// UI //
 	
 	QK_TAG_GRID2,
 	QK_TAG_GRID3,
