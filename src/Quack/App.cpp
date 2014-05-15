@@ -21,7 +21,6 @@
 #include "Engine/Engine.h"
 #include "GelSync/GelSync.h"
 
-#include "Glayout/Glayout.h"
 #include "GelUI/GelUI.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
@@ -79,7 +78,7 @@ QK::QEmitter* Emitter;
 GelNet*		Net;
 GelSync*	Sync;
 
-GlayLayout<GelUINode> Layout;
+GelUI 		Layout;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -183,7 +182,7 @@ void AppInit() {
 
 		App::Layout.Root.AddChild( GLAY_TOP | GLAY_CENTER, GelUINode( Gel::UI_TEXT, "Chicken Tonight!" ) );
 		App::Layout.Root.Child.back().SetShape(96,32);
-		App::Layout.Root.Child.back().Data.SetFont( "Arial.fnt" );
+		App::Layout.Root.Child.back().Data.SetFont( "Fontin.fnt" );
 
 //		App::Layout.Root.Child.back().AddChild();
 //		App::Layout.Root.Child.back().AddChild();
