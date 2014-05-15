@@ -18,6 +18,12 @@ enum {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
+namespace App {
+	extern bool Debug;	
+}; // namespace App //
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
 class GelUINode {
 	typedef GelUINode thistype;
 	typedef GlayNode<thistype> NodeType;
@@ -37,10 +43,7 @@ public:
 	inline GelUINode( const int _Type, const char* const AtlasName ) :
 		Type( _Type )
 	{	
-		Log( "T: %i", Type );
-		
-		AtlasUID = Gel::AtlasPool.Load( AtlasName );
-		ArtIndex = 0;
+		AtlasUID = Gel::AtlasPool.LoadAndIndex( AtlasName, &ArtIndex );
 	}
 
 public:	
@@ -78,7 +81,7 @@ public:
 			}
 		}
 		
-		{
+		if ( App::Debug ) {
 			const st32 VertCount = 4;
 			Vector3D Verts[ VertCount ];
 			Verts[0].x = Node.GetPos().x;

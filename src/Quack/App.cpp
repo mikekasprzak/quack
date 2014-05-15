@@ -178,7 +178,7 @@ void AppInit() {
 		App::Layout.Root.AddChild( GLAY_MIDDLE | GLAY_RIGHT );
 		App::Layout.Root.Child.back().SetShape(32,32);
 
-		App::Layout.Root.Child.back().AddChild( GLAY_DEFAULT, GelUINode( Gel::UI_IMAGE, "ItemIcons.atlas" ) );
+		App::Layout.Root.Child.back().AddChild( GLAY_DEFAULT, GelUINode( Gel::UI_IMAGE, "ItemIcons.atlas:IconFish" ) );
 		App::Layout.Root.Child.back().Child.back().SetShape(2,2);
 //		App::Layout.Root.Child.back().AddChild();
 //		App::Layout.Root.Child.back().AddChild();

@@ -315,7 +315,7 @@ public:
 	inline void Update() {
 		// Properties of Self //
 		if ( Parent ) {
-			Log("! Alignment Flags: %X", Flags );
+			Log("* Alignment Flags: %X", Flags );
 			// Fancy Alignment Modes (May Affect Shape) //
 			if ( Flags & GLAY_FIT ) {
 				Region = Parent->Region;
