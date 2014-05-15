@@ -153,24 +153,8 @@ public:
 
 	static void _SetArt( thistype* self, const char* ArtFile ) { self->SetArt( ArtFile ); }
 	inline void SetArt( const char* ArtFile ) {
-		std::string AtlasName = ArtFile;
-		std::string AssetName;
-		
-		st StrPos = AtlasName.find(":");
-		if ( StrPos != std::string::npos ) {
-			AssetName = AtlasName.substr(StrPos+1);
-			AtlasName = AtlasName.substr(0,StrPos);
-		}
-		
-		Art = Gel::AtlasPool.Load( AtlasName.c_str() );
-		if ( AssetName.size() ) {
-			GelAtlas& Atlas = Gel::AtlasPool[Art];
-			ArtIndex = Atlas.Find( AssetName.c_str() );
-		}
-		else {			
-			ArtIndex = 0;
-		}
-		
+		Art = Gel::AtlasPool.LoadAndIndex( ArtFile, &ArtIndex );
+
 //		if ( Art ) {
 //			delete Art;
 //		}
