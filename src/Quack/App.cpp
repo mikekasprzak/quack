@@ -174,7 +174,7 @@ void AppInit() {
 		App::Layout.Root.Data.SetType( Gel::UI_BOX );		
 		App::Layout.Root.SetPos(-64,-64);
 		App::Layout.Root.SetShape(128,128);
-		App::Layout.Root.AddChild();// GLAY_FILL_WIDTH );
+		App::Layout.Root.AddChild( GLAY_TOP | GLAY_LEFT );// GLAY_FILL_WIDTH );
 		App::Layout.Root.Child.back().Data.SetType( Gel::UI_BOX );		
 		//App::Layout.Root.Child.back().SetPos(32+16,32+16);
 		App::Layout.Root.Child.back().SetShape(32,32);
