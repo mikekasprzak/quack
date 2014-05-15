@@ -43,7 +43,8 @@
 // ProTip: You can pass class members if you have an appropriate static function in your class.
 // Sample goes here;
 //
-// NEW: Can set additional flags, such as Signal::FF_BLOCKED_AFTER_CALL, on Connect().
+// NEW: Can set additional flags, such as GelSignal::FF_BLOCKED_AFTER_CALL, on Connect().
+// NEW: Can specify an intial input return value. MySignal(Arg,Ret);
 // - ------------------------------------------------------------------------------------------ - //
 #ifndef __GEL_LIB_GELSIGNAL_H__
 #define __GEL_LIB_GELSIGNAL_H__
@@ -75,8 +76,12 @@ public:
 		// Combined mask used for cleverness //
 		FF_MODE_OR_BLOCKED_MASK		= FF_MODE_MASK | FF_BLOCKED,
 		
-		// If set, the function should set the blocked state 
+		// If set, the function should set the blocked state //
 		FF_BLOCKED_AFTER_CALL		= 0x20,
+		
+		// Stops calling functions attached to the signal if the value of Ret is non-zero/zero //
+		FF_RETURN_IF_NON_ZERO		= 0x40,
+		FF_RETURN_IF_ZERO			= 0x80,
 	};
 	
 	struct FuncType {
@@ -120,6 +125,28 @@ public:
 		inline void ClearBlockedAfterCall() {
 			Flags &= ~FF_BLOCKED_AFTER_CALL;
 		}
+
+		// Return If Non Zero - If the return value becomes non-zero, stop calling signals //		
+		inline bool IsReturnIfNonZero() const {
+			return Flags & FF_RETURN_IF_NON_ZERO;
+		}
+		inline void SetReturnIfNonZero() {
+			Flags |= FF_RETURN_IF_NON_ZERO;
+		}
+		inline void ClearReturnIfNonZero() {
+			Flags &= ~FF_RETURN_IF_NON_ZERO;
+		}
+
+		// Return If Zero - If the return value becomes zero, stop calling signals //		
+		inline bool IsReturnIfZero() const {
+			return Flags & FF_RETURN_IF_ZERO;
+		}
+		inline void SetReturnIfZero() {
+			Flags |= FF_RETURN_IF_ZERO;
+		}
+		inline void ClearReturnIfZero() {
+			Flags &= ~FF_RETURN_IF_ZERO;
+		}
 	};
 protected:
 	std::vector<FuncType>	Funcs;
@@ -137,13 +164,23 @@ public:
 public:
 	// Call the function chain //
 	// NOTE: The Return is only ever changed by 3 argument functions! //
-	inline void* operator () ( void* ArgsPtr ) {
-		void* Ret = 0;
+	inline void* operator () ( void* ArgsPtr, void* Ret = 0 ) {
 		for ( size_t idx = 0; idx < Funcs.size(); idx++ ) {
 //			Log("** Signal: %i (%i)", idx, Funcs->Size );
 			FuncType* Func = &(Funcs[idx]);
-			// NOTE: Cleverness! If the FF_BLOCKED flag is set, then none of these functions //
-			//   below will be called, because the bitmask will be incorrect. //
+			
+			// Check the value of Ret, and act depending on certain flags //
+			if ( Ret ) {
+				if ( Func->IsReturnIfNonZero() )
+					return Ret;
+			}
+			else {
+				if ( Func->IsReturnIfZero() )
+					return Ret;
+			}				
+			
+			// NOTE: Cleverness! If the FF_BLOCKED flag is set, then only default will be //
+			//   called, because the bitmask will be incorrect. //
 			switch( Func->Flags & FF_MODE_OR_BLOCKED_MASK ) {
 				case FF_MODE_0: {
 					F0VoidPtr FunctionToCall = (F0VoidPtr)Func->Function;
@@ -168,6 +205,10 @@ public:
 					Ret = FunctionToCall( Func->UserPtr, ArgsPtr, Ret );
 					break;
 				}
+				default: {
+					return Ret;
+					break;
+				}
 			};
 			// If the "Block me after a call" flag is set, set the blocking state //
 			if ( Func->IsBlockedAfterCall() ) {
@@ -177,8 +218,8 @@ public:
 		return Ret;
 	}
 	// size_t version of calling //
-	inline void* operator () ( const size_t Args = 0 ) {
-		return operator()( (void*)Args );
+	inline void* operator () ( const size_t Args = 0, void* const Ret = 0 ) {
+		return operator()( (void*)Args, Ret );
 	}
 	
 	// Zero Argument Functions //

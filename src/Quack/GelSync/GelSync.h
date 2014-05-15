@@ -7,8 +7,6 @@
 class GelSync {
 	typedef GelSync thistype;
 public:
-//	GelNet Net;
-	
 	GelTime LocalTime;
 	GelTime RemoteTime;
 	GelTime TimeDiff;
@@ -22,6 +20,7 @@ public:
 	inline void Bind( GelNet* Net ) {
 		Net->OnConnect.Connect( _OnConnect, this );
 		Net->OnDisconnect.Connect( _OnDisconnect, this );
+		Net->OnPacket.Connect( _OnPacket, this, GelSignal::FF_RETURN_IF_NON_ZERO );
 	}
 	
 public:
@@ -40,23 +39,47 @@ public:
 		Log("SYNC DISCONNECT");
 	}
 	
-	//inline void OnPacket( GelPacketData& 
+	static st _OnPacket( thistype* Me, GelPacketData* Data, st Ret ) {
+		return Me->OnPacket( Data, Ret );
+	}
+	inline st OnPacket( GelPacketData* Data, st Ret ) {
+//		return_if( Ret );	// Now handled by FF_RETURN_IF_NON_ZERO //
+		
+		const GelPacketChunk* Chunk = Data->Chunk;
+
+		switch ( Chunk->Type ) {
+			case Gel::PACKET_SYNC_REQUEST: {
+				GelTime LocalTime;
+				LocalTime = get_ms_GelTime();
 	
-//	inline void Start( const bool Server ) {
-//		Net.Start( Server );
-//	}
-//	
-//	inline void Stop() {
-//		Net.Stop();
-//	}
+				Log("Must Respond... %lli", LocalTime );
+				
+				GelPacket Packet;
+				Packet.Add( Gel::PACKET_SYNC_RESPONSE, &LocalTime, sizeof(LocalTime) );
 	
+				Data->SendResponse(Packet,0);
+				
+				return true;
+				break;	
+			}
+			case Gel::PACKET_SYNC_RESPONSE: {
+				GelTime* RemoteTime = (GelTime*)Chunk->Data;
+				Log("Response! %lli", *RemoteTime );
+				
+				return true;
+				break;
+			}
+		}
+		
+		return Ret;
+	}
+
 	inline void Step() {
-//		Net.Step();
 	}
 	
 	inline void SendSync( GelNet* Net ) {
-		Log("Send Sync");
 		if ( !Net->IsServer() ) {
+			Log("Send Sync");
 			LocalTime = get_ms_GelTime();
 
 			GelPacket Packet;
@@ -68,8 +91,6 @@ public:
 	
 	// NOTE: Sending my TimeStamp, once we're in sync, we can determine the speed of each way by //
 	// taking the difference. Can probably converge on it.
-	
-	// TODO: Need to rig this up as hook functions (signals?). Need to recieve a call upon packets arriving.
 	
 	// TODO: Need to rig up some sort of delayed action queue. Or callbacks once we know we've connected.
 };

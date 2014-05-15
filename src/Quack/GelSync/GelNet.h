@@ -180,16 +180,6 @@ public:
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
-// GelPacketData is contains all the data a subscriber to the packet messages needs //
-class GelPacketData {
-	typedef GelPacketData thistype;
-public:
-	GelPacketChunk* Chunk;
-	ENetEvent* Event;
-//	ENetPeer* Peer;
-//	GelNetClient* Client;
-};
-// - ------------------------------------------------------------------------------------------ - //
 // GelNet is the Networking Class //
 class GelNet {
 	typedef GelNet thistype;
@@ -201,7 +191,7 @@ public:
 
 	GelSignal OnConnect;
 	GelSignal OnDisconnect;
-//	GelSignal 
+	GelSignal OnPacket;
 	
 	// ENET VARS //
 	ENetHost* Host;
@@ -460,6 +450,24 @@ public:
 	
 	inline bool IsServer() const {
 		return Server;
+	}
+};
+// - ------------------------------------------------------------------------------------------ - //
+// GelPacketData is contains all the data a subscriber to the packet messages needs //
+class GelPacketData {
+	typedef GelPacketData thistype;
+	friend GelNet;
+protected:
+	const ENetEvent* Event;
+	GelNet* Net;
+public:
+	const GelPacketChunk* Chunk;
+
+	inline void SendResponse( const GelPacket& _Packet, int _Channel, const bool Flush = true, const int Flags = ENET_PACKET_FLAG_RELIABLE ) {
+		Net->Send( _Packet, Event->peer, _Channel, Flush, Flags );
+	}
+	inline void Send( const GelPacket& _Packet, ENetPeer* _Peer, int _Channel, const bool Flush = true, const int Flags = ENET_PACKET_FLAG_RELIABLE ) {
+		Net->Send( _Packet, _Peer, _Channel, Flush, Flags );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
