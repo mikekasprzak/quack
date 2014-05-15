@@ -171,7 +171,7 @@ void AppInit() {
 	{
 		Log("**** GLAYOUT");
 		App::Layout.Root.SetFlags();
-		App::Layout.Root.Data.SetType( Gel::UI_BOX );		
+		//App::Layout.Root.Data.SetType( Gel::UI_BOX );		
 		App::Layout.Root.SetPos(-64,-64);
 		App::Layout.Root.SetShape(128,128);
 
@@ -180,6 +180,11 @@ void AppInit() {
 
 		App::Layout.Root.Child.back().AddChild( GLAY_DEFAULT, GelUINode( Gel::UI_IMAGE, "ItemIcons.atlas:IconFish" ) );
 		App::Layout.Root.Child.back().Child.back().SetShape(2,2);
+
+		App::Layout.Root.AddChild( GLAY_TOP | GLAY_CENTER, GelUINode( Gel::UI_TEXT, "Chicken Tonight!" ) );
+		App::Layout.Root.Child.back().SetShape(96,32);
+		App::Layout.Root.Child.back().Data.SetFont( "Arial.fnt" );
+
 //		App::Layout.Root.Child.back().AddChild();
 //		App::Layout.Root.Child.back().AddChild();
 //		App::Layout.Root.Child.back().Child.back().SetShape(4,2);
