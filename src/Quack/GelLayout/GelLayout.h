@@ -1,6 +1,6 @@
 // - ------------------------------------------------------------------------------------------ - //
-#ifndef __GEL_GELUI_H__
-#define __GEL_GELUI_H__
+#ifndef __GEL_GELLAYOUT_H__
+#define __GEL_GELLAYOUT_H__
 // - ------------------------------------------------------------------------------------------ - //
 #include <string>
 // - ------------------------------------------------------------------------------------------ - //
@@ -12,11 +12,11 @@
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 enum {
-	UI_NULL = 0,
+	GLO_NULL = 0,
 	
-	UI_BOX,					// Box Test //
-	UI_IMAGE,				// Static Image //
-	UI_TEXT,				// Text Box (line) //
+	GLO_BOX,				// Box Test //
+	GLO_IMAGE,				// Static Image //
+	GLO_TEXT,				// Text Box (line) //
 };	
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
@@ -29,8 +29,8 @@ namespace App {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-class GelUINode {
-	typedef GelUINode thistype;
+class GelLayoutNode {
+	typedef GelLayoutNode thistype;
 	typedef GlayNode<thistype> NodeType;
 public:
 	int Type;	// What kind of Node this is //
@@ -43,8 +43,8 @@ public:
 		
 	GelColor			Color;
 public:
-	inline GelUINode() :
-		Type( Gel::UI_NULL ),
+	inline GelLayoutNode() :
+		Type( Gel::GLO_NULL ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
 		FontUID( 0 ),
@@ -52,15 +52,15 @@ public:
 	{
 	}
 	
-	inline GelUINode( const int _Type, const char* const _Text ) :
+	inline GelLayoutNode( const int _Type, const char* const _Text ) :
 		Type( _Type )
 	{	
 		switch ( Type ) {
-			case Gel::UI_IMAGE: {
+			case Gel::GLO_IMAGE: {
 				AtlasUID = Gel::AtlasPool.LoadAndIndex( _Text, &ArtIndex );
 				break;
 			}
-			case Gel::UI_TEXT: {
+			case Gel::GLO_TEXT: {
 				Text = _Text;
 				break;
 			}
@@ -81,7 +81,7 @@ public:
 public:	
 	inline void Draw( const Matrix4x4& Mat, const NodeType& Node ) const {
 		switch ( Type ) {
-			case Gel::UI_BOX: {
+			case Gel::GLO_BOX: {
 				gelDrawRect( 
 					Mat,
 					Vector2D(Node.GetPos().x,Node.GetPos().y).ToVector3D(), 
@@ -91,7 +91,7 @@ public:
 
 				break;
 			}
-			case Gel::UI_IMAGE: {
+			case Gel::GLO_IMAGE: {
 				Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Node.GetShape().x, Node.GetShape().y) );
 				MyMat *= Matrix4x4::TranslationMatrix( Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y) );
 				MyMat *= Mat;
@@ -101,7 +101,7 @@ public:
 				
 				break;
 			}
-			case Gel::UI_TEXT: {
+			case Gel::GLO_TEXT: {
 				Gel::FontPool[FontUID].printf( 
 					Mat, 
 					Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y).ToVector3D(), 
@@ -134,9 +134,9 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-typedef GlayLayout<GelUINode> GelUI;
+typedef GlayLayout<GelLayoutNode> GelLayout;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-#endif // __GEL_GELUI_H__ //
+#endif // __GEL_GELLAYOUT_H__ //
 // - ------------------------------------------------------------------------------------------ - //
