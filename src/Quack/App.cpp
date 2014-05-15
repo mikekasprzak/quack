@@ -22,6 +22,7 @@
 #include "GelSync/GelSync.h"
 
 #include "Glayout/Glayout.h"
+#include "GelUI/GelUI.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -78,7 +79,7 @@ QK::QEmitter* Emitter;
 GelNet*		Net;
 GelSync*	Sync;
 
-GlayLayout<int> Layout;
+GlayLayout<GelUINode> Layout;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -169,31 +170,34 @@ void AppInit() {
 
 	{
 		Log("**** GLAYOUT");
-		App::Layout.Root.SetPos(128+16,-128);
-		App::Layout.Root.SetShape(100,100);
-		App::Layout.Root.AddChild( GLAY_FILL_WIDTH );
-		App::Layout.Root.Child.back().SetPos(40,60);
-		App::Layout.Root.Child.back().SetShape(20,20);
-		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().Child.back().SetShape(4,2);
-		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.SetFlags();
+		App::Layout.Root.Data.SetType( Gel::UI_BOX );		
+		App::Layout.Root.SetPos(-64,-64);
+		App::Layout.Root.SetShape(128,128);
+		App::Layout.Root.AddChild();// GLAY_FILL_WIDTH );
+		App::Layout.Root.Child.back().Data.SetType( Gel::UI_BOX );		
+		//App::Layout.Root.Child.back().SetPos(32+16,32+16);
+		App::Layout.Root.Child.back().SetShape(32,32);
+//		App::Layout.Root.Child.back().AddChild();
+//		App::Layout.Root.Child.back().AddChild();
+//		App::Layout.Root.Child.back().Child.back().SetShape(4,2);
+//		App::Layout.Root.Child.back().AddChild();
 
-		App::Layout.Root.AddChild( GLAY_FILL );
-		App::Layout.Root.Child.back().SetPos(10,10);
-		App::Layout.Root.Child.back().SetShape(60,30);
-		App::Layout.Root.Child.back().AddEmptyChild();
-		App::Layout.Root.Child.back().AddEmptyChild();
-		App::Layout.Root.Child.back().AddChild();
-		App::Layout.Root.Child.back().AddEmptyChild();
-		App::Layout.Root.Child.back().AddChild().SetShape(8,4);
-		App::Layout.Root.Child.back().Child.back().SetPos(1,0);
-		App::Layout.Root.Child.back().AddEmptyChild();		
+//		App::Layout.Root.AddChild( GLAY_FILL );
+//		App::Layout.Root.Child.back().SetPos(10,10);
+//		App::Layout.Root.Child.back().SetShape(60,30);
+//		App::Layout.Root.Child.back().AddEmptyChild();
+//		App::Layout.Root.Child.back().AddEmptyChild();
+//		App::Layout.Root.Child.back().AddChild();
+//		App::Layout.Root.Child.back().AddEmptyChild();
+//		App::Layout.Root.Child.back().AddChild().SetShape(8,4);
+//		App::Layout.Root.Child.back().Child.back().SetPos(1,0);
+//		App::Layout.Root.Child.back().AddEmptyChild();		
 		App::Layout.Update();
 
-		GlayPoint Pos = App::Layout.Root.Child.back().Child.back().GetPos();
-		GlayPoint Shape = App::Layout.Root.Child.back().Child.back().GetShape();
-		Log("Pos: (%f, %f) (%f, %f)", Pos.x, Pos.y, Shape.x, Shape.y);
+//		GlayPoint Pos = App::Layout.Root.Child.back().Child.back().GetPos();
+//		GlayPoint Shape = App::Layout.Root.Child.back().Child.back().GetShape();
+//		Log("Pos: (%f, %f) (%f, %f)", Pos.x, Pos.y, Shape.x, Shape.y);
 		
 		Log("**** DONE");
 	}

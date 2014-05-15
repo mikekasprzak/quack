@@ -162,6 +162,10 @@ public:
 		BaseRegion.Shape = GlayPoint(_x,_y);
 	}
 	
+	inline void SetFlags( const unsigned int _Flag = GLAY_DEFAULT ) {
+		Flags = _Flag;
+	}
+	
 public:
 	// Get Populated Data //
 	inline const GlayPoint& GetShape() const {
@@ -362,19 +366,20 @@ public:
 	}
 	
 	inline void DrawLayout( const Matrix4x4& Mat, const NodeType& Node ) {
-		const st32 VertCount = 4;
-		Vector3D Verts[ VertCount ];
-		Verts[0].x = Node.GetPos().x;
-		Verts[0].y = Node.GetPos().y;
-		Verts[1].x = Node.GetPos().x + Node.GetShape().x;
-		Verts[1].y = Node.GetPos().y;
-		Verts[2].x = Node.GetPos().x + Node.GetShape().x;
-		Verts[2].y = Node.GetPos().y + Node.GetShape().y;
-		Verts[3].x = Node.GetPos().x;
-		Verts[3].y = Node.GetPos().y + Node.GetShape().y;
-	
-		Gel::RenderFlat( GEL_LINE_LOOP, Mat, GEL_RGB_PURPLE, Verts, VertCount );
-		
+//		const st32 VertCount = 4;
+//		Vector3D Verts[ VertCount ];
+//		Verts[0].x = Node.GetPos().x;
+//		Verts[0].y = Node.GetPos().y;
+//		Verts[1].x = Node.GetPos().x + Node.GetShape().x;
+//		Verts[1].y = Node.GetPos().y;
+//		Verts[2].x = Node.GetPos().x + Node.GetShape().x;
+//		Verts[2].y = Node.GetPos().y + Node.GetShape().y;
+//		Verts[3].x = Node.GetPos().x;
+//		Verts[3].y = Node.GetPos().y + Node.GetShape().y;
+//	
+//		Gel::RenderFlat( GEL_LINE_LOOP, Mat, GEL_RGB_WHITE, Verts, VertCount );
+
+		Node.Data.Draw( Mat, Node );
 		
 		for (typename std::list<NodeType>::const_iterator Itr = Node.Child.begin(), End = Node.Child.end(); Itr != End; ++Itr) {
 			DrawLayout( Mat, *Itr );
