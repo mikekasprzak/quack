@@ -174,15 +174,22 @@ void AppInit() {
 		App::Layout.Root.SetPos(-64,-64);
 		App::Layout.Root.SetShape(128,128);
 
-		App::Layout.Root.AddChild( GLAY_MIDDLE | GLAY_RIGHT );
-		App::Layout.Root.Child.back().SetShape(32,32);
+//		App::Layout.Root.AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_IMAGE, "ItemIcons.atlas:IconFish" ) );
+//		App::Layout.Root.Child.back().SetShape(2,2);
 
-		App::Layout.Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_IMAGE, "ItemIcons.atlas:IconFish" ) );
-		App::Layout.Root.Child.back().Child.back().SetShape(2,2);
+//		App::Layout.Root.AddChild( GLAY_MIDDLE | GLAY_RIGHT );
+//		App::Layout.Root.Child.back().SetShape(32,32);
+
+//		App::Layout.Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_IMAGE, "ItemIcons.atlas:IconFish" ) );
+//		App::Layout.Root.Child.back().Child.back().SetShape(2,2);
 
 		App::Layout.Root.AddChild( GLAY_TOP | GLAY_CENTER, GelLayoutNode( Gel::GLO_TEXT, "Chicken Tonight!" ) );
 		App::Layout.Root.Child.back().SetShape(96,32);
 		App::Layout.Root.Child.back().Data.SetFont( "Fontin.fnt" );
+
+//		App::Layout.Root.AddChild( GLAY_BOTTOM | GLAY_CENTER, GelLayoutNode( Gel::GLO_TEXT, "Hockey Tomorrow!" ) );
+//		App::Layout.Root.Child.back().SetShape(64,32);
+//		App::Layout.Root.Child.back().Data.SetFont( "Arial.fnt" );
 
 //		App::Layout.Root.Child.back().AddChild();
 //		App::Layout.Root.Child.back().AddChild();
