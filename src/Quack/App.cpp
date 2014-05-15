@@ -21,7 +21,7 @@
 #include "Engine/Engine.h"
 #include "GelSync/GelSync.h"
 
-#include "GelUI/GelUI.h"
+#include "GelLayout/GelLayout.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -78,7 +78,7 @@ QK::QEmitter* Emitter;
 GelNet*		Net;
 GelSync*	Sync;
 
-GelUI 		Layout;
+GelLayout	Layout;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -177,10 +177,10 @@ void AppInit() {
 		App::Layout.Root.AddChild( GLAY_MIDDLE | GLAY_RIGHT );
 		App::Layout.Root.Child.back().SetShape(32,32);
 
-		App::Layout.Root.Child.back().AddChild( GLAY_DEFAULT, GelUINode( Gel::UI_IMAGE, "ItemIcons.atlas:IconFish" ) );
+		App::Layout.Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_IMAGE, "ItemIcons.atlas:IconFish" ) );
 		App::Layout.Root.Child.back().Child.back().SetShape(2,2);
 
-		App::Layout.Root.AddChild( GLAY_TOP | GLAY_CENTER, GelUINode( Gel::UI_TEXT, "Chicken Tonight!" ) );
+		App::Layout.Root.AddChild( GLAY_TOP | GLAY_CENTER, GelLayoutNode( Gel::GLO_TEXT, "Chicken Tonight!" ) );
 		App::Layout.Root.Child.back().SetShape(96,32);
 		App::Layout.Root.Child.back().Data.SetFont( "Fontin.fnt" );
 
