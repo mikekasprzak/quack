@@ -20,6 +20,8 @@
 
 #include "Engine/Engine.h"
 #include "GelSync/GelSync.h"
+
+#include "Glayout/Glayout.h"
 // - ------------------------------------------------------------------------------------------ - //
 namespace App {
 // - ------------------------------------------------------------------------------------------ - //
@@ -75,6 +77,8 @@ QK::QEmitter* Emitter;
 
 GelNet*		Net;
 GelSync*	Sync;
+
+GlayLayout Layout;
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace App //
 // - ------------------------------------------------------------------------------------------ - //
@@ -163,32 +167,36 @@ void AppInit() {
 	App::Sync = new GelSync();
 	App::Sync->Bind(App::Net);
 
-//	{
-//		Log("**** ENGINE");
-//		
-//		App::Engine = new QK::QEngine();
-//
-////		QK::AddDummy_QEngine( *App::Engine, Vector2D(0,0) );
-////		QK::AddBoxy_QEngine( *App::Engine, Vector2D(-64-13,64) );
-////		QK::AddBoxy_QEngine( *App::Engine, Vector2D(32,64) );
-////		QK::AddBally_QEngine( *App::Engine, Vector2D(0,144), Real(20) );
-//
-//		QK::AddBally_QEngine( *App::Engine, Vector2D(-120,50), Real(16) );
-//		App::Engine->Back().AddForce( Vector2D(1.12,0) );
-//
-//		QK::AddCappy_QEngine( *App::Engine, Vector2D(1,100) /*, ...*/ );
-//		App::Engine->Back().AddForce( Vector2D(0.3,0) );
-//
-//		QK::AddBoxy_QEngine( *App::Engine, Vector2D(16,240) );	
-//		//QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(0,-32), Vector2D(96,16) );
-//		QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(-96,-32), Real(16), Vector2D(96*2,0), Real(16) );
-//		QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(-96,0), Vector2D(16,32) );
-//		//QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(-96,-16), Real(16), Vector2D(0,64), Real(16) );
-//		//QK::AddBoxyStatic_QEngine( *App::Engine, Vector2D(+96,0), Vector2D(16,32) );
-//		QK::AddCappyStatic_QEngine( *App::Engine, Vector2D(+96,-16), Real(16), Vector2D(0,64), Real(16) );
-//
-//		Log("**** DONE");
-//	}
+	{
+		Log("**** GLAYOUT");
+		App::Layout.Root.SetPos(128+16,-128);
+		App::Layout.Root.SetShape(100,100);
+		App::Layout.Root.AddChild( GLAY_FILL_WIDTH );
+		App::Layout.Root.Child.back().SetPos(40,60);
+		App::Layout.Root.Child.back().SetShape(20,20);
+		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.Child.back().Child.back().SetShape(4,2);
+		App::Layout.Root.Child.back().AddChild();
+
+		App::Layout.Root.AddChild( GLAY_FILL );
+		App::Layout.Root.Child.back().SetPos(10,10);
+		App::Layout.Root.Child.back().SetShape(60,30);
+		App::Layout.Root.Child.back().AddEmptyChild();
+		App::Layout.Root.Child.back().AddEmptyChild();
+		App::Layout.Root.Child.back().AddChild();
+		App::Layout.Root.Child.back().AddEmptyChild();
+		App::Layout.Root.Child.back().AddChild().SetShape(8,4);
+		App::Layout.Root.Child.back().Child.back().SetPos(1,0);
+		App::Layout.Root.Child.back().AddEmptyChild();		
+		App::Layout.Update();
+
+		GlayPoint Pos = App::Layout.Root.Child.back().Child.back().GetPos();
+		GlayPoint Shape = App::Layout.Root.Child.back().Child.back().GetShape();
+		Log("Pos: (%f, %f) (%f, %f)", Pos.x, Pos.y, Shape.x, Shape.y);
+		
+		Log("**** DONE");
+	}
 }
 // - ------------------------------------------------------------------------------------------ - //
 void AppExit() {
@@ -314,6 +322,8 @@ void AppDraw() {
 
 //	App::Sky->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 //	App::Emitter->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
+
+	App::Layout.Draw( App::InfoMatrix );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
