@@ -128,28 +128,29 @@ struct GlayNode {
 	T Data;
 
 public:
-	inline GlayNode( NodeType* _Parent, const unsigned int _Flag = GLAY_DEFAULT ) :
+	inline GlayNode( NodeType* _Parent, const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) :
 		Parent( _Parent ),
 		Region( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
 		BaseRegion( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
-		Flags( _Flag )
+		Flags( _Flag ),
+		Data( _Data )
 	{
 	}
 
 public:
 	// Normal Child //
-	inline NodeType& AddChild( const unsigned int _Flag = GLAY_DEFAULT ) {
-		Child.push_back( NodeType(this, _Flag | GLAY_SUM) );
+	inline NodeType& AddChild( const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) {
+		Child.push_back( NodeType(this, _Flag | GLAY_SUM, _Data) );
 		return Child.back();
 	}
 	// Child that is relative the origin, not the parent //
-	inline NodeType& AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT ) {
-		Child.push_back( NodeType(this, _Flag) );
+	inline NodeType& AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) {
+		Child.push_back( NodeType(this, _Flag, _Data) );
 		return Child.back();
 	}
 	// Doesn't affect layout //
-	inline NodeType& AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT ) {
-		Child.push_back( NodeType(this, _Flag | GLAY_SUM | GLAY_EMPTY ) );
+	inline NodeType& AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) {
+		Child.push_back( NodeType(this, _Flag | GLAY_SUM | GLAY_EMPTY, _Data ) );
 		Child.back().SetShape(GLAY_0,GLAY_0);
 		return Child.back();
 	}
@@ -314,7 +315,7 @@ public:
 	inline void Update() {
 		// Properties of Self //
 		if ( Parent ) {
-			Log("! MOMMY ! %X", Flags );
+			Log("! Alignment Flags: %X", Flags );
 			// Fancy Alignment Modes (May Affect Shape) //
 			if ( Flags & GLAY_FIT ) {
 				Region = Parent->Region;
@@ -340,15 +341,12 @@ public:
 			// Standard Alignment (Y Axis) //
 			if ( (Flags & GLAY_MIDDLE) == GLAY_MIDDLE ) {
 				Region.Pos.y = Parent->Region.Pos.y + GlayNumHalf(Parent->Region.Shape.y-Region.Shape.y);
-				Log("! HOOP!");
 			}
 			else if ( Flags & GLAY_BOTTOM ) {
 				Region.Pos.y = Parent->Region.Pos.y;
-				Log("! ZOOP!");
 			}
 			else if ( Flags & GLAY_TOP ) {
 				Region.Pos.y = Parent->Region.Pos.y+Parent->Region.Shape.y - Region.Shape.y;
-				Log("! MOOP!");
 			}
 			
 		}
