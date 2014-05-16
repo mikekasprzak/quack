@@ -102,25 +102,25 @@ SQInteger qk_layout_set( HSQUIRRELVM v ) {
 
 //	// Get the value //
 //	SQInteger Value;
-//	sq_getinteger(v,3,&Value);
-//	
+//	sq_getfloat(v,3,&Value);
+	
 //	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
+//	if ( MemberName[0] == 'x' ) {
 //		*Color = GEL_SET_R( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
 //		sq_pushinteger( v, Value );
 //		return SQ_RETURN;
 //	}
-//	else if ( MemberName[0] == 'g' ) {
+//	else if ( MemberName[0] == 'y' ) {
 //		*Color = GEL_SET_G( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
 //		sq_pushinteger( v, Value );
 //		return SQ_RETURN;
 //	}
-//	else if ( MemberName[0] == 'b' ) {
+//	else if ( MemberName[0] == 'w' ) {
 //		*Color = GEL_SET_B( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
 //		sq_pushinteger( v, Value );
 //		return SQ_RETURN;
 //	}
-//	else if ( MemberName[0] == 'a' ) {
+//	else if ( MemberName[0] == 'h' ) {
 //		*Color = GEL_SET_A( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
 //		sq_pushinteger( v, Value );
 //		return SQ_RETURN;

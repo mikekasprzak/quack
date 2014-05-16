@@ -33,23 +33,25 @@ SQInteger qk_layoutnode_get( HSQUIRRELVM v ) {
 	const char* MemberName;
 	sq_getstring(v,2,&MemberName);
 	
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		sq_pushinteger(v,GEL_GET_R(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'g' ) {
-//		sq_pushinteger(v,GEL_GET_G(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		sq_pushinteger(v,GEL_GET_B(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		sq_pushinteger(v,GEL_GET_A(*Color));	// +1 //
-//		return SQ_RETURN;
-//	}
+	if ( MemberName[1] == 0 ) {
+		// Return different data depending on requested member //
+		if ( MemberName[0] == 'x' ) {
+			sq_pushfloat(v, LayoutNode->BaseRegion.Pos.x);		// +1 //
+			return SQ_RETURN;
+		}
+		else if ( MemberName[0] == 'y' ) {
+			sq_pushfloat(v, LayoutNode->BaseRegion.Pos.y);		// +1 //
+			return SQ_RETURN;
+		}
+		else if ( MemberName[0] == 'w' ) {
+			sq_pushfloat(v, LayoutNode->BaseRegion.Shape.x);	// +1 //
+			return SQ_RETURN;
+		}
+		else if ( MemberName[0] == 'h' ) {
+			sq_pushfloat(v, LayoutNode->BaseRegion.Shape.y);	// +1 //
+			return SQ_RETURN;
+		}
+	}
 
 	// Throw null on member not found //
 	sq_pushnull(v);				// +1 //
@@ -66,31 +68,41 @@ SQInteger qk_layoutnode_set( HSQUIRRELVM v ) {
 	const char* MemberName;
 	sq_getstring(v,2,&MemberName);
 
-//	// Get the value //
-//	SQInteger Value;
-//	sq_getinteger(v,3,&Value);
-//	
-//	// Return different data depending on requested member //
-//	if ( MemberName[0] == 'r' ) {
-//		*Color = GEL_SET_R( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'g' ) {
-//		*Color = GEL_SET_G( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'b' ) {
-//		*Color = GEL_SET_B( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
-//	else if ( MemberName[0] == 'a' ) {
-//		*Color = GEL_SET_A( *Color, GEL_CLAMP_COLOR_COMPONENT(Value) );
-//		sq_pushinteger( v, Value );
-//		return SQ_RETURN;
-//	}
+	if ( MemberName[1] == 0 ) {
+		// Get the value //
+		SQFloat Value;
+		sq_getfloat(v,3,&Value);
+		
+		// Return different data depending on requested member //
+		if ( MemberName[0] == 'x' ) {
+			LayoutNode->BaseRegion.Pos.x = Value;
+			LayoutNode->CopyBases();
+			LayoutNode->Update();
+			sq_pushinteger( v, Value );
+			return SQ_RETURN;
+		}
+		else if ( MemberName[0] == 'y' ) {
+			LayoutNode->BaseRegion.Pos.y = Value;
+			LayoutNode->CopyBases();
+			LayoutNode->Update();
+			sq_pushinteger( v, Value );
+			return SQ_RETURN;
+		}
+		else if ( MemberName[0] == 'w' ) {
+			LayoutNode->BaseRegion.Shape.x = Value;
+			LayoutNode->CopyBases();
+			LayoutNode->Update();
+			sq_pushinteger( v, Value );
+			return SQ_RETURN;
+		}
+		else if ( MemberName[0] == 'h' ) {
+			LayoutNode->BaseRegion.Shape.y = Value;
+			LayoutNode->CopyBases();
+			LayoutNode->Update();
+			sq_pushinteger( v, Value );
+			return SQ_RETURN;
+		}
+	}
 
 	// Throw null on member not found //
 	sq_pushnull(v);				// +1 //
@@ -189,6 +201,7 @@ __FUNC_END_SET()
 // - ------------------------------------------------------------------------------------------ - //
 __FUNC_START_SETINTEGER( qk_layoutnode_SetFlags )
 	Node->SetFlags( Value );
+	Node->Update();
 __FUNC_END_SET()
 // - ------------------------------------------------------------------------------------------ - //
 __FUNC_START_SETINTEGER( qk_layoutnode_SetType )
