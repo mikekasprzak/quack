@@ -25,6 +25,7 @@ SQInteger register_qkSkel(HSQUIRRELVM v);
 SQInteger register_qkSkelAnimator(HSQUIRRELVM v);
 SQInteger register_qkModel(HSQUIRRELVM v);
 SQInteger register_qkLayout(HSQUIRRELVM v);
+SQInteger register_qkLayoutNode(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //
 SQInteger register_qkInput(HSQUIRRELVM v);
 // - ------------------------------------------------------------------------------------------ - //

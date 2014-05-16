@@ -125,6 +125,7 @@ void QuackVMInit() {
 		Log("* qkSkelAnimator"); register_qkSkelAnimator( vm );
 		Log("* qkModel"); register_qkModel( vm );
 		Log("* qkLayout"); register_qkLayout( vm );
+		Log("* qkLayoutNode"); register_qkLayoutNode( vm );
 		
 		Log("* qkEngine"); register_qkEngine( vm );
 		Log("* qkObject"); register_qkObject( vm );

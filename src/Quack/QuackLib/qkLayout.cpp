@@ -192,6 +192,12 @@ SQInteger qk_layout_populate_body( HSQUIRRELVM v, GelLayoutNode* Node ) {
 			// Wrap in function ? //
 			sq_getinteger(v,Value,(SQInteger*)&Node->Flags);
 		}
+		else if ( strcmp( KeyStr, "Name") == 0 ) {
+			const SQChar* ValueStr;
+			sq_getstring(v,Value,&ValueStr);
+			
+			Node->SetName( ValueStr );
+		}
 		
 		// Data //
 		else if ( strcmp( KeyStr, "Type") == 0 ) {
@@ -348,6 +354,33 @@ SQInteger qk_layout_populate( HSQUIRRELVM v ) {
 }
 // - ------------------------------------------------------------------------------------------ - //
 
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_layout_find(HSQUIRRELVM v) {
+	// Retrieve Data (Pointer) //
+	GelLayout* Layout;
+	sq_getinstanceup(v,1,(void**)&Layout,0);
+
+	const SQChar* Name;
+	sq_getstring(v,2,&Name);
+
+	GelLayoutNode* Ret = Layout->Find( Name );
+
+	if ( Ret ) {
+		sq_pushroottable(v);				// +1 //
+		sq_pushstring(v,"QkLayoutNode",-1);	// +1 //
+		sq_get(v,-2);						// =0 (-1 then +1) //
+		sq_createinstance(v,-1);			// +1 //
+	
+		sq_setinstanceup(v,-1,(void**)Ret);
+	}
+	else {
+		sq_pushnull(v);
+	}
+
+	return SQ_RETURN;
+}
+// - ------------------------------------------------------------------------------------------ - //
+
 
 // - ------------------------------------------------------------------------------------------ - //
 //SQInteger qk_layout_step( HSQUIRRELVM v ) {
@@ -400,6 +433,8 @@ SQRegFunction qkLayout_funcs[] = {
 	_DECL_FUNC(qk_layout_tostring,1,NULL),
 //	_DECL_FUNC(qk_layout_cloned,2,NULL),	
 
+	_DECL_FUNC(qk_layout_find,2,NULL),
+
 //	_DECL_FUNC(qk_layout_step,1,NULL),
 	_DECL_FUNC(qk_layout_draw,3,NULL),
 
@@ -428,6 +463,8 @@ SQInteger register_qkLayout(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC_STATIC(qk_layout_typeof,_typeof);
 		_CLASS_ADDFUNC(qk_layout_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_layout_cloned,_cloned);
+
+		_CLASS_ADDFUNC(qk_layout_find,Find);
 
 //		_CLASS_ADDFUNC(qk_layout_step,Step);
 		_CLASS_ADDFUNC(qk_layout_draw,Draw);

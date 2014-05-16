@@ -123,6 +123,7 @@ class GlayNode {
 public:	
 	NodeType* Parent;
 	std::list<NodeType> Child;
+	std::string Name;
 
 	GlayRegion Region;		// The visible Region (BaseRegion modified by Flags/Parent/Children)
 
@@ -166,9 +167,11 @@ public:
 	inline void SetShape( const GlayNum _x = GLAY_1, const GlayNum _y = GLAY_1 ) {
 		BaseRegion.Shape = GlayPoint(_x,_y);
 	}
-	
 	inline void SetFlags( const unsigned int _Flag = GLAY_DEFAULT ) {
 		Flags = _Flag;
+	}
+	inline void SetName( const char* _Name = "" ) {
+		Name = _Name;
 	}
 	
 public:
@@ -182,6 +185,13 @@ public:
 	// Get the Center point //
 	inline GlayPoint GetCenterPos() const {
 		return GetPos() + Region.GetHalfShape();
+	}
+	
+	inline const char* GetName() const {
+		return Name.c_str();
+	}
+	inline bool HasName() const {
+		return Name.size();
 	}
 
 public:
@@ -371,6 +381,23 @@ public:
 			Itr->Update();
 		}
 	}
+	
+public:
+	inline NodeType* Find( const char* _Name ) {
+		if ( Name == _Name ) {
+			return this;
+		}
+
+		NodeType* Ret = 0;
+
+		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+			Ret = Itr->Find( _Name );
+			return_if( Ret );
+		}
+		
+		return Ret;
+	}
+
 };
 // - ------------------------------------------------------------------------------------------ - //
 // GlayLayout - Contains a heiarchy of Nodes //
@@ -401,6 +428,11 @@ public:
 		for (typename std::list<NodeType>::const_iterator Itr = Node.Child.begin(), End = Node.Child.end(); Itr != End; ++Itr) {
 			DrawLayout( Mat, *Itr );
 		}
+	}
+	
+public:
+	inline NodeType* Find( const char* _Name ) {
+		return Root.Find( _Name );
 	}
 };
 // - ------------------------------------------------------------------------------------------ - //
