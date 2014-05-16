@@ -33,6 +33,8 @@ SQInteger qk_layout_constructor( HSQUIRRELVM v ) {
 	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_TEXT, "ÔQ Eat This!" ) );
 	Layout->Root.Child.back().Child.back().Data.SetFont( "Delius.fnt" );
 	Layout->Root.Child.back().Child.back().Data.SetFontSize( 64 );
+	//Layout->Root.Child.back().Child.back().Data.SetFontAlign( GEL_ALIGN_BASELINE | GEL_ALIGN_RIGHT );
+	
 	
 	Layout->Update();
 
