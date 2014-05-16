@@ -48,6 +48,7 @@ public:
 		
 	GelColor			Color;
 	Real				FontSize;
+	int					FontAlign;
 public:
 	inline GelLayoutNode() :
 		Type( Gel::GLO_NULL ),
@@ -55,16 +56,18 @@ public:
 		ArtIndex( 0 ),
 		FontUID( 0 ),
 		FontSize( 12 ),
+		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
 		Color( GEL_RGB_WHITE )
 	{
 	}
 	
-	inline GelLayoutNode( const int _Type, const char* const _Text ) :
+	inline GelLayoutNode( const int _Type, const char* const _Text = "" ) :
 		Type( _Type ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
 		FontUID( 0 ),
 		FontSize( 12 ),
+		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
 		Color( GEL_RGB_WHITE )
 	{	
 		switch ( Type ) {
@@ -92,16 +95,19 @@ public:
 	inline void SetFontSize( const Real _Size ) {
 		FontSize = _Size;
 	}
+	inline void SetFontAlign( const int _Align ) {
+		FontAlign = _Align;
+	}
 
 public:	
 	inline void Draw( const Matrix4x4& Mat, const NodeType& Node ) const {
 		switch ( Type ) {
 			case Gel::GLO_BOX: {
-				gelDrawRect( 
+				gelDrawRectFill( 
 					Mat,
 					Vector2D(Node.GetPos().x,Node.GetPos().y).ToVector3D(), 
 					Vector2D(Node.GetShape().x, Node.GetShape().y), 
-					GEL_RGB_WHITE
+					Color
 				);
 
 				break;
@@ -122,7 +128,7 @@ public:
 					Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y).ToVector3D(), 
 					FontSize, 
 					Color,
-					GEL_ALIGN_DEFAULT,
+					FontAlign,
 					Text.c_str()
 				);
 				

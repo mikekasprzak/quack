@@ -109,7 +109,7 @@ public:
 	
 public:
 		
-	void DrawText( const Matrix4x4& Mat, const char* Text, const size_t Length, Vector3D Pos, Real Scalar = Real::One, const GelColor Color = GEL_RGB_WHITE, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
+	void DrawText( const Matrix4x4& Mat, const char* Text, const size_t Length, Vector3D Pos, Real Scalar = Real::One, const GelColor Color = GEL_RGB_WHITE, const /*GelAlign*/ int Align = GEL_ALIGN_DEFAULT ) {
 		size_t CharsDrawn = 0;
 		
 		int ScaleW = common_BMFont( Font )->ScaleW;
@@ -133,15 +133,15 @@ public:
 			Pos.x -= Real(Width * Scalar.ToFloat());
 		}
 		
-		if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_MIDDLE ) {
+		if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_BASELINE ) {
+			// Subtract Height to get in the same coordinate system //
+			Pos.y -= Real((Height-BaseLine) * Scalar.ToFloat());
+		}
+		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_MIDDLE ) {
 			Pos.y -= Real((Height>>1) * Scalar.ToFloat());
 		}
 		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_TOP ) {
 			Pos.y -= Real(Height * Scalar.ToFloat());
-		}
-		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_BASELINE ) {
-			// Subtract Height to get in the same coordinate system //
-			Pos.y -= Real((Height-BaseLine) * Scalar.ToFloat());
 		}
 		
 		GelAlloc3U Vert( Length*6 );
@@ -212,15 +212,15 @@ public:
 		}
 	}
 	
-	inline void DrawText( const Matrix4x4& Mat, const char* Text, const Vector3D& Pos, const Real Scalar = Real::One, const GelColor Color = GEL_RGB_WHITE, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
+	inline void DrawText( const Matrix4x4& Mat, const char* Text, const Vector3D& Pos, const Real Scalar = Real::One, const GelColor Color = GEL_RGB_WHITE, const /*GelAlign*/ int Align = GEL_ALIGN_DEFAULT ) {
 		DrawText( Mat, Text, length_String( Text ), Pos, Scalar, Color, Align );
 	}
-	inline void DrawText( const Matrix4x4& Mat, const char* Text, const Vector2D& Pos, const Real Scalar = Real::One, const GelColor Color = GEL_RGB_WHITE, const GelAlign Align = GEL_ALIGN_DEFAULT ) {
+	inline void DrawText( const Matrix4x4& Mat, const char* Text, const Vector2D& Pos, const Real Scalar = Real::One, const GelColor Color = GEL_RGB_WHITE, const /*GelAlign*/ int Align = GEL_ALIGN_DEFAULT ) {
 		DrawText( Mat, Text, Pos.ToVector3D(), Scalar, Color, Align );
 	}
 	
 	// NOTE: Not recommended due to weird syntax.
-	inline void printf( const Matrix4x4& Mat, const Vector3D& Pos, const Real Scalar, const GelColor Color, const GelAlign Align, const char* Text, ... ) {
+	inline void printf( const Matrix4x4& Mat, const Vector3D& Pos, const Real Scalar, const GelColor Color, const /*GelAlign*/ int Align, const char* Text, ... ) {
 		char StrBuff[4096];
 		
 		{

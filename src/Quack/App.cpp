@@ -338,7 +338,7 @@ void AppDraw() {
 //	App::Sky->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 //	App::Emitter->Draw( Rect2D(-128,-128,256,256), App::InfoMatrix );
 
-	App::Layout.Draw( App::InfoMatrix );
+//	App::Layout.Draw( App::InfoMatrix );
 
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {

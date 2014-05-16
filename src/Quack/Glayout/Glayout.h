@@ -84,28 +84,32 @@ enum GlayNodeFlag {
 	GLAY_RIGHT = 		0x2,
 	GLAY_CENTER =		GLAY_LEFT | GLAY_RIGHT,
 			
-	GLAY_TOP =			0x4,
-	GLAY_BOTTOM	=		0x8,
+	GLAY_TOP =			0x1<<4,
+	GLAY_BOTTOM	=		0x2<<4,
 	GLAY_MIDDLE =		GLAY_TOP | GLAY_BOTTOM,
+	GLAY_BASELINE =		0x4<<4 | GLAY_MIDDLE,		// Include Middle as a fallback (non fonts) //
 	
 	GLAY_HALIGN =		GLAY_CENTER,
 	GLAY_VALIGN =		GLAY_MIDDLE,
-	GLAY_ALIGN =		0xF,
+	GLAY_ALIGN =		0xFF,
+
+	GLAY_HBITS =		0xF,
+	GLAY_VBITS =		0xF<<4,
 	
 	// Properties of Self //
-	//GLAY_FREE =		0x00,	// Free Positioning. Relative the Origin (0,0). //
-	GLAY_SUM = 			0x10,	// Positions are relative the parents. Default. //
-	GLAY_FIT =			0x20,	// Fit myself to my parent (100%). //
-	GLAY_EMPTY = 		0x80,	// Special kind of node (an empty) that disregards position. //
+	//GLAY_FREE =		0x000,	// Free Positioning. Relative the Origin (0,0). //
+	GLAY_SUM = 			0x100,	// Positions are relative the parents. Default. //
+	GLAY_FIT =			0x200,	// Fit myself to my parent (100%). //
+	GLAY_EMPTY = 		0x800,	// Special kind of node (an empty) that disregards position. //
 
-	GLAY_SELF = 		0xF0,
+	GLAY_SELF = 		0xF00,
 	
 	// Properties of Children //
-	GLAY_FILL =			0x100,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
-	GLAY_FILL_WIDTH = 	0x200,	// Fit my children inside me, arranging them wide //
-	GLAY_FILL_HEIGHT = 	0x400,	// Fit my children inside me, arranging them tall //
+	GLAY_FILL =			0x1000,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
+	GLAY_FILL_WIDTH = 	0x2000,	// Fit my children inside me, arranging them wide //
+	GLAY_FILL_HEIGHT = 	0x4000,	// Fit my children inside me, arranging them tall //
 
-	GLAY_CHILDREN =		0xF00,
+	GLAY_CHILDREN =		0xF000,
 
 	// *** //
 	
