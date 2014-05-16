@@ -26,12 +26,15 @@ SQInteger qk_layout_constructor( HSQUIRRELVM v ) {
 //	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_IMAGE, "ItemIcons.atlas:IconFish" ) );
 //	Layout->Root.Child.back().Child.back().SetShape(2,2);
 
+	// Minimum Spacing: 1.25 to avoid overlap //
+	//
+	
 	Layout->Root.AddChild( GLAY_TOP | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
-	Layout->Root.Child.back().SetShape(256+128,64+16);
+	Layout->Root.Child.back().SetShape(256+128,64+32);//+16);
 	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
 
-	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_TEXT, "ÔQ Eat This!" ) );
-	Layout->Root.Child.back().Child.back().Data.SetFont( "Delius.fnt" );
+	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_TEXT, "\xD5y Eat This!" ) );
+	Layout->Root.Child.back().Child.back().Data.SetFont( "DeliusSwash.fnt" );
 	Layout->Root.Child.back().Child.back().Data.SetFontSize( 64 );
 	//Layout->Root.Child.back().Child.back().Data.SetFontAlign( GEL_ALIGN_BASELINE | GEL_ALIGN_RIGHT );
 	
