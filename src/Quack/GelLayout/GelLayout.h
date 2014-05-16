@@ -47,12 +47,14 @@ public:
 	GelFontPool::UID	FontUID;		// NOTE: Could be merged with AtlasUID, if I really wanted //
 		
 	GelColor			Color;
+	Real				FontSize;
 public:
 	inline GelLayoutNode() :
 		Type( Gel::GLO_NULL ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
 		FontUID( 0 ),
+		FontSize( 12 ),
 		Color( GEL_RGB_WHITE )
 	{
 	}
@@ -62,6 +64,7 @@ public:
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
 		FontUID( 0 ),
+		FontSize( 12 ),
 		Color( GEL_RGB_WHITE )
 	{	
 		switch ( Type ) {
@@ -85,6 +88,9 @@ public:
 	}
 	inline void SetColor( const GelColor& _Color ) {
 		Color = _Color;
+	}
+	inline void SetFontSize( const Real _Size ) {
+		FontSize = _Size;
 	}
 
 public:	
@@ -114,7 +120,7 @@ public:
 				Gel::FontPool[FontUID].printf( 
 					Mat, 
 					Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y).ToVector3D(), 
-					Real(2), // FontSize, 
+					FontSize, 
 					Color,
 					GEL_ALIGN_DEFAULT,
 					Text.c_str()

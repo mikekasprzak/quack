@@ -27,9 +27,10 @@ SQInteger qk_layout_constructor( HSQUIRRELVM v ) {
 //	Layout->Root.Child.back().Child.back().SetShape(2,2);
 
 
-	Layout->Root.AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_TEXT, "Eat This!" ) );
-	Layout->Root.Child.back().SetShape(96,32);
-	Layout->Root.Child.back().Data.SetFont( "Fontin.fnt" );
+	Layout->Root.AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_TEXT, "ÔQ Eat This!" ) );
+	Layout->Root.Child.back().SetShape(32,32);
+	Layout->Root.Child.back().Data.SetFont( "Delius.fnt" );
+	Layout->Root.Child.back().Data.SetFontSize( 32 );
 	
 	Layout->Update();
 
