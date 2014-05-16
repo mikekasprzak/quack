@@ -29,7 +29,15 @@ SQInteger qk_layout_constructor( HSQUIRRELVM v ) {
 	// Minimum Spacing: 1.25 to avoid overlap //
 	//
 	
-	Layout->Root.AddChild( GLAY_TOP | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
+	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
+	Layout->Root.Child.back().SetShape(256+128,64+0);//+16);
+	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
+
+	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
+	Layout->Root.Child.back().SetShape(256+128,64+16);//+16);
+	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
+
+	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
 	Layout->Root.Child.back().SetShape(256+128,64+32);//+16);
 	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
 
