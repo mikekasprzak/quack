@@ -16,38 +16,42 @@ SQInteger qk_layout_constructor( HSQUIRRELVM v ) {
 	
 	// Write Data //
 	new(Layout) GelLayout();
+	
+	if ( sq_gettop(v) > 1 ) {
+		extern SQInteger qk_layout_populate( HSQUIRRELVM v );
+		qk_layout_populate( v );
+	}
 
-	Layout->Root.SetPos(-64,-64);
-	Layout->Root.SetShape(128,128);
+//	Layout->Root.SetPos(-64,-64);
+//	Layout->Root.SetShape(128,128);
 
 //	Layout->Root.AddChild( GLAY_BOTTOM | GLAY_CENTER );
 //	Layout->Root.Child.back().SetShape(32,32);
-
-//	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_IMAGE, "ItemIcons.atlas:IconFish" ) );
+//	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNodeData( Gel::GLO_IMAGE, "ItemIcons.atlas:IconFish" ) );
 //	Layout->Root.Child.back().Child.back().SetShape(2,2);
 
 	// Minimum Spacing: 1.25 to avoid overlap //
 	//
 	
-	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
-	Layout->Root.Child.back().SetShape(256+128,64+0);//+16);
-	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
-
-	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
-	Layout->Root.Child.back().SetShape(256+128,64+16);//+16);
-	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
-
-	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNode( Gel::GLO_BOX ) );
-	Layout->Root.Child.back().SetShape(256+128,64+32);//+16);
-	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
-
-	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNode( Gel::GLO_TEXT, "\xD5y Eat This!" ) );
-	Layout->Root.Child.back().Child.back().Data.SetFont( "DeliusSwash.fnt" );
-	Layout->Root.Child.back().Child.back().Data.SetFontSize( 64 );
-	//Layout->Root.Child.back().Child.back().Data.SetFontAlign( GEL_ALIGN_BASELINE | GEL_ALIGN_RIGHT );
-	
-	
-	Layout->Update();
+//	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNodeData( Gel::GLO_BOX ) );
+//	Layout->Root.Child.back().SetShape(256+128,64+0);//+16);
+//	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
+//
+//	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNodeData( Gel::GLO_BOX ) );
+//	Layout->Root.Child.back().SetShape(256+128,64+16);//+16);
+//	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
+//
+//	Layout->Root.AddChild( GLAY_MIDDLE | GLAY_CENTER, GelLayoutNodeData( Gel::GLO_BOX ) );
+//	Layout->Root.Child.back().SetShape(256+128,64+32);//+16);
+//	Layout->Root.Child.back().Data.SetColor( GEL_RGBA(32,32,32,128) );
+//
+//	Layout->Root.Child.back().AddChild( GLAY_DEFAULT, GelLayoutNodeData( Gel::GLO_TEXT, "\xD5y Eat This!" ) );
+//	Layout->Root.Child.back().Child.back().Data.SetFont( "DeliusSwash.fnt" );
+//	Layout->Root.Child.back().Child.back().Data.SetFontSize( 64 );
+//	//Layout->Root.Child.back().Child.back().Data.SetFontAlign( GEL_ALIGN_BASELINE | GEL_ALIGN_RIGHT );
+//	
+//	
+//	Layout->Update();
 
 	// Finished //
 	return SQ_VOID;
@@ -157,6 +161,176 @@ SQInteger qk_layout_tostring( HSQUIRRELVM v ) {
 //}
 // - ------------------------------------------------------------------------------------------ - //
 _FUNC_TYPEOF(GelLayout,qk_layout_typeof,"QkLayout",8);
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+SQInteger qk_layout_populate_body( HSQUIRRELVM v, GelLayoutNode* Node ) {
+	const int Value = -1;
+	const int Key = -2;
+
+	// Table is already on the Stack, so push a 'null iterator' //
+	sq_pushnull(v);
+			
+	while( SQ_SUCCEEDED( sq_next(v,-2) ) ) {
+		const SQChar* KeyStr;
+		sq_getstring(v,Key,&KeyStr);
+		
+		// Base-Node Data //
+		if ( strcmp( KeyStr, "Width") == 0 ) {
+			sq_getfloat(v,Value,&Node->BaseRegion.Shape.x);
+		}
+		else if ( strcmp( KeyStr, "Height") == 0 ) {
+			sq_getfloat(v,Value,&Node->BaseRegion.Shape.y);
+		}
+		else if ( strcmp( KeyStr, "x") == 0 ) {
+			sq_getfloat(v,Value,&Node->BaseRegion.Pos.x);
+		}
+		else if ( strcmp( KeyStr, "y") == 0 ) {
+			sq_getfloat(v,Value,&Node->BaseRegion.Pos.y);
+		}
+		else if ( strcmp( KeyStr, "Flags") == 0 ) {
+			sq_getinteger(v,Value,(SQInteger*)&Node->Flags);
+		}
+		
+		// Data //
+		else if ( strcmp( KeyStr, "Type") == 0 ) {
+			sq_getinteger(v,Value,(SQInteger*)&Node->Data.Type);
+		}
+		else if ( strcmp( KeyStr, "Font") == 0 ) {
+			const SQChar* ValueStr;
+			sq_getstring(v,Value,&ValueStr);
+			
+			Node->Data.SetFont( ValueStr );
+		}
+		
+		else if ( strcmp( KeyStr, "Text") == 0 ) {
+			const SQChar* ValueStr;
+			sq_getstring(v,Value,&ValueStr);
+			
+			Node->Data.SetText( ValueStr );
+		}
+		else if ( strcmp( KeyStr, "Art") == 0 ) {
+			const SQChar* ValueStr;
+			sq_getstring(v,Value,&ValueStr);
+			
+			Node->Data.SetArt( ValueStr );
+		}
+		
+		// Children //
+		else if ( strcmp( KeyStr, "Child") == 0 ) {
+			int Type = sq_gettype(v,Value);
+			if ( Type == OT_ARRAY ) {
+				// The top of the stack (Value) holds the array //
+				
+				sq_pushnull(v); // Push our Null Iterator on to the stack, so we can loop
+				
+				while( SQ_SUCCEEDED( sq_next(v,-2) ) ) {
+					SQInteger KeyInt;
+					sq_getinteger(v,Key,&KeyInt);
+					
+					qk_layout_populate_body( v, &Node->AddChild() );
+					
+					sq_pop(v,2); // Pop old key and value before the next iteration
+				}
+
+				sq_pop(v,1); // Pops the Null Iterator
+			}
+			else {
+				Log("! Child is not an array !");
+			}	
+		}
+		
+		sq_pop(v,2); // Pop old key and value before the next iteration
+	}
+
+	sq_pop(v,1); // Pops the null iterator
+	
+	// Finished, so load what we need to load //
+	Node->Data.PostLoad();
+}
+// - ------------------------------------------------------------------------------------------ - //
+// This Function will never be called alone. It will be called by other methods. //
+SQInteger qk_layout_populate( HSQUIRRELVM v ) {
+	// Retrieve Data (Pointer) //
+	GelLayout* Layout;
+	sq_getinstanceup(v,1,(void**)&Layout,0);
+	
+	const int Root = 2;
+
+	const int Value = -1;
+	const int Key = -2;
+
+	int Type = sq_gettype(v,Root);
+	if ( Type == OT_TABLE ) {
+		GelLayoutNode* Node = &Layout->Root;
+		
+		qk_layout_populate_body( v, Node );
+		
+//		// Table is already on the Stack, so push a 'null iterator' //
+//		sq_pushnull(v);
+//				
+//		while( SQ_SUCCEEDED( sq_next(v,-2) ) ) {
+//			const SQChar* KeyStr;
+//			sq_getstring(v,Key,&KeyStr);
+//			
+//			// Base-Node Data //
+//			if ( strcmp( KeyStr, "Width") == 0 ) {
+//				sq_getfloat(v,Value,&Node->BaseRegion.Shape.x);
+//			}
+//			else if ( strcmp( KeyStr, "Height") == 0 ) {
+//				sq_getfloat(v,Value,&Node->BaseRegion.Shape.y);
+//			}
+//			else if ( strcmp( KeyStr, "x") == 0 ) {
+//				sq_getfloat(v,Value,&Node->BaseRegion.Pos.x);
+//			}
+//			else if ( strcmp( KeyStr, "y") == 0 ) {
+//				sq_getfloat(v,Value,&Node->BaseRegion.Pos.y);
+//			}
+//			else if ( strcmp( KeyStr, "Flags") == 0 ) {
+//				sq_getinteger(v,Value,(SQInteger*)&Node->Flags);
+//			}
+//			
+//			// Data //
+//			
+//			
+//			// Children //
+//			else if ( strcmp( KeyStr, "Child") == 0 ) {
+//				int Type = sq_gettype(v,Value);
+//				if ( Type == OT_ARRAY ) {
+//					// The top of the stack (Value) holds the array //
+//					
+//					sq_pushnull(v); // Push our Null Iterator on to the stack, so we can loop
+//					
+//					while( SQ_SUCCEEDED( sq_next(v,-2) ) ) {
+//						SQInteger KeyInt;
+//						sq_getinteger(v,Key,&KeyInt);
+//						
+//						Node->AddChild();
+//						
+//						
+//						sq_pop(v,2); // Pop old key and value before the next iteration
+//					}
+//
+//					sq_pop(v,1); // Pops the Null Iterator
+//				}
+//				else {
+//					Log("! Child is not an array !");
+//				}	
+//			}
+//			
+//			sq_pop(v,2); // Pop old key and value before the next iteration
+//		}
+//
+//		sq_pop(v,1); // Pops the null iterator
+		Layout->Update();
+	}
+	else {
+		Log("! Invalid Table for Layout Import !");
+	}
+
+	// Finished //
+	return SQ_VOID;
+}
 // - ------------------------------------------------------------------------------------------ - //
 
 
