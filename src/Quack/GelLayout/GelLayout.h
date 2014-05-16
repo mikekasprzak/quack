@@ -34,8 +34,8 @@ namespace App {
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-class GelLayoutNode {
-	typedef GelLayoutNode thistype;
+class GelLayoutNodeData {
+	typedef GelLayoutNodeData thistype;
 	typedef GlayNode<thistype> NodeType;
 public:
 	int Type;	// What kind of Node this is //
@@ -50,7 +50,7 @@ public:
 	Real				FontSize;
 	int					FontAlign;
 public:
-	inline GelLayoutNode() :
+	inline GelLayoutNodeData() :
 		Type( Gel::GLO_NULL ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
@@ -61,25 +61,17 @@ public:
 	{
 	}
 	
-	inline GelLayoutNode( const int _Type, const char* const _Text = "" ) :
+	inline GelLayoutNodeData( const int _Type, const char* const _Text = "" ) :
 		Type( _Type ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
+		Text( _Text ),
 		FontUID( 0 ),
 		FontSize( 12 ),
 		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
 		Color( GEL_RGB_WHITE )
 	{	
-		switch ( Type ) {
-			case Gel::GLO_IMAGE: {
-				AtlasUID = Gel::AtlasPool.LoadAndIndex( _Text, &ArtIndex );
-				break;
-			}
-			case Gel::GLO_TEXT: {
-				Text = _Text;
-				break;
-			}
-		}
+		PostLoad();
 	}
 
 public:	
@@ -97,6 +89,27 @@ public:
 	}
 	inline void SetFontAlign( const int _Align ) {
 		FontAlign = _Align;
+	}
+	
+	inline void SetText( const char* _Text ) {
+		Text = _Text;
+	}
+	inline void SetArt( const char* _Art ) {
+		Text = _Art;
+	}
+	
+	
+	inline void PostLoad() {
+		switch ( Type ) {
+			case Gel::GLO_IMAGE: {
+				AtlasUID = Gel::AtlasPool.LoadAndIndex( Text.c_str(), &ArtIndex );
+				break;
+			}
+//			case Gel::GLO_TEXT: {
+//				Text = _Text;
+//				break;
+//			}
+		}		
 	}
 
 public:	
@@ -155,7 +168,8 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-typedef GlayLayout<GelLayoutNode> GelLayout;
+typedef GlayLayout<GelLayoutNodeData> GelLayout;
+typedef GlayNode<GelLayoutNodeData> GelLayoutNode;
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
