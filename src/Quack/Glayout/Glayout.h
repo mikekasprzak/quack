@@ -199,10 +199,10 @@ public:
 	inline void CopyBaseToRegion() {
 		Region = BaseRegion;
 	}
-	inline void CopyChildBases() {
+	inline void CopyBases() {
 		CopyBaseToRegion();
 		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
-			Itr->CopyChildBases();
+			Itr->CopyBases();
 		}
 	}
 	
@@ -329,7 +329,7 @@ public:
 	inline void Update() {
 		// Properties of Self //
 		if ( Parent ) {
-			Log("* Alignment Flags: %X", Flags );
+//			Log("* Alignment Flags: %X", Flags );
 			// Fancy Alignment Modes (May Affect Shape) //
 			if ( Flags & GLAY_FIT ) {
 				Region = Parent->Region;
@@ -414,7 +414,7 @@ struct GlayLayout {
 	
 public: 
 	inline void Update() {
-		Root.CopyChildBases();
+		Root.CopyBases();
 		Root.Update();
 	}
 	
