@@ -189,20 +189,15 @@ SQInteger qk_layout_populate_body( HSQUIRRELVM v, GelLayoutNode* Node ) {
 			sq_getfloat(v,Value,&Node->BaseRegion.Pos.y);
 		}
 		else if ( strcmp( KeyStr, "Flags") == 0 ) {
+			// Wrap in function ? //
 			sq_getinteger(v,Value,(SQInteger*)&Node->Flags);
 		}
 		
 		// Data //
 		else if ( strcmp( KeyStr, "Type") == 0 ) {
+			// Wrap in function ? //
 			sq_getinteger(v,Value,(SQInteger*)&Node->Data.Type);
-		}
-		else if ( strcmp( KeyStr, "Font") == 0 ) {
-			const SQChar* ValueStr;
-			sq_getstring(v,Value,&ValueStr);
-			
-			Node->Data.SetFont( ValueStr );
-		}
-		
+		}		
 		else if ( strcmp( KeyStr, "Text") == 0 ) {
 			const SQChar* ValueStr;
 			sq_getstring(v,Value,&ValueStr);
@@ -215,7 +210,27 @@ SQInteger qk_layout_populate_body( HSQUIRRELVM v, GelLayoutNode* Node ) {
 			
 			Node->Data.SetArt( ValueStr );
 		}
-		
+		else if ( strcmp( KeyStr, "Font") == 0 ) {
+			const SQChar* ValueStr;
+			sq_getstring(v,Value,&ValueStr);
+			
+			Node->Data.SetFont( ValueStr );
+		}
+		else if ( strcmp( KeyStr, "FontSize") == 0 ) {
+			// Wrap in function ? //
+			sq_getfloat(v,Value,&Node->Data.FontSize);
+		}
+		else if ( strcmp( KeyStr, "FontAlign") == 0 ) {
+			// Wrap in function ? //
+			sq_getinteger(v,Value,(SQInteger*)&Node->Data.FontAlign);
+		}
+		else if ( strcmp( KeyStr, "Color") == 0 ) {
+			GelColor* Color;
+			sq_getinstanceup(v,Value,(void**)&Color,0);
+			
+			Node->Data.SetColor( *Color );
+		}
+	
 		// Children //
 		else if ( strcmp( KeyStr, "Child") == 0 ) {
 			int Type = sq_gettype(v,Value);
