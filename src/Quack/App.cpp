@@ -183,6 +183,7 @@ void AppInit() {
 		App::Layout.Root.AddChild( GLAY_TOP | GLAY_CENTER, GelLayoutNode( Gel::GLO_TEXT, "Chicken Tonight!" ) );
 		App::Layout.Root.Child.back().SetShape(96,32);
 		App::Layout.Root.Child.back().Data.SetFont( "Fontin.fnt" );
+		App::Layout.Root.Child.back().Data.SetFontSize(16);
 
 //		App::Layout.Root.AddChild( GLAY_BOTTOM | GLAY_CENTER, GelLayoutNode( Gel::GLO_TEXT, "Hockey Tomorrow!" ) );
 //		App::Layout.Root.Child.back().SetShape(64,32);
@@ -366,7 +367,7 @@ void AppDraw() {
 		GelColor Color = GEL_RGB(255,255,255);
 		GelAlign Align = GEL_ALIGN_TOP_RIGHT;
 		Real YStep(12);
-		Real FontSize(1);
+		Real FontSize(12);
 		float PercentConstant = (float)(1000000/60) / 100.0f;
 			
 		Gel::FontPool[App::RuntimeErrorFont].printf( 

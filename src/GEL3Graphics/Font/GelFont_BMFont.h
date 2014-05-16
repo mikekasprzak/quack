@@ -2,6 +2,8 @@
 #ifndef __GEL_RENDER_GELFONT_BMFONT_H__
 #define __GEL_RENDER_GELFONT_BMFONT_H__
 // - ------------------------------------------------------------------------------------------ - //
+// http://www.angelcode.com/products/bmfont/doc/file_format.html
+// - ------------------------------------------------------------------------------------------ - //
 #include <Lib/Lib.h>
 
 #include <Lib/Data/Data.h>
@@ -204,6 +206,8 @@ inline BMFont* new_read_BMFont( const DataBlock* InFile ) {
 			MyFont->Common->RedChannel = Read.GetInt(1);
 			MyFont->Common->GreenChannel = Read.GetInt(1);
 			MyFont->Common->BlueChannel = Read.GetInt(1);
+			
+			//Log( "! SCALE: %i %i", MyFont->Common->ScaleW, MyFont->Common->ScaleH );
 		}
 		else if ( Section == BMFONT_SECTION_PAGES ) {
 			int PageNameLength = (int)length_String(Read.GetString(0)) + 1;
@@ -368,7 +372,7 @@ inline const int size_BMFont( BMFont* FontData ) {
 	// http://www.gamedev.net/topic/510060-bmfont-font-size/
 	// BMFont uses negative size to signal to itself to enable its "Match char height" option.
 	
-	if ( FontData->Info->FontSize > 0 )
+	if ( FontData->Info->FontSize >= 0 )
 		return FontData->Info->FontSize;
 	else
 		return -FontData->Info->FontSize;

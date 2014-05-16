@@ -118,7 +118,7 @@ public:
 		float ScaleW_R_F = 1.0f / (float)ScaleW; 
 		float ScaleH_R_F = 1.0f / (float)ScaleH;
 
-		Scalar *= (float)size_BMFont( Font );
+		Scalar /= (float)size_BMFont( Font );
 
 		int Width = width_BMFont( Font, Text, Length );
 		int Height = height_BMFont( Font, Text, Length );
@@ -127,20 +127,21 @@ public:
 				
 		// Alignment //
 		if ( (Align & GEL_ALIGN_FONT_HBITS) == GEL_ALIGN_CENTER ) {
-			Pos.x -= Real((Width>>1) * Scalar.ToFloat() * ScaleW_R_F);
+			Pos.x -= Real((Width>>1) * Scalar.ToFloat());
 		}
 		else if ( (Align & GEL_ALIGN_FONT_HBITS) == GEL_ALIGN_RIGHT ) {
-			Pos.x -= Real(Width * Scalar.ToFloat() * ScaleW_R_F);
+			Pos.x -= Real(Width * Scalar.ToFloat());
 		}
 		
 		if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_MIDDLE ) {
-			Pos.y -= Real((Height>>1) * Scalar.ToFloat() * ScaleH_R_F);
+			Pos.y -= Real((Height>>1) * Scalar.ToFloat());
 		}
 		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_TOP ) {
-			Pos.y -= Real(Height * Scalar.ToFloat() * ScaleH_R_F);
+			Pos.y -= Real(Height * Scalar.ToFloat());
 		}
 		else if ( (Align & GEL_ALIGN_FONT_VBITS) == GEL_ALIGN_BASELINE ) {
-			Pos.y -= Real(BaseLine * Scalar.ToFloat() * ScaleH_R_F);
+			// Subtract Height to get in the same coordinate system //
+			Pos.y -= Real((Height-BaseLine) * Scalar.ToFloat());
 		}
 		
 		GelAlloc3U Vert( Length*6 );
@@ -159,17 +160,23 @@ public:
 				// If I'm on the correct texture page, draw the glyph //
 				if ( (unsigned)Glyph[Ch]->Page == Tex ) {
 					// NOTE: I now subtract the positions from the height, since we are creating coords that start from bottom left //
-					Vector2D V1( Glyph[Ch]->OffsetX * ScaleW_R_F, (Height - Glyph[Ch]->OffsetY) * ScaleH_R_F );
-					Vector2D V2( (Glyph[Ch]->OffsetX + Glyph[Ch]->Width) * ScaleW_R_F, (Height - (Glyph[Ch]->OffsetY + Glyph[Ch]->Height)) * ScaleH_R_F );
+					Vector2D V1( 
+						Glyph[Ch]->OffsetX,
+						(Height - Glyph[Ch]->OffsetY)
+					);
+					Vector2D V2( 
+						(Glyph[Ch]->OffsetX + Glyph[Ch]->Width),
+						(Height - (Glyph[Ch]->OffsetY + Glyph[Ch]->Height))
+					);
 					V1 *= Scalar;
 					V2 *= Scalar;
 
 					// NOTE: FORMER HACK: I (used to) CHANGED THE Y's AROUND! I DUNNO WHY THEY WERE UPSIDE DOWN! //
 					// NOTE: Also, these used to be "int"s, back when UVType was a short. 
-					float UV1_x = Glyph[Ch]->x * UV_ONE / ScaleW;
-					float UV1_y = Glyph[Ch]->y * UV_ONE / ScaleH;
-					float UV2_x = (Glyph[Ch]->x + Glyph[Ch]->Width) * UV_ONE / ScaleW;
-					float UV2_y = (Glyph[Ch]->y + Glyph[Ch]->Height) * UV_ONE / ScaleH;
+					float UV1_x = Glyph[Ch]->x * UV_ONE * ScaleW_R_F;
+					float UV1_y = Glyph[Ch]->y * UV_ONE * ScaleH_R_F;
+					float UV2_x = (Glyph[Ch]->x + Glyph[Ch]->Width) * UV_ONE * ScaleW_R_F;
+					float UV2_y = (Glyph[Ch]->y + Glyph[Ch]->Height) * UV_ONE * ScaleH_R_F;
 					
 					Vert.Next()->Pos = Vector3D( V1.x, V1.y, 0) + CurPos;
 					Vert->UV = GelUV( UV1_x, UV1_y );
@@ -187,7 +194,7 @@ public:
 					CharsDrawn++;
 				}
 				
-				CurPos.x += Glyph[Ch]->AdvanceX * Scalar.ToFloat() * ScaleW_R_F;
+				CurPos.x += Glyph[Ch]->AdvanceX * Scalar.ToFloat();
 			}
 			
 			Gel::Default->Bind( Gel::TextureAlphaShader_Packed );
