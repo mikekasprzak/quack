@@ -130,20 +130,93 @@ _FUNC_TYPEOF(GelLayoutNode,qk_layoutnode_typeof,"QkLayoutNode",12);
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-SQInteger qk_layoutnode_SetText(HSQUIRRELVM v) {
-	// Retrieve Data (Pointer) //
-	GelLayoutNode* Node;
-	sq_getinstanceup(v,1,(void**)&Node,0);
-
-	const SQChar* Value;
+#define __FUNC_START_SETTEXT( _FUNCNAME_ ) \
+SQInteger _FUNCNAME_(HSQUIRRELVM v) { \
+	GelLayoutNode* Node; \
+	sq_getinstanceup(v,1,(void**)&Node,0); \
+	\
+	const SQChar* Value; \
 	sq_getstring(v,2,&Value);
-
-	Node->Data.SetText( Value );
-
-	return SQ_VOID;
+// - ------------------------------------------------------------------------------------------ - //
+#define __FUNC_END_SET() \
+	return SQ_VOID; \
 }
 // - ------------------------------------------------------------------------------------------ - //
+#define __FUNC_START_SETINTEGER( _FUNCNAME_ ) \
+SQInteger _FUNCNAME_(HSQUIRRELVM v) { \
+	GelLayoutNode* Node; \
+	sq_getinstanceup(v,1,(void**)&Node,0); \
+	\
+	SQInteger Value; \
+	sq_getinteger(v,2,&Value);
+// - ------------------------------------------------------------------------------------------ - //
+#define __FUNC_START_SETFLOAT( _FUNCNAME_ ) \
+SQInteger _FUNCNAME_(HSQUIRRELVM v) { \
+	GelLayoutNode* Node; \
+	sq_getinstanceup(v,1,(void**)&Node,0); \
+	\
+	SQFloat Value; \
+	sq_getfloat(v,2,&Value);
+// - ------------------------------------------------------------------------------------------ - //
+#define __FUNC_START_SETINSTANCE( _FUNCNAME_, _CLASSNAME_ ) \
+SQInteger _FUNCNAME_(HSQUIRRELVM v) { \
+	GelLayoutNode* Node; \
+	sq_getinstanceup(v,1,(void**)&Node,0); \
+	\
+	_CLASSNAME_* Value; \
+	sq_getinstanceup(v,2,(void**)&Value,0);
+// - ------------------------------------------------------------------------------------------ - //
 
+
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETTEXT( qk_layoutnode_SetName )
+	Node->SetName( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETTEXT( qk_layoutnode_SetText )
+	Node->Data.SetText( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETTEXT( qk_layoutnode_SetArt )
+	Node->Data.SetArt( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETTEXT( qk_layoutnode_SetFont )
+	Node->Data.SetFont( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETINTEGER( qk_layoutnode_SetFlags )
+	Node->SetFlags( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETINTEGER( qk_layoutnode_SetType )
+	Node->Data.SetType( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETINTEGER( qk_layoutnode_SetFontAlign )
+	Node->Data.SetFontAlign( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETFLOAT( qk_layoutnode_SetFontSize )
+	Node->Data.SetFontSize( Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+
+// - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETINSTANCE( qk_layoutnode_SetColor, GelColor )
+	Node->Data.SetColor( *Value );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
+
+
+// - ------------------------------------------------------------------------------------------ - //
+#undef __FUNC_START_SETTEXT
+#undef __FUNC_END_SET
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),name,nparams,pmask}
@@ -160,7 +233,16 @@ SQRegFunction qkLayoutNode_funcs[] = {
 	_DECL_FUNC(qk_layoutnode_tostring,1,NULL),
 //	_DECL_FUNC(qk_layoutnode_cloned,2,NULL),	
 
+	_DECL_FUNC(qk_layoutnode_SetName,2,NULL),
 	_DECL_FUNC(qk_layoutnode_SetText,2,NULL),
+	_DECL_FUNC(qk_layoutnode_SetArt,2,NULL),
+	_DECL_FUNC(qk_layoutnode_SetFont,2,NULL),
+
+	_DECL_FUNC(qk_layoutnode_SetFlags,2,NULL),
+	_DECL_FUNC(qk_layoutnode_SetType,2,NULL),
+	_DECL_FUNC(qk_layoutnode_SetFontAlign,2,NULL),
+	_DECL_FUNC(qk_layoutnode_SetFontSize,2,NULL),
+	_DECL_FUNC(qk_layoutnode_SetColor,2,NULL),
 
 	{0,0,0,0}
 };
@@ -188,7 +270,16 @@ SQInteger register_qkLayoutNode(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_layoutnode_tostring,_tostring);
 //		_CLASS_ADDFUNC(qk_layoutnode_cloned,_cloned);
 
+		_CLASS_ADDFUNC(qk_layoutnode_SetName,SetName);
 		_CLASS_ADDFUNC(qk_layoutnode_SetText,SetText);
+		_CLASS_ADDFUNC(qk_layoutnode_SetArt,SetArt);
+		_CLASS_ADDFUNC(qk_layoutnode_SetFont,SetFont);
+
+		_CLASS_ADDFUNC(qk_layoutnode_SetFlags,SetFlags);
+		_CLASS_ADDFUNC(qk_layoutnode_SetType,SetType);
+		_CLASS_ADDFUNC(qk_layoutnode_SetFontAlign,SetFontAlign);
+		_CLASS_ADDFUNC(qk_layoutnode_SetFontSize,SetFontSize);
+		_CLASS_ADDFUNC(qk_layoutnode_SetColor,SetColor);
 
 		_ADD_CLASS_END(GelLayoutNode);
 	}

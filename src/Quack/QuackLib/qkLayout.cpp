@@ -286,63 +286,7 @@ SQInteger qk_layout_populate( HSQUIRRELVM v ) {
 		GelLayoutNode* Node = &Layout->Root;
 		
 		qk_layout_populate_body( v, Node );
-		
-//		// Table is already on the Stack, so push a 'null iterator' //
-//		sq_pushnull(v);
-//				
-//		while( SQ_SUCCEEDED( sq_next(v,-2) ) ) {
-//			const SQChar* KeyStr;
-//			sq_getstring(v,Key,&KeyStr);
-//			
-//			// Base-Node Data //
-//			if ( strcmp( KeyStr, "Width") == 0 ) {
-//				sq_getfloat(v,Value,&Node->BaseRegion.Shape.x);
-//			}
-//			else if ( strcmp( KeyStr, "Height") == 0 ) {
-//				sq_getfloat(v,Value,&Node->BaseRegion.Shape.y);
-//			}
-//			else if ( strcmp( KeyStr, "x") == 0 ) {
-//				sq_getfloat(v,Value,&Node->BaseRegion.Pos.x);
-//			}
-//			else if ( strcmp( KeyStr, "y") == 0 ) {
-//				sq_getfloat(v,Value,&Node->BaseRegion.Pos.y);
-//			}
-//			else if ( strcmp( KeyStr, "Flags") == 0 ) {
-//				sq_getinteger(v,Value,(SQInteger*)&Node->Flags);
-//			}
-//			
-//			// Data //
-//			
-//			
-//			// Children //
-//			else if ( strcmp( KeyStr, "Child") == 0 ) {
-//				int Type = sq_gettype(v,Value);
-//				if ( Type == OT_ARRAY ) {
-//					// The top of the stack (Value) holds the array //
-//					
-//					sq_pushnull(v); // Push our Null Iterator on to the stack, so we can loop
-//					
-//					while( SQ_SUCCEEDED( sq_next(v,-2) ) ) {
-//						SQInteger KeyInt;
-//						sq_getinteger(v,Key,&KeyInt);
-//						
-//						Node->AddChild();
-//						
-//						
-//						sq_pop(v,2); // Pop old key and value before the next iteration
-//					}
-//
-//					sq_pop(v,1); // Pops the Null Iterator
-//				}
-//				else {
-//					Log("! Child is not an array !");
-//				}	
-//			}
-//			
-//			sq_pop(v,2); // Pop old key and value before the next iteration
-//		}
-//
-//		sq_pop(v,1); // Pops the null iterator
+	
 		Layout->Update();
 	}
 	else {
