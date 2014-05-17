@@ -44,9 +44,10 @@ public:
 	int 				ArtIndex;
 	
 	std::string			Text;
-	GelFontPool::UID	FontUID;		// NOTE: Could be merged with AtlasUID, if I really wanted //
-		
 	GelColor			Color;
+	GlayPoint			Scale;
+
+	GelFontPool::UID	FontUID;		// NOTE: Could be merged with AtlasUID, if I really wanted //
 	float				FontSize;
 	int					FontAlign;
 public:
@@ -54,6 +55,7 @@ public:
 		Type( Gel::GLO_NULL ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
+		Scale(GLAY_1,GLAY_1),
 		FontUID( 0 ),
 		FontSize( 12 ),
 		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
@@ -65,6 +67,7 @@ public:
 		Type( _Type ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
+		Scale(GLAY_1,GLAY_1),
 		Text( _Text ),
 		FontUID( 0 ),
 		FontSize( 12 ),
@@ -84,6 +87,11 @@ public:
 	inline void SetColor( const GelColor& _Color ) {
 		Color = _Color;
 	}
+	inline void SetScale( const GlayNum _SizeX = GLAY_1, const GlayNum _SizeY = GLAY_1 ) {
+		Scale.x = _SizeX;
+		Scale.y = _SizeY;
+	}
+
 	inline void SetFontSize( const float _Size ) {
 		FontSize = _Size;
 	}
@@ -126,12 +134,13 @@ public:
 				break;
 			}
 			case Gel::GLO_IMAGE: {
-				Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Node.GetShape().x, Node.GetShape().y) );
+//				Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Node.GetShape().x, Node.GetShape().y) );
+				Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Scale.x, Scale.y) );
 				MyMat *= Matrix4x4::TranslationMatrix( Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y) );
 				MyMat *= Mat;
 				
 				GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
-				Atlas.Draw( MyMat, ArtIndex );
+				Atlas.Draw( MyMat, ArtIndex, Color );
 				
 				break;
 			}
