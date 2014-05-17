@@ -109,9 +109,7 @@ public:
 //		}
 	}
 	
-	inline void Draw( const Matrix4x4& Matrix, const int Index ) {
-		GelColor Color = GEL_RGB_DEFAULT;
-		
+	inline void Draw( const Matrix4x4& Matrix, const int Index, GelColor Color = GEL_RGB_DEFAULT ) {		
 		spAtlasRegion* Reg = Region[Index];//Atlas->regions->next; // ...
 
 		const st32 VertCount = 6;

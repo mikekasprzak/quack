@@ -218,6 +218,13 @@ __FUNC_START_SETFLOAT( qk_layoutnode_SetFontSize )
 	Node->Data.SetFontSize( Value );
 __FUNC_END_SET()
 // - ------------------------------------------------------------------------------------------ - //
+__FUNC_START_SETFLOAT( qk_layoutnode_SetScale )
+	SQFloat Value2; \
+	sq_getfloat(v,3,&Value2);
+
+	Node->Data.SetScale( Value, Value2 );
+__FUNC_END_SET()
+// - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
 __FUNC_START_SETINSTANCE( qk_layoutnode_SetColor, GelColor )
@@ -255,7 +262,9 @@ SQRegFunction qkLayoutNode_funcs[] = {
 	_DECL_FUNC(qk_layoutnode_SetType,2,NULL),
 	_DECL_FUNC(qk_layoutnode_SetFontAlign,2,NULL),
 	_DECL_FUNC(qk_layoutnode_SetFontSize,2,NULL),
+	
 	_DECL_FUNC(qk_layoutnode_SetColor,2,NULL),
+	_DECL_FUNC(qk_layoutnode_SetScale,3,NULL),
 
 	{0,0,0,0}
 };
@@ -292,7 +301,9 @@ SQInteger register_qkLayoutNode(HSQUIRRELVM v) {
 		_CLASS_ADDFUNC(qk_layoutnode_SetType,SetType);
 		_CLASS_ADDFUNC(qk_layoutnode_SetFontAlign,SetFontAlign);
 		_CLASS_ADDFUNC(qk_layoutnode_SetFontSize,SetFontSize);
+
 		_CLASS_ADDFUNC(qk_layoutnode_SetColor,SetColor);
+		_CLASS_ADDFUNC(qk_layoutnode_SetScale,SetScale);
 
 		_ADD_CLASS_END(GelLayoutNode);
 	}
