@@ -43,10 +43,21 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 		\
 		/* ARG3: Radius */ \
 		if ( NumArgs >= 4 ) { \
-			/* TODO: Check type */ \
-			float FRadius; \
-			sq_getfloat(v,4,&FRadius); \
-			Radius = Vector2D(FRadius,FRadius); \
+			int Type = sq_gettype(v,4); \
+			if ( Type & (OT_FLOAT|OT_INTEGER) ) { \
+				float FRadius; \
+				sq_getfloat(v,4,&FRadius); \
+				Radius = Vector2D(FRadius,FRadius); \
+			} \
+			else if ( Type == OT_INSTANCE ) { \
+				int Tag; \
+				sq_gettypetag(v,4,(SQUserPointer*)&Tag); \
+				if ( Tag == QK_TAG_VEC2 ) { \
+					Vector2D* Value; \
+					sq_getinstanceup(v,4,(void**)&Value,NULL); \
+					Radius = *Value; \
+				} \
+			} \
 		} \
 		\
 		/* ARG4: Color */ \
@@ -75,11 +86,13 @@ _PRIMITIVE_DRAW_RADIUS(qkDrawDiamond,Diamond,GEL_LINE_LOOP);
 _PRIMITIVE_DRAW_RADIUS(qkDrawTriangle,Circle,GEL_LINE_LOOP,3);
 _PRIMITIVE_DRAW_RADIUS(qkDrawCross,Cross,GEL_LINES);
 _PRIMITIVE_DRAW_RADIUS(qkDrawX,X,GEL_LINES);
+_PRIMITIVE_DRAW_RADIUS(qkDrawRect,Rect,GEL_LINE_LOOP);
 
 _PRIMITIVE_DRAW_RADIUS(qkDrawCircleFill,Circle,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(qkDrawSquareFill,RadiusRect,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(qkDrawDiamondFill,Diamond,GEL_TRIANGLE_FAN);
 _PRIMITIVE_DRAW_RADIUS(qkDrawTriangleFill,Circle,GEL_TRIANGLE_FAN,3);
+_PRIMITIVE_DRAW_RADIUS(qkDrawRectFill,Rect,GEL_TRIANGLE_FAN);
 // - ------------------------------------------------------------------------------------------ - //
 #undef _PRIMITIVE_DRAW_RADIUS
 // - ------------------------------------------------------------------------------------------ - //
@@ -407,11 +420,13 @@ SQRegFunction qkDraw_funcs[] = {
 	_DECL_FUNC(qkDrawTriangle,-2,NULL),
 	_DECL_FUNC(qkDrawCross,-2,NULL),
 	_DECL_FUNC(qkDrawX,-2,NULL),
+	_DECL_FUNC(qkDrawRect,-2,NULL),
 
 	_DECL_FUNC(qkDrawCircleFill,-2,NULL),
 	_DECL_FUNC(qkDrawSquareFill,-2,NULL),
 	_DECL_FUNC(qkDrawDiamondFill,-2,NULL),
 	_DECL_FUNC(qkDrawTriangleFill,-2,NULL),
+	_DECL_FUNC(qkDrawRectFill,-2,NULL),
 
 	_DECL_FUNC(qkDrawCapsule,-2,NULL),
 	_DECL_FUNC(qkDrawDiamondCapsule,-2,NULL),

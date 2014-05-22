@@ -121,7 +121,7 @@ public:
 		Verts[3] = Vector3D(Reg->width,0,0);
 		Verts[4] = Vector3D(0,0,0);
 		Verts[5] = Vector3D(0,Reg->height,0);
-		
+				
 		for ( st32 idx = 0; idx < VertCount; idx++ ) {
 			// Add Offsets and subtract half the original width (i.e. center) //
 			Verts[idx] += Vector3D(Reg->offsetX-(Reg->originalWidth>>1),Reg->offsetY-(Reg->originalHeight>>1));

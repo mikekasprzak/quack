@@ -332,35 +332,43 @@ public:
 //			Log("* Alignment Flags: %X", Flags );
 			// Fancy Alignment Modes (May Affect Shape) //
 			if ( Flags & GLAY_FIT ) {
-				Region = Parent->Region;
+				Region.Pos = Parent->Region.Pos + Region.Pos;
+				Region.Shape = Parent->Region.Shape;
 			}
 			else if ( Flags & GLAY_SUM ) {
 				Region.Pos = Parent->Region.Pos + Region.Pos;
 			}
 			else {
 				// Relative Origin... is automatic, by doing nothing //
+				//Region.Pos = Region.Pos;
 			}
 
 			// Standard Alignment (X Axis) //
 			if ( (Flags & GLAY_CENTER) == GLAY_CENTER ) {
-				Region.Pos.x = Parent->Region.Pos.x + GlayNumHalf(Parent->Region.Shape.x-Region.Shape.x);
+				Region.Pos.x += /*Parent->Region.Pos.x +*/ GlayNumHalf(Parent->Region.Shape.x-Region.Shape.x);
 			}
 			else if ( Flags & GLAY_LEFT ) {
-				Region.Pos.x = Parent->Region.Pos.x;
+				//Region.Pos.x = Parent->Region.Pos.x;
 			}
 			else if ( Flags & GLAY_RIGHT ) {
-				Region.Pos.x = Parent->Region.Pos.x+Parent->Region.Shape.x - Region.Shape.x;
+				Region.Pos.x += /*Parent->Region.Pos.x +*/ Parent->Region.Shape.x - Region.Shape.x;
+			}
+			else {
+				Region.Pos.x -= GlayNumHalf(Region.Shape.x);
 			}
 
 			// Standard Alignment (Y Axis) //
 			if ( (Flags & GLAY_MIDDLE) == GLAY_MIDDLE ) {
-				Region.Pos.y = Parent->Region.Pos.y + GlayNumHalf(Parent->Region.Shape.y-Region.Shape.y);
+				Region.Pos.y += /*Parent->Region.Pos.y +*/ GlayNumHalf(Parent->Region.Shape.y-Region.Shape.y);
 			}
 			else if ( Flags & GLAY_BOTTOM ) {
-				Region.Pos.y = Parent->Region.Pos.y;
+				//Region.Pos.y = Parent->Region.Pos.y;
 			}
 			else if ( Flags & GLAY_TOP ) {
-				Region.Pos.y = Parent->Region.Pos.y+Parent->Region.Shape.y - Region.Shape.y;
+				Region.Pos.y += /*Parent->Region.Pos.y +*/ Parent->Region.Shape.y - Region.Shape.y;
+			}
+			else {
+				Region.Pos.y -= GlayNumHalf(Region.Shape.y);
 			}
 			
 		}

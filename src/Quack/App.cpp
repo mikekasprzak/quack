@@ -68,7 +68,10 @@ GelSignal LoseFocus;
 // - ------------------------------------------------------------------------------------------ - //
 GelFontPool::UID RuntimeErrorFont = 0;
 Real AspectRatio;
+
 Matrix4x4 InfoMatrix;
+Rect2D InfoView;
+
 bool HadVMError;
 // - ------------------------------------------------------------------------------------------ - //
 //QK::QEngine* Engine;
@@ -152,11 +155,21 @@ void AppInit() {
 	// NOTE: WHOA! Using Native Screen 0 to calculate this Matrix! This is uncool!
 	// Code was borrowed from the Aspect ratio detection code in qkScreen.cpp
 
+	Real UIScale( 256.0f );
+
+	bool WideRatio = App::AspectRatio < 1.0;
+	Vector2D AspectVec(App::AspectRatio,1.0);
+	if ( WideRatio )
+		AspectVec = Vector2D(1.0,Real(1.0)/App::AspectRatio);
+
 	App::InfoMatrix = Matrix4x4::Identity;
-	App::InfoMatrix[0] = Real(1.0f/256.0f);
-	App::InfoMatrix[5] = Real(1.0f/256.0f) * App::AspectRatio;
-	App::InfoMatrix[10] = Real::One;
+	App::InfoMatrix[0] = Real::One / UIScale / AspectVec.x;
+	App::InfoMatrix[5] = Real::One / UIScale / AspectVec.y;
+	App::InfoMatrix[10] = Real::One / UIScale;
 	App::InfoMatrix[15] = Real::One;
+
+	Vector2D UIViewVec = AspectVec * UIScale;
+	App::InfoView = Rect2D(-UIViewVec.x,-UIViewVec.y, UIViewVec.x+UIViewVec.x,UIViewVec.y+UIViewVec.y);
 
 	// **** //
 
@@ -343,16 +356,16 @@ void AppDraw() {
 	// Show Runtime Error Notices //
 	if ( QuackVMGetError() ) {
 		App::HadVMError = true;
-		Vector3D MessagePos = Vector3D(-254,+254,0);
-		MessagePos.y /= App::AspectRatio;
+		Vector3D MessagePos = Vector3D(-256+4,+256-4,0);
+//		MessagePos.y /= App::AspectRatio;
 			
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,64,64), GEL_ALIGN_TOP_LEFT,
 			"Runtime Error Detected (see log). Execution Stopped.");
 	}
 	else if ( App::HadVMError ) {
-		Vector3D MessagePos = Vector3D(-254,+254,0);
-		MessagePos.y /= App::AspectRatio;
+		Vector3D MessagePos = Vector3D(-256+4,+256-4,0);
+//		MessagePos.y /= App::AspectRatio;
 			
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, Real(1), GEL_RGB(255,64,64), GEL_ALIGN_TOP_LEFT,
@@ -360,15 +373,24 @@ void AppDraw() {
 	}
 
 	// Draw FPS Counter //
-	if ( App::Debug ) {
-		Vector3D MessagePos = Vector3D(+254,+254-24,0);
-		MessagePos.y /= App::AspectRatio;
+	if ( App::Debug ) {		
+//		Vector3D MessagePos = Vector3D(+256-4,+256-4,0);
+//		MessagePos.y /= App::AspectRatio;
+
+		Vector3D MessagePos = (App::InfoView.P2() - Vector2D(4,4)).ToVector3D();
 			
 		GelColor Color = GEL_RGB(255,255,255);
 		GelAlign Align = GEL_ALIGN_TOP_RIGHT;
-		Real YStep(12);
-		Real FontSize(12);
-		float PercentConstant = (float)(1000000/60) / 100.0f;
+		Real YStep(24);
+		Real FontSize(24);
+		float PercentConstant = (float)(1000000.0f/60.0f) / 100.0f;
+
+		gelDrawRect( 
+			App::InfoMatrix,
+			Vector2D(-256,-256).ToVector3D(),
+			Vector2D(512,512), 
+			GEL_RGBA(128,0,0,128)
+		);
 			
 		Gel::FontPool[App::RuntimeErrorFont].printf( 
 			App::InfoMatrix, MessagePos, FontSize, Color, Align,
