@@ -43,11 +43,11 @@ SQInteger qk_rect2_get( HSQUIRRELVM v ) {
 	// Return different data depending on requested member //
 	if ( MemberName[1] == 0 ) {
 		if ( MemberName[0] == 'x' ) {
-			sq_pushfloat(v,Rect->P1().x.ToFloat());		// +1 //
+			sq_pushfloat(v,Rect->P1().x.ToFloat());			// +1 //
 			return SQ_RETURN;
 		}
 		else if ( MemberName[0] == 'y' ) {
-			sq_pushfloat(v,Rect->P1().y.ToFloat());		// +1 //
+			sq_pushfloat(v,Rect->P1().y.ToFloat());			// +1 //
 			return SQ_RETURN;
 		}
 		else if ( MemberName[0] == 'w' ) {
@@ -58,6 +58,54 @@ SQInteger qk_rect2_get( HSQUIRRELVM v ) {
 			sq_pushfloat(v,Rect->Shape().y.ToFloat());		// +1 //
 			return SQ_RETURN;
 		}
+	}
+	else if ( strcmp( MemberName, "P1" ) == 0 ) {
+		sq_pushroottable(v);			// +1 //
+		sq_pushstring(v,"vec2",-1);		// +1 //
+		sq_get(v,-2);					// =0 (-1 then +1) //
+		sq_createinstance(v,-1);		// +1 //
+	
+		Vector2D* Target;
+		sq_getinstanceup(v,-1,(void**)&Target,0);
+		*Target = Rect->P1();
+		
+		return SQ_RETURN;
+	}
+	else if ( strcmp( MemberName, "P2" ) == 0 ) {
+		sq_pushroottable(v);			// +1 //
+		sq_pushstring(v,"vec2",-1);		// +1 //
+		sq_get(v,-2);					// =0 (-1 then +1) //
+		sq_createinstance(v,-1);		// +1 //
+	
+		Vector2D* Target;
+		sq_getinstanceup(v,-1,(void**)&Target,0);
+		*Target = Rect->P2();
+		
+		return SQ_RETURN;
+	}
+	else if ( strcmp( MemberName, "Shape" ) == 0 ) {
+		sq_pushroottable(v);			// +1 //
+		sq_pushstring(v,"vec2",-1);		// +1 //
+		sq_get(v,-2);					// =0 (-1 then +1) //
+		sq_createinstance(v,-1);		// +1 //
+	
+		Vector2D* Target;
+		sq_getinstanceup(v,-1,(void**)&Target,0);
+		*Target = Rect->Shape();
+		
+		return SQ_RETURN;
+	}
+	else if ( strcmp( MemberName, "HalfShape" ) == 0 ) {
+		sq_pushroottable(v);			// +1 //
+		sq_pushstring(v,"vec2",-1);		// +1 //
+		sq_get(v,-2);					// =0 (-1 then +1) //
+		sq_createinstance(v,-1);		// +1 //
+	
+		Vector2D* Target;
+		sq_getinstanceup(v,-1,(void**)&Target,0);
+		*Target = Rect->HalfShape();
+		
+		return SQ_RETURN;
 	}
 
 	// Throw null on member not found //
