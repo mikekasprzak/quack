@@ -80,40 +80,46 @@ public:
 
 // - ------------------------------------------------------------------------------------------ - //
 enum GlayNodeAlign {
-	GALIGN_LEFT =			0x1,
-	GALIGN_RIGHT = 			0x2,
-	GALIGN_CENTER =			GALIGN_LEFT | GALIGN_RIGHT,
+	GALIGN_LEFT =						0x1,
+	GALIGN_RIGHT = 						0x2,
+	GALIGN_CENTER =						GALIGN_LEFT | GALIGN_RIGHT,
 			
-	GALIGN_TOP =			0x1<<4,
-	GALIGN_BOTTOM =			0x2<<4,
-	GALIGN_MIDDLE =			GALIGN_TOP | GALIGN_BOTTOM,
-	GALIGN_BASELINE =		0x4<<4 | GALIGN_MIDDLE,		// Include Middle as a fallback (non fonts) //
+	GALIGN_TOP =						0x1<<4,
+	GALIGN_BOTTOM =						0x2<<4,
+	GALIGN_MIDDLE =						GALIGN_TOP | GALIGN_BOTTOM,
+	GALIGN_BASELINE =					0x4<<4 | GALIGN_MIDDLE,		// Include Middle as a fallback (non fonts) //
 	
-	GALIGN_HALIGN =			GALIGN_CENTER,
-	GALIGN_VALIGN =			GALIGN_MIDDLE,
-	GALIGN_ALIGN =			0xFF,
+	GALIGN_HALIGN =						GALIGN_CENTER,
+	GALIGN_VALIGN =						GALIGN_MIDDLE,
+	GALIGN_ALIGN =						0xFF,
 
-	GALIGN_HBITS =			0xF,
-	GALIGN_VBITS =			0xF<<4,
+	GALIGN_HBITS =						0xF,
+	GALIGN_VBITS =						0xF<<4,
 	
 	// Properties of Self //
-	//GALIGN_FREE =			0x000,	// Free Positioning. Relative the Origin (0,0). //
-	GALIGN_SUM = 			0x100,	// Positions are relative the parents. Default. //
-	GALIGN_FIT =			0x200,	// Fit myself to my parent (100%). //
-	GALIGN_EMPTY = 			0x800,	// Special kind of node (an empty) that disregards position. //
+	//GALIGN_FREE =						0x000,	// Free Positioning. Relative the Origin (0,0). //
+	GALIGN_SUM = 						0x100,	// Positions are relative the parents. Default. //
+	GALIGN_FIT =						0x200,	// Fit myself to my parent (100%). //
+	GALIGN_EMPTY = 						0x800,	// Special kind of node (an empty) that disregards position. //
 
-	GALIGN_SELF = 			0xF00,
+	GALIGN_SELF = 						0xF00,
 	
-	// Properties of Children //
-	GALIGN_FILL =			0x1000,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
-	GALIGN_FILL_WIDTH = 	0x2000,	// Fit my children inside me, arranging them wide //
-	GALIGN_FILL_HEIGHT = 	0x4000,	// Fit my children inside me, arranging them tall //
+	// Properties of Children (ONLY ONE!) //
+	GALIGN_FIT_CHILDREN_TO_ME =			0x1000,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
+	GALIGN_FIT_CHILDREN_TO_WIDTH = 		0x2000,	// Fit my children inside me, arranging them wide, filling all space //
+	GALIGN_FIT_CHILDREN_TO_HEIGHT = 	0x3000,	// Fit my children inside me, arranging them tall, filling all space //
 
-	GALIGN_CHILDREN =		0xF000,
+	GALIGN_PACK_CHILDREN_FROM_LEFT =	0x4000, // Pack children! In a box! //
+	GALIGN_PACK_CHILDREN_FROM_RIGHT =	0x5000,
+	GALIGN_PACK_CHILDREN_FROM_TOP =		0x6000,
+	GALIGN_PACK_CHILDREN_FROM_BOTTOM =	0x7000,
+
+	GALIGN_CHILDREN =					0xF000,
 
 	// *** //
 	
-	GALIGN_DEFAULT =		GALIGN_CENTER | GALIGN_MIDDLE,
+	GALIGN_DEFAULT =					GALIGN_TOP | GALIGN_LEFT,
+//	GALIGN_DEFAULT =					GALIGN_CENTER | GALIGN_MIDDLE,
 };
 // - ------------------------------------------------------------------------------------------ - //
 // GlayNode - A Node is an element of a layout. Nodes have children and parent nodes. //
@@ -324,64 +330,102 @@ public:
 			Reg.Shape = Reg.Shape * Region.Shape;
 		}
 	}
+	
+	inline void PackChildrenLeft() {
+		GlayNum Offset = GLAY_0;
+		for (typename std::list<NodeType>::iterator Itr = Child.begin(), End = Child.end(); Itr != End; ++Itr) {
+			// "Reg", so now to shadow my internal member "Region" //
+			GlayRegion& Reg = Itr->Region;
+			
+			// Distribute about axis //
+			Reg.Pos.x = Offset;
+//			if ( Width != GLAY_0 )
+//				Reg.Shape.x = Reg.Shape.x / Width;
+			Offset += Reg.Shape.x;
+			
+			// Align about other axis //
+//			if ( Height != GLAY_0 )
+//				Reg.Shape.y /= Height; // Convert to 0-1 range //
+			
+//			if ( Flag == GALIGN_TOP )
+//				Reg.Pos.y = GLAY_0;
+//			else if ( Flag == GALIGN_BOTTOM )
+//				Reg.Pos.y = GLAY_1 - Reg.Shape.y;
+//			else //if ( Flag == GALIGN_MIDDLE )
+//				Reg.Pos.y = GlayNumHalf(GLAY_1 - Reg.Shape.y);
+			
+			// Scale to size of parent //
+//			Reg.Pos = Reg.Pos * Region.Shape;
+//			Reg.Shape = Reg.Shape * Region.Shape;			
+		}		
+	}
 		
 public:
 	inline void Update() {
-		// Properties of Self //
-		if ( Parent ) {
-//			Log("* Alignment Flags: %X", Flags );
-			// Fancy Alignment Modes (May Affect Shape) //
-			if ( Align & GALIGN_FIT ) {
-				Region.Pos = Parent->Region.Pos + Region.Pos;
-				Region.Shape = Parent->Region.Shape;
-			}
-			else if ( Align & GALIGN_SUM ) {
-				Region.Pos = Parent->Region.Pos + Region.Pos;
-			}
-			else {
-				// Relative Origin... is automatic, by doing nothing //
-				//Region.Pos = Region.Pos;
-			}
+		GlayRegion Dummy(0,0,0,0);
 
-			// Standard Alignment (X Axis) //
-			if ( (Align & GALIGN_CENTER) == GALIGN_CENTER ) {
-				Region.Pos.x += /*Parent->Region.Pos.x +*/ GlayNumHalf(Parent->Region.Shape.x-Region.Shape.x);
-			}
-			else if ( Align & GALIGN_LEFT ) {
-				//Region.Pos.x = Parent->Region.Pos.x;
-			}
-			else if ( Align & GALIGN_RIGHT ) {
-				Region.Pos.x += /*Parent->Region.Pos.x +*/ Parent->Region.Shape.x - Region.Shape.x;
-			}
-			else {
-				Region.Pos.x -= GlayNumHalf(Region.Shape.x);
-			}
-
-			// Standard Alignment (Y Axis) //
-			if ( (Align & GALIGN_MIDDLE) == GALIGN_MIDDLE ) {
-				Region.Pos.y += /*Parent->Region.Pos.y +*/ GlayNumHalf(Parent->Region.Shape.y-Region.Shape.y);
-			}
-			else if ( Align & GALIGN_BOTTOM ) {
-				//Region.Pos.y = Parent->Region.Pos.y;
-			}
-			else if ( Align & GALIGN_TOP ) {
-				Region.Pos.y += /*Parent->Region.Pos.y +*/ Parent->Region.Shape.y - Region.Shape.y;
-			}
-			else {
-				Region.Pos.y -= GlayNumHalf(Region.Shape.y);
-			}
-			
+		GlayRegion* ParentRegion;
+		if ( Parent == 0 ) {
+			ParentRegion = &Dummy;
+		}
+		else {
+			ParentRegion = &Parent->Region;
+		}
+		
+		// **** Properties of Self **** //
+		// Fancy Alignment Modes (May Affect Shape) //
+		if ( Align & GALIGN_FIT ) {
+			Region.Pos = ParentRegion->Pos + Region.Pos;
+			Region.Shape = ParentRegion->Shape;
+		}
+		else if ( Align & GALIGN_SUM ) {
+			Region.Pos = ParentRegion->Pos + Region.Pos;
+		}
+		else {
+			// Relative Origin... is automatic, by doing nothing //
+			//Region.Pos = Region.Pos;
 		}
 
-		// Properties of Children //
-		if ( Align & GALIGN_FILL_WIDTH ) {
+		// Standard Alignment (X Axis) //
+		if ( (Align & GALIGN_CENTER) == GALIGN_CENTER ) {
+			Region.Pos.x += /*ParentRegion->Pos.x +*/ GlayNumHalf(ParentRegion->Shape.x-Region.Shape.x);
+		}
+		else if ( Align & GALIGN_LEFT ) {
+			//Region.Pos.x = ParentRegion->Pos.x;
+		}
+		else if ( Align & GALIGN_RIGHT ) {
+			Region.Pos.x += /*ParentRegion->Pos.x +*/ ParentRegion->Shape.x - Region.Shape.x;
+		}
+		else {
+			Region.Pos.x -= GlayNumHalf(Region.Shape.x);
+		}
+
+		// Standard Alignment (Y Axis) //
+		if ( (Align & GALIGN_MIDDLE) == GALIGN_MIDDLE ) {
+			Region.Pos.y += /*ParentRegion->Pos.y +*/ GlayNumHalf(ParentRegion->Shape.y-Region.Shape.y);
+		}
+		else if ( Align & GALIGN_BOTTOM ) {
+			//Region.Pos.y = ParentRegion->Pos.y;
+		}
+		else if ( Align & GALIGN_TOP ) {
+			Region.Pos.y += /*ParentRegion->Pos.y +*/ ParentRegion->Shape.y - Region.Shape.y;
+		}
+		else {
+			Region.Pos.y -= GlayNumHalf(Region.Shape.y);
+		}
+
+		// **** Properties of Children **** //
+		if ( (Align & GALIGN_CHILDREN) == GALIGN_FIT_CHILDREN_TO_WIDTH ) {
 			FitChildrenWide( Align & GALIGN_HALIGN );
 		}
-		else if ( Align & GALIGN_FILL_HEIGHT ) {
+		else if ( (Align & GALIGN_CHILDREN) == GALIGN_FIT_CHILDREN_TO_HEIGHT ) {
 			FitChildrenTall( Align & GALIGN_VALIGN );
 		}
-		else if ( Align & GALIGN_FILL ) {
+		else if ( (Align & GALIGN_CHILDREN) == GALIGN_FIT_CHILDREN_TO_ME ) {
 			FitChildren();
+		}
+		else if ( (Align & GALIGN_CHILDREN) == GALIGN_PACK_CHILDREN_FROM_LEFT ) {
+			PackChildrenLeft();// Align & GALIGN_HALIGN );
 		}
 
 		// Update Children //
