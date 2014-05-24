@@ -188,9 +188,15 @@ SQInteger qk_layout_populate_body( HSQUIRRELVM v, GelLayoutNode* Node ) {
 		else if ( strcmp( KeyStr, "y") == 0 ) {
 			sq_getfloat(v,Value,&Node->BaseRegion.Pos.y);
 		}
-		else if ( strcmp( KeyStr, "Flags") == 0 ) {
+		else if ( strcmp( KeyStr, "Align") == 0 ) {
 			// Wrap in function ? //
-			sq_getinteger(v,Value,(SQInteger*)&Node->Flags);
+			sq_getinteger(v,Value,(SQInteger*)&Node->Align);
+		}
+		else if ( strcmp( KeyStr, "Visible") == 0 ) {
+			SQBool Visible;
+			sq_getbool(v,Value,(SQBool*)&Visible);
+
+			Node->Data.SetVisible( Visible );
 		}
 		else if ( strcmp( KeyStr, "Name") == 0 ) {
 			const SQChar* ValueStr;
