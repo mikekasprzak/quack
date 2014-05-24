@@ -79,41 +79,41 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-enum GlayNodeFlag {
-	GLAY_LEFT =			0x1,
-	GLAY_RIGHT = 		0x2,
-	GLAY_CENTER =		GLAY_LEFT | GLAY_RIGHT,
+enum GlayNodeAlign {
+	GALIGN_LEFT =			0x1,
+	GALIGN_RIGHT = 			0x2,
+	GALIGN_CENTER =			GALIGN_LEFT | GALIGN_RIGHT,
 			
-	GLAY_TOP =			0x1<<4,
-	GLAY_BOTTOM	=		0x2<<4,
-	GLAY_MIDDLE =		GLAY_TOP | GLAY_BOTTOM,
-	GLAY_BASELINE =		0x4<<4 | GLAY_MIDDLE,		// Include Middle as a fallback (non fonts) //
+	GALIGN_TOP =			0x1<<4,
+	GALIGN_BOTTOM =			0x2<<4,
+	GALIGN_MIDDLE =			GALIGN_TOP | GALIGN_BOTTOM,
+	GALIGN_BASELINE =		0x4<<4 | GALIGN_MIDDLE,		// Include Middle as a fallback (non fonts) //
 	
-	GLAY_HALIGN =		GLAY_CENTER,
-	GLAY_VALIGN =		GLAY_MIDDLE,
-	GLAY_ALIGN =		0xFF,
+	GALIGN_HALIGN =			GALIGN_CENTER,
+	GALIGN_VALIGN =			GALIGN_MIDDLE,
+	GALIGN_ALIGN =			0xFF,
 
-	GLAY_HBITS =		0xF,
-	GLAY_VBITS =		0xF<<4,
+	GALIGN_HBITS =			0xF,
+	GALIGN_VBITS =			0xF<<4,
 	
 	// Properties of Self //
-	//GLAY_FREE =		0x000,	// Free Positioning. Relative the Origin (0,0). //
-	GLAY_SUM = 			0x100,	// Positions are relative the parents. Default. //
-	GLAY_FIT =			0x200,	// Fit myself to my parent (100%). //
-	GLAY_EMPTY = 		0x800,	// Special kind of node (an empty) that disregards position. //
+	//GALIGN_FREE =			0x000,	// Free Positioning. Relative the Origin (0,0). //
+	GALIGN_SUM = 			0x100,	// Positions are relative the parents. Default. //
+	GALIGN_FIT =			0x200,	// Fit myself to my parent (100%). //
+	GALIGN_EMPTY = 			0x800,	// Special kind of node (an empty) that disregards position. //
 
-	GLAY_SELF = 		0xF00,
+	GALIGN_SELF = 			0xF00,
 	
 	// Properties of Children //
-	GLAY_FILL =			0x1000,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
-	GLAY_FILL_WIDTH = 	0x2000,	// Fit my children inside me, arranging them wide //
-	GLAY_FILL_HEIGHT = 	0x4000,	// Fit my children inside me, arranging them tall //
+	GALIGN_FILL =			0x1000,	// Nodes are placed inside eachother. For borders, outlines, margins and padding. //
+	GALIGN_FILL_WIDTH = 	0x2000,	// Fit my children inside me, arranging them wide //
+	GALIGN_FILL_HEIGHT = 	0x4000,	// Fit my children inside me, arranging them tall //
 
-	GLAY_CHILDREN =		0xF000,
+	GALIGN_CHILDREN =		0xF000,
 
 	// *** //
 	
-	GLAY_DEFAULT =		GLAY_CENTER | GLAY_MIDDLE,
+	GALIGN_DEFAULT =		GALIGN_CENTER | GALIGN_MIDDLE,
 };
 // - ------------------------------------------------------------------------------------------ - //
 // GlayNode - A Node is an element of a layout. Nodes have children and parent nodes. //
@@ -125,37 +125,37 @@ public:
 	std::list<NodeType> Child;
 	std::string Name;
 
-	GlayRegion Region;		// The visible Region (BaseRegion modified by Flags/Parent/Children)
+	GlayRegion Region;			// The visible Region (BaseRegion modified by Flags/Parent/Children)
 
-	GlayRegion BaseRegion;	// The initial Region (not what's shown) //
-	unsigned int Flags;		// Alignment and Layout Flags //
+	GlayRegion BaseRegion;		// The initial Region (not what's shown) //
+	unsigned int Align;			// Alignment Flags //
 	
 	T Data;
 
 public:
-	inline GlayNode( NodeType* _Parent, const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) :
+	inline GlayNode( NodeType* _Parent, const unsigned int _Align = GALIGN_DEFAULT, const T& _Data = T() ) :
 		Parent( _Parent ),
 		Region( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
 		BaseRegion( GLAY_0,GLAY_0, GLAY_1,GLAY_1 ),
-		Flags( _Flag ),
+		Align( _Align ),
 		Data( _Data )
 	{
 	}
 
 public:
 	// Normal Child //
-	inline NodeType& AddChild( const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) {
-		Child.push_back( NodeType(this, _Flag | GLAY_SUM, _Data) );
+	inline NodeType& AddChild( const unsigned int _Flag = GALIGN_DEFAULT, const T& _Data = T() ) {
+		Child.push_back( NodeType(this, _Flag | GALIGN_SUM, _Data) );
 		return Child.back();
 	}
 	// Child that is relative the origin, not the parent //
-	inline NodeType& AddFreeChild( const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) {
+	inline NodeType& AddFreeChild( const unsigned int _Flag = GALIGN_DEFAULT, const T& _Data = T() ) {
 		Child.push_back( NodeType(this, _Flag, _Data) );
 		return Child.back();
 	}
 	// Doesn't affect layout //
-	inline NodeType& AddEmptyChild( const unsigned int _Flag = GLAY_DEFAULT, const T& _Data = T() ) {
-		Child.push_back( NodeType(this, _Flag | GLAY_SUM | GLAY_EMPTY, _Data ) );
+	inline NodeType& AddEmptyChild( const unsigned int _Flag = GALIGN_DEFAULT, const T& _Data = T() ) {
+		Child.push_back( NodeType(this, _Flag | GALIGN_SUM | GALIGN_EMPTY, _Data ) );
 		Child.back().SetShape(GLAY_0,GLAY_0);
 		return Child.back();
 	}
@@ -167,8 +167,8 @@ public:
 	inline void SetShape( const GlayNum _x = GLAY_1, const GlayNum _y = GLAY_1 ) {
 		BaseRegion.Shape = GlayPoint(_x,_y);
 	}
-	inline void SetFlags( const unsigned int _Flag = GLAY_DEFAULT ) {
-		Flags = _Flag;
+	inline void SetAlign( const unsigned int _Align = GALIGN_DEFAULT ) {
+		Align = _Align;
 	}
 	inline void SetName( const char* _Name = "" ) {
 		Name = _Name;
@@ -208,7 +208,7 @@ public:
 	
 public:
 	// Given a node (me), fit my children to my width, using their width as sizes. Also Y align. //
-	inline void FitChildrenWide( const unsigned int Flag = GLAY_MIDDLE ) {
+	inline void FitChildrenWide( const unsigned int Flag = GALIGN_MIDDLE ) {
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
 		GlayNum Height = GLAY_0;
@@ -234,11 +234,11 @@ public:
 			if ( Height != GLAY_0 )
 				Reg.Shape.y /= Height; // Convert to 0-1 range //
 			
-			if ( Flag == GLAY_TOP )
+			if ( Flag == GALIGN_TOP )
 				Reg.Pos.y = GLAY_0;
-			else if ( Flag == GLAY_BOTTOM )
+			else if ( Flag == GALIGN_BOTTOM )
 				Reg.Pos.y = GLAY_1 - Reg.Shape.y;
-			else //if ( Flag == GLAY_MIDDLE )
+			else //if ( Flag == GALIGN_MIDDLE )
 				Reg.Pos.y = GlayNumHalf(GLAY_1 - Reg.Shape.y);
 			
 			// Scale to size of parent //
@@ -248,7 +248,7 @@ public:
 	}
 
 	// Given a node (me), fit my children to my height, using their heights as sizes. Also X align. //
-	inline void FitChildrenTall( const unsigned int Flag = GLAY_CENTER ) {
+	inline void FitChildrenTall( const unsigned int Flag = GALIGN_CENTER ) {
 		// Sum one axis, and find the largest value of the other axis //
 		GlayNum Width = GLAY_0;
 		GlayNum Height = GLAY_0;
@@ -268,11 +268,11 @@ public:
 			if ( Width != GLAY_0 )
 				Reg.Shape.x /= Width; // Convert to 0-1 range //
 			
-			if ( Flag == GLAY_LEFT )
+			if ( Flag == GALIGN_LEFT )
 				Reg.Pos.x = GLAY_0;
-			else if ( Flag == GLAY_RIGHT )
+			else if ( Flag == GALIGN_RIGHT )
 				Reg.Pos.x = GLAY_1 - Reg.Shape.x;
-			else //if ( Flag == GLAY_CENTER )
+			else //if ( Flag == GALIGN_CENTER )
 				Reg.Pos.x = GlayNumHalf(GLAY_1 - Reg.Shape.x);
 			
 			// Distribute about other axis //
@@ -331,11 +331,11 @@ public:
 		if ( Parent ) {
 //			Log("* Alignment Flags: %X", Flags );
 			// Fancy Alignment Modes (May Affect Shape) //
-			if ( Flags & GLAY_FIT ) {
+			if ( Align & GALIGN_FIT ) {
 				Region.Pos = Parent->Region.Pos + Region.Pos;
 				Region.Shape = Parent->Region.Shape;
 			}
-			else if ( Flags & GLAY_SUM ) {
+			else if ( Align & GALIGN_SUM ) {
 				Region.Pos = Parent->Region.Pos + Region.Pos;
 			}
 			else {
@@ -344,13 +344,13 @@ public:
 			}
 
 			// Standard Alignment (X Axis) //
-			if ( (Flags & GLAY_CENTER) == GLAY_CENTER ) {
+			if ( (Align & GALIGN_CENTER) == GALIGN_CENTER ) {
 				Region.Pos.x += /*Parent->Region.Pos.x +*/ GlayNumHalf(Parent->Region.Shape.x-Region.Shape.x);
 			}
-			else if ( Flags & GLAY_LEFT ) {
+			else if ( Align & GALIGN_LEFT ) {
 				//Region.Pos.x = Parent->Region.Pos.x;
 			}
-			else if ( Flags & GLAY_RIGHT ) {
+			else if ( Align & GALIGN_RIGHT ) {
 				Region.Pos.x += /*Parent->Region.Pos.x +*/ Parent->Region.Shape.x - Region.Shape.x;
 			}
 			else {
@@ -358,13 +358,13 @@ public:
 			}
 
 			// Standard Alignment (Y Axis) //
-			if ( (Flags & GLAY_MIDDLE) == GLAY_MIDDLE ) {
+			if ( (Align & GALIGN_MIDDLE) == GALIGN_MIDDLE ) {
 				Region.Pos.y += /*Parent->Region.Pos.y +*/ GlayNumHalf(Parent->Region.Shape.y-Region.Shape.y);
 			}
-			else if ( Flags & GLAY_BOTTOM ) {
+			else if ( Align & GALIGN_BOTTOM ) {
 				//Region.Pos.y = Parent->Region.Pos.y;
 			}
-			else if ( Flags & GLAY_TOP ) {
+			else if ( Align & GALIGN_TOP ) {
 				Region.Pos.y += /*Parent->Region.Pos.y +*/ Parent->Region.Shape.y - Region.Shape.y;
 			}
 			else {
@@ -374,13 +374,13 @@ public:
 		}
 
 		// Properties of Children //
-		if ( Flags & GLAY_FILL_WIDTH ) {
-			FitChildrenWide( Flags & GLAY_HALIGN );
+		if ( Align & GALIGN_FILL_WIDTH ) {
+			FitChildrenWide( Align & GALIGN_HALIGN );
 		}
-		else if ( Flags & GLAY_FILL_HEIGHT ) {
-			FitChildrenTall( Flags & GLAY_VALIGN );
+		else if ( Align & GALIGN_FILL_HEIGHT ) {
+			FitChildrenTall( Align & GALIGN_VALIGN );
 		}
-		else if ( Flags & GLAY_FILL ) {
+		else if ( Align & GALIGN_FILL ) {
 			FitChildren();
 		}
 

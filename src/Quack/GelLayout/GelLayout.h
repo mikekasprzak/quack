@@ -17,12 +17,17 @@
 namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 enum {
-	GLO_NULL = 0,
+	GLOT_NULL = 0,
 	
-	GLO_BOX,				// Box Test //
-	GLO_IMAGE,				// Static Image //
-	GLO_TEXT,				// Text Box (line) //
-};	
+	GLOT_BOX,				// Box Test //
+	GLOT_IMAGE,				// Static Image //
+	GLOT_TEXT,				// Text Box (line) //
+};
+
+// - ------------------------------------------------------------------------------------------ - //
+enum {
+	GLOF_VISIBLE =			0x1,
+};
 // - ------------------------------------------------------------------------------------------ - //
 }; // namespace Gel //
 // - ------------------------------------------------------------------------------------------ - //
@@ -38,7 +43,7 @@ class GelLayoutNodeData {
 	typedef GelLayoutNodeData thistype;
 	typedef GlayNode<thistype> NodeType;
 public:
-	int Type;	// What kind of Node this is //
+	int 				Type;			// What kind of Node this is //
 	
 	GelAtlasPool::UID	AtlasUID;
 	int 				ArtIndex;
@@ -50,16 +55,19 @@ public:
 	GelFontPool::UID	FontUID;		// NOTE: Could be merged with AtlasUID, if I really wanted //
 	float				FontSize;
 	int					FontAlign;
+	
+	int					Flags;
 public:
 	inline GelLayoutNodeData() :
-		Type( Gel::GLO_NULL ),
+		Type( Gel::GLOT_NULL ),
 		AtlasUID( 0 ),
 		ArtIndex( 0 ),
 		Scale(GLAY_1,GLAY_1),
 		FontUID( 0 ),
 		FontSize( 12 ),
 		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
-		Color( GEL_RGB_WHITE )
+		Color( GEL_RGB_WHITE ),
+		Flags( Gel::GLOF_VISIBLE )
 	{
 	}
 	
@@ -72,7 +80,8 @@ public:
 		FontUID( 0 ),
 		FontSize( 12 ),
 		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
-		Color( GEL_RGB_WHITE )
+		Color( GEL_RGB_WHITE ),
+		Flags( Gel::GLOF_VISIBLE )
 	{	
 		PostLoad();
 	}
@@ -106,14 +115,18 @@ public:
 		Text = _Art;
 	}
 	
+	inline void SetVisible( const bool _Visible ) {
+		Flags = (Flags & ~Gel::GLOF_VISIBLE) | (_Visible ? Gel::GLOF_VISIBLE : 0);
+	}
+	
 	
 	inline void PostLoad() {
 		switch ( Type ) {
-			case Gel::GLO_IMAGE: {
+			case Gel::GLOT_IMAGE: {
 				AtlasUID = Gel::AtlasPool.LoadAndIndex( Text.c_str(), &ArtIndex );
 				break;
 			}
-//			case Gel::GLO_TEXT: {
+//			case Gel::GLOT_TEXT: {
 //				Text = _Text;
 //				break;
 //			}
@@ -122,39 +135,41 @@ public:
 
 public:	
 	inline void Draw( const Matrix4x4& Mat, const NodeType& Node ) const {
-		switch ( Type ) {
-			case Gel::GLO_BOX: {
-				gelDrawRectFill( 
-					Mat,
-					Vector2D(Node.GetPos().x,Node.GetPos().y).ToVector3D(), 
-					Vector2D(Node.GetShape().x, Node.GetShape().y), 
-					Color
-				);
-
-				break;
-			}
-			case Gel::GLO_IMAGE: {
-//				Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Node.GetShape().x, Node.GetShape().y) );
-				Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Scale.x, Scale.y) );
-				MyMat *= Matrix4x4::TranslationMatrix( Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y) );
-				MyMat *= Mat;
-				
-				GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
-				Atlas.Draw( MyMat, ArtIndex, Color );
-				
-				break;
-			}
-			case Gel::GLO_TEXT: {
-				Gel::FontPool[FontUID].printf( 
-					Mat, 
-					Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y).ToVector3D(), 
-					Real(FontSize), 
-					Color,
-					FontAlign,
-					Text.c_str()
-				);
-				
-				break;
+		if ( Flags & Gel::GLOF_VISIBLE ) {
+			switch ( Type ) {
+				case Gel::GLOT_BOX: {
+					gelDrawRectFill( 
+						Mat,
+						Vector2D(Node.GetPos().x,Node.GetPos().y).ToVector3D(), 
+						Vector2D(Node.GetShape().x, Node.GetShape().y), 
+						Color
+					);
+	
+					break;
+				}
+				case Gel::GLOT_IMAGE: {
+//					Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Node.GetShape().x, Node.GetShape().y) );
+					Matrix4x4 MyMat = Matrix4x4::ScalarMatrix( Vector2D(Scale.x, Scale.y) );
+					MyMat *= Matrix4x4::TranslationMatrix( Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y) );
+					MyMat *= Mat;
+					
+					GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
+					Atlas.Draw( MyMat, ArtIndex, Color );
+					
+					break;
+				}
+				case Gel::GLOT_TEXT: {
+					Gel::FontPool[FontUID].printf( 
+						Mat, 
+						Vector2D(Node.GetCenterPos().x, Node.GetCenterPos().y).ToVector3D(), 
+						Real(FontSize), 
+						Color,
+						FontAlign,
+						Text.c_str()
+					);
+					
+					break;
+				}
 			}
 		}
 		
