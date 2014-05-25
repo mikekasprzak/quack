@@ -56,6 +56,9 @@ public:
 	float				FontSize;
 	int					FontAlign;
 	
+	int 				ClipX, ClipY;	// Adds to the base position //
+	int 				ClipW, ClipH;	// Subtracts from the Shape //
+	
 	int					Flags;
 public:
 	inline GelLayoutNodeData() :
@@ -67,6 +70,10 @@ public:
 		FontSize( 12 ),
 		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
 		Color( GEL_RGB_WHITE ),
+		ClipX(0),
+		ClipY(0),
+		ClipW(0),
+		ClipH(0),
 		Flags( Gel::GLOF_VISIBLE )
 	{
 	}
@@ -81,6 +88,10 @@ public:
 		FontSize( 12 ),
 		FontAlign( GEL_ALIGN_CENTER | GEL_ALIGN_MIDDLE ),
 		Color( GEL_RGB_WHITE ),
+		ClipX(0),
+		ClipY(0),
+		ClipW(0),
+		ClipH(0),
 		Flags( Gel::GLOF_VISIBLE )
 	{	
 		PostLoad();
@@ -154,7 +165,7 @@ public:
 					MyMat *= Mat;
 					
 					GelAtlas& Atlas = Gel::AtlasPool[AtlasUID];
-					Atlas.Draw( MyMat, ArtIndex, Color );
+					Atlas.Draw( MyMat, ArtIndex, Color, ClipX,ClipY, ClipW,ClipH );
 					
 					break;
 				}

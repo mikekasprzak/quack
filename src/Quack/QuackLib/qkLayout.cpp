@@ -204,6 +204,27 @@ SQInteger qk_layout_populate_body( HSQUIRRELVM v, GelLayoutNode* Node ) {
 			
 			Node->SetName( ValueStr );
 		}
+
+		else if ( strcmp( KeyStr, "ClipX") == 0 ) {
+			SQInteger RetValue;
+			sq_getinteger(v,Value,(SQInteger*)&RetValue);
+			Node->Data.ClipX = RetValue;
+		}
+		else if ( strcmp( KeyStr, "ClipY") == 0 ) {
+			SQInteger RetValue;
+			sq_getinteger(v,Value,(SQInteger*)&RetValue);
+			Node->Data.ClipY = RetValue;
+		}
+		else if ( strcmp( KeyStr, "ClipW") == 0 ) {
+			SQInteger RetValue;
+			sq_getinteger(v,Value,(SQInteger*)&RetValue);
+			Node->Data.ClipW = RetValue;
+		}
+		else if ( strcmp( KeyStr, "ClipH") == 0 ) {
+			SQInteger RetValue;
+			sq_getinteger(v,Value,(SQInteger*)&RetValue);
+			Node->Data.ClipH = RetValue;
+		}
 		
 		// Data //
 		else if ( strcmp( KeyStr, "Type") == 0 ) {
