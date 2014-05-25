@@ -109,34 +109,40 @@ public:
 //		}
 	}
 	
-	inline void Draw( const Matrix4x4& Matrix, const int Index, GelColor Color = GEL_RGB_DEFAULT ) {		
+	inline void Draw( const Matrix4x4& Matrix, const int Index, GelColor Color = GEL_RGB_DEFAULT, int ClipX = 0, int ClipY = 0, int ClipW = 0, int ClipH = 0 ) {		
 		spAtlasRegion* Reg = Region[Index];//Atlas->regions->next; // ...
 
 		const st32 VertCount = 6;
 		Vector3D Verts[ VertCount ];
-		Verts[0] = Vector3D(0,Reg->height,0);
-		Verts[1] = Vector3D(Reg->width,Reg->height,0);
-		Verts[2] = Vector3D(Reg->width,0,0);
+		Verts[0] = Vector3D(0+ClipX, Reg->height-ClipH, 0);
+		Verts[1] = Vector3D(Reg->width-ClipW, Reg->height-ClipH, 0);
+		Verts[2] = Vector3D(Reg->width-ClipW, 0+ClipY, 0);
 
-		Verts[3] = Vector3D(Reg->width,0,0);
-		Verts[4] = Vector3D(0,0,0);
-		Verts[5] = Vector3D(0,Reg->height,0);
+		Verts[3] = Vector3D(Reg->width-ClipW, 0+ClipY, 0);
+		Verts[4] = Vector3D(0+ClipX, 0+ClipY, 0);
+		Verts[5] = Vector3D(0+ClipX, Reg->height-ClipH, 0);
 				
 		for ( st32 idx = 0; idx < VertCount; idx++ ) {
 			// Add Offsets and subtract half the original width (i.e. center) //
-			Verts[idx] += Vector3D(Reg->offsetX-(Reg->originalWidth>>1),Reg->offsetY-(Reg->originalHeight>>1));
+			Verts[idx] += Vector3D(Reg->offsetX-((Reg->originalWidth-ClipW+ClipX)>>1),Reg->offsetY-((Reg->originalHeight-ClipH+ClipY)>>1));
+//			Verts[idx] += Vector3D(Reg->offsetX,Reg->offsetY);
 		}
 
 		GelTexture& Tex = Gel::TexturePool[(st)Reg->page->rendererObject];
+			
+		float CX = ClipX / (float)Reg->page->width;
+		float CY = ClipY / (float)Reg->page->height;
+		float CW = ClipW / (float)Reg->page->width;
+		float CH = ClipH / (float)Reg->page->height;
 
 		UVSet<Gel::UVType> UVs[ VertCount ];
-		UVs[0] = UVSet<Gel::UVType>(Reg->u,Reg->v);
-		UVs[1] = UVSet<Gel::UVType>(Reg->u2,Reg->v);
-		UVs[2] = UVSet<Gel::UVType>(Reg->u2,Reg->v2);
+		UVs[0] = UVSet<Gel::UVType>(Reg->u+CX,Reg->v+CY);
+		UVs[1] = UVSet<Gel::UVType>(Reg->u2-CW,Reg->v+CY);
+		UVs[2] = UVSet<Gel::UVType>(Reg->u2-CW,Reg->v2-CH);
 
-		UVs[3] = UVSet<Gel::UVType>(Reg->u2,Reg->v2);
-		UVs[4] = UVSet<Gel::UVType>(Reg->u,Reg->v2);
-		UVs[5] = UVSet<Gel::UVType>(Reg->u,Reg->v);
+		UVs[3] = UVSet<Gel::UVType>(Reg->u2-CW,Reg->v2-CH);
+		UVs[4] = UVSet<Gel::UVType>(Reg->u+CX,Reg->v2-CH);
+		UVs[5] = UVSet<Gel::UVType>(Reg->u+CX,Reg->v+CY);
 
 //		vertexArray->append(vertices[0]);
 //		vertexArray->append(vertices[1]);
