@@ -21,7 +21,7 @@ public:
 
 public:
 	inline QSensorSpineBB() :
-		Skel( 0 ),
+		Skel( (GelSkelAnimator*)0xbaadd00d ),
 		Message( 0 ),
 		Name( "" )
 	{
