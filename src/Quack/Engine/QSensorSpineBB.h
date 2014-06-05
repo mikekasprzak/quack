@@ -20,7 +20,10 @@ public:
 	const char*			Name;
 
 public:
-	inline QSensorSpineBB()
+	inline QSensorSpineBB() :
+		Skel( 0 ),
+		Message( 0 ),
+		Name( "" )
 	{
 	}
 	
@@ -33,6 +36,9 @@ public:
 	static QRect _GetRect( thistype* self ) { return self->GetRect(); }
 	inline QRect GetRect() {
 		QRect Rect;
+		
+		if ( Skel == 0 )
+			return Rect;			
 
 		int SlotIndex = 0;
 		spSlot* Slot = 0;
