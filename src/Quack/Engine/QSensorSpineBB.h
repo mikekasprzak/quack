@@ -21,7 +21,7 @@ public:
 
 public:
 	inline QSensorSpineBB() :
-		Skel( (GelSkelAnimator*)0xbaadd00d ),
+		Skel( 0 ),
 		Message( 0 ),
 		Name( "" )
 	{
@@ -37,12 +37,12 @@ public:
 	inline QRect GetRect() {
 		QRect Rect;
 		
-		if ( Skel == 0 )
-			return Rect;			
+//		if ( Skel == 0 )
+//			return Rect;			
 			
-		if ( Skel == (GelSkelAnimator*)0xbaadd00d ) {
-			Log( "! UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU !" );
-		}
+//		if ( Skel == (GelSkelAnimator*)0xbaadd00d ) {
+//			Log( "! UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU !" );
+//		}
 
 		int SlotIndex = 0;
 		spSlot* Slot = 0;
