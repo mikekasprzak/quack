@@ -8,18 +8,19 @@ USES_MINGW			:=	true		# Compiler Extra Name (where applicible) #
 USES_STAT			:=	true		# Uses standard Unix Style File Info Lookups #
 USES_WINDOWS_TIME	:=	true		# Use Windows Timer Code #
 USES_WINDOWS_DIR	:=	true		# Use Windows Directory Code #
+USES_WINDOWS_PATH	:=	true		# Use Windows Base File Path Detection Code #
 # - ------------------------------------------------------------------------ - #
 USES_STDOUT			:=	true		# FileLog Output to use #
 USES_FLOG_COLORS	:=	true		# Use FileLog Colors (ANSI) #
 # - ------------------------------------------------------------------------ - #
-USES_WARNINGS		:=	true		# Use Extra Compiler Warnings #
+#USES_WARNINGS		:=	true		# Use Extra Compiler Warnings #
 # - ------------------------------------------------------------------------ - #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_WINDOWS USES_DESKTOP USES_GCC USES_MINGW 
-DEFINES				+=	USES_STAT USES_WINDOWS_TIME USES_WINDOWS_DIR
+DEFINES				+=	USES_STAT USES_WINDOWS_TIME USES_WINDOWS_DIR USES_WINDOWS_PATH
 DEFINES				+=	USES_STDOUT USES_FLOG_COLORS 
-DEFINES				+=	USES_WARNINGS
+#DEFINES				+=	USES_WARNINGS
 # - ------------------------------------------------------------------------ - #
 USES_XINPUT			:=	true	# XBOX 360 Controllers #
 #USES_SIXENSE		:=	true	# Razer Hydra Motion Controller #
@@ -31,9 +32,9 @@ USES_XINPUT			:=	true	# XBOX 360 Controllers #
 CPUFLAGS			:=	-msse2 -mmmx -mfpmath=sse -ftree-vectorize
 # - ------------------------------------------------------------------------ - #
 # Compiler and Linker Flags (specific to this target) #
-CFLAGS				+=	-I /usr/local/include -I /usr/local/ssl/include $(CPUFLAGS)
-CPPFLAGS			+=	-I /usr/local/include -I /usr/local/ssl/include $(CPUFLAGS)
-LDFLAGS				+=	-L /usr/local/lib -L /usr/local/ssl/lib -static-libgcc -static-libstdc++ -static
+CFLAGS				+=	-I /usr/local/include $(CPUFLAGS) # -I /usr/local/ssl/include
+CPPFLAGS			+=	-I /usr/local/include $(CPUFLAGS) # -I /usr/local/ssl/include
+LDFLAGS				+=	-L /usr/local/lib -static-libgcc -static-libstdc++ -static # -L /usr/local/ssl/lib
 # - ------------------------------------------------------------------------ - #
 LIBRARIES			+=	-lmingw32 \
 						-lIphlpapi \

@@ -360,11 +360,12 @@ COPY_FILES			+=
 # Other Object files you want to link against (i.e. an embedded Windows Icon) #
 OTHER_O_FILES		+=	
 # - ------------------------------------------------------------------------ - #
-#ifdef USES_WINDOWS
+ifdef USES_WINDOWS
 #LIBRARIES			+=	-lenet -lws2_32 -lwinmm
-#else # USES_WINDOWS #
+LIBRARIES			+=	-lws2_32 -lwinmm
+else # USES_WINDOWS #
 #LIBRARIES			+=	/usr/local/lib/libenet.a
-#endif # USES_WINDOWS #
+endif # USES_WINDOWS #
 # - ------------------------------------------------------------------------ - #
 endif # USES_ENET #
 # - ------------------------------------------------------------------------ - #
