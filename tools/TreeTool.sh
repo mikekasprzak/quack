@@ -1,6 +1,10 @@
 #!/bin/sh
 
-SCRIPT=`readlink -f "$0"`
+if type readlink; then
+	SCRIPT=`readlink -f "$0"`
+else
+	SCRIPT="$0"
+fi
 
 SCRIPT_DIR=`dirname "$SCRIPT"`
 SCRIPT_FILE=`basename "$SCRIPT" .sh`
