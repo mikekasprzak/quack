@@ -39,6 +39,10 @@ public:
 		
 		if ( Skel == 0 )
 			return Rect;			
+			
+		if ( Skel == (GelSkelAnimator*)0xbaadd00d ) {
+			Log( "! UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU !" );
+		}
 
 		int SlotIndex = 0;
 		spSlot* Slot = 0;
