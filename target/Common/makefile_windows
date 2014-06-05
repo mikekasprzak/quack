@@ -22,7 +22,7 @@ DEFINES				+=	USES_STAT USES_WINDOWS_TIME USES_WINDOWS_DIR USES_WINDOWS_PATH
 DEFINES				+=	USES_STDOUT USES_FLOG_COLORS 
 #DEFINES				+=	USES_WARNINGS
 # - ------------------------------------------------------------------------ - #
-USES_XINPUT			:=	true	# XBOX 360 Controllers #
+#USES_XINPUT			:=	true	# XBOX 360 Controllers #
 #USES_SIXENSE		:=	true	# Razer Hydra Motion Controller #
 #USES_HIDAPI		:=	true	# HID devices including SpaceNavigator #
 # - ------------------------------------------------------------------------ - #
