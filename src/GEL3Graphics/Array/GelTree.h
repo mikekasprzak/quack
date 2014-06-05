@@ -48,8 +48,8 @@ public:
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
-template<typename OUT, typename IN>
-inline void Gen_GelVert2C_from_GelTree( OUT& Out, IN& In ) { // GelVert2C, GelTree<IN>
+template<typename _OUT, typename _IN> // Can't be IN and OUT since those are used by *something* in MinGW //
+inline void Gen_GelVert2C_from_GelTree( _OUT& Out, _IN& In ) { // GelVert2C, GelTree<IN>
 	Out.Clear();
 	Out.Reserve( (In.Size()-1) * (6+3) );
 	
@@ -58,8 +58,8 @@ inline void Gen_GelVert2C_from_GelTree( OUT& Out, IN& In ) { // GelVert2C, GelTr
 //	GelColor Color1;
 //	GelColor Color2;
 	
-	typedef typename IN::Type::Type InVec;
-	typedef typename IN::Type InType;
+	typedef typename _IN::Type::Type InVec;
+	typedef typename _IN::Type InType;
 
 	// Skip element 0, as it will not have a parent. Draw from Parent to me. //
 	for ( st idx = 1; idx < In.Size(); idx++ ) {

@@ -148,9 +148,9 @@ public:
 	typedef T Type;
 
 	inline GelAlloc( const st _Capacity ) :
-		Index( -1 ),
 		Capacity( _Capacity ),
 		Used( 0 ),
+		Index( -1 ),
 		Data( _Capacity )
 	{
 	}
@@ -186,11 +186,11 @@ public:
 	}
 
 	// Retrieve individual elements (as if it was a GelArrayX type) //
-	inline T& operator [] ( const st Index ) {
-		return Data[Index];
+	inline T& operator [] ( const st _Index ) {
+		return Data[_Index];
 	}
-	inline const T& operator [] ( const st Index ) const {
-		return Data[Index];
+	inline const T& operator [] ( const st _Index ) const {
+		return Data[_Index];
 	}
 
 public:
