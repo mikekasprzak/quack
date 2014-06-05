@@ -409,7 +409,10 @@ inline void AddBoxObj_QEngine( QEngine& Engine, const QVec& _Pos, const char* _C
 	QObj& Ob = Engine.Add();
 	QObjBoxObj::InitObj( &Ob );
 	Ob.Data = new QObjBoxObj( _Pos, _Class );
+	Log("! Hobo");
 	((QObjBoxObj*)Ob.Data)->Init( &Ob, SqArgs );
+	Log("! Hobo");
+	LogFlush();
 	Ob.UpdateRect();
 }
 // - ------------------------------------------------------------------------------------------ - //
