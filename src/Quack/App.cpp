@@ -78,8 +78,10 @@ bool HadVMError;
 QK::QEmitter* Emitter;
 //QK::QSky* Sky;
 
+#ifdef USES_GELNET
 GelNet*		Net;
 GelSync*	Sync;
+#endif //USES_GELNET //
 
 //GelLayout	Layout;
 // - ------------------------------------------------------------------------------------------ - //
@@ -176,9 +178,11 @@ void AppInit() {
 	App::Emitter = new QK::QEmitter( "ItemIcons.atlas" );
 //	App::Sky = new QK::QSky();
 
+#ifdef USES_GELNET
 	App::Net = new GelNet();
 	App::Sync = new GelSync();
 	App::Sync->Bind(App::Net);
+#endif //USES_GELNET //
 
 //	{
 //		Log("**** GLAYOUT");
@@ -230,8 +234,10 @@ void AppInit() {
 void AppExit() {
 //	delete App::Engine;
 
+#ifdef USES_GELNET
 	delete App::Net;
 	delete App::Sync;
+#endif //USES_GELNET //
 
 	delete App::Emitter;
 
@@ -279,6 +285,7 @@ void AppStep() {
 		QuackVMCallInit();
 	}
 	
+#ifdef USES_GELNET
 	if ( KeyF5 && !OldKeyF5 ) {
 		App::Net->Start( true );
 	}
@@ -299,6 +306,7 @@ void AppStep() {
 	
 	App::Sync->Step();
 	App::Net->Step();
+#endif //USES_GELNET //
 
 	// START: Update FrameTime //
 	sq_pushroottable(vm);

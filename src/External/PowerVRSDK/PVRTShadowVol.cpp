@@ -1391,6 +1391,8 @@ int PVRTShadowVolSilhouetteProjectedRender(
 #endif
 #endif
 #endif
+#else
+	return 0;	// MK: Clang Error
 #endif
 }
 
