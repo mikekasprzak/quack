@@ -1,6 +1,9 @@
 // - ------------------------------------------------------------------------------------------ - //
 #include "GelNet.h"
 // - ------------------------------------------------------------------------------------------ - //
+#ifdef USES_GELNET
+#ifdef USES_ENET
+// - ------------------------------------------------------------------------------------------ - //
 int GelNet::ReadChunk( const void* Data, const ENetEvent& Event ) {
 	const GelPacketChunk* Chunk = (GelPacketChunk*)Data;
 	const GelNetClient* Client = (const GelNetClient*)Event.peer->data;
@@ -29,4 +32,7 @@ int GelNet::ReadChunk( const void* Data, const ENetEvent& Event ) {
 	
 	return Chunk->GetTotalSize();
 }
+// - ------------------------------------------------------------------------------------------ - //
+#endif // USES_ENET //
+#endif // USES_GELNET //
 // - ------------------------------------------------------------------------------------------ - //

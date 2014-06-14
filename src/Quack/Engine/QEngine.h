@@ -643,7 +643,7 @@ public:
 		Grid.Clear();
 
 		// Broad Phase: Iterate for all elements. Check the cells they overlap, then add self. //
-		for ( typename std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
+		for ( /*typename*/ std::list<QObj>::iterator ItrA = Obj.begin(); ItrA != Obj.end(); ++ItrA ) {
 			QRect RectA = ItrA->Rect;
 			QSensor* Sensor = ItrA->GetSensor();
 			if ( Sensor ) {
@@ -663,7 +663,7 @@ public:
 						// Check against all objects in my cell //
 						if ( Grid.Size( IndexItr ) ) {
 							QObjList& VsList = Grid[ IndexItr ];
-							for ( typename std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
+							for ( /*typename*/ std::list<QObj*>::iterator ItrB = VsList.begin(); ItrB != VsList.end(); ++ItrB ) {
 								if ( Stamper.Check( (**ItrB).Stamp ) ) {
 									Solve( *ItrA, **ItrB );
 								}
@@ -674,7 +674,7 @@ public:
 
 				if ( Stamper.NewStamp() ) {
 					Log( "! OMG WE'RE FALL DEAD !" );
-					for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+					for ( /*typename*/ std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
 						Stamper.Clear( Itr->Stamp );
 					}
 				}
@@ -686,7 +686,7 @@ public:
 		
 		// Step Objects Next //
 		// TODO: Only if an active region (could cycle/sleep regions and update less often) //
-		for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+		for ( /*typename*/ std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
 			// NOTE: This check should be the sum of all rectangles, but it's less important here as it's just step //
 			if ( Grid.IsInside( Itr->Rect ) ) {
 				// Step Object (Can't use a Reference here, as Obj can be resized by Step) //
@@ -795,7 +795,7 @@ public:
 				if ( Grid.Size( IndexItr ) ) {
 					QObjList& VsList = Grid[ IndexItr ];
 
-					for ( typename std::list<QObj*>::iterator Itr = VsList.begin(); Itr != VsList.end(); ++Itr ) {
+					for ( /*typename*/ std::list<QObj*>::iterator Itr = VsList.begin(); Itr != VsList.end(); ++Itr ) {
 						QObj& Ob = **Itr;
 						
 						if ( Stamper.Check( Ob.Stamp ) ) {
@@ -821,7 +821,7 @@ public:
 
 		if ( Stamper.NewStamp() ) {
 			Log( "! OMG WE'RE ALL DEAD !" );
-			for ( typename std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
+			for ( /*typename*/ std::list<QObj>::iterator Itr = Obj.begin(); Itr != Obj.end(); ++Itr ) {
 				Stamper.Clear( Itr->Stamp );
 			}
 		}
