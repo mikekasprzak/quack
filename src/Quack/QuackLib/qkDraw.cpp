@@ -68,7 +68,7 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 		} \
 		\
 		const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_( __VA_ARGS__ ); \
-		Vector3D Verts[ VertCount ]; \
+		Vector3D Verts[ /*VertCount*/64 ]; \
 		generate_Vertex3D_ ## _PRIMNAME_( Verts, Pos, Radius, ## __VA_ARGS__ ); \
 		\
 		Gel::RenderFlat( _DRAWMODE_, *uMatrix, Color, Verts, VertCount ); \
@@ -154,7 +154,7 @@ SQInteger _FUNCNAME_( HSQUIRRELVM v ) { \
 		} \
 		\
 		const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_( __VA_ARGS__ ); \
-		Vector3D Verts[ VertCount ]; \
+		Vector3D Verts[ /*VertCount*/64 ]; \
 		generate_Vertex3D_ ## _PRIMNAME_( Verts, PosA, Real(RadiusA), PosB, Real(RadiusB), ## __VA_ARGS__ ); \
 		\
 		Gel::RenderFlat( _DRAWMODE_, *uMatrix, Color, Verts, VertCount ); \

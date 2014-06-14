@@ -155,7 +155,7 @@ public:
 	}
 	
 	inline void Save( const char* _FileName ) {
-		return_Warning( _Data == 0, "cGelDataArray w/o Data" );
+		return_void_Warning( _Data == 0, "cGelDataArray w/o Data" );
 		write_GelDataArray<Type>( _Data, _FileName );
 	}
 
@@ -165,7 +165,7 @@ public:
 	}
 	
 	inline void Set( const Type& _Value ) {
-		return_Warning( _Data == 0, "cGelDataArray w/o Data" );
+		return_void_Warning( _Data == 0, "cGelDataArray w/o Data" );
 		set_GelDataArray<Type>( _Data, _Value );
 	}
 	

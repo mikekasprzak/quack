@@ -14,7 +14,7 @@ inline void generate_Vertex3D_HalfCircle( T* Dest, const Vector3D& Pos, const Re
 //	float FloatSteps = Steps+Steps;
 	float FloatSteps = 1.0f / (float)(Steps+Steps);
 	
-	float BaseAngle = ArcTan2( -Normal.x, Normal.y );
+	float BaseAngle = ArcTan2( -Normal.x, Normal.y ).ToFloat();
     
     // NOTE: <= is not < //
 	for ( st32 idx = 0; idx <= Steps; idx++ ) {

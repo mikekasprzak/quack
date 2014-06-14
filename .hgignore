@@ -17,3 +17,6 @@ src/Main/Android/local.properties
 src/Main/Android/project.properties
 src/External/SteamWorks/include
 src/External/SteamWorks/lib
+src/Main/NaCl/pnacl
+src/Main/NaCl/src
+
