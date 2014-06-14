@@ -28,11 +28,11 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
-#ifndef USES_NO_EGL
+#ifdef USES_EGL
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <EGL/eglplatform.h>
-#endif // NO_EGL //
+#endif // EGL //
 // - ------------------------------------------------------------------------------------------ - //
 #endif // USES_OPENGL_ES2 //
 // - ------------------------------------------------------------------------------------------ - //

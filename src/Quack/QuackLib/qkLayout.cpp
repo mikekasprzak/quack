@@ -295,6 +295,8 @@ SQInteger qk_layout_populate_body( HSQUIRRELVM v, GelLayoutNode* Node ) {
 	
 	// Finished, so load what we need to load //
 	Node->Data.PostLoad();
+
+	return SQ_VOID;
 }
 // - ------------------------------------------------------------------------------------------ - //
 // This Function will never be called alone. It will be called by other methods. //

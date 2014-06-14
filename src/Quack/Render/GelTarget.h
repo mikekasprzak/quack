@@ -208,7 +208,7 @@ protected:
 	int			Flags;
 	GelTarget*	Parent;	
 	
-	friend GelTarget;
+	friend class GelTarget;
 public:
 	inline GelSubTarget( GelTarget* _Parent, const int _x, const int _y, const int _w, const int _h ) :
 		x(_x),

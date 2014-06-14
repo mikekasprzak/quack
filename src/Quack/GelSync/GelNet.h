@@ -171,11 +171,12 @@ public:
 		
 	
 	inline void* GetData() {
-		if ( Size == 255u )
-			if ( Data[0] == 65535u )
+		if ( Size == 255u ) {
+			if ( Data[0] == 65535u ) 
 				return &Data[3];
 			else
 				return &Data[1];
+		}
 		return &Data[0];
 	}
 };
@@ -303,7 +304,7 @@ public:
 			ENetEvent Event;
 	
 			while( enet_host_service(Host, &Event, 0) > 0 ) {
-				switch( Event.type ) {					
+				switch( Event.type ) {
 					case ENET_EVENT_TYPE_CONNECT: {
 						Event.peer->data = new GelNetClient( Event.peer->address );
 						GelNetClient* Client = (GelNetClient*)Event.peer->data;
@@ -364,6 +365,9 @@ public:
 							delete (GelNetClient*)Event.peer->data;
 						Event.peer->data = 0;
 	
+						break;
+					}
+					case ENET_EVENT_TYPE_NONE: {
 						break;
 					}
 				}
@@ -456,7 +460,7 @@ public:
 // GelPacketData is contains all the data a subscriber to the packet messages needs //
 class GelPacketData {
 	typedef GelPacketData thistype;
-	friend GelNet;
+	friend class GelNet;
 protected:
 	const ENetEvent* Event;
 	GelNet* Net;
