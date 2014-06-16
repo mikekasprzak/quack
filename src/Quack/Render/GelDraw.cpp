@@ -14,7 +14,7 @@
 #define _PRIMITIVE_DRAW_RADIUS(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_, ...) \
 void _FUNCNAME_( const Matrix4x4& Mat, const Vector3D& Pos, const Vector2D& Radius, const GelColor Color ) { \
 	const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_( __VA_ARGS__ ); \
-	Vector3D Verts[ /*VertCount*/64 ]; \
+	Vector3D Verts[ /*VertCount*/512 ]; \
 	generate_Vertex3D_ ## _PRIMNAME_( Verts, Pos, Radius, ## __VA_ARGS__ ); \
 	\
 	Gel::RenderFlat( _DRAWMODE_, Mat, Color, Verts, VertCount ); \
@@ -44,7 +44,7 @@ _PRIMITIVE_DRAW_RADIUS(gelDrawRectFill,Rect,GEL_TRIANGLE_FAN);
 #define _PRIMITIVE_DRAW_CAPSULE(_FUNCNAME_,_PRIMNAME_,_DRAWMODE_, ... ) \
 void _FUNCNAME_( const Matrix4x4& Mat, const Vector3D& PosA, const Real& RadiusA, const Vector3D& PosB, const Real& RadiusB, const GelColor Color ) { \
 	const st32 VertCount = size_Vertex3D_ ## _PRIMNAME_( __VA_ARGS__ ); \
-	Vector3D Verts[ /*VertCount*/64 ]; \
+	Vector3D Verts[ /*VertCount*/512 ]; \
 	generate_Vertex3D_ ## _PRIMNAME_( Verts, PosA, RadiusA, PosB, RadiusB, ## __VA_ARGS__ ); \
 	\
 	Gel::RenderFlat( _DRAWMODE_, Mat, Color, Verts, VertCount ); \
