@@ -1,9 +1,11 @@
 #!/bin/sh
 # genfilelist.sh - Generate a files.txt file
 
-tools/TreeTool.sh src/Quack/QuackLib % >src/files.txt
-tools/TreeTool.sh src/GEL3Graphics/Render/Embedded % >>src/files.txt
+TREETOOL=`readlink -f tools/TreeTool.sh`
 
-tools/TreeTool.sh project % >project/files.txt
+(cd src/Quack/QuackLib; $TREETOOL . % >files.txt)
+(cd src/GEL3Graphics/Render/Embedded; $TREETOOL . % >files.txt)
+
+(cd project; $TREETOOL . % >files.txt)
 
 exit 0

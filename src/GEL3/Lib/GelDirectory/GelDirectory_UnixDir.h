@@ -17,6 +17,7 @@
 // Init and Exit code, called once in case a platform needs to properly init directory support //
 // - ------------------------------------------------------------------------------------------ - //
 inline void init_GelDirectory() {
+	Log("* USES_UNIX_DIR");
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void exit_GelDirectory() {
