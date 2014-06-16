@@ -117,7 +117,7 @@ void AppInit() {
 	}
 #endif // USES_MOBILE //
 	
-	LogLevel = 3;
+//	LogLevel = 3;
 	App::Mode = App::AM_NULL;
 	App::Exit = false;
 	App::FrameTime = 0;
