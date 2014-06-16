@@ -63,6 +63,8 @@ void gelSystemInit() {
 	
 	// Clear the Screen Scalar //
 	Gel::ScreenScalar = 1.0f;
+
+	Log( "* SDL GelSystem Init() done." );
 }
 // - ------------------------------------------------------------------------------------------ - //
 

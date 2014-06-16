@@ -15,8 +15,10 @@ extern GelTexturePool 	TexturePool;
 
 // - ------------------------------------------------------------------------------------------ - //
 inline void gelTextureInit() {
+	Log( "* GelTexture Init()..." );
 	init_GelTextureHandle();
 	atexit( exit_GelTextureHandle );
+	Log( "* GelTexture Init() done." );
 }
 // - ------------------------------------------------------------------------------------------ - //
 

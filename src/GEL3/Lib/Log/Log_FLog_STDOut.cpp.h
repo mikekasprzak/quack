@@ -8,6 +8,7 @@
 FILE* FLOG_TARGET = 			stdout;
 #define FLOG_FUNCV( ... )		vfprintf( FLOG_TARGET, __VA_ARGS__ )
 #define FLOG_FUNC( ... )		fprintf( FLOG_TARGET, __VA_ARGS__ )
+#define FLOG_PFUNC( arg )		fputs( arg, FLOG_TARGET )
 
 inline void _FLogFlush() {
 	fflush( FLOG_TARGET );
@@ -148,7 +149,8 @@ const char* const ANSIColorTable[] = {
 inline void __FLogColor( const char* ColorString ) {
 	// Only output color codes when the target is stdout (no color codes in text files) //
 	if ( FLOG_TARGET == stdout )
-		FLOG_FUNC( ColorString );
+		FLOG_PFUNC( ColorString );
+//		FLOG_FUNC( ColorString );
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void _FLogColor( const int Color ) {

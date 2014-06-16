@@ -9,7 +9,7 @@ USES_UNIX_TIME		:=	true		# Use Unix Timer Code #
 USES_UNIX_DIR		:=	true		# Use Unix Directory Searching Code #
 USES_UNIX_PATH		:=	true		# Use Unix Base File Path Detection Code #
 # - ------------------------------------------------------------------------ - #
-USES_STDOUT			:=	true		# FileLog Output to use #
+USES_SDLLOG			:=	true		# FileLog Output to use #
 USES_LESS_NEWLINES	:=	true		# Don't output extra newline (\n) in logs #
 USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
 # - ------------------------------------------------------------------------ - #
@@ -17,7 +17,7 @@ USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_NACL USES_BROWSER USES_CLANG
 DEFINES				+=	USES_STAT USES_UNIX_TIME USES_UNIX_DIR USES_UNIX_PATH
-DEFINES				+=	USES_STDOUT USES_LESS_NEWLINES USES_EXTRA_QUOTES
+DEFINES				+=	USES_SDLLOG USES_LESS_NEWLINES USES_EXTRA_QUOTES
 # - ------------------------------------------------------------------------ - #
 
 

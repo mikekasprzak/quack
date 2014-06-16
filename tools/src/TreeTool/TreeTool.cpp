@@ -147,8 +147,10 @@ int main( int argc, char* argv[] ) {
 	
 	// Output the makefile style rules to stdout //
 	for( int idx = 0; idx < Pattern.size(); idx++ ) {
+		if ( idx != 0 )
+			cout << endl;
+
 		Pattern[idx].Write( cout );	
-		cout << endl;
 	}
 	
 	// Happy //

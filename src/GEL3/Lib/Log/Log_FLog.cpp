@@ -19,6 +19,7 @@ int CurrentFLogIndentation = 0;
 #include "Log_FLog_Curses.cpp.h"
 #include "Log_FLog_MSVC_Debugger.cpp.h"
 #include "Log_FLog_STDOut.cpp.h"
+#include "Log_FLog_SDLLog.cpp.h"
 // - ------------------------------------------------------------------------------------------ - //
 
 // - ------------------------------------------------------------------------------------------ - //
