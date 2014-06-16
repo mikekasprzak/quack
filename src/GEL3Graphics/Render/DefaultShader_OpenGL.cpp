@@ -54,7 +54,7 @@ void gelShaderInit() {
 	Gel::Default = new GelUberShader( ShaderFile.c_str() );
 #endif // USES DESKTOP //
 
-#ifdef USES_MOBILE
+#if defined(USES_MOBILE) || defined(USES_BROWSER)
 	// Use Embedded //
 	Gel::Default = new GelUberShader( DefaultShader_json, DefaultShader_json_Size, DefaultShader_glsl, DefaultShader_glsl_Size );
 #endif // USES_MOBILE //

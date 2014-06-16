@@ -19,5 +19,5 @@ src/External/SteamWorks/include
 src/External/SteamWorks/lib
 src/Main/NaCl/pnacl
 src/Main/NaCl/src
-src/files.txt
+files.txt
 

@@ -6,7 +6,7 @@
 // - ------------------------------------------------------------------------------------------ - //
 #ifdef USES_FAKE_DIR
 // - ------------------------------------------------------------------------------------------ - //
-#include <Debug/GelDebug.h>
+#include <Lib/Lib.h>
 #include <fstream>
 #include <string>
 
@@ -17,6 +17,7 @@
 // Init and Exit code, called once in case a platform needs to properly init directory support //
 // - ------------------------------------------------------------------------------------------ - //
 inline void init_GelDirectory() {
+	Log("* USES_FAKE_DIR");
 }
 // - ------------------------------------------------------------------------------------------ - //
 inline void exit_GelDirectory() {
@@ -99,7 +100,7 @@ inline void populate_GelDirectory( GelDirectory* p, const char* SearchDirectory,
 // - ------------------------------------------------------------------------------------------ - //
 inline void populate_GelDirectory( GelDirectory* p ) {
 //	char FilesFile[] = ".files";
-	char FilesFile[] = "files";
+	char FilesFile[] = "files.txt";
 	
 	char* CurrentFile = new char[ length_String(p->BaseName) + 1 + length_String(FilesFile) + 1 ];
 	copy_String( p->BaseName, CurrentFile );
@@ -134,6 +135,8 @@ inline void populate_GelDirectory( GelDirectory* p ) {
 // - ------------------------------------------------------------------------------------------ - //
 inline GelDirectory* new_GelDirectory( const char* _BaseName ) {
 	GelDirectory* NewDir = new GelDirectory;
+	
+	Log("HEOOOO %s",_BaseName);
 	
 	NewDir->BaseName = new_String( _BaseName );
 	NewDir->FileName = new_GelHeap();

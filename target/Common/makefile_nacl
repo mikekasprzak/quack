@@ -6,7 +6,7 @@ USES_CLANG			:=	true		# Compiler Suite (For completeness) #
 # - ------------------------------------------------------------------------ - #
 USES_STAT			:=	true		# Uses standard Unix Style File Info Lookups #
 USES_UNIX_TIME		:=	true		# Use Unix Timer Code #
-USES_UNIX_DIR		:=	true		# Use Unix Directory Searching Code #
+USES_FAKE_DIR		:=	true		# Use Fake Directory Searching Code #
 USES_UNIX_PATH		:=	true		# Use Unix Base File Path Detection Code #
 # - ------------------------------------------------------------------------ - #
 USES_SDLLOG			:=	true		# FileLog Output to use #
@@ -16,7 +16,7 @@ USES_EXTRA_QUOTES	:=	true		# Use Extra Quotes around -D strings #
 # DON'T FORGET TO REPLICATE ALL THE ABOVE HERE! #
 # - ------------------------------------------------------------------------ - #
 DEFINES				+=	USES_NACL USES_BROWSER USES_CLANG
-DEFINES				+=	USES_STAT USES_UNIX_TIME USES_UNIX_DIR USES_UNIX_PATH
+DEFINES				+=	USES_STAT USES_UNIX_TIME USES_FAKE_DIR USES_UNIX_PATH
 DEFINES				+=	USES_SDLLOG USES_LESS_NEWLINES USES_EXTRA_QUOTES
 # - ------------------------------------------------------------------------ - #
 
