@@ -17,13 +17,12 @@ namespace Gel {
 // - ------------------------------------------------------------------------------------------ - //
 void init_GelTextureHandle() {
 	Gel::ActiveTextureUnit = 0;
-	glActiveTexture( GL_TEXTURE0 + Gel::ActiveTextureUnit );
-		
+//	glActiveTexture( GL_TEXTURE0 + Gel::ActiveTextureUnit );
 	for ( int idx = 0; idx < Gel::GEL_MAX_TEXTURE_UNITS; idx++ ) { 	
 		Gel::ActiveTexture[idx] = 0;
 	}
 	// TODO: Actually check how many TU's there are, and call this. //
-	glBindTexture( GL_TEXTURE_2D, Gel::ActiveTexture[0] );
+//	glBindTexture( GL_TEXTURE_2D, Gel::ActiveTexture[0] );
 }
 // - ------------------------------------------------------------------------------------------ - //
 void exit_GelTextureHandle() {

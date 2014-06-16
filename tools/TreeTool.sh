@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if type readlink; then
+if type readlink >/dev/null; then
 	SCRIPT=`readlink -f "$0"`
 else
 	SCRIPT="$0"

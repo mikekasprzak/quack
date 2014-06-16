@@ -137,6 +137,18 @@ void AppInit() {
 	
 	// **** //
 
+#if __NACL__
+	Log("* NACL Mount");
+	
+    SDL_NaClUmount("/");
+    SDL_NaClMount(
+        "",  /* source */
+        "/",  /* target */
+        "httpfs",  /* filesystemtype */
+        0,  /* mountflags */
+        "");  /* data specific to the html5fs type */
+#endif    
+
 	Gel::Search.Add( "src/Quack/QuackLib" );
 	Gel::Search.Add( "project" );
 	Log( "" );	
